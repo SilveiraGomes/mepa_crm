@@ -1,0 +1,38 @@
+{
+  "mode": "STATIC_CAPTURE_NOT_EXECUTION",
+  "engine": null,
+  "physical_execution": false,
+  "tables": 31,
+  "columns": 267,
+  "foreign_keys": 50,
+  "checks": 25,
+  "status": "STAGED_PARITY_ONLY",
+  "errors": [],
+  "strict_errors": [
+    {
+      "path": "files.fk_files_owner_department_id",
+      "expected": {
+        "name": "fk_files_owner_department_id",
+        "columns": [
+          "owner_department_id"
+        ],
+        "target_table": "department_instances",
+        "target_columns": [
+          "id"
+        ],
+        "on_delete": "RESTRICT",
+        "on_update": "RESTRICT"
+      },
+      "actual": "missing"
+    }
+  ],
+  "deferred_foreign_keys": [
+    {
+      "table": "files",
+      "column": "owner_department_id",
+      "target": "department_instances.id",
+      "wave": 2,
+      "reason": "Alvo Departamentos fora do âmbito autorizado; coluna e índice mantidos. Finding W1-F01; drift estrito permanece aberto."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "scope": "Own isolated synthetic Docker test container only",
+  "image": "mysql:8.4",
+  "engine_version": "8.4.11",
+  "container_identity_and_label_verified": true,
+  "host_bind_mounts": false,
+  "container_and_anonymous_test_volume_removed": true,
+  "production_infrastructure_dependency": false
+}

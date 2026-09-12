@@ -1,0 +1,719 @@
+{
+  "mode": "PLANNED_NOT_INTROSPECTED",
+  "foreign_keys": [
+    {
+      "table": "people",
+      "name": "fk_people_sex_type_id",
+      "columns": [
+        "sex_type_id"
+      ],
+      "target_table": "sex_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "people",
+      "name": "fk_people_civil_status_type_id",
+      "columns": [
+        "civil_status_type_id"
+      ],
+      "target_table": "civil_status_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "people",
+      "name": "fk_people_status_id",
+      "columns": [
+        "status_id"
+      ],
+      "target_table": "person_statuses",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "people",
+      "name": "fk_people_merged_into_id",
+      "columns": [
+        "merged_into_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_contacts",
+      "name": "fk_person_contacts_person_id",
+      "columns": [
+        "person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_contacts",
+      "name": "fk_person_contacts_contact_type_id",
+      "columns": [
+        "contact_type_id"
+      ],
+      "target_table": "contact_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "territorial_areas",
+      "name": "fk_territorial_areas_parent_id",
+      "columns": [
+        "parent_id"
+      ],
+      "target_table": "territorial_areas",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "territorial_areas",
+      "name": "fk_territorial_areas_area_type_id",
+      "columns": [
+        "area_type_id"
+      ],
+      "target_table": "territorial_area_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "addresses",
+      "name": "fk_addresses_province_id",
+      "columns": [
+        "province_id"
+      ],
+      "target_table": "territorial_areas",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "addresses",
+      "name": "fk_addresses_municipality_id",
+      "columns": [
+        "municipality_id"
+      ],
+      "target_table": "territorial_areas",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "households",
+      "name": "fk_households_address_id",
+      "columns": [
+        "address_id"
+      ],
+      "target_table": "addresses",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_parent_rules",
+      "name": "fk_unit_parent_rules_child_type_id",
+      "columns": [
+        "child_type_id"
+      ],
+      "target_table": "organizational_unit_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_parent_rules",
+      "name": "fk_unit_parent_rules_parent_type_id",
+      "columns": [
+        "parent_type_id"
+      ],
+      "target_table": "organizational_unit_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "organizational_units",
+      "name": "fk_organizational_units_parent_id",
+      "columns": [
+        "parent_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "organizational_units",
+      "name": "fk_organizational_units_unit_type_id",
+      "columns": [
+        "unit_type_id"
+      ],
+      "target_table": "organizational_unit_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "organizational_units",
+      "name": "fk_organizational_units_municipality_id",
+      "columns": [
+        "municipality_id"
+      ],
+      "target_table": "territorial_areas",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "files",
+      "name": "fk_files_owner_unit_id",
+      "columns": [
+        "owner_unit_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "files",
+      "name": "fk_files_owner_department_id",
+      "columns": [
+        "owner_department_id"
+      ],
+      "target_table": "department_instances",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "DEFERRED_WAVE_2"
+    },
+    {
+      "table": "files",
+      "name": "fk_files_created_by",
+      "columns": [
+        "created_by"
+      ],
+      "target_table": "users",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_documents",
+      "name": "fk_person_documents_person_id",
+      "columns": [
+        "person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_documents",
+      "name": "fk_person_documents_document_type_id",
+      "columns": [
+        "document_type_id"
+      ],
+      "target_table": "identity_document_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_documents",
+      "name": "fk_person_documents_file_id",
+      "columns": [
+        "file_id"
+      ],
+      "target_table": "files",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_files",
+      "name": "fk_person_files_person_id",
+      "columns": [
+        "person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_files",
+      "name": "fk_person_files_file_id",
+      "columns": [
+        "file_id"
+      ],
+      "target_table": "files",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "legal_documents",
+      "name": "fk_legal_documents_document_type_id",
+      "columns": [
+        "document_type_id"
+      ],
+      "target_table": "legal_document_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "legal_documents",
+      "name": "fk_legal_documents_owner_unit_id",
+      "columns": [
+        "owner_unit_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_addresses",
+      "name": "fk_person_addresses_person_id",
+      "columns": [
+        "person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_addresses",
+      "name": "fk_person_addresses_address_id",
+      "columns": [
+        "address_id"
+      ],
+      "target_table": "addresses",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_addresses",
+      "name": "fk_person_addresses_source_document_id",
+      "columns": [
+        "source_document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "household_members",
+      "name": "fk_household_members_household_id",
+      "columns": [
+        "household_id"
+      ],
+      "target_table": "households",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "household_members",
+      "name": "fk_household_members_person_id",
+      "columns": [
+        "person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "household_members",
+      "name": "fk_household_members_role_type_id",
+      "columns": [
+        "role_type_id"
+      ],
+      "target_table": "household_role_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "household_members",
+      "name": "fk_household_members_source_document_id",
+      "columns": [
+        "source_document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_relationships",
+      "name": "fk_person_relationships_subject_person_id",
+      "columns": [
+        "subject_person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_relationships",
+      "name": "fk_person_relationships_related_person_id",
+      "columns": [
+        "related_person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_relationships",
+      "name": "fk_person_relationships_relationship_type_id",
+      "columns": [
+        "relationship_type_id"
+      ],
+      "target_table": "relationship_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "person_relationships",
+      "name": "fk_person_relationships_source_document_id",
+      "columns": [
+        "source_document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_parent_periods",
+      "name": "fk_unit_parent_periods_unit_id",
+      "columns": [
+        "unit_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_parent_periods",
+      "name": "fk_unit_parent_periods_parent_unit_id",
+      "columns": [
+        "parent_unit_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_parent_periods",
+      "name": "fk_unit_parent_periods_source_document_id",
+      "columns": [
+        "source_document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "document_versions",
+      "name": "fk_document_versions_document_id",
+      "columns": [
+        "document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "document_versions",
+      "name": "fk_document_versions_file_id",
+      "columns": [
+        "file_id"
+      ],
+      "target_table": "files",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "document_versions",
+      "name": "fk_document_versions_supersedes_id",
+      "columns": [
+        "supersedes_id"
+      ],
+      "target_table": "document_versions",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "physical_locations",
+      "name": "fk_physical_locations_address_id",
+      "columns": [
+        "address_id"
+      ],
+      "target_table": "addresses",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "properties",
+      "name": "fk_properties_location_id",
+      "columns": [
+        "location_id"
+      ],
+      "target_table": "physical_locations",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "properties",
+      "name": "fk_properties_owner_person_id",
+      "columns": [
+        "owner_person_id"
+      ],
+      "target_table": "people",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_location_links",
+      "name": "fk_unit_location_links_unit_id",
+      "columns": [
+        "unit_id"
+      ],
+      "target_table": "organizational_units",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_location_links",
+      "name": "fk_unit_location_links_location_id",
+      "columns": [
+        "location_id"
+      ],
+      "target_table": "physical_locations",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_location_links",
+      "name": "fk_unit_location_links_property_id",
+      "columns": [
+        "property_id"
+      ],
+      "target_table": "properties",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_location_links",
+      "name": "fk_unit_location_links_occupation_type_id",
+      "columns": [
+        "occupation_type_id"
+      ],
+      "target_table": "occupation_types",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    },
+    {
+      "table": "unit_location_links",
+      "name": "fk_unit_location_links_source_document_id",
+      "columns": [
+        "source_document_id"
+      ],
+      "target_table": "legal_documents",
+      "target_columns": [
+        "id"
+      ],
+      "on_delete": "RESTRICT",
+      "on_update": "RESTRICT",
+      "status": "EMITTED"
+    }
+  ]
+}

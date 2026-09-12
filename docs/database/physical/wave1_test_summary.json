@@ -1,0 +1,27 @@
+{
+  "engine": "MySQL 8.4.11",
+  "phpunit": {
+    "cases": 17,
+    "passed": 12,
+    "skipped_application_layer": 5,
+    "assertions": 107,
+    "failures": 0
+  },
+  "node": {
+    "passed": 15,
+    "failures": 0
+  },
+  "php_lint": {
+    "files": 33,
+    "errors": 0
+  },
+  "lifecycle": {
+    "migrate": 31,
+    "rollback": 31,
+    "remigrate": 31,
+    "scaffolding_preserved": true
+  },
+  "strict_drift": "W1-F01",
+  "approved_snapshot_emitted": false,
+  "protected_tracked_files_changed": false
+}

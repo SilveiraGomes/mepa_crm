@@ -1,0 +1,12 @@
+{
+  "tables": 31,
+  "columns": 267,
+  "public_id": 8,
+  "primary_keys": 31,
+  "foreign_keys_catalog": 51,
+  "foreign_keys_emitted": 50,
+  "checks": 25,
+  "unique": 28,
+  "indexes": 52,
+  "cascade": 0
+}

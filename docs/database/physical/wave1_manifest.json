@@ -1,0 +1,182 @@
+{
+  "phase": "P0.3.1",
+  "catalog_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+  "tables": [
+    "person_statuses",
+    "sex_types",
+    "civil_status_types",
+    "people",
+    "identity_document_types",
+    "contact_types",
+    "person_contacts",
+    "household_role_types",
+    "relationship_types",
+    "territorial_area_types",
+    "territorial_areas",
+    "addresses",
+    "households",
+    "organizational_unit_types",
+    "unit_parent_rules",
+    "organizational_units",
+    "organizational_structure_lock",
+    "files",
+    "person_documents",
+    "person_files",
+    "legal_document_types",
+    "legal_documents",
+    "person_addresses",
+    "household_members",
+    "person_relationships",
+    "unit_parent_periods",
+    "document_versions",
+    "physical_locations",
+    "properties",
+    "occupation_types",
+    "unit_location_links"
+  ],
+  "migrations": [
+    {
+      "table": "person_statuses",
+      "file": "2026_09_12_000001_wave1_create_person_statuses.php"
+    },
+    {
+      "table": "sex_types",
+      "file": "2026_09_12_000002_wave1_create_sex_types.php"
+    },
+    {
+      "table": "civil_status_types",
+      "file": "2026_09_12_000003_wave1_create_civil_status_types.php"
+    },
+    {
+      "table": "people",
+      "file": "2026_09_12_000004_wave1_create_people.php"
+    },
+    {
+      "table": "identity_document_types",
+      "file": "2026_09_12_000005_wave1_create_identity_document_types.php"
+    },
+    {
+      "table": "contact_types",
+      "file": "2026_09_12_000006_wave1_create_contact_types.php"
+    },
+    {
+      "table": "person_contacts",
+      "file": "2026_09_12_000007_wave1_create_person_contacts.php"
+    },
+    {
+      "table": "household_role_types",
+      "file": "2026_09_12_000008_wave1_create_household_role_types.php"
+    },
+    {
+      "table": "relationship_types",
+      "file": "2026_09_12_000009_wave1_create_relationship_types.php"
+    },
+    {
+      "table": "territorial_area_types",
+      "file": "2026_09_12_000010_wave1_create_territorial_area_types.php"
+    },
+    {
+      "table": "territorial_areas",
+      "file": "2026_09_12_000011_wave1_create_territorial_areas.php"
+    },
+    {
+      "table": "addresses",
+      "file": "2026_09_12_000012_wave1_create_addresses.php"
+    },
+    {
+      "table": "households",
+      "file": "2026_09_12_000013_wave1_create_households.php"
+    },
+    {
+      "table": "organizational_unit_types",
+      "file": "2026_09_12_000014_wave1_create_organizational_unit_types.php"
+    },
+    {
+      "table": "unit_parent_rules",
+      "file": "2026_09_12_000015_wave1_create_unit_parent_rules.php"
+    },
+    {
+      "table": "organizational_units",
+      "file": "2026_09_12_000016_wave1_create_organizational_units.php"
+    },
+    {
+      "table": "organizational_structure_lock",
+      "file": "2026_09_12_000017_wave1_create_organizational_structure_lock.php"
+    },
+    {
+      "table": "files",
+      "file": "2026_09_12_000018_wave1_create_files.php"
+    },
+    {
+      "table": "person_documents",
+      "file": "2026_09_12_000019_wave1_create_person_documents.php"
+    },
+    {
+      "table": "person_files",
+      "file": "2026_09_12_000020_wave1_create_person_files.php"
+    },
+    {
+      "table": "legal_document_types",
+      "file": "2026_09_12_000021_wave1_create_legal_document_types.php"
+    },
+    {
+      "table": "legal_documents",
+      "file": "2026_09_12_000022_wave1_create_legal_documents.php"
+    },
+    {
+      "table": "person_addresses",
+      "file": "2026_09_12_000023_wave1_create_person_addresses.php"
+    },
+    {
+      "table": "household_members",
+      "file": "2026_09_12_000024_wave1_create_household_members.php"
+    },
+    {
+      "table": "person_relationships",
+      "file": "2026_09_12_000025_wave1_create_person_relationships.php"
+    },
+    {
+      "table": "unit_parent_periods",
+      "file": "2026_09_12_000026_wave1_create_unit_parent_periods.php"
+    },
+    {
+      "table": "document_versions",
+      "file": "2026_09_12_000027_wave1_create_document_versions.php"
+    },
+    {
+      "table": "physical_locations",
+      "file": "2026_09_12_000028_wave1_create_physical_locations.php"
+    },
+    {
+      "table": "properties",
+      "file": "2026_09_12_000029_wave1_create_properties.php"
+    },
+    {
+      "table": "occupation_types",
+      "file": "2026_09_12_000030_wave1_create_occupation_types.php"
+    },
+    {
+      "table": "unit_location_links",
+      "file": "2026_09_12_000031_wave1_create_unit_location_links.php"
+    }
+  ],
+  "external_scaffolding": [
+    "users"
+  ],
+  "deferred_foreign_keys": [
+    {
+      "table": "files",
+      "column": "owner_department_id",
+      "target": "department_instances.id",
+      "wave": 2,
+      "reason": "Alvo Departamentos fora do âmbito autorizado; coluna e índice mantidos. Finding W1-F01; drift estrito permanece aberto."
+    }
+  ],
+  "physical_candidates_applied": false,
+  "schema_execution_status": "EXECUTED_MYSQL_8_4_11_WITH_STRICT_DRIFT_W1_F01",
+  "test_engine": {
+    "family": "MySQL",
+    "version": "8.4.11",
+    "docker_test_only": true
+  }
+}

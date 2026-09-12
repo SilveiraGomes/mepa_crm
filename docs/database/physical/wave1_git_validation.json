@@ -1,0 +1,8 @@
+{
+  "initial_worktree": "CLEAN",
+  "tracked_diff_check_exit": 0,
+  "untracked_text_trailing_whitespace": [],
+  "excluded_sensitive_runtime_paths": true,
+  "only_modified_preexisting_file": "apps/api/phpunit.xml",
+  "protected_database_catalog_dictionary_ADRs_unchanged": true
+}

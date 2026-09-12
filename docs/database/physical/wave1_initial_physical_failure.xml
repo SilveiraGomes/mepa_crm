@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="14" assertions="99" errors="0" warnings="0" failures="1" skipped="5" time="46.643657">
+    <testsuite name="Database" tests="14" assertions="99" errors="0" warnings="0" failures="1" skipped="5" time="46.643657">
+      <testsuite name="Tests\Database\WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" tests="14" assertions="99" errors="0" warnings="0" failures="1" skipped="5" time="46.643657">
+        <testcase name="test_migrate_rollback_and_remigrate" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="86" assertions="66" time="43.359085"/>
+        <testcase name="test_information_schema_matches_staged_catalog" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="97" assertions="2" time="2.526377">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\WaveOnePhysicalTest::test_information_schema_matches_staged_catalog
+{
+  "mode": "INFORMATION_SCHEMA",
+  "engine": "8.4.11",
+  "physical_execution": true,
+  "tables": 31,
+  "columns": 267,
+  "foreign_keys": 50,
+  "checks": 25,
+  "status": "DRIFT_DETECTED",
+  "errors": [
+    {
+      "path": "people.ck_people_birth",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "organizational_units.ck_organizational_units_status",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "files.ck_files_status",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "physical_locations.ck_physical_locations_visibility",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    }
+  ],
+  "strict_errors": [
+    {
+      "path": "people.ck_people_birth",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "organizational_units.ck_organizational_units_status",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "files.fk_files_owner_department_id",
+      "expected": {
+        "name": "fk_files_owner_department_id",
+        "columns": [
+          "owner_department_id"
+        ],
+        "target_table": "department_instances",
+        "target_columns": [
+          "id"
+        ],
+        "on_delete": "RESTRICT",
+        "on_update": "RESTRICT"
+      },
+      "actual": "missing"
+    },
+    {
+      "path": "files.ck_files_status",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    },
+    {
+      "path": "physical_locations.ck_physical_locations_visibility",
+      "expected": "parseable CHECK",
+      "actual": "Unsupported CHECK tokens"
+    }
+  ],
+  "deferred_foreign_keys": [
+    {
+      "table": "files",
+      "column": "owner_department_id",
+      "target": "department_instances.id",
+      "wave": 2,
+      "reason": "Alvo Departamentos fora do âmbito autorizado; coluna e índice mantidos. Finding W1-F01; drift estrito permanece aberto."
+    }
+  ]
+}
+
+Failed asserting that 1 is identical to 0.
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php:104</failure>
+        </testcase>
+        <testcase name="test_person_and_non_member_parent_family" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="132" assertions="8" time="0.159772"/>
+        <testcase name="test_boolean_birth_fk_and_public_id_rejections" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="156" assertions="6" time="0.057948"/>
+        <testcase name="test_contacts_preserve_encrypted_text_and_allow_shared_phone" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="169" assertions="2" time="0.061153"/>
+        <testcase name="test_coordinates_are_paired_and_bounded" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="185" assertions="4" time="0.062547"/>
+        <testcase name="test_all_approved_territorial_parent_child_states_can_be_persisted" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="201" assertions="3" time="0.268795"/>
+        <testcase name="test_personal_documents_keep_civil_dates_and_non_unique_candidate_index" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="227" assertions="5" time="0.048577"/>
+        <testcase name="test_location_change_preserves_unit_identity_and_period_history" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="245" assertions="3" time="0.070960"/>
+        <testsuite name="Tests\Database\WaveOnePhysicalTest::test_application_enforced_rule_is_not_a_database_guarantee" tests="5" assertions="0" errors="0" warnings="0" failures="0" skipped="5" time="0.028443">
+          <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #0" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.007320">
+            <skipped/>
+          </testcase>
+          <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #1" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.005521">
+            <skipped/>
+          </testcase>
+          <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #2" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.004457">
+            <skipped/>
+          </testcase>
+          <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #3" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.006353">
+            <skipped/>
+          </testcase>
+          <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #4" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.004791">
+            <skipped/>
+          </testcase>
+        </testsuite>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
