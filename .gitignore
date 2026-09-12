@@ -1,0 +1,52 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+apps/api/.env
+apps/web/.env
+apps/web/.env.local
+
+# Dependencies
+vendor/
+node_modules/
+apps/api/vendor/
+apps/web/node_modules/
+
+# Builds and coverage
+dist/
+build/
+coverage/
+apps/web/dist/
+
+# Laravel runtime
+apps/api/bootstrap/cache/*.php
+apps/api/storage/framework/cache/data/*
+apps/api/storage/framework/sessions/*
+apps/api/storage/framework/testing/*
+apps/api/storage/framework/views/*
+apps/api/storage/logs/*
+!apps/api/storage/**/.gitignore
+
+# Development storage and real uploads
+storage-dev/*
+!storage-dev/.gitkeep
+uploads/
+public/uploads/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.cache
+.phpunit.result.cache
+
+# IDEs and operating systems
+.idea/
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Generated local knowledge graph
+graphify-out/

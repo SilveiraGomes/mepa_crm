@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MEPA">
+  <rect width="512" height="512" rx="112" fill="#0b362b"/>
+  <circle cx="256" cy="256" r="164" fill="none" stroke="#e6c775" stroke-width="20"/>
+  <path d="M152 350V162h42l62 96 62-96h42v188h-46V237l-58 86-58-86v113z" fill="#f8f6ee"/>
+</svg>
+

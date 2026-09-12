@@ -1,0 +1,26 @@
+name: Relatório de erro
+description: Registar um comportamento incorrecto sem incluir dados pessoais ou vulnerabilidades.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Não inclua secrets, dados reais nem detalhes de vulnerabilidades de segurança.
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: Explique o comportamento observado e o esperado.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Como reproduzir
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versão ou commit
+
