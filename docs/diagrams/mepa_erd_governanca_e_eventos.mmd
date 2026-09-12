@@ -1,0 +1,127 @@
+erDiagram
+    governance_body_types {
+        bigint id PK
+    }
+    governance_bodies {
+        bigint id PK
+        char public_id UK
+    }
+    governance_body_types ||--o{ governance_bodies : "body_type_id"
+    organizational_units ||--o{ governance_bodies : "unit_id"
+    governance_body_memberships {
+        bigint id PK
+    }
+    governance_bodies ||--o{ governance_body_memberships : "body_id"
+    people ||--o{ governance_body_memberships : "person_id"
+    positions |o--o{ governance_body_memberships : "position_id"
+    legal_documents |o--o{ governance_body_memberships : "source_document_id"
+    event_types {
+        bigint id PK
+    }
+    events {
+        bigint id PK
+        char public_id UK
+    }
+    event_types ||--o{ events : "event_type_id"
+    organizational_units ||--o{ events : "owner_unit_id"
+    event_sessions {
+        bigint id PK
+        char public_id UK
+    }
+    events ||--o{ event_sessions : "event_id"
+    governance_sessions {
+        bigint id PK
+    }
+    governance_bodies ||--o{ governance_sessions : "body_id"
+    events ||--o{ governance_sessions : "event_id"
+    governance_resolutions {
+        bigint id PK
+        char public_id UK
+    }
+    governance_sessions ||--o{ governance_resolutions : "governance_session_id"
+    legal_documents ||--o{ governance_resolutions : "document_id"
+    event_organizers {
+        bigint id PK
+    }
+    events ||--o{ event_organizers : "event_id"
+    people ||--o{ event_organizers : "person_id"
+    functions |o--o{ event_organizers : "function_id"
+    event_locations {
+        bigint id PK
+    }
+    events ||--o{ event_locations : "event_id"
+    physical_locations ||--o{ event_locations : "location_id"
+    event_documents {
+        bigint id PK
+    }
+    events ||--o{ event_documents : "event_id"
+    legal_documents ||--o{ event_documents : "document_id"
+    event_invitation_lists {
+        bigint id PK
+    }
+    events ||--o{ event_invitation_lists : "event_id"
+    invitation_criteria {
+        bigint id PK
+    }
+    event_invitation_lists ||--o{ invitation_criteria : "list_id"
+    positions |o--o{ invitation_criteria : "position_id"
+    ministerial_classes |o--o{ invitation_criteria : "class_id"
+    governance_bodies |o--o{ invitation_criteria : "body_id"
+    organizational_units |o--o{ invitation_criteria : "unit_id"
+    department_instances |o--o{ invitation_criteria : "department_id"
+    event_invitees {
+        bigint id PK
+    }
+    event_invitation_lists ||--o{ event_invitees : "list_id"
+    people ||--o{ event_invitees : "person_id"
+    event_registrations {
+        bigint id PK
+        char public_id UK
+    }
+    events ||--o{ event_registrations : "event_id"
+    people ||--o{ event_registrations : "person_id"
+    event_invitees |o--o{ event_registrations : "invitee_id"
+    event_invitations {
+        bigint id PK
+    }
+    event_invitees ||--o{ event_invitations : "invitee_id"
+    messages |o--o{ event_invitations : "message_id"
+    event_confirmations {
+        bigint id PK
+    }
+    event_registrations ||--o{ event_confirmations : "registration_id"
+    devices {
+        bigint id PK
+        char public_id UK
+    }
+    users ||--o{ devices : "registered_by"
+    organizational_units ||--o{ devices : "unit_id"
+    event_checkins {
+        bigint id PK
+    }
+    event_sessions ||--o{ event_checkins : "session_id"
+    event_registrations ||--o{ event_checkins : "registration_id"
+    people ||--o{ event_checkins : "person_id"
+    credentials |o--o{ event_checkins : "credential_id"
+    event_credentials |o--o{ event_checkins : "event_credential_id"
+    devices ||--o{ event_checkins : "device_id"
+    users ||--o{ event_checkins : "actor_id"
+    idempotency_requests ||--o| event_checkins : "idempotency_request_id"
+    event_credentials {
+        bigint id PK
+        char public_id UK
+    }
+    event_registrations ||--o{ event_credentials : "registration_id"
+    event_attendance {
+        bigint id PK
+    }
+    event_sessions ||--o{ event_attendance : "session_id"
+    event_registrations ||--o{ event_attendance : "registration_id"
+    people ||--o{ event_attendance : "person_id"
+    event_checkins |o--o{ event_attendance : "checkin_id"
+    users ||--o{ event_attendance : "recorded_by"
+    event_counts {
+        bigint id PK
+    }
+    event_sessions ||--o{ event_counts : "session_id"
+    users |o--o{ event_counts : "approved_by"

@@ -1,0 +1,139 @@
+erDiagram
+    academic_units {
+        bigint id PK
+    }
+    organizational_units ||--o{ academic_units : "unit_id"
+    programs {
+        bigint id PK
+        char public_id UK
+    }
+    academic_units ||--o{ programs : "academic_unit_id"
+    courses {
+        bigint id PK
+        char public_id UK
+    }
+    curricula {
+        bigint id PK
+    }
+    programs ||--o{ curricula : "program_id"
+    curriculum_courses {
+        bigint id PK
+    }
+    curricula ||--o{ curriculum_courses : "curriculum_id"
+    courses ||--o{ curriculum_courses : "course_id"
+    course_versions {
+        bigint id PK
+    }
+    courses ||--o{ course_versions : "course_id"
+    course_prerequisites {
+        bigint id PK
+    }
+    courses ||--o{ course_prerequisites : "course_id"
+    courses ||--o{ course_prerequisites : "required_course_id"
+    course_modules {
+        bigint id PK
+    }
+    course_versions ||--o{ course_modules : "course_version_id"
+    lessons {
+        bigint id PK
+    }
+    course_modules ||--o{ lessons : "module_id"
+    resources {
+        bigint id PK
+        char public_id UK
+    }
+    files |o--o{ resources : "file_id"
+    lesson_resources {
+        bigint id PK
+    }
+    lessons ||--o{ lesson_resources : "lesson_id"
+    resources ||--o{ lesson_resources : "resource_id"
+    cohorts {
+        bigint id PK
+        char public_id UK
+    }
+    academic_units ||--o{ cohorts : "academic_unit_id"
+    curricula ||--o{ cohorts : "curriculum_id"
+    classes {
+        bigint id PK
+        char public_id UK
+    }
+    cohorts |o--o{ classes : "cohort_id"
+    academic_units ||--o{ classes : "academic_unit_id"
+    course_versions ||--o{ classes : "course_version_id"
+    instructors {
+        bigint id PK
+    }
+    people ||--o| instructors : "person_id"
+    class_instructors {
+        bigint id PK
+    }
+    classes ||--o{ class_instructors : "class_id"
+    instructors ||--o{ class_instructors : "instructor_id"
+    legal_documents |o--o{ class_instructors : "source_document_id"
+    enrollments {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ enrollments : "person_id"
+    classes ||--o{ enrollments : "class_id"
+    users |o--o{ enrollments : "approved_by"
+    class_sessions {
+        bigint id PK
+    }
+    classes ||--o{ class_sessions : "class_id"
+    lessons |o--o{ class_sessions : "lesson_id"
+    event_sessions |o--o{ class_sessions : "event_session_id"
+    academic_attendance {
+        bigint id PK
+    }
+    enrollments ||--o{ academic_attendance : "enrollment_id"
+    class_sessions ||--o{ academic_attendance : "class_session_id"
+    users ||--o{ academic_attendance : "recorded_by"
+    assessments {
+        bigint id PK
+        char public_id UK
+    }
+    course_versions ||--o{ assessments : "course_version_id"
+    lessons |o--o{ assessments : "lesson_id"
+    assessment_attempts {
+        bigint id PK
+    }
+    assessments ||--o{ assessment_attempts : "assessment_id"
+    enrollments ||--o{ assessment_attempts : "enrollment_id"
+    grades {
+        bigint id PK
+    }
+    assessment_attempts ||--o{ grades : "attempt_id"
+    users ||--o{ grades : "graded_by"
+    progress {
+        bigint id PK
+    }
+    enrollments ||--o{ progress : "enrollment_id"
+    lessons ||--o{ progress : "lesson_id"
+    resource_progress {
+        bigint id PK
+    }
+    enrollments ||--o{ resource_progress : "enrollment_id"
+    resources ||--o{ resource_progress : "resource_id"
+    certificates {
+        bigint id PK
+        char public_id UK
+    }
+    enrollments ||--o{ certificates : "enrollment_id"
+    users ||--o{ certificates : "approved_by"
+    files ||--o{ certificates : "file_id"
+    transcripts {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ transcripts : "person_id"
+    curricula ||--o{ transcripts : "curriculum_id"
+    files ||--o{ transcripts : "file_id"
+    users ||--o{ transcripts : "approved_by"
+    transcript_lines {
+        bigint id PK
+    }
+    transcripts ||--o{ transcript_lines : "transcript_id"
+    enrollments ||--o{ transcript_lines : "enrollment_id"
+    certificates |o--o{ transcript_lines : "certificate_id"

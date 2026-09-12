@@ -5,7 +5,7 @@ description: Apply approved MEPA CRM data rules to imports, deduplication, membe
 
 # MEPA data invariants
 
-- Read `mepa_crm_v1.0.1.md`, relevant ADRs and approved data contracts before changing data structures.
+- Read `mepa_crm_v1.1.1.md`, relevant ADRs and approved data contracts before changing data structures.
 - Route imports through staging, normalization, deduplication, mapping, validation, preview, approval, import and reporting.
 - Preserve legacy values and source provenance; never invent missing historical dates.
 - The future member-number format is `MEPAAAMMSSSSSS`; its six-digit sequence is national and continuous and never resets by month or year.
@@ -14,3 +14,5 @@ description: Apply approved MEPA CRM data rules to imports, deduplication, membe
 - Preserve relationship and assignment history rather than overwriting it.
 - Financial data must support ledger integrity and prevent duplicate revenue on internal transfers.
 
+
+- A arquitectura P0.2 em docs/database é proposta para auditoria; não implementar migrations de negócio antes da aprovação aplicável. Constraints de agregado requerem serviço/transacção com locks de âncoras preexistentes; não presumir UNIQUE parcial ou CHECK entre tabelas.

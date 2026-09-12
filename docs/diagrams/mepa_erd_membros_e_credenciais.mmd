@@ -1,0 +1,79 @@
+erDiagram
+    membership_statuses {
+        bigint id PK
+    }
+    memberships {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o| memberships : "person_id"
+    membership_statuses ||--o{ memberships : "status_id"
+    users |o--o{ memberships : "approved_by"
+    legal_documents |o--o{ memberships : "source_document_id"
+    membership_periods {
+        bigint id PK
+    }
+    memberships ||--o{ membership_periods : "membership_id"
+    organizational_units ||--o{ membership_periods : "congregation_id"
+    membership_statuses ||--o{ membership_periods : "status_id"
+    legal_documents |o--o{ membership_periods : "source_document_id"
+    member_number_sequences {
+        bigint id PK
+    }
+    member_numbers {
+        bigint id PK
+    }
+    memberships ||--o| member_numbers : "membership_id"
+    legacy_member_numbers {
+        bigint id PK
+    }
+    memberships ||--o{ legacy_member_numbers : "membership_id"
+    import_records |o--o{ legacy_member_numbers : "import_record_id"
+    milestone_types {
+        bigint id PK
+    }
+    ecclesiastical_milestones {
+        bigint id PK
+    }
+    people ||--o{ ecclesiastical_milestones : "person_id"
+    milestone_types ||--o{ ecclesiastical_milestones : "milestone_type_id"
+    organizational_units |o--o{ ecclesiastical_milestones : "unit_id"
+    legal_documents |o--o{ ecclesiastical_milestones : "source_document_id"
+    transfers {
+        bigint id PK
+        char public_id UK
+    }
+    memberships ||--o{ transfers : "membership_id"
+    organizational_units ||--o{ transfers : "origin_unit_id"
+    organizational_units ||--o{ transfers : "destination_unit_id"
+    workflow_instances ||--o{ transfers : "workflow_instance_id"
+    legal_documents |o--o{ transfers : "source_document_id"
+    credential_types {
+        bigint id PK
+        tinyint requires_member_number
+        int default_validity_days
+        tinyint requires_formal_approval
+    }
+    credential_classes {
+        bigint id PK
+    }
+    credential_templates {
+        bigint id PK
+    }
+    credential_types ||--o{ credential_templates : "credential_type_id"
+    files ||--o{ credential_templates : "file_id"
+    credential_class_styles {
+        bigint id PK
+    }
+    credential_templates ||--o{ credential_class_styles : "template_id"
+    credential_classes ||--o{ credential_class_styles : "class_id"
+    credentials {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ credentials : "person_id"
+    credential_types ||--o{ credentials : "credential_type_id"
+    member_numbers |o--o{ credentials : "member_number_id"
+    credential_templates ||--o{ credentials : "template_id"
+    users |o--o{ credentials : "revoked_by"
+    files |o--o{ credentials : "render_file_id"

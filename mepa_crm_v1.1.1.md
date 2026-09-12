@@ -1,11 +1,12 @@
 # MEPA CRM — Plano Geral, Arquitectura e Regras de Implementação
 
-**Ficheiro canónico:** `mepa_crm.md`  
+**Ficheiro canónico:** `mepa_crm_v1.1.1.md`  
 **Projecto:** MEPA Gestão — CRM/ChMS/ERP Eclesiástico Nacional  
 **Instituição:** Missão Evangélica Pentecostal de Angola — MEPA  
 **Estado:** Baseline aprovado para início da planificação e programação  
-**Versão:** 1.0.1  
+**Versão:** 1.1.1  
 **Data-base:** 05-09-2026  
+**Revisão 1.1.1:** 12-09-2026. Correcção documental Centro/Centro Geral; arquitectura P0.2 proposta, sem aprovação implícita. A v1.1.0 é preservada integralmente.
 **Idioma funcional:** Português de Angola (`pt-AO`)  
 
 ---
@@ -24,7 +25,7 @@ Quando existir conflito, a ordem de precedência será:
 
 1. Estatuto, regulamentos e deliberações oficiais vigentes da MEPA;
 2. decisões formalmente aprovadas e registadas em ADR;
-3. este ficheiro `mepa_crm.md`;
+3. este ficheiro `mepa_crm_v1.1.1.md`;
 4. modelo de dados e migrações aprovadas;
 5. contratos de API;
 6. implementação existente;
@@ -40,7 +41,7 @@ Se uma nova decisão alterar este documento, a alteração **deve primeiro ser r
 
 Antes de qualquer sessão de desenvolvimento, o agente deverá:
 
-1. ler `mepa_crm.md`;
+1. ler `mepa_crm_v1.1.1.md`;
 2. verificar as ADRs existentes;
 3. consultar o grafo do projecto com **Graphify** antes de procurar ficheiros de forma aleatória;
 4. verificar o estado das migrações, contratos de API e testes relacionados com a tarefa;
@@ -186,15 +187,30 @@ Devem ser configuráveis: tipos de unidade, classes ministeriais, cargos, funç�
 
 # 5. ESTRUTURA INSTITUCIONAL DA MEPA
 
+Direcção Geral → Direcção Regional → Direcção Provincial → Direcção Municipal → Centro Geral opcional → Centro → Congregação.
+
+Município com Centro Geral:
+
 ```text
-Direcção Geral
-└── Direcção Regional
-    └── Direcção Provincial
-        └── Direcção Municipal
-            └── Centro Geral
-                └── Centro Normal
-                    └── Congregação
+Direcção Municipal
+└── Centro Geral
+    ├── Centro A
+    │   └── Congregações
+    └── Centro B
+        └── Congregações
 ```
+
+Município sem Centro Geral:
+
+```text
+Direcção Municipal
+├── Centro A
+│   └── Congregações
+└── Centro B
+    └── Congregações
+```
+
+Um Município pode possuir zero ou um Centro Geral e deve possuir um ou mais Centros. Quando existe Centro Geral, todos os Centros desse Município dependem dele; quando não existe, dependem directamente da Direcção Municipal. Toda Congregação depende de um Centro. “Centro” é a designação corrente; somente “Centro Geral” se escreve por extenso. Ver ADR 0006.
 
 A hierarquia será modelada como árvore recursiva.
 
@@ -217,6 +233,97 @@ organizational_units
 Uma pessoa associada a uma Congregação deve ser contabilizável pelos níveis ascendentes autorizados. Não se cria novo cadastro em cada nível.
 
 ---
+
+
+# 5.1 ÓRGÃOS DE DECISÃO, GOVERNANÇA E EVENTOS
+
+A MEPA possui órgãos de decisão e fiscalização que não devem ser confundidos com níveis territoriais.
+
+Órgãos de referência:
+
+```text
+CONGRESSO
+ASSEMBLEIA_GERAL
+CONSELHO_MINISTROS
+CONSELHO_DIRECCAO
+JUNTA_OFICIAL
+COMISSAO_AUDITORIA_ETICA
+```
+
+Estes órgãos são permanentes enquanto estrutura institucional, mas as suas reuniões são tratadas como **Eventos**.
+
+Modelo:
+
+```text
+Órgão de Decisão
+        │
+        ├── composição/membros do órgão
+        │
+        └── convoca
+              ↓
+            Evento
+              ↓
+        Lista de convocados
+              ↓
+        Convocação
+              ↓
+        Confirmação
+              ↓
+           Check-in
+              ↓
+        Credenciamento
+              ↓
+        Participação
+```
+
+O sistema deverá permitir que a equipa de coordenação crie a lista de convocados por critérios como:
+
+- classe ministerial;
+- cargo;
+- pertença a órgão;
+- região;
+- província;
+- município;
+- departamento;
+- selecção manual;
+- convidados externos.
+
+Entidades previstas:
+
+```text
+governance_body_types
+governance_bodies
+governance_body_memberships
+governance_sessions
+governance_resolutions
+
+event_types
+events
+event_sessions
+event_organizers
+event_invitation_lists
+event_invitees
+event_invitations
+event_checkins
+event_credentials
+event_attendance
+event_locations
+event_documents
+```
+
+A credencial permanente da MEPA deverá ser reutilizável no check-in. O QR Code do Passe identifica a pessoa/credencial, e o sistema deverá verificar:
+
+```text
+Pessoa válida
+→ Credencial válida
+→ Pessoa convocada
+→ Estado da convocação
+→ Check-in
+→ Credenciamento do Evento
+```
+
+Convidados externos poderão ser cadastrados como Pessoa não membro e receber credencial temporária do evento, sem Número Único de Membro.
+
 
 # 6. LOCAL FÍSICO NÃO É A MESMA COISA QUE UNIDADE ORGANIZACIONAL
 
@@ -315,7 +422,7 @@ O número não muda por transferência, promoção, mudança de congregação, m
 Separadamente:
 
 ```text
-person_id = UUID ou ULID
+person_id = FK técnica BIGINT UNSIGNED para people.id (PK BIGINT UNSIGNED AUTO_INCREMENT); public_id = ULID público independente, conforme ADR 0009 Accepted e D-01 RESOLVED na fase P0.2-D01
 ```
 
 ## 8.4 Legado
@@ -377,6 +484,55 @@ department_activities
 `departments` representa o tipo; `department_instances` representa a existência em determinado nível.
 
 ---
+
+
+## 10.1 Instâncias locais de departamentos e nomeações
+
+A mesma definição institucional de departamento pode existir em diferentes unidades:
+
+```text
+Departamento de Estatísticas — Direcção Geral
+Departamento de Estatísticas — Direcção Provincial do Huambo
+Departamento de Estatísticas — Direcção Municipal da Caála
+Departamento de Estatísticas — Centro X
+Departamento de Estatísticas — Congregação Y
+```
+
+As Congregações funcionam, neste aspecto, como uma mini-estrutura da Direcção Geral, com representação dos departamentos aplicáveis.
+
+Entidades:
+
+```text
+department_categories
+departments
+department_instances
+department_posts
+department_appointments
+```
+
+Deve ser possível distinguir:
+
+```text
+Departamento não constituído
+Departamento constituído
+Cargo preenchido
+Cargo vago
+Cargo interino
+```
+
+A ausência de responsável **não deve aparecer como vazio**. Deve ser apresentada claramente como:
+
+```text
+SEM NOMEAÇÃO
+```
+
+Isto permitirá consultas como:
+
+- Quem é o Director de Estatísticas da Congregação A?
+- Quem é o Director de Estatísticas da Direcção Municipal da Caála?
+- Quem é o Director Provincial de Estatísticas do Huambo?
+- Quais unidades ainda não têm responsável nomeado para determinado departamento?
+
 
 # 11. CRIANÇAS E ADOLESCENTES
 
@@ -604,8 +760,8 @@ Nacional
 → Região
 → Província
 → Município
-→ Centro Geral
-→ Centro Normal
+→ Centro Geral (quando existe)
+→ Centro
 → Congregação
 ```
 
@@ -724,6 +880,91 @@ A camada de ficheiros deve aceitar local/private storage e posteriormente S3-com
 Economia: compressão, redimensionamento, remoção de EXIF, evitar thumbnails redundantes, hash de duplicados, vídeos fora do CRM, backup separado de media/BD.
 
 ---
+
+
+# 25.1 GEOLOCALIZAÇÃO, TEMPLOS, PROPRIEDADES E ANEXOS
+
+As unidades eclesiásticas, em especial Congregações e Centros, podem estar associadas a locais físicos georreferenciados.
+
+Entidades previstas:
+
+```text
+physical_locations
+properties
+property_documents
+facility_types
+facilities
+organizational_unit_locations
+```
+
+Cada local físico poderá guardar:
+
+```text
+latitude
+longitude
+address
+location_type
+status
+```
+
+Isto deverá permitir funcionalidades como:
+
+- localizar o templo mais próximo;
+- visualizar templos num mapa;
+- obter direcções;
+- filtrar unidades por distância;
+- conhecer a localização exacta de Congregações e Centros.
+
+### Unidade não é igual a imóvel
+
+Uma Congregação é uma unidade organizacional. O templo é um local/imóvel.
+
+Uma Congregação pode:
+
+- funcionar em templo próprio;
+- funcionar em imóvel arrendado;
+- funcionar temporariamente noutro espaço;
+- possuir mais de uma instalação;
+- mudar de local sem perder identidade institucional.
+
+### Documentos de legalização e propriedade
+
+O CRM deverá permitir anexar documentos como:
+
+- título de propriedade;
+- declaração;
+- contrato de arrendamento;
+- direito de superfície;
+- licença;
+- autorização;
+- croquis;
+- certidão;
+- outros.
+
+### Anexos e infraestruturas
+
+Não usar colunas rígidas como `tem_escola` ou `tem_biblioteca`.
+
+Utilizar:
+
+```text
+facility_types
+facilities
+```
+
+Exemplos:
+
+```text
+Escola
+Biblioteca
+Gabinete
+Centro de Formação
+Clínica
+Residência
+Salão
+Outro
+```
+
 
 # 26. EVENTOS, CULTOS E PRESENÇAS
 
@@ -1140,7 +1381,7 @@ Migração: base limpa e actualizações de versão.
 
 # 49. DEFINITION OF DONE
 
-Uma tarefa só está concluída quando está alinhada com `mepa_crm.md`, impacto verificado no Graphify, migrations ajustadas, backend autorizado, UI trata estados, testes passam, auditoria considerada, textos revistos, documentação actualizada e Graphify actualizado se a estrutura mudou.
+Uma tarefa só está concluída quando está alinhada com `mepa_crm_v1.1.1.md`, impacto verificado no Graphify, migrations ajustadas, backend autorizado, UI trata estados, testes passam, auditoria considerada, textos revistos, documentação actualizada e Graphify actualizado se a estrutura mudou.
 
 ---
 
@@ -1181,7 +1422,7 @@ mepa-crm/
 │   └── skills/
 ├── scripts/
 ├── tests/
-├── mepa_crm.md
+├── mepa_crm_v1.1.1.md
 ├── CHANGELOG.md
 └── README.md
 ```
@@ -1307,13 +1548,35 @@ Evitar implantação nacional “big bang”.
 
 ---
 
+
+## 56.1 Decisões adicionais fechadas na v1.1.0
+
+- “Centro” é a designação corrente;
+- apenas “Centro Geral” deve ser escrito por extenso;
+- cada Município pode ter zero ou um Centro Geral;
+- cada Município deve possuir um ou mais Centros;
+- todo Centro coordena Congregações;
+- os órgãos de decisão são estruturas permanentes de governança;
+- as reuniões desses órgãos são tratadas como Eventos;
+- o Passe MEPA pode ser reutilizado como credencial de check-in por QR Code;
+- convidados externos podem participar de eventos sem serem membros;
+- departamentos existem como definição institucional e como instâncias locais;
+- cargos vagos devem aparecer explicitamente como “SEM NOMEAÇÃO”;
+- Congregações podem possuir representação dos departamentos aplicáveis;
+- unidade organizacional e templo/imóvel são entidades distintas;
+- Congregações e Centros podem possuir latitude/longitude;
+- propriedades podem possuir documentação de legalização;
+- anexos físicos como Escola ou Biblioteca são modelados por tipos de instalações;
+- pais ou responsáveis de membros podem existir como Pessoas sem serem membros.
+
+
 # 57. REGRA PARA ALTERAÇÕES FUTURAS
 
 ```text
 Nova decisão
 → validar com regra institucional
 → criar/actualizar ADR
-→ actualizar mepa_crm.md
+→ actualizar mepa_crm_v1.1.1.md
 → actualizar skill interna afectada
 → actualizar ERD/contrato/migration
 → reconstruir Graphify
@@ -1378,4 +1641,4 @@ Este documento deve acompanhar o repositório desde o primeiro commit e ser actu
 
 ---
 
-**FIM — `mepa_crm.md` v1.0.1**
+**FIM — `mepa_crm_v1.1.1.md` v1.1.1**

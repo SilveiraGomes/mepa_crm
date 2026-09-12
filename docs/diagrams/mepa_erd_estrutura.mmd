@@ -1,0 +1,33 @@
+erDiagram
+    territorial_area_types {
+        bigint id PK
+    }
+    territorial_areas {
+        bigint id PK
+    }
+    territorial_areas |o--o{ territorial_areas : "parent_id"
+    territorial_area_types ||--o{ territorial_areas : "area_type_id"
+    organizational_unit_types {
+        bigint id PK
+    }
+    unit_parent_rules {
+        bigint id PK
+    }
+    organizational_unit_types ||--o{ unit_parent_rules : "child_type_id"
+    organizational_unit_types ||--o{ unit_parent_rules : "parent_type_id"
+    organizational_units {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units |o--o{ organizational_units : "parent_id"
+    organizational_unit_types ||--o{ organizational_units : "unit_type_id"
+    territorial_areas |o--o{ organizational_units : "municipality_id"
+    unit_parent_periods {
+        bigint id PK
+    }
+    organizational_units ||--o{ unit_parent_periods : "unit_id"
+    organizational_units |o--o{ unit_parent_periods : "parent_unit_id"
+    legal_documents |o--o{ unit_parent_periods : "source_document_id"
+    organizational_structure_lock {
+        bigint id PK
+    }

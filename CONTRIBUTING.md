@@ -2,7 +2,7 @@
 
 ## Antes de programar
 
-1. Ler integralmente `mepa_crm_v1.0.1.md`.
+1. Ler integralmente `mepa_crm_v1.1.1.md`.
 2. Consultar as ADRs aplicáveis.
 3. Consultar o Graphify para compreender estrutura e impacto.
 4. Identificar o domínio e os dados afectados.

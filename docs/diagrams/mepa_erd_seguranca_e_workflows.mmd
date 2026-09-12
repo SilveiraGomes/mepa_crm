@@ -1,0 +1,86 @@
+erDiagram
+    users {
+        bigint id PK
+        char public_id UK
+    }
+    people |o--o| users : "person_id"
+    auth_sessions {
+        bigint id PK
+    }
+    users ||--o{ auth_sessions : "user_id"
+    devices |o--o{ auth_sessions : "device_id"
+    roles {
+        bigint id PK
+    }
+    permissions {
+        bigint id PK
+    }
+    role_permissions {
+        bigint id PK
+    }
+    roles ||--o{ role_permissions : "role_id"
+    permissions ||--o{ role_permissions : "permission_id"
+    scopes {
+        bigint id PK
+    }
+    organizational_units ||--o{ scopes : "unit_id"
+    department_instances |o--o{ scopes : "department_instance_id"
+    user_role_scopes {
+        bigint id PK
+    }
+    users ||--o{ user_role_scopes : "user_id"
+    roles ||--o{ user_role_scopes : "role_id"
+    scopes ||--o{ user_role_scopes : "scope_id"
+    users ||--o{ user_role_scopes : "granted_by"
+    legal_documents |o--o{ user_role_scopes : "source_document_id"
+    workflows {
+        bigint id PK
+    }
+    workflow_steps {
+        bigint id PK
+    }
+    workflows ||--o{ workflow_steps : "workflow_id"
+    roles ||--o{ workflow_steps : "role_id"
+    workflow_instances {
+        bigint id PK
+        char public_id UK
+    }
+    workflows ||--o{ workflow_instances : "workflow_id"
+    organizational_units ||--o{ workflow_instances : "unit_id"
+    users ||--o{ workflow_instances : "requested_by"
+    membership_workflows {
+        bigint id PK
+    }
+    memberships ||--o{ membership_workflows : "membership_id"
+    workflow_instances ||--o| membership_workflows : "workflow_instance_id"
+    workflow_tasks {
+        bigint id PK
+        char public_id UK
+    }
+    workflow_instances ||--o{ workflow_tasks : "instance_id"
+    workflow_steps ||--o{ workflow_tasks : "step_id"
+    users |o--o{ workflow_tasks : "assigned_to"
+    scopes ||--o{ workflow_tasks : "scope_id"
+    workflow_decisions {
+        bigint id PK
+    }
+    workflow_tasks ||--o{ workflow_decisions : "task_id"
+    users ||--o{ workflow_decisions : "actor_id"
+    legal_documents |o--o{ workflow_decisions : "document_id"
+    idempotency_requests {
+        bigint id PK
+    }
+    users ||--o{ idempotency_requests : "actor_id"
+    outbox_events {
+        bigint id PK
+    }
+    audit_logs {
+        bigint id PK
+    }
+    users |o--o{ audit_logs : "actor_id"
+    organizational_units ||--o{ audit_logs : "unit_id"
+    department_instances |o--o{ audit_logs : "department_instance_id"
+    auth_sessions |o--o{ audit_logs : "session_id"
+    system_settings {
+        bigint id PK
+    }

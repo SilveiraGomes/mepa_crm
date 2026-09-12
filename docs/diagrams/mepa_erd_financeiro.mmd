@@ -1,0 +1,187 @@
+erDiagram
+    currencies {
+        bigint id PK
+    }
+    accounting_periods {
+        bigint id PK
+    }
+    users |o--o{ accounting_periods : "closed_by"
+    chart_of_accounts {
+        bigint id PK
+    }
+    chart_of_accounts |o--o{ chart_of_accounts : "parent_id"
+    accounts {
+        bigint id PK
+    }
+    organizational_units ||--o{ accounts : "unit_id"
+    chart_of_accounts ||--o{ accounts : "ledger_account_id"
+    currencies ||--o{ accounts : "currency_id"
+    bank_account_details {
+        bigint id PK
+    }
+    accounts ||--o| bank_account_details : "account_id"
+    cash_registers {
+        bigint id PK
+    }
+    accounts ||--o| cash_registers : "account_id"
+    people ||--o{ cash_registers : "custodian_person_id"
+    funds {
+        bigint id PK
+    }
+    financial_categories {
+        bigint id PK
+    }
+    financial_categories |o--o{ financial_categories : "parent_id"
+    chart_of_accounts |o--o{ financial_categories : "ledger_account_id"
+    journal_entries {
+        bigint id PK
+        char public_id UK
+    }
+    accounting_periods ||--o{ journal_entries : "period_id"
+    currencies ||--o{ journal_entries : "currency_id"
+    users |o--o{ journal_entries : "posted_by"
+    users ||--o{ journal_entries : "created_by"
+    journal_entries |o--o{ journal_entries : "reversal_of_id"
+    legal_documents |o--o{ journal_entries : "document_id"
+    idempotency_requests ||--o| journal_entries : "idempotency_request_id"
+    journal_lines {
+        bigint id PK
+    }
+    journal_entries ||--o{ journal_lines : "entry_id"
+    organizational_units ||--o{ journal_lines : "unit_id"
+    chart_of_accounts ||--o{ journal_lines : "ledger_account_id"
+    accounts |o--o{ journal_lines : "financial_account_id"
+    funds ||--o{ journal_lines : "fund_id"
+    financial_categories |o--o{ journal_lines : "category_id"
+    financial_parties {
+        bigint id PK
+    }
+    people |o--o{ financial_parties : "person_id"
+    households |o--o{ financial_parties : "household_id"
+    organizational_units |o--o{ financial_parties : "unit_id"
+    department_instances |o--o{ financial_parties : "department_instance_id"
+    contributions {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ contributions : "receiving_unit_id"
+    financial_parties |o--o{ contributions : "party_id"
+    financial_categories ||--o{ contributions : "category_id"
+    funds ||--o{ contributions : "fund_id"
+    currencies ||--o{ contributions : "currency_id"
+    journal_entries |o--o{ contributions : "journal_entry_id"
+    legal_documents |o--o{ contributions : "document_id"
+    obligation_rules {
+        bigint id PK
+    }
+    ministerial_classes |o--o{ obligation_rules : "class_id"
+    departments |o--o{ obligation_rules : "department_id"
+    organizational_unit_types |o--o{ obligation_rules : "unit_type_id"
+    currencies ||--o{ obligation_rules : "currency_id"
+    obligations {
+        bigint id PK
+    }
+    financial_parties ||--o{ obligations : "party_id"
+    obligation_rules ||--o{ obligations : "rule_id"
+    accounting_periods ||--o{ obligations : "period_id"
+    organizational_units ||--o{ obligations : "owning_unit_id"
+    currencies ||--o{ obligations : "currency_id"
+    receivables {
+        bigint id PK
+        char public_id UK
+    }
+    financial_parties ||--o{ receivables : "party_id"
+    organizational_units ||--o{ receivables : "unit_id"
+    obligations |o--o{ receivables : "obligation_id"
+    currencies ||--o{ receivables : "currency_id"
+    journal_entries |o--o{ receivables : "recognition_entry_id"
+    legal_documents |o--o{ receivables : "document_id"
+    payables {
+        bigint id PK
+        char public_id UK
+    }
+    financial_parties ||--o{ payables : "party_id"
+    organizational_units ||--o{ payables : "unit_id"
+    currencies ||--o{ payables : "currency_id"
+    journal_entries |o--o{ payables : "recognition_entry_id"
+    legal_documents ||--o{ payables : "document_id"
+    workflow_instances ||--o{ payables : "workflow_instance_id"
+    settlements {
+        bigint id PK
+        char public_id UK
+    }
+    accounts ||--o{ settlements : "account_id"
+    currencies ||--o{ settlements : "currency_id"
+    journal_entries ||--o{ settlements : "entry_id"
+    settlement_allocations {
+        bigint id PK
+    }
+    settlements ||--o{ settlement_allocations : "settlement_id"
+    receivables |o--o{ settlement_allocations : "receivable_id"
+    payables |o--o{ settlement_allocations : "payable_id"
+    contribution_allocations {
+        bigint id PK
+    }
+    contributions ||--o{ contribution_allocations : "contribution_id"
+    settlements ||--o{ contribution_allocations : "settlement_id"
+    obligations |o--o{ contribution_allocations : "obligation_id"
+    budgets {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ budgets : "unit_id"
+    accounting_periods ||--o{ budgets : "period_id"
+    funds ||--o{ budgets : "fund_id"
+    currencies ||--o{ budgets : "currency_id"
+    users |o--o{ budgets : "approved_by"
+    budget_lines {
+        bigint id PK
+    }
+    budgets ||--o{ budget_lines : "budget_id"
+    financial_categories ||--o{ budget_lines : "category_id"
+    internal_transfers {
+        bigint id PK
+        char public_id UK
+    }
+    accounts ||--o{ internal_transfers : "origin_account_id"
+    accounts ||--o{ internal_transfers : "destination_account_id"
+    currencies ||--o{ internal_transfers : "currency_id"
+    funds ||--o{ internal_transfers : "fund_id"
+    financial_categories |o--o{ internal_transfers : "category_id"
+    accounting_periods ||--o{ internal_transfers : "period_id"
+    legal_documents |o--o{ internal_transfers : "document_id"
+    workflow_instances ||--o{ internal_transfers : "workflow_instance_id"
+    transfer_postings {
+        bigint id PK
+    }
+    internal_transfers ||--o{ transfer_postings : "transfer_id"
+    journal_entries ||--o| transfer_postings : "entry_id"
+    bank_statements {
+        bigint id PK
+        char public_id UK
+    }
+    accounts ||--o{ bank_statements : "account_id"
+    files ||--o{ bank_statements : "file_id"
+    bank_statement_lines {
+        bigint id PK
+    }
+    bank_statements ||--o{ bank_statement_lines : "statement_id"
+    reconciliations {
+        bigint id PK
+        char public_id UK
+    }
+    accounts ||--o{ reconciliations : "account_id"
+    bank_statements |o--o{ reconciliations : "statement_id"
+    accounting_periods ||--o{ reconciliations : "period_id"
+    users |o--o{ reconciliations : "approved_by"
+    reconciliation_matches {
+        bigint id PK
+    }
+    reconciliations ||--o{ reconciliation_matches : "reconciliation_id"
+    bank_statement_lines ||--o{ reconciliation_matches : "statement_line_id"
+    journal_lines ||--o{ reconciliation_matches : "journal_line_id"
+    financial_documents {
+        bigint id PK
+    }
+    journal_entries ||--o{ financial_documents : "entry_id"
+    legal_documents ||--o{ financial_documents : "document_id"

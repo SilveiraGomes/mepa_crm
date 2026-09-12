@@ -1,0 +1,112 @@
+{
+    "scope": "SYNTHETIC_ARCHITECTURE_ONLY",
+    "engine": "10.4.32-MariaDB",
+    "production_qualification": false,
+    "tests": [
+        {
+            "name": "T01 balanced external receipt",
+            "status": "PASS"
+        },
+        {
+            "name": "T02 unbalanced rejected atomically",
+            "status": "PASS"
+        },
+        {
+            "name": "T03 concurrent SEND exactly once",
+            "status": "PASS"
+        },
+        {
+            "name": "T04 concurrent RECEIVE exactly once",
+            "status": "PASS"
+        },
+        {
+            "name": "T05 replay after commit and duplicate receive",
+            "status": "PASS"
+        },
+        {
+            "name": "T06 internal movement and national elimination",
+            "status": "PASS"
+        },
+        {
+            "name": "T07 injected rollback preserves lines and header",
+            "status": "PASS"
+        },
+        {
+            "name": "T08 confirmed send cancellation references original",
+            "status": "PASS"
+        },
+        {
+            "name": "T09 partial payment preserves balance",
+            "status": "PASS"
+        },
+        {
+            "name": "T10 closed period rejects publication",
+            "status": "PASS"
+        },
+        {
+            "name": "T11 engine CHECK FK UNIQUE enforcement",
+            "status": "PASS"
+        },
+        {
+            "name": "T12 portable generated key general center maximum",
+            "status": "PASS"
+        },
+        {
+            "name": "T13 child anchor rejects second open visit",
+            "status": "PASS"
+        },
+        {
+            "name": "T14 archive revokes sessions and request checks actor",
+            "status": "PASS"
+        },
+        {
+            "name": "T15 concurrent independent publication same period accounts",
+            "status": "PASS"
+        },
+        {
+            "name": "T16 canonical pairs minimum and cycle protocol",
+            "status": "PASS"
+        }
+    ],
+    "concurrency": {
+        "SEND": [
+            {
+                "pid": 24708,
+                "entry_id": 2,
+                "elapsed_ms": 727.13
+            },
+            {
+                "pid": 26528,
+                "entry_id": 2,
+                "elapsed_ms": 370.46
+            }
+        ],
+        "RECEIVE": [
+            {
+                "pid": 28128,
+                "entry_id": 3,
+                "elapsed_ms": 368.02
+            },
+            {
+                "pid": 9240,
+                "entry_id": 3,
+                "elapsed_ms": 733.34
+            }
+        ],
+        "PUBLISH": [
+            {
+                "pid": 26756,
+                "entry_id": 10,
+                "elapsed_ms": 735.42
+            },
+            {
+                "pid": 23320,
+                "entry_id": 9,
+                "elapsed_ms": 371.91
+            }
+        ]
+    },
+    "passed": 16,
+    "failed": 0,
+    "national_external_revenue_AOA": "100000.0000"
+}

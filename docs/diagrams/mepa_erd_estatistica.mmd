@@ -1,0 +1,33 @@
+erDiagram
+    metric_definitions {
+        bigint id PK
+    }
+    statistical_periods {
+        bigint id PK
+    }
+    dimension_types {
+        bigint id PK
+    }
+    dimension_values {
+        bigint id PK
+    }
+    dimension_types ||--o{ dimension_values : "dimension_type_id"
+    statistical_snapshots {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ statistical_snapshots : "unit_id"
+    statistical_periods ||--o{ statistical_snapshots : "period_id"
+    users |o--o{ statistical_snapshots : "approved_by"
+    statistical_snapshots |o--o{ statistical_snapshots : "supersedes_id"
+    snapshot_values {
+        bigint id PK
+    }
+    statistical_snapshots ||--o{ snapshot_values : "snapshot_id"
+    metric_definitions ||--o{ snapshot_values : "metric_id"
+    snapshot_value_dimensions {
+        bigint id PK
+    }
+    snapshot_values ||--o{ snapshot_value_dimensions : "value_id"
+    dimension_types ||--o{ snapshot_value_dimensions : "dimension_type_id"
+    dimension_values ||--o{ snapshot_value_dimensions : "dimension_value_id"

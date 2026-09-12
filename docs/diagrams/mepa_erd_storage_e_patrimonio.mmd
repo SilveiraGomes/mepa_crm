@@ -1,0 +1,84 @@
+erDiagram
+    files {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ files : "owner_unit_id"
+    department_instances |o--o{ files : "owner_department_id"
+    users |o--o{ files : "created_by"
+    legal_document_types {
+        bigint id PK
+    }
+    legal_documents {
+        bigint id PK
+        char public_id UK
+    }
+    legal_document_types ||--o{ legal_documents : "document_type_id"
+    organizational_units ||--o{ legal_documents : "owner_unit_id"
+    document_versions {
+        bigint id PK
+        char public_id UK
+    }
+    legal_documents ||--o{ document_versions : "document_id"
+    files ||--o{ document_versions : "file_id"
+    document_versions |o--o{ document_versions : "supersedes_id"
+    physical_locations {
+        bigint id PK
+        char public_id UK
+    }
+    addresses ||--o{ physical_locations : "address_id"
+    properties {
+        bigint id PK
+        char public_id UK
+    }
+    physical_locations ||--o{ properties : "location_id"
+    people |o--o{ properties : "owner_person_id"
+    property_documents {
+        bigint id PK
+    }
+    properties ||--o{ property_documents : "property_id"
+    legal_documents ||--o{ property_documents : "document_id"
+    occupation_types {
+        bigint id PK
+    }
+    unit_location_links {
+        bigint id PK
+    }
+    organizational_units ||--o{ unit_location_links : "unit_id"
+    physical_locations ||--o{ unit_location_links : "location_id"
+    properties |o--o{ unit_location_links : "property_id"
+    occupation_types ||--o{ unit_location_links : "occupation_type_id"
+    legal_documents |o--o{ unit_location_links : "source_document_id"
+    temples {
+        bigint id PK
+        char public_id UK
+    }
+    physical_locations ||--o{ temples : "location_id"
+    facility_types {
+        bigint id PK
+    }
+    facilities {
+        bigint id PK
+        char public_id UK
+    }
+    properties ||--o{ facilities : "property_id"
+    facility_types ||--o{ facilities : "facility_type_id"
+    facilities |o--o{ facilities : "parent_facility_id"
+    asset_types {
+        bigint id PK
+    }
+    assets {
+        bigint id PK
+        char public_id UK
+    }
+    asset_types ||--o{ assets : "asset_type_id"
+    organizational_units ||--o{ assets : "owner_unit_id"
+    physical_locations |o--o{ assets : "location_id"
+    legal_documents |o--o{ assets : "document_id"
+    asset_custody_periods {
+        bigint id PK
+    }
+    assets ||--o{ asset_custody_periods : "asset_id"
+    physical_locations ||--o{ asset_custody_periods : "location_id"
+    people |o--o{ asset_custody_periods : "custodian_person_id"
+    legal_documents |o--o{ asset_custody_periods : "source_document_id"

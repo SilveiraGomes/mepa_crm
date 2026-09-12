@@ -1,0 +1,22 @@
+erDiagram
+    import_batches {
+        bigint id PK
+        char public_id UK
+    }
+    files ||--o{ import_batches : "file_id"
+    users |o--o{ import_batches : "approved_by"
+    import_records {
+        bigint id PK
+    }
+    import_batches ||--o{ import_records : "batch_id"
+    people |o--o{ import_records : "person_id"
+    import_issues {
+        bigint id PK
+    }
+    import_records ||--o{ import_issues : "record_id"
+    users |o--o{ import_issues : "resolved_by"
+    import_identity_maps {
+        bigint id PK
+    }
+    people ||--o{ import_identity_maps : "person_id"
+    import_records ||--o{ import_identity_maps : "record_id"

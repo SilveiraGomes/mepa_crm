@@ -1,0 +1,38 @@
+{
+    "status": "DEPLOYMENT_BLOCKER",
+    "engine": {
+        "family": "MariaDB",
+        "numeric": "10.4.32",
+        "minimum": "10.11.2",
+        "supported": false
+    },
+    "server": {
+        "version": "10.4.32-MariaDB",
+        "comment": "mariadb.org binary distribution",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci",
+        "fk_checks": 1,
+        "sql_mode": "STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
+        "db": "p02f_architecture"
+    },
+    "innodb": {
+        "Engine": "InnoDB",
+        "0": "InnoDB",
+        "Support": "DEFAULT",
+        "1": "DEFAULT",
+        "Comment": "Supports transactions, row-level locking, foreign keys and encryption for tables",
+        "2": "Supports transactions, row-level locking, foreign keys and encryption for tables",
+        "Transactions": "YES",
+        "3": "YES",
+        "XA": "YES",
+        "4": "YES",
+        "Savepoints": "YES",
+        "5": "YES"
+    },
+    "check_enforcement": "UNSUPPORTED_PRODUCTION_BASELINE",
+    "empirical_qualification": "REQUIRED_IN_ISOLATED_DATABASE_BEFORE_DEPLOYMENT",
+    "tables_examined": 13,
+    "failures": [
+        "ENGINE_VERSION_BELOW_BASELINE_OR_UNSUPPORTED"
+    ]
+}

@@ -17,5 +17,9 @@ Configuração será feita por ambiente, sem caminhos absolutos. O domínio perm
 
 ## Referência
 
-`mepa_crm_v1.0.1.md`, secções 37, 38 e 56.
+`mepa_crm_v1.1.1.md`, secções 37, 38 e 56.
 
+
+## Revisão documental P0.2 — 2026-09-12
+
+Estado Accepted preservado. Aprofundamento técnico proposto em docs/database/01_database_principles.md e 04_database_constraints.md; não constitui nova aprovação. Alternativas, locks e limitações de infraestrutura/identidade constam desses documentos. Migrations de negócio continuam fora desta fase.

@@ -1,0 +1,40 @@
+{
+  "tables": 199,
+  "columns_before": 1708,
+  "columns_after": 1752,
+  "public_entities": 54,
+  "public_columns_added": 44,
+  "fks": 439,
+  "migrations": [
+    {
+      "file": "2014_10_12_000000_create_users_table.php",
+      "sha256": "f8affe063423895fedd394355c4ef0d437ef32d09b4b16d89e31e248c32e86a3"
+    },
+    {
+      "file": "2014_10_12_100000_create_password_resets_table.php",
+      "sha256": "fc81bc1fc4c8e933f520b445ff56b5015c0c124c8505e90cd26e724acf94c418"
+    },
+    {
+      "file": "2019_08_19_000000_create_failed_jobs_table.php",
+      "sha256": "69197c463f551c7e5d92247786502e4da0dbaa39d4a206604d39b20f54931d29"
+    },
+    {
+      "file": "2019_12_14_000001_create_personal_access_tokens_table.php",
+      "sha256": "d735ee832acf547e420e94170c6eb6f526fac9f6452ca4900d551fd9cc42ded0"
+    }
+  ],
+  "protected": [
+    {
+      "file": "docs/reviews/P0.2_database_reaudit.md",
+      "sha256": "562b9728e28461a5cb27880afeb83220f5c8fa4c18f131b2580ebe4cf50311e6"
+    },
+    {
+      "file": "docs/reviews/P0.2_database_gate.md",
+      "sha256": "5997cabd38ee88b3568605fe43d77396d673f7a8163d9b4d69e82dce75233f93"
+    },
+    {
+      "file": "mepa_crm_v1.1.0.md",
+      "sha256": "832b9dcb54c8e952effeb1419efc15110b5ed30f230af0b617186adf86480439"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ Graphify `0.9.55` foi instalado e a skill oficial foi copiada para `.agents/skil
 
 Resultado final desta etapa: 324 nós, 306 relações e 52 comunidades em `graphify-out/`. Dependências, builds, uploads e secrets são excluídos pelo `.gitignore`.
 
-Pendência: configurar futuramente um backend LLM aprovado e reconstruir o grafo para incluir a documentação. O aviso de uma skill Claude global antiga pertence ao perfil local e não afecta a skill versionada neste projecto.
+Na P0.2 a documentação foi incluída por extracção semântica com agentes da sessão, sem nova chave API. Resultado actual: 1573 nós, 2838 relações e 155 comunidades. O grafo dirigido preserva as 439 FKs por conceitos das colunas; existem avisos residuais do extractor AST, documentados em docs/database/10_p02_audit_report.md. A versão code-only inicial fica como histórico desta fundação. O aviso de uma skill Claude global antiga pertence ao perfil local e não afecta a skill versionada neste projecto.
 
 ## Humanizer
 

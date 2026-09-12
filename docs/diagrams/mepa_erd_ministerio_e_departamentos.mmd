@@ -1,0 +1,78 @@
+erDiagram
+    ministerial_classes {
+        bigint id PK
+    }
+    positions {
+        bigint id PK
+    }
+    functions {
+        bigint id PK
+    }
+    ministerial_class_periods {
+        bigint id PK
+    }
+    people ||--o{ ministerial_class_periods : "person_id"
+    ministerial_classes ||--o{ ministerial_class_periods : "class_id"
+    legal_documents |o--o{ ministerial_class_periods : "source_document_id"
+    organizational_posts {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ organizational_posts : "unit_id"
+    positions ||--o{ organizational_posts : "position_id"
+    ministerial_assignments {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_posts ||--o{ ministerial_assignments : "post_id"
+    people ||--o{ ministerial_assignments : "person_id"
+    legal_documents |o--o{ ministerial_assignments : "source_document_id"
+    function_assignments {
+        bigint id PK
+    }
+    people ||--o{ function_assignments : "person_id"
+    functions ||--o{ function_assignments : "function_id"
+    organizational_units ||--o{ function_assignments : "unit_id"
+    legal_documents |o--o{ function_assignments : "source_document_id"
+    department_categories {
+        bigint id PK
+    }
+    departments {
+        bigint id PK
+    }
+    department_categories ||--o{ departments : "category_id"
+    department_applicability {
+        bigint id PK
+    }
+    departments ||--o{ department_applicability : "department_id"
+    organizational_unit_types ||--o{ department_applicability : "unit_type_id"
+    department_instances {
+        bigint id PK
+        char public_id UK
+    }
+    departments ||--o{ department_instances : "department_id"
+    organizational_units ||--o{ department_instances : "unit_id"
+    department_posts {
+        bigint id PK
+        char public_id UK
+    }
+    department_instances ||--o{ department_posts : "instance_id"
+    positions ||--o{ department_posts : "position_id"
+    department_appointments {
+        bigint id PK
+        char public_id UK
+    }
+    department_posts ||--o{ department_appointments : "post_id"
+    people ||--o{ department_appointments : "person_id"
+    legal_documents |o--o{ department_appointments : "source_document_id"
+    department_memberships {
+        bigint id PK
+    }
+    department_instances ||--o{ department_memberships : "instance_id"
+    people ||--o{ department_memberships : "person_id"
+    legal_documents |o--o{ department_memberships : "source_document_id"
+    department_activities {
+        bigint id PK
+    }
+    department_instances ||--o{ department_activities : "instance_id"
+    events ||--o{ department_activities : "event_id"

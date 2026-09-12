@@ -1,0 +1,18 @@
+{
+  "status": "APPROVED_DOMAIN_RELATIONSHIPS_NOT_TERRITORIAL_SEEDS",
+  "source": "mepa_crm_v1.1.1.md; ADR 0006",
+  "root_type": "GENERAL_DIRECTION",
+  "allowed_parent_child_pairs": [
+    ["GENERAL_DIRECTION", "REGIONAL_DIRECTION"],
+    ["REGIONAL_DIRECTION", "PROVINCIAL_DIRECTION"],
+    ["PROVINCIAL_DIRECTION", "MUNICIPAL_DIRECTION"],
+    ["MUNICIPAL_DIRECTION", "GENERAL_CENTER"],
+    ["MUNICIPAL_DIRECTION", "CENTER"],
+    ["GENERAL_CENTER", "CENTER"],
+    ["CENTER", "CONGREGATION"]
+  ],
+  "active_municipality_min_active_centers": 1,
+  "municipality_max_non_closed_general_centers": 1,
+  "general_center_optional": true,
+  "institutional_catalog_codes_and_roots": "BLOCKED_D12"
+}

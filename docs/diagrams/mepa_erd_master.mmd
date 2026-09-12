@@ -1,0 +1,1533 @@
+erDiagram
+    person_statuses {
+        bigint id PK
+    }
+    sex_types {
+        bigint id PK
+    }
+    civil_status_types {
+        bigint id PK
+    }
+    education_types {
+        bigint id PK
+    }
+    employment_types {
+        bigint id PK
+    }
+    people {
+        bigint id PK
+        char public_id UK
+        bigint sex_type_id FK
+        bigint civil_status_type_id FK
+        bigint status_id FK
+        bigint merged_into_id FK
+    }
+    person_qualifications {
+        bigint id PK
+        bigint person_id FK
+        bigint education_type_id FK
+        bigint document_id FK
+    }
+    person_employment {
+        bigint id PK
+        bigint person_id FK
+        bigint employment_type_id FK
+        bigint source_document_id FK
+    }
+    identity_document_types {
+        bigint id PK
+    }
+    person_documents {
+        bigint id PK
+        bigint person_id FK
+        bigint document_type_id FK
+        bigint file_id FK
+    }
+    contact_types {
+        bigint id PK
+    }
+    person_contacts {
+        bigint id PK
+        bigint person_id FK
+        bigint contact_type_id FK
+    }
+    addresses {
+        bigint id PK
+        bigint province_id FK
+        bigint municipality_id FK
+    }
+    person_addresses {
+        bigint id PK
+        bigint person_id FK
+        bigint address_id FK
+        bigint source_document_id FK
+    }
+    households {
+        bigint id PK
+        char public_id UK
+        bigint address_id FK
+    }
+    household_role_types {
+        bigint id PK
+    }
+    household_members {
+        bigint id PK
+        bigint household_id FK
+        bigint person_id FK
+        bigint role_type_id FK
+        bigint source_document_id FK
+    }
+    relationship_types {
+        bigint id PK
+    }
+    person_relationships {
+        bigint id PK
+        bigint subject_person_id FK
+        bigint related_person_id FK
+        bigint relationship_type_id FK
+        bigint source_document_id FK
+    }
+    person_files {
+        bigint id PK
+        bigint person_id FK
+        bigint file_id FK
+    }
+    person_merges {
+        bigint id PK
+        bigint source_person_id FK
+        bigint target_person_id FK
+        bigint approved_by FK
+    }
+    territorial_area_types {
+        bigint id PK
+    }
+    territorial_areas {
+        bigint id PK
+        bigint parent_id FK
+        bigint area_type_id FK
+    }
+    organizational_unit_types {
+        bigint id PK
+    }
+    unit_parent_rules {
+        bigint id PK
+        bigint child_type_id FK
+        bigint parent_type_id FK
+    }
+    organizational_units {
+        bigint id PK
+        char public_id UK
+        bigint parent_id FK
+        bigint unit_type_id FK
+        bigint municipality_id FK
+    }
+    unit_parent_periods {
+        bigint id PK
+        bigint unit_id FK
+        bigint parent_unit_id FK
+        bigint source_document_id FK
+    }
+    organizational_structure_lock {
+        bigint id PK
+    }
+    files {
+        bigint id PK
+        char public_id UK
+        bigint owner_unit_id FK
+        bigint owner_department_id FK
+        bigint created_by FK
+    }
+    legal_document_types {
+        bigint id PK
+    }
+    legal_documents {
+        bigint id PK
+        char public_id UK
+        bigint document_type_id FK
+        bigint owner_unit_id FK
+    }
+    document_versions {
+        bigint id PK
+        char public_id UK
+        bigint document_id FK
+        bigint file_id FK
+        bigint supersedes_id FK
+    }
+    physical_locations {
+        bigint id PK
+        char public_id UK
+        bigint address_id FK
+    }
+    properties {
+        bigint id PK
+        char public_id UK
+        bigint location_id FK
+        bigint owner_person_id FK
+    }
+    property_documents {
+        bigint id PK
+        bigint property_id FK
+        bigint document_id FK
+    }
+    occupation_types {
+        bigint id PK
+    }
+    unit_location_links {
+        bigint id PK
+        bigint unit_id FK
+        bigint location_id FK
+        bigint property_id FK
+        bigint occupation_type_id FK
+        bigint source_document_id FK
+    }
+    temples {
+        bigint id PK
+        char public_id UK
+        bigint location_id FK
+    }
+    facility_types {
+        bigint id PK
+    }
+    facilities {
+        bigint id PK
+        char public_id UK
+        bigint property_id FK
+        bigint facility_type_id FK
+        bigint parent_facility_id FK
+    }
+    asset_types {
+        bigint id PK
+    }
+    assets {
+        bigint id PK
+        char public_id UK
+        bigint asset_type_id FK
+        bigint owner_unit_id FK
+        bigint location_id FK
+        bigint document_id FK
+    }
+    asset_custody_periods {
+        bigint id PK
+        bigint asset_id FK
+        bigint location_id FK
+        bigint custodian_person_id FK
+        bigint source_document_id FK
+    }
+    membership_statuses {
+        bigint id PK
+    }
+    memberships {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint status_id FK
+        bigint approved_by FK
+        bigint source_document_id FK
+    }
+    membership_periods {
+        bigint id PK
+        bigint membership_id FK
+        bigint congregation_id FK
+        bigint status_id FK
+        bigint source_document_id FK
+    }
+    member_number_sequences {
+        bigint id PK
+    }
+    member_numbers {
+        bigint id PK
+        bigint membership_id FK
+    }
+    legacy_member_numbers {
+        bigint id PK
+        bigint membership_id FK
+        bigint import_record_id FK
+    }
+    milestone_types {
+        bigint id PK
+    }
+    ecclesiastical_milestones {
+        bigint id PK
+        bigint person_id FK
+        bigint milestone_type_id FK
+        bigint unit_id FK
+        bigint source_document_id FK
+    }
+    transfers {
+        bigint id PK
+        char public_id UK
+        bigint membership_id FK
+        bigint origin_unit_id FK
+        bigint destination_unit_id FK
+        bigint workflow_instance_id FK
+        bigint source_document_id FK
+    }
+    credential_types {
+        bigint id PK
+        tinyint requires_member_number
+        int default_validity_days
+        tinyint requires_formal_approval
+    }
+    credential_classes {
+        bigint id PK
+    }
+    credential_templates {
+        bigint id PK
+        bigint credential_type_id FK
+        bigint file_id FK
+    }
+    credential_class_styles {
+        bigint id PK
+        bigint template_id FK
+        bigint class_id FK
+    }
+    credentials {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint credential_type_id FK
+        bigint member_number_id FK
+        bigint template_id FK
+        bigint revoked_by FK
+        bigint render_file_id FK
+    }
+    ministerial_classes {
+        bigint id PK
+    }
+    positions {
+        bigint id PK
+    }
+    functions {
+        bigint id PK
+    }
+    ministerial_class_periods {
+        bigint id PK
+        bigint person_id FK
+        bigint class_id FK
+        bigint source_document_id FK
+    }
+    organizational_posts {
+        bigint id PK
+        char public_id UK
+        bigint unit_id FK
+        bigint position_id FK
+    }
+    ministerial_assignments {
+        bigint id PK
+        char public_id UK
+        bigint post_id FK
+        bigint person_id FK
+        bigint source_document_id FK
+    }
+    function_assignments {
+        bigint id PK
+        bigint person_id FK
+        bigint function_id FK
+        bigint unit_id FK
+        bigint source_document_id FK
+    }
+    department_categories {
+        bigint id PK
+    }
+    departments {
+        bigint id PK
+        bigint category_id FK
+    }
+    department_applicability {
+        bigint id PK
+        bigint department_id FK
+        bigint unit_type_id FK
+    }
+    department_instances {
+        bigint id PK
+        char public_id UK
+        bigint department_id FK
+        bigint unit_id FK
+    }
+    department_posts {
+        bigint id PK
+        char public_id UK
+        bigint instance_id FK
+        bigint position_id FK
+    }
+    department_appointments {
+        bigint id PK
+        char public_id UK
+        bigint post_id FK
+        bigint person_id FK
+        bigint source_document_id FK
+    }
+    department_memberships {
+        bigint id PK
+        bigint instance_id FK
+        bigint person_id FK
+        bigint source_document_id FK
+    }
+    department_activities {
+        bigint id PK
+        bigint instance_id FK
+        bigint event_id FK
+    }
+    governance_body_types {
+        bigint id PK
+    }
+    governance_bodies {
+        bigint id PK
+        char public_id UK
+        bigint body_type_id FK
+        bigint unit_id FK
+    }
+    governance_body_memberships {
+        bigint id PK
+        bigint body_id FK
+        bigint person_id FK
+        bigint position_id FK
+        bigint source_document_id FK
+    }
+    event_types {
+        bigint id PK
+    }
+    events {
+        bigint id PK
+        char public_id UK
+        bigint event_type_id FK
+        bigint owner_unit_id FK
+    }
+    event_sessions {
+        bigint id PK
+        char public_id UK
+        bigint event_id FK
+    }
+    governance_sessions {
+        bigint id PK
+        bigint body_id FK
+        bigint event_id FK
+    }
+    governance_resolutions {
+        bigint id PK
+        char public_id UK
+        bigint governance_session_id FK
+        bigint document_id FK
+    }
+    event_organizers {
+        bigint id PK
+        bigint event_id FK
+        bigint person_id FK
+        bigint function_id FK
+    }
+    event_locations {
+        bigint id PK
+        bigint event_id FK
+        bigint location_id FK
+    }
+    event_documents {
+        bigint id PK
+        bigint event_id FK
+        bigint document_id FK
+    }
+    event_invitation_lists {
+        bigint id PK
+        bigint event_id FK
+    }
+    invitation_criteria {
+        bigint id PK
+        bigint list_id FK
+        bigint position_id FK
+        bigint class_id FK
+        bigint body_id FK
+        bigint unit_id FK
+        bigint department_id FK
+    }
+    event_invitees {
+        bigint id PK
+        bigint list_id FK
+        bigint person_id FK
+    }
+    event_registrations {
+        bigint id PK
+        char public_id UK
+        bigint event_id FK
+        bigint person_id FK
+        bigint invitee_id FK
+    }
+    event_invitations {
+        bigint id PK
+        bigint invitee_id FK
+        bigint message_id FK
+    }
+    event_confirmations {
+        bigint id PK
+        bigint registration_id FK
+    }
+    devices {
+        bigint id PK
+        char public_id UK
+        bigint registered_by FK
+        bigint unit_id FK
+    }
+    event_checkins {
+        bigint id PK
+        bigint session_id FK
+        bigint registration_id FK
+        bigint person_id FK
+        bigint credential_id FK
+        bigint event_credential_id FK
+        bigint device_id FK
+        bigint actor_id FK
+        bigint idempotency_request_id FK
+    }
+    event_credentials {
+        bigint id PK
+        char public_id UK
+        bigint registration_id FK
+    }
+    event_attendance {
+        bigint id PK
+        bigint session_id FK
+        bigint registration_id FK
+        bigint person_id FK
+        bigint checkin_id FK
+        bigint recorded_by FK
+    }
+    event_counts {
+        bigint id PK
+        bigint session_id FK
+        bigint approved_by FK
+    }
+    child_profiles {
+        bigint id PK
+        bigint person_id FK
+        bigint owner_unit_id FK
+    }
+    guardian_authorizations {
+        bigint id PK
+        char public_id UK
+        bigint child_person_id FK
+        bigint guardian_person_id FK
+        bigint relationship_id FK
+        bigint source_document_id FK
+    }
+    person_consents {
+        bigint id PK
+        char public_id UK
+        bigint subject_person_id FK
+        bigint given_by_person_id FK
+        bigint document_id FK
+    }
+    child_emergency_contacts {
+        bigint id PK
+        bigint child_person_id FK
+        bigint contact_person_id FK
+        bigint contact_id FK
+    }
+    child_custody_visits {
+        bigint id PK
+        bigint session_id FK
+        bigint child_person_id FK
+        bigint delivered_by_person_id FK
+        bigint authorization_id FK
+        bigint checked_in_by FK
+        bigint collected_by_person_id FK
+        bigint collection_authorization_id FK
+        bigint checked_out_by FK
+    }
+    age_band_rules {
+        bigint id PK
+        bigint department_id FK
+    }
+    department_transition_recommendations {
+        bigint id PK
+        bigint person_id FK
+        bigint from_instance_id FK
+        bigint to_instance_id FK
+        bigint rule_id FK
+        bigint decided_by FK
+    }
+    outreach_campaigns {
+        bigint id PK
+        char public_id UK
+        bigint unit_id FK
+        bigint event_id FK
+    }
+    outreach_contacts {
+        bigint id PK
+        bigint campaign_id FK
+        bigint person_id FK
+        bigint assigned_to_person_id FK
+    }
+    followups {
+        bigint id PK
+        bigint contact_id FK
+        bigint performed_by_person_id FK
+    }
+    decisions {
+        bigint id PK
+        bigint person_id FK
+        bigint contact_id FK
+        bigint document_id FK
+    }
+    discipleship_tracks {
+        bigint id PK
+    }
+    discipleship_steps {
+        bigint id PK
+        bigint track_id FK
+        bigint course_id FK
+    }
+    discipleship_enrollments {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint track_id FK
+        bigint mentor_person_id FK
+        bigint source_document_id FK
+    }
+    discipleship_progress {
+        bigint id PK
+        bigint enrollment_id FK
+        bigint step_id FK
+    }
+    integration_events {
+        bigint id PK
+        bigint person_id FK
+        bigint unit_id FK
+        bigint membership_id FK
+        bigint document_id FK
+    }
+    academic_units {
+        bigint id PK
+        bigint unit_id FK
+    }
+    programs {
+        bigint id PK
+        char public_id UK
+        bigint academic_unit_id FK
+    }
+    courses {
+        bigint id PK
+        char public_id UK
+    }
+    curricula {
+        bigint id PK
+        bigint program_id FK
+    }
+    curriculum_courses {
+        bigint id PK
+        bigint curriculum_id FK
+        bigint course_id FK
+    }
+    course_versions {
+        bigint id PK
+        bigint course_id FK
+    }
+    course_prerequisites {
+        bigint id PK
+        bigint course_id FK
+        bigint required_course_id FK
+    }
+    course_modules {
+        bigint id PK
+        bigint course_version_id FK
+    }
+    lessons {
+        bigint id PK
+        bigint module_id FK
+    }
+    resources {
+        bigint id PK
+        char public_id UK
+        bigint file_id FK
+    }
+    lesson_resources {
+        bigint id PK
+        bigint lesson_id FK
+        bigint resource_id FK
+    }
+    cohorts {
+        bigint id PK
+        char public_id UK
+        bigint academic_unit_id FK
+        bigint curriculum_id FK
+    }
+    classes {
+        bigint id PK
+        char public_id UK
+        bigint cohort_id FK
+        bigint academic_unit_id FK
+        bigint course_version_id FK
+    }
+    instructors {
+        bigint id PK
+        bigint person_id FK
+    }
+    class_instructors {
+        bigint id PK
+        bigint class_id FK
+        bigint instructor_id FK
+        bigint source_document_id FK
+    }
+    enrollments {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint class_id FK
+        bigint approved_by FK
+    }
+    class_sessions {
+        bigint id PK
+        bigint class_id FK
+        bigint lesson_id FK
+        bigint event_session_id FK
+    }
+    academic_attendance {
+        bigint id PK
+        bigint enrollment_id FK
+        bigint class_session_id FK
+        bigint recorded_by FK
+    }
+    assessments {
+        bigint id PK
+        char public_id UK
+        bigint course_version_id FK
+        bigint lesson_id FK
+    }
+    assessment_attempts {
+        bigint id PK
+        bigint assessment_id FK
+        bigint enrollment_id FK
+    }
+    grades {
+        bigint id PK
+        bigint attempt_id FK
+        bigint graded_by FK
+    }
+    progress {
+        bigint id PK
+        bigint enrollment_id FK
+        bigint lesson_id FK
+    }
+    resource_progress {
+        bigint id PK
+        bigint enrollment_id FK
+        bigint resource_id FK
+    }
+    certificates {
+        bigint id PK
+        char public_id UK
+        bigint enrollment_id FK
+        bigint approved_by FK
+        bigint file_id FK
+    }
+    transcripts {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint curriculum_id FK
+        bigint file_id FK
+        bigint approved_by FK
+    }
+    transcript_lines {
+        bigint id PK
+        bigint transcript_id FK
+        bigint enrollment_id FK
+        bigint certificate_id FK
+    }
+    currencies {
+        bigint id PK
+    }
+    accounting_periods {
+        bigint id PK
+        bigint closed_by FK
+    }
+    chart_of_accounts {
+        bigint id PK
+        bigint parent_id FK
+    }
+    accounts {
+        bigint id PK
+        bigint unit_id FK
+        bigint ledger_account_id FK
+        bigint currency_id FK
+    }
+    bank_account_details {
+        bigint id PK
+        bigint account_id FK
+    }
+    cash_registers {
+        bigint id PK
+        bigint account_id FK
+        bigint custodian_person_id FK
+    }
+    funds {
+        bigint id PK
+    }
+    financial_categories {
+        bigint id PK
+        bigint parent_id FK
+        bigint ledger_account_id FK
+    }
+    journal_entries {
+        bigint id PK
+        char public_id UK
+        bigint period_id FK
+        bigint currency_id FK
+        bigint posted_by FK
+        bigint created_by FK
+        bigint reversal_of_id FK
+        bigint document_id FK
+        bigint idempotency_request_id FK
+    }
+    journal_lines {
+        bigint id PK
+        bigint entry_id FK
+        bigint unit_id FK
+        bigint ledger_account_id FK
+        bigint financial_account_id FK
+        bigint fund_id FK
+        bigint category_id FK
+    }
+    financial_parties {
+        bigint id PK
+        bigint person_id FK
+        bigint household_id FK
+        bigint unit_id FK
+        bigint department_instance_id FK
+    }
+    contributions {
+        bigint id PK
+        char public_id UK
+        bigint receiving_unit_id FK
+        bigint party_id FK
+        bigint category_id FK
+        bigint fund_id FK
+        bigint currency_id FK
+        bigint journal_entry_id FK
+        bigint document_id FK
+    }
+    obligation_rules {
+        bigint id PK
+        bigint class_id FK
+        bigint department_id FK
+        bigint unit_type_id FK
+        bigint currency_id FK
+    }
+    obligations {
+        bigint id PK
+        bigint party_id FK
+        bigint rule_id FK
+        bigint period_id FK
+        bigint owning_unit_id FK
+        bigint currency_id FK
+    }
+    receivables {
+        bigint id PK
+        char public_id UK
+        bigint party_id FK
+        bigint unit_id FK
+        bigint obligation_id FK
+        bigint currency_id FK
+        bigint recognition_entry_id FK
+        bigint document_id FK
+    }
+    payables {
+        bigint id PK
+        char public_id UK
+        bigint party_id FK
+        bigint unit_id FK
+        bigint currency_id FK
+        bigint recognition_entry_id FK
+        bigint document_id FK
+        bigint workflow_instance_id FK
+    }
+    settlements {
+        bigint id PK
+        char public_id UK
+        bigint account_id FK
+        bigint currency_id FK
+        bigint entry_id FK
+    }
+    settlement_allocations {
+        bigint id PK
+        bigint settlement_id FK
+        bigint receivable_id FK
+        bigint payable_id FK
+    }
+    contribution_allocations {
+        bigint id PK
+        bigint contribution_id FK
+        bigint settlement_id FK
+        bigint obligation_id FK
+    }
+    budgets {
+        bigint id PK
+        char public_id UK
+        bigint unit_id FK
+        bigint period_id FK
+        bigint fund_id FK
+        bigint currency_id FK
+        bigint approved_by FK
+    }
+    budget_lines {
+        bigint id PK
+        bigint budget_id FK
+        bigint category_id FK
+    }
+    internal_transfers {
+        bigint id PK
+        char public_id UK
+        bigint origin_account_id FK
+        bigint destination_account_id FK
+        bigint currency_id FK
+        bigint fund_id FK
+        bigint category_id FK
+        bigint period_id FK
+        bigint document_id FK
+        bigint workflow_instance_id FK
+    }
+    transfer_postings {
+        bigint id PK
+        bigint transfer_id FK
+        bigint entry_id FK
+    }
+    bank_statements {
+        bigint id PK
+        char public_id UK
+        bigint account_id FK
+        bigint file_id FK
+    }
+    bank_statement_lines {
+        bigint id PK
+        bigint statement_id FK
+    }
+    reconciliations {
+        bigint id PK
+        char public_id UK
+        bigint account_id FK
+        bigint statement_id FK
+        bigint period_id FK
+        bigint approved_by FK
+    }
+    reconciliation_matches {
+        bigint id PK
+        bigint reconciliation_id FK
+        bigint statement_line_id FK
+        bigint journal_line_id FK
+    }
+    financial_documents {
+        bigint id PK
+        bigint entry_id FK
+        bigint document_id FK
+    }
+    communication_templates {
+        bigint id PK
+    }
+    audiences {
+        bigint id PK
+        bigint owner_unit_id FK
+    }
+    communication_campaigns {
+        bigint id PK
+        char public_id UK
+        bigint audience_id FK
+        bigint template_id FK
+        bigint created_by FK
+    }
+    messages {
+        bigint id PK
+        bigint campaign_id FK
+        bigint recipient_person_id FK
+        bigint contact_id FK
+        bigint template_id FK
+        bigint idempotency_request_id FK
+    }
+    delivery_logs {
+        bigint id PK
+        bigint message_id FK
+    }
+    notifications {
+        bigint id PK
+        bigint user_id FK
+        bigint message_id FK
+    }
+    communication_preferences {
+        bigint id PK
+        bigint person_id FK
+        bigint consent_id FK
+    }
+    metric_definitions {
+        bigint id PK
+    }
+    statistical_periods {
+        bigint id PK
+    }
+    dimension_types {
+        bigint id PK
+    }
+    dimension_values {
+        bigint id PK
+        bigint dimension_type_id FK
+    }
+    statistical_snapshots {
+        bigint id PK
+        char public_id UK
+        bigint unit_id FK
+        bigint period_id FK
+        bigint approved_by FK
+        bigint supersedes_id FK
+    }
+    snapshot_values {
+        bigint id PK
+        bigint snapshot_id FK
+        bigint metric_id FK
+    }
+    snapshot_value_dimensions {
+        bigint id PK
+        bigint value_id FK
+        bigint dimension_type_id FK
+        bigint dimension_value_id FK
+    }
+    users {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+    }
+    auth_sessions {
+        bigint id PK
+        bigint user_id FK
+        bigint device_id FK
+    }
+    roles {
+        bigint id PK
+    }
+    permissions {
+        bigint id PK
+    }
+    role_permissions {
+        bigint id PK
+        bigint role_id FK
+        bigint permission_id FK
+    }
+    scopes {
+        bigint id PK
+        bigint unit_id FK
+        bigint department_instance_id FK
+    }
+    user_role_scopes {
+        bigint id PK
+        bigint user_id FK
+        bigint role_id FK
+        bigint scope_id FK
+        bigint granted_by FK
+        bigint source_document_id FK
+    }
+    workflows {
+        bigint id PK
+    }
+    workflow_steps {
+        bigint id PK
+        bigint workflow_id FK
+        bigint role_id FK
+    }
+    workflow_instances {
+        bigint id PK
+        char public_id UK
+        bigint workflow_id FK
+        bigint unit_id FK
+        bigint requested_by FK
+    }
+    membership_workflows {
+        bigint id PK
+        bigint membership_id FK
+        bigint workflow_instance_id FK
+    }
+    workflow_tasks {
+        bigint id PK
+        char public_id UK
+        bigint instance_id FK
+        bigint step_id FK
+        bigint assigned_to FK
+        bigint scope_id FK
+    }
+    workflow_decisions {
+        bigint id PK
+        bigint task_id FK
+        bigint actor_id FK
+        bigint document_id FK
+    }
+    idempotency_requests {
+        bigint id PK
+        bigint actor_id FK
+    }
+    outbox_events {
+        bigint id PK
+    }
+    audit_logs {
+        bigint id PK
+        bigint actor_id FK
+        bigint unit_id FK
+        bigint department_instance_id FK
+        bigint session_id FK
+    }
+    system_settings {
+        bigint id PK
+    }
+    import_batches {
+        bigint id PK
+        char public_id UK
+        bigint file_id FK
+        bigint approved_by FK
+    }
+    import_records {
+        bigint id PK
+        bigint batch_id FK
+        bigint person_id FK
+    }
+    import_issues {
+        bigint id PK
+        bigint record_id FK
+        bigint resolved_by FK
+    }
+    import_identity_maps {
+        bigint id PK
+        bigint person_id FK
+        bigint record_id FK
+    }
+    sex_types |o--o{ people : "sex_type_id"
+    civil_status_types |o--o{ people : "civil_status_type_id"
+    person_statuses ||--o{ people : "status_id"
+    people |o--o{ people : "merged_into_id"
+    people ||--o{ person_qualifications : "person_id"
+    education_types ||--o{ person_qualifications : "education_type_id"
+    legal_documents |o--o{ person_qualifications : "document_id"
+    people ||--o{ person_employment : "person_id"
+    employment_types ||--o{ person_employment : "employment_type_id"
+    legal_documents |o--o{ person_employment : "source_document_id"
+    people ||--o{ person_documents : "person_id"
+    identity_document_types ||--o{ person_documents : "document_type_id"
+    files |o--o{ person_documents : "file_id"
+    people ||--o{ person_contacts : "person_id"
+    contact_types ||--o{ person_contacts : "contact_type_id"
+    territorial_areas |o--o{ addresses : "province_id"
+    territorial_areas |o--o{ addresses : "municipality_id"
+    people ||--o{ person_addresses : "person_id"
+    addresses ||--o{ person_addresses : "address_id"
+    legal_documents |o--o{ person_addresses : "source_document_id"
+    addresses |o--o{ households : "address_id"
+    households ||--o{ household_members : "household_id"
+    people ||--o{ household_members : "person_id"
+    household_role_types ||--o{ household_members : "role_type_id"
+    legal_documents |o--o{ household_members : "source_document_id"
+    people ||--o{ person_relationships : "subject_person_id"
+    people ||--o{ person_relationships : "related_person_id"
+    relationship_types ||--o{ person_relationships : "relationship_type_id"
+    legal_documents |o--o{ person_relationships : "source_document_id"
+    people ||--o{ person_files : "person_id"
+    files ||--o{ person_files : "file_id"
+    people ||--o{ person_merges : "source_person_id"
+    people ||--o{ person_merges : "target_person_id"
+    users ||--o{ person_merges : "approved_by"
+    territorial_areas |o--o{ territorial_areas : "parent_id"
+    territorial_area_types ||--o{ territorial_areas : "area_type_id"
+    organizational_unit_types ||--o{ unit_parent_rules : "child_type_id"
+    organizational_unit_types ||--o{ unit_parent_rules : "parent_type_id"
+    organizational_units |o--o{ organizational_units : "parent_id"
+    organizational_unit_types ||--o{ organizational_units : "unit_type_id"
+    territorial_areas |o--o{ organizational_units : "municipality_id"
+    organizational_units ||--o{ unit_parent_periods : "unit_id"
+    organizational_units |o--o{ unit_parent_periods : "parent_unit_id"
+    legal_documents |o--o{ unit_parent_periods : "source_document_id"
+    organizational_units ||--o{ files : "owner_unit_id"
+    department_instances |o--o{ files : "owner_department_id"
+    users |o--o{ files : "created_by"
+    legal_document_types ||--o{ legal_documents : "document_type_id"
+    organizational_units ||--o{ legal_documents : "owner_unit_id"
+    legal_documents ||--o{ document_versions : "document_id"
+    files ||--o{ document_versions : "file_id"
+    document_versions |o--o{ document_versions : "supersedes_id"
+    addresses ||--o{ physical_locations : "address_id"
+    physical_locations ||--o{ properties : "location_id"
+    people |o--o{ properties : "owner_person_id"
+    properties ||--o{ property_documents : "property_id"
+    legal_documents ||--o{ property_documents : "document_id"
+    organizational_units ||--o{ unit_location_links : "unit_id"
+    physical_locations ||--o{ unit_location_links : "location_id"
+    properties |o--o{ unit_location_links : "property_id"
+    occupation_types ||--o{ unit_location_links : "occupation_type_id"
+    legal_documents |o--o{ unit_location_links : "source_document_id"
+    physical_locations ||--o{ temples : "location_id"
+    properties ||--o{ facilities : "property_id"
+    facility_types ||--o{ facilities : "facility_type_id"
+    facilities |o--o{ facilities : "parent_facility_id"
+    asset_types ||--o{ assets : "asset_type_id"
+    organizational_units ||--o{ assets : "owner_unit_id"
+    physical_locations |o--o{ assets : "location_id"
+    legal_documents |o--o{ assets : "document_id"
+    assets ||--o{ asset_custody_periods : "asset_id"
+    physical_locations ||--o{ asset_custody_periods : "location_id"
+    people |o--o{ asset_custody_periods : "custodian_person_id"
+    legal_documents |o--o{ asset_custody_periods : "source_document_id"
+    people ||--o| memberships : "person_id"
+    membership_statuses ||--o{ memberships : "status_id"
+    users |o--o{ memberships : "approved_by"
+    legal_documents |o--o{ memberships : "source_document_id"
+    memberships ||--o{ membership_periods : "membership_id"
+    organizational_units ||--o{ membership_periods : "congregation_id"
+    membership_statuses ||--o{ membership_periods : "status_id"
+    legal_documents |o--o{ membership_periods : "source_document_id"
+    memberships ||--o| member_numbers : "membership_id"
+    memberships ||--o{ legacy_member_numbers : "membership_id"
+    import_records |o--o{ legacy_member_numbers : "import_record_id"
+    people ||--o{ ecclesiastical_milestones : "person_id"
+    milestone_types ||--o{ ecclesiastical_milestones : "milestone_type_id"
+    organizational_units |o--o{ ecclesiastical_milestones : "unit_id"
+    legal_documents |o--o{ ecclesiastical_milestones : "source_document_id"
+    memberships ||--o{ transfers : "membership_id"
+    organizational_units ||--o{ transfers : "origin_unit_id"
+    organizational_units ||--o{ transfers : "destination_unit_id"
+    workflow_instances ||--o{ transfers : "workflow_instance_id"
+    legal_documents |o--o{ transfers : "source_document_id"
+    credential_types ||--o{ credential_templates : "credential_type_id"
+    files ||--o{ credential_templates : "file_id"
+    credential_templates ||--o{ credential_class_styles : "template_id"
+    credential_classes ||--o{ credential_class_styles : "class_id"
+    people ||--o{ credentials : "person_id"
+    credential_types ||--o{ credentials : "credential_type_id"
+    member_numbers |o--o{ credentials : "member_number_id"
+    credential_templates ||--o{ credentials : "template_id"
+    users |o--o{ credentials : "revoked_by"
+    files |o--o{ credentials : "render_file_id"
+    people ||--o{ ministerial_class_periods : "person_id"
+    ministerial_classes ||--o{ ministerial_class_periods : "class_id"
+    legal_documents |o--o{ ministerial_class_periods : "source_document_id"
+    organizational_units ||--o{ organizational_posts : "unit_id"
+    positions ||--o{ organizational_posts : "position_id"
+    organizational_posts ||--o{ ministerial_assignments : "post_id"
+    people ||--o{ ministerial_assignments : "person_id"
+    legal_documents |o--o{ ministerial_assignments : "source_document_id"
+    people ||--o{ function_assignments : "person_id"
+    functions ||--o{ function_assignments : "function_id"
+    organizational_units ||--o{ function_assignments : "unit_id"
+    legal_documents |o--o{ function_assignments : "source_document_id"
+    department_categories ||--o{ departments : "category_id"
+    departments ||--o{ department_applicability : "department_id"
+    organizational_unit_types ||--o{ department_applicability : "unit_type_id"
+    departments ||--o{ department_instances : "department_id"
+    organizational_units ||--o{ department_instances : "unit_id"
+    department_instances ||--o{ department_posts : "instance_id"
+    positions ||--o{ department_posts : "position_id"
+    department_posts ||--o{ department_appointments : "post_id"
+    people ||--o{ department_appointments : "person_id"
+    legal_documents |o--o{ department_appointments : "source_document_id"
+    department_instances ||--o{ department_memberships : "instance_id"
+    people ||--o{ department_memberships : "person_id"
+    legal_documents |o--o{ department_memberships : "source_document_id"
+    department_instances ||--o{ department_activities : "instance_id"
+    events ||--o{ department_activities : "event_id"
+    governance_body_types ||--o{ governance_bodies : "body_type_id"
+    organizational_units ||--o{ governance_bodies : "unit_id"
+    governance_bodies ||--o{ governance_body_memberships : "body_id"
+    people ||--o{ governance_body_memberships : "person_id"
+    positions |o--o{ governance_body_memberships : "position_id"
+    legal_documents |o--o{ governance_body_memberships : "source_document_id"
+    event_types ||--o{ events : "event_type_id"
+    organizational_units ||--o{ events : "owner_unit_id"
+    events ||--o{ event_sessions : "event_id"
+    governance_bodies ||--o{ governance_sessions : "body_id"
+    events ||--o{ governance_sessions : "event_id"
+    governance_sessions ||--o{ governance_resolutions : "governance_session_id"
+    legal_documents ||--o{ governance_resolutions : "document_id"
+    events ||--o{ event_organizers : "event_id"
+    people ||--o{ event_organizers : "person_id"
+    functions |o--o{ event_organizers : "function_id"
+    events ||--o{ event_locations : "event_id"
+    physical_locations ||--o{ event_locations : "location_id"
+    events ||--o{ event_documents : "event_id"
+    legal_documents ||--o{ event_documents : "document_id"
+    events ||--o{ event_invitation_lists : "event_id"
+    event_invitation_lists ||--o{ invitation_criteria : "list_id"
+    positions |o--o{ invitation_criteria : "position_id"
+    ministerial_classes |o--o{ invitation_criteria : "class_id"
+    governance_bodies |o--o{ invitation_criteria : "body_id"
+    organizational_units |o--o{ invitation_criteria : "unit_id"
+    department_instances |o--o{ invitation_criteria : "department_id"
+    event_invitation_lists ||--o{ event_invitees : "list_id"
+    people ||--o{ event_invitees : "person_id"
+    events ||--o{ event_registrations : "event_id"
+    people ||--o{ event_registrations : "person_id"
+    event_invitees |o--o{ event_registrations : "invitee_id"
+    event_invitees ||--o{ event_invitations : "invitee_id"
+    messages |o--o{ event_invitations : "message_id"
+    event_registrations ||--o{ event_confirmations : "registration_id"
+    users ||--o{ devices : "registered_by"
+    organizational_units ||--o{ devices : "unit_id"
+    event_sessions ||--o{ event_checkins : "session_id"
+    event_registrations ||--o{ event_checkins : "registration_id"
+    people ||--o{ event_checkins : "person_id"
+    credentials |o--o{ event_checkins : "credential_id"
+    event_credentials |o--o{ event_checkins : "event_credential_id"
+    devices ||--o{ event_checkins : "device_id"
+    users ||--o{ event_checkins : "actor_id"
+    idempotency_requests ||--o| event_checkins : "idempotency_request_id"
+    event_registrations ||--o{ event_credentials : "registration_id"
+    event_sessions ||--o{ event_attendance : "session_id"
+    event_registrations ||--o{ event_attendance : "registration_id"
+    people ||--o{ event_attendance : "person_id"
+    event_checkins |o--o{ event_attendance : "checkin_id"
+    users ||--o{ event_attendance : "recorded_by"
+    event_sessions ||--o{ event_counts : "session_id"
+    users |o--o{ event_counts : "approved_by"
+    people ||--o| child_profiles : "person_id"
+    organizational_units ||--o{ child_profiles : "owner_unit_id"
+    people ||--o{ guardian_authorizations : "child_person_id"
+    people ||--o{ guardian_authorizations : "guardian_person_id"
+    person_relationships |o--o{ guardian_authorizations : "relationship_id"
+    legal_documents |o--o{ guardian_authorizations : "source_document_id"
+    people ||--o{ person_consents : "subject_person_id"
+    people ||--o{ person_consents : "given_by_person_id"
+    legal_documents |o--o{ person_consents : "document_id"
+    people ||--o{ child_emergency_contacts : "child_person_id"
+    people ||--o{ child_emergency_contacts : "contact_person_id"
+    person_contacts ||--o{ child_emergency_contacts : "contact_id"
+    event_sessions ||--o{ child_custody_visits : "session_id"
+    people ||--o{ child_custody_visits : "child_person_id"
+    people ||--o{ child_custody_visits : "delivered_by_person_id"
+    guardian_authorizations ||--o{ child_custody_visits : "authorization_id"
+    users ||--o{ child_custody_visits : "checked_in_by"
+    people |o--o{ child_custody_visits : "collected_by_person_id"
+    guardian_authorizations |o--o{ child_custody_visits : "collection_authorization_id"
+    users |o--o{ child_custody_visits : "checked_out_by"
+    departments ||--o{ age_band_rules : "department_id"
+    people ||--o{ department_transition_recommendations : "person_id"
+    department_instances ||--o{ department_transition_recommendations : "from_instance_id"
+    department_instances ||--o{ department_transition_recommendations : "to_instance_id"
+    age_band_rules ||--o{ department_transition_recommendations : "rule_id"
+    users |o--o{ department_transition_recommendations : "decided_by"
+    organizational_units ||--o{ outreach_campaigns : "unit_id"
+    events |o--o{ outreach_campaigns : "event_id"
+    outreach_campaigns ||--o{ outreach_contacts : "campaign_id"
+    people ||--o{ outreach_contacts : "person_id"
+    people |o--o{ outreach_contacts : "assigned_to_person_id"
+    outreach_contacts ||--o{ followups : "contact_id"
+    people ||--o{ followups : "performed_by_person_id"
+    people ||--o{ decisions : "person_id"
+    outreach_contacts |o--o{ decisions : "contact_id"
+    legal_documents |o--o{ decisions : "document_id"
+    discipleship_tracks ||--o{ discipleship_steps : "track_id"
+    courses |o--o{ discipleship_steps : "course_id"
+    people ||--o{ discipleship_enrollments : "person_id"
+    discipleship_tracks ||--o{ discipleship_enrollments : "track_id"
+    people |o--o{ discipleship_enrollments : "mentor_person_id"
+    legal_documents |o--o{ discipleship_enrollments : "source_document_id"
+    discipleship_enrollments ||--o{ discipleship_progress : "enrollment_id"
+    discipleship_steps ||--o{ discipleship_progress : "step_id"
+    people ||--o{ integration_events : "person_id"
+    organizational_units ||--o{ integration_events : "unit_id"
+    memberships |o--o{ integration_events : "membership_id"
+    legal_documents |o--o{ integration_events : "document_id"
+    organizational_units ||--o{ academic_units : "unit_id"
+    academic_units ||--o{ programs : "academic_unit_id"
+    programs ||--o{ curricula : "program_id"
+    curricula ||--o{ curriculum_courses : "curriculum_id"
+    courses ||--o{ curriculum_courses : "course_id"
+    courses ||--o{ course_versions : "course_id"
+    courses ||--o{ course_prerequisites : "course_id"
+    courses ||--o{ course_prerequisites : "required_course_id"
+    course_versions ||--o{ course_modules : "course_version_id"
+    course_modules ||--o{ lessons : "module_id"
+    files |o--o{ resources : "file_id"
+    lessons ||--o{ lesson_resources : "lesson_id"
+    resources ||--o{ lesson_resources : "resource_id"
+    academic_units ||--o{ cohorts : "academic_unit_id"
+    curricula ||--o{ cohorts : "curriculum_id"
+    cohorts |o--o{ classes : "cohort_id"
+    academic_units ||--o{ classes : "academic_unit_id"
+    course_versions ||--o{ classes : "course_version_id"
+    people ||--o| instructors : "person_id"
+    classes ||--o{ class_instructors : "class_id"
+    instructors ||--o{ class_instructors : "instructor_id"
+    legal_documents |o--o{ class_instructors : "source_document_id"
+    people ||--o{ enrollments : "person_id"
+    classes ||--o{ enrollments : "class_id"
+    users |o--o{ enrollments : "approved_by"
+    classes ||--o{ class_sessions : "class_id"
+    lessons |o--o{ class_sessions : "lesson_id"
+    event_sessions |o--o{ class_sessions : "event_session_id"
+    enrollments ||--o{ academic_attendance : "enrollment_id"
+    class_sessions ||--o{ academic_attendance : "class_session_id"
+    users ||--o{ academic_attendance : "recorded_by"
+    course_versions ||--o{ assessments : "course_version_id"
+    lessons |o--o{ assessments : "lesson_id"
+    assessments ||--o{ assessment_attempts : "assessment_id"
+    enrollments ||--o{ assessment_attempts : "enrollment_id"
+    assessment_attempts ||--o{ grades : "attempt_id"
+    users ||--o{ grades : "graded_by"
+    enrollments ||--o{ progress : "enrollment_id"
+    lessons ||--o{ progress : "lesson_id"
+    enrollments ||--o{ resource_progress : "enrollment_id"
+    resources ||--o{ resource_progress : "resource_id"
+    enrollments ||--o{ certificates : "enrollment_id"
+    users ||--o{ certificates : "approved_by"
+    files ||--o{ certificates : "file_id"
+    people ||--o{ transcripts : "person_id"
+    curricula ||--o{ transcripts : "curriculum_id"
+    files ||--o{ transcripts : "file_id"
+    users ||--o{ transcripts : "approved_by"
+    transcripts ||--o{ transcript_lines : "transcript_id"
+    enrollments ||--o{ transcript_lines : "enrollment_id"
+    certificates |o--o{ transcript_lines : "certificate_id"
+    users |o--o{ accounting_periods : "closed_by"
+    chart_of_accounts |o--o{ chart_of_accounts : "parent_id"
+    organizational_units ||--o{ accounts : "unit_id"
+    chart_of_accounts ||--o{ accounts : "ledger_account_id"
+    currencies ||--o{ accounts : "currency_id"
+    accounts ||--o| bank_account_details : "account_id"
+    accounts ||--o| cash_registers : "account_id"
+    people ||--o{ cash_registers : "custodian_person_id"
+    financial_categories |o--o{ financial_categories : "parent_id"
+    chart_of_accounts |o--o{ financial_categories : "ledger_account_id"
+    accounting_periods ||--o{ journal_entries : "period_id"
+    currencies ||--o{ journal_entries : "currency_id"
+    users |o--o{ journal_entries : "posted_by"
+    users ||--o{ journal_entries : "created_by"
+    journal_entries |o--o{ journal_entries : "reversal_of_id"
+    legal_documents |o--o{ journal_entries : "document_id"
+    idempotency_requests ||--o| journal_entries : "idempotency_request_id"
+    journal_entries ||--o{ journal_lines : "entry_id"
+    organizational_units ||--o{ journal_lines : "unit_id"
+    chart_of_accounts ||--o{ journal_lines : "ledger_account_id"
+    accounts |o--o{ journal_lines : "financial_account_id"
+    funds ||--o{ journal_lines : "fund_id"
+    financial_categories |o--o{ journal_lines : "category_id"
+    people |o--o{ financial_parties : "person_id"
+    households |o--o{ financial_parties : "household_id"
+    organizational_units |o--o{ financial_parties : "unit_id"
+    department_instances |o--o{ financial_parties : "department_instance_id"
+    organizational_units ||--o{ contributions : "receiving_unit_id"
+    financial_parties |o--o{ contributions : "party_id"
+    financial_categories ||--o{ contributions : "category_id"
+    funds ||--o{ contributions : "fund_id"
+    currencies ||--o{ contributions : "currency_id"
+    journal_entries |o--o{ contributions : "journal_entry_id"
+    legal_documents |o--o{ contributions : "document_id"
+    ministerial_classes |o--o{ obligation_rules : "class_id"
+    departments |o--o{ obligation_rules : "department_id"
+    organizational_unit_types |o--o{ obligation_rules : "unit_type_id"
+    currencies ||--o{ obligation_rules : "currency_id"
+    financial_parties ||--o{ obligations : "party_id"
+    obligation_rules ||--o{ obligations : "rule_id"
+    accounting_periods ||--o{ obligations : "period_id"
+    organizational_units ||--o{ obligations : "owning_unit_id"
+    currencies ||--o{ obligations : "currency_id"
+    financial_parties ||--o{ receivables : "party_id"
+    organizational_units ||--o{ receivables : "unit_id"
+    obligations |o--o{ receivables : "obligation_id"
+    currencies ||--o{ receivables : "currency_id"
+    journal_entries |o--o{ receivables : "recognition_entry_id"
+    legal_documents |o--o{ receivables : "document_id"
+    financial_parties ||--o{ payables : "party_id"
+    organizational_units ||--o{ payables : "unit_id"
+    currencies ||--o{ payables : "currency_id"
+    journal_entries |o--o{ payables : "recognition_entry_id"
+    legal_documents ||--o{ payables : "document_id"
+    workflow_instances ||--o{ payables : "workflow_instance_id"
+    accounts ||--o{ settlements : "account_id"
+    currencies ||--o{ settlements : "currency_id"
+    journal_entries ||--o{ settlements : "entry_id"
+    settlements ||--o{ settlement_allocations : "settlement_id"
+    receivables |o--o{ settlement_allocations : "receivable_id"
+    payables |o--o{ settlement_allocations : "payable_id"
+    contributions ||--o{ contribution_allocations : "contribution_id"
+    settlements ||--o{ contribution_allocations : "settlement_id"
+    obligations |o--o{ contribution_allocations : "obligation_id"
+    organizational_units ||--o{ budgets : "unit_id"
+    accounting_periods ||--o{ budgets : "period_id"
+    funds ||--o{ budgets : "fund_id"
+    currencies ||--o{ budgets : "currency_id"
+    users |o--o{ budgets : "approved_by"
+    budgets ||--o{ budget_lines : "budget_id"
+    financial_categories ||--o{ budget_lines : "category_id"
+    accounts ||--o{ internal_transfers : "origin_account_id"
+    accounts ||--o{ internal_transfers : "destination_account_id"
+    currencies ||--o{ internal_transfers : "currency_id"
+    funds ||--o{ internal_transfers : "fund_id"
+    financial_categories |o--o{ internal_transfers : "category_id"
+    accounting_periods ||--o{ internal_transfers : "period_id"
+    legal_documents |o--o{ internal_transfers : "document_id"
+    workflow_instances ||--o{ internal_transfers : "workflow_instance_id"
+    internal_transfers ||--o{ transfer_postings : "transfer_id"
+    journal_entries ||--o| transfer_postings : "entry_id"
+    accounts ||--o{ bank_statements : "account_id"
+    files ||--o{ bank_statements : "file_id"
+    bank_statements ||--o{ bank_statement_lines : "statement_id"
+    accounts ||--o{ reconciliations : "account_id"
+    bank_statements |o--o{ reconciliations : "statement_id"
+    accounting_periods ||--o{ reconciliations : "period_id"
+    users |o--o{ reconciliations : "approved_by"
+    reconciliations ||--o{ reconciliation_matches : "reconciliation_id"
+    bank_statement_lines ||--o{ reconciliation_matches : "statement_line_id"
+    journal_lines ||--o{ reconciliation_matches : "journal_line_id"
+    journal_entries ||--o{ financial_documents : "entry_id"
+    legal_documents ||--o{ financial_documents : "document_id"
+    organizational_units ||--o{ audiences : "owner_unit_id"
+    audiences ||--o{ communication_campaigns : "audience_id"
+    communication_templates ||--o{ communication_campaigns : "template_id"
+    users ||--o{ communication_campaigns : "created_by"
+    communication_campaigns |o--o{ messages : "campaign_id"
+    people ||--o{ messages : "recipient_person_id"
+    person_contacts |o--o{ messages : "contact_id"
+    communication_templates ||--o{ messages : "template_id"
+    idempotency_requests ||--o| messages : "idempotency_request_id"
+    messages ||--o{ delivery_logs : "message_id"
+    users ||--o{ notifications : "user_id"
+    messages |o--o{ notifications : "message_id"
+    people ||--o{ communication_preferences : "person_id"
+    person_consents |o--o{ communication_preferences : "consent_id"
+    dimension_types ||--o{ dimension_values : "dimension_type_id"
+    organizational_units ||--o{ statistical_snapshots : "unit_id"
+    statistical_periods ||--o{ statistical_snapshots : "period_id"
+    users |o--o{ statistical_snapshots : "approved_by"
+    statistical_snapshots |o--o{ statistical_snapshots : "supersedes_id"
+    statistical_snapshots ||--o{ snapshot_values : "snapshot_id"
+    metric_definitions ||--o{ snapshot_values : "metric_id"
+    snapshot_values ||--o{ snapshot_value_dimensions : "value_id"
+    dimension_types ||--o{ snapshot_value_dimensions : "dimension_type_id"
+    dimension_values ||--o{ snapshot_value_dimensions : "dimension_value_id"
+    people |o--o| users : "person_id"
+    users ||--o{ auth_sessions : "user_id"
+    devices |o--o{ auth_sessions : "device_id"
+    roles ||--o{ role_permissions : "role_id"
+    permissions ||--o{ role_permissions : "permission_id"
+    organizational_units ||--o{ scopes : "unit_id"
+    department_instances |o--o{ scopes : "department_instance_id"
+    users ||--o{ user_role_scopes : "user_id"
+    roles ||--o{ user_role_scopes : "role_id"
+    scopes ||--o{ user_role_scopes : "scope_id"
+    users ||--o{ user_role_scopes : "granted_by"
+    legal_documents |o--o{ user_role_scopes : "source_document_id"
+    workflows ||--o{ workflow_steps : "workflow_id"
+    roles ||--o{ workflow_steps : "role_id"
+    workflows ||--o{ workflow_instances : "workflow_id"
+    organizational_units ||--o{ workflow_instances : "unit_id"
+    users ||--o{ workflow_instances : "requested_by"
+    memberships ||--o{ membership_workflows : "membership_id"
+    workflow_instances ||--o| membership_workflows : "workflow_instance_id"
+    workflow_instances ||--o{ workflow_tasks : "instance_id"
+    workflow_steps ||--o{ workflow_tasks : "step_id"
+    users |o--o{ workflow_tasks : "assigned_to"
+    scopes ||--o{ workflow_tasks : "scope_id"
+    workflow_tasks ||--o{ workflow_decisions : "task_id"
+    users ||--o{ workflow_decisions : "actor_id"
+    legal_documents |o--o{ workflow_decisions : "document_id"
+    users ||--o{ idempotency_requests : "actor_id"
+    users |o--o{ audit_logs : "actor_id"
+    organizational_units ||--o{ audit_logs : "unit_id"
+    department_instances |o--o{ audit_logs : "department_instance_id"
+    auth_sessions |o--o{ audit_logs : "session_id"
+    files ||--o{ import_batches : "file_id"
+    users |o--o{ import_batches : "approved_by"
+    import_batches ||--o{ import_records : "batch_id"
+    people |o--o{ import_records : "person_id"
+    import_records ||--o{ import_issues : "record_id"
+    users |o--o{ import_issues : "resolved_by"
+    people ||--o{ import_identity_maps : "person_id"
+    import_records ||--o{ import_identity_maps : "record_id"

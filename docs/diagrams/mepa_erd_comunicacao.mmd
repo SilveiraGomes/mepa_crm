@@ -1,0 +1,37 @@
+erDiagram
+    communication_templates {
+        bigint id PK
+    }
+    audiences {
+        bigint id PK
+    }
+    organizational_units ||--o{ audiences : "owner_unit_id"
+    communication_campaigns {
+        bigint id PK
+        char public_id UK
+    }
+    audiences ||--o{ communication_campaigns : "audience_id"
+    communication_templates ||--o{ communication_campaigns : "template_id"
+    users ||--o{ communication_campaigns : "created_by"
+    messages {
+        bigint id PK
+    }
+    communication_campaigns |o--o{ messages : "campaign_id"
+    people ||--o{ messages : "recipient_person_id"
+    person_contacts |o--o{ messages : "contact_id"
+    communication_templates ||--o{ messages : "template_id"
+    idempotency_requests ||--o| messages : "idempotency_request_id"
+    delivery_logs {
+        bigint id PK
+    }
+    messages ||--o{ delivery_logs : "message_id"
+    notifications {
+        bigint id PK
+    }
+    users ||--o{ notifications : "user_id"
+    messages |o--o{ notifications : "message_id"
+    communication_preferences {
+        bigint id PK
+    }
+    people ||--o{ communication_preferences : "person_id"
+    person_consents |o--o{ communication_preferences : "consent_id"

@@ -6,7 +6,7 @@ CRM/ChMS/ERP eclesiástico nacional da Missão Evangélica Pentecostal de Angola
 
 Fundação técnica P0. Esta etapa contém somente o monorepo, aplicações-base, endpoint técnico, PWA mínima, documentação arquitectural e regras de desenvolvimento. Não contém módulos de negócio nem dados reais.
 
-> Antes de qualquer programação, ler integralmente [`mepa_crm_v1.0.1.md`](mepa_crm_v1.0.1.md). O documento é a fonte canónica deste repositório.
+> Antes de qualquer programação, ler integralmente [`mepa_crm_v1.1.1.md`](mepa_crm_v1.1.1.md). O documento é a fonte canónica deste repositório.
 
 ## Arquitectura e tecnologias
 
@@ -68,5 +68,5 @@ storage-dev/   armazenamento local descartável
 
 ## Próximos passos
 
-Na próxima etapa P0: produzir ERD físico, dicionário de dados, matriz de permissões, fluxos detalhados, design system e contratos de API. Não iniciar módulos funcionais antes desses artefactos e das decisões pendentes do documento canónico.
+A proposta P0.2 de arquitectura de dados está em [docs/database](docs/database/README.md). A próxima etapa é a auditoria independente e o fecho das decisões abertas; matriz de permissões, fluxos, design system e contratos de API seguem o roadmap. Não iniciar módulos funcionais antes da aprovação dos artefactos aplicáveis.
 

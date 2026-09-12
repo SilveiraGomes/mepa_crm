@@ -5,7 +5,7 @@ description: Apply the approved MEPA CRM interface rules when creating or changi
 
 # MEPA interface invariants
 
-- Read `mepa_crm_v1.0.1.md` and applicable UI decisions before implementation.
+- Read `mepa_crm_v1.1.1.md` and applicable UI decisions before implementation.
 - Design mobile-first and responsive, with accessible controls and consistent components.
 - Use Portuguese of Angola (`pt-AO`), AOA/Kz, `DD/MM/AAAA` and support for `+244` where applicable.
 - Use multi-step flows for long forms and hide steps that do not apply.

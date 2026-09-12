@@ -1,0 +1,50 @@
+erDiagram
+    child_profiles {
+        bigint id PK
+    }
+    people ||--o| child_profiles : "person_id"
+    organizational_units ||--o{ child_profiles : "owner_unit_id"
+    guardian_authorizations {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ guardian_authorizations : "child_person_id"
+    people ||--o{ guardian_authorizations : "guardian_person_id"
+    person_relationships |o--o{ guardian_authorizations : "relationship_id"
+    legal_documents |o--o{ guardian_authorizations : "source_document_id"
+    person_consents {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ person_consents : "subject_person_id"
+    people ||--o{ person_consents : "given_by_person_id"
+    legal_documents |o--o{ person_consents : "document_id"
+    child_emergency_contacts {
+        bigint id PK
+    }
+    people ||--o{ child_emergency_contacts : "child_person_id"
+    people ||--o{ child_emergency_contacts : "contact_person_id"
+    person_contacts ||--o{ child_emergency_contacts : "contact_id"
+    child_custody_visits {
+        bigint id PK
+    }
+    event_sessions ||--o{ child_custody_visits : "session_id"
+    people ||--o{ child_custody_visits : "child_person_id"
+    people ||--o{ child_custody_visits : "delivered_by_person_id"
+    guardian_authorizations ||--o{ child_custody_visits : "authorization_id"
+    users ||--o{ child_custody_visits : "checked_in_by"
+    people |o--o{ child_custody_visits : "collected_by_person_id"
+    guardian_authorizations |o--o{ child_custody_visits : "collection_authorization_id"
+    users |o--o{ child_custody_visits : "checked_out_by"
+    age_band_rules {
+        bigint id PK
+    }
+    departments ||--o{ age_band_rules : "department_id"
+    department_transition_recommendations {
+        bigint id PK
+    }
+    people ||--o{ department_transition_recommendations : "person_id"
+    department_instances ||--o{ department_transition_recommendations : "from_instance_id"
+    department_instances ||--o{ department_transition_recommendations : "to_instance_id"
+    age_band_rules ||--o{ department_transition_recommendations : "rule_id"
+    users |o--o{ department_transition_recommendations : "decided_by"

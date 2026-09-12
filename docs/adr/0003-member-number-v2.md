@@ -32,5 +32,9 @@ O número permanece imutável em transferências, promoções e mudanças de est
 
 ## Referência
 
-`mepa_crm_v1.0.1.md`, secções 8, 42 e 56.
+`mepa_crm_v1.1.1.md`, secções 8, 42 e 56.
 
+
+## Revisão documental P0.2 — 2026-09-12
+
+Estado Accepted preservado. Aprofundamento técnico proposto em docs/database/01_database_principles.md e 04_database_constraints.md; não constitui nova aprovação. Alternativas, locks e limitações de infraestrutura/identidade constam desses documentos. Migrations de negócio continuam fora desta fase.

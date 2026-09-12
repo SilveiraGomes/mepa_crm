@@ -1,6 +1,6 @@
 # Regras de desenvolvimento
 
-> Antes de qualquer programação consultar mepa_crm_v1.0.1.md.
+> Antes de qualquer programação consultar mepa_crm_v1.1.1.md.
 
 > Antes de alteração estrutural consultar Graphify.
 

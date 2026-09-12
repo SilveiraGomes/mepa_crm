@@ -1,0 +1,100 @@
+erDiagram
+    person_statuses {
+        bigint id PK
+    }
+    sex_types {
+        bigint id PK
+    }
+    civil_status_types {
+        bigint id PK
+    }
+    education_types {
+        bigint id PK
+    }
+    employment_types {
+        bigint id PK
+    }
+    people {
+        bigint id PK
+        char public_id UK
+    }
+    sex_types |o--o{ people : "sex_type_id"
+    civil_status_types |o--o{ people : "civil_status_type_id"
+    person_statuses ||--o{ people : "status_id"
+    people |o--o{ people : "merged_into_id"
+    person_qualifications {
+        bigint id PK
+    }
+    people ||--o{ person_qualifications : "person_id"
+    education_types ||--o{ person_qualifications : "education_type_id"
+    legal_documents |o--o{ person_qualifications : "document_id"
+    person_employment {
+        bigint id PK
+    }
+    people ||--o{ person_employment : "person_id"
+    employment_types ||--o{ person_employment : "employment_type_id"
+    legal_documents |o--o{ person_employment : "source_document_id"
+    identity_document_types {
+        bigint id PK
+    }
+    person_documents {
+        bigint id PK
+    }
+    people ||--o{ person_documents : "person_id"
+    identity_document_types ||--o{ person_documents : "document_type_id"
+    files |o--o{ person_documents : "file_id"
+    contact_types {
+        bigint id PK
+    }
+    person_contacts {
+        bigint id PK
+    }
+    people ||--o{ person_contacts : "person_id"
+    contact_types ||--o{ person_contacts : "contact_type_id"
+    addresses {
+        bigint id PK
+    }
+    territorial_areas |o--o{ addresses : "province_id"
+    territorial_areas |o--o{ addresses : "municipality_id"
+    person_addresses {
+        bigint id PK
+    }
+    people ||--o{ person_addresses : "person_id"
+    addresses ||--o{ person_addresses : "address_id"
+    legal_documents |o--o{ person_addresses : "source_document_id"
+    households {
+        bigint id PK
+        char public_id UK
+    }
+    addresses |o--o{ households : "address_id"
+    household_role_types {
+        bigint id PK
+    }
+    household_members {
+        bigint id PK
+    }
+    households ||--o{ household_members : "household_id"
+    people ||--o{ household_members : "person_id"
+    household_role_types ||--o{ household_members : "role_type_id"
+    legal_documents |o--o{ household_members : "source_document_id"
+    relationship_types {
+        bigint id PK
+    }
+    person_relationships {
+        bigint id PK
+    }
+    people ||--o{ person_relationships : "subject_person_id"
+    people ||--o{ person_relationships : "related_person_id"
+    relationship_types ||--o{ person_relationships : "relationship_type_id"
+    legal_documents |o--o{ person_relationships : "source_document_id"
+    person_files {
+        bigint id PK
+    }
+    people ||--o{ person_files : "person_id"
+    files ||--o{ person_files : "file_id"
+    person_merges {
+        bigint id PK
+    }
+    people ||--o{ person_merges : "source_person_id"
+    people ||--o{ person_merges : "target_person_id"
+    users ||--o{ person_merges : "approved_by"

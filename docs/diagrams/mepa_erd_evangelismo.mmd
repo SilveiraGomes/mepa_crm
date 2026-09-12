@@ -1,0 +1,52 @@
+erDiagram
+    outreach_campaigns {
+        bigint id PK
+        char public_id UK
+    }
+    organizational_units ||--o{ outreach_campaigns : "unit_id"
+    events |o--o{ outreach_campaigns : "event_id"
+    outreach_contacts {
+        bigint id PK
+    }
+    outreach_campaigns ||--o{ outreach_contacts : "campaign_id"
+    people ||--o{ outreach_contacts : "person_id"
+    people |o--o{ outreach_contacts : "assigned_to_person_id"
+    followups {
+        bigint id PK
+    }
+    outreach_contacts ||--o{ followups : "contact_id"
+    people ||--o{ followups : "performed_by_person_id"
+    decisions {
+        bigint id PK
+    }
+    people ||--o{ decisions : "person_id"
+    outreach_contacts |o--o{ decisions : "contact_id"
+    legal_documents |o--o{ decisions : "document_id"
+    discipleship_tracks {
+        bigint id PK
+    }
+    discipleship_steps {
+        bigint id PK
+    }
+    discipleship_tracks ||--o{ discipleship_steps : "track_id"
+    courses |o--o{ discipleship_steps : "course_id"
+    discipleship_enrollments {
+        bigint id PK
+        char public_id UK
+    }
+    people ||--o{ discipleship_enrollments : "person_id"
+    discipleship_tracks ||--o{ discipleship_enrollments : "track_id"
+    people |o--o{ discipleship_enrollments : "mentor_person_id"
+    legal_documents |o--o{ discipleship_enrollments : "source_document_id"
+    discipleship_progress {
+        bigint id PK
+    }
+    discipleship_enrollments ||--o{ discipleship_progress : "enrollment_id"
+    discipleship_steps ||--o{ discipleship_progress : "step_id"
+    integration_events {
+        bigint id PK
+    }
+    people ||--o{ integration_events : "person_id"
+    organizational_units ||--o{ integration_events : "unit_id"
+    memberships |o--o{ integration_events : "membership_id"
+    legal_documents |o--o{ integration_events : "document_id"
