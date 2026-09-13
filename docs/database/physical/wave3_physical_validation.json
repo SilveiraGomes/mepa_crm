@@ -1,0 +1,12 @@
+{
+  "mode": "INFORMATION_SCHEMA",
+  "engine": "8.4.11",
+  "status": "STRICT_PARITY_PASS",
+  "scope": "Complete W1/W2/M1.1/W3 catalogue parity plus explicit durable transfer history and guard",
+  "tables": 106,
+  "columns": 912,
+  "foreign_keys": 207,
+  "checks": 77,
+  "unexpected_drift": 0,
+  "errors": []
+}

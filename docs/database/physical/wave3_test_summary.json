@@ -1,0 +1,283 @@
+{
+  "phase": "P0.3.3",
+  "engine": "MySQL 8.4.11",
+  "dataset": "isolated synthetic only",
+  "suites": [
+    {
+      "suite": "WaveOnePhysicalTest",
+      "tests": 14,
+      "assertions": 103,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "warnings": 0,
+      "junit": "wave3_WaveOnePhysicalTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoPhysicalTest",
+      "tests": 12,
+      "assertions": 232,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoPhysicalTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoConcurrencyTest",
+      "tests": 4,
+      "assertions": 59,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoConcurrencyTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoIndependentReconciliationTest",
+      "tests": 11,
+      "assertions": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoIndependentReconciliationTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoTransferConcurrencyTest",
+      "tests": 10,
+      "assertions": 68,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoTransferConcurrencyTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoM1IndependentAuditTest",
+      "tests": 10,
+      "assertions": 110,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoM1IndependentAuditTest_junit.xml"
+    },
+    {
+      "suite": "WaveTwoTransferMigrationSafetyTest",
+      "tests": 3,
+      "assertions": 53,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveTwoTransferMigrationSafetyTest_junit.xml"
+    },
+    {
+      "suite": "WaveThreePhysicalTest",
+      "tests": 1,
+      "assertions": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveThreePhysicalTest_junit.xml"
+    },
+    {
+      "suite": "WaveThreeDomainTest",
+      "tests": 15,
+      "assertions": 294,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveThreeDomainTest_junit.xml"
+    },
+    {
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "tests": 6,
+      "assertions": 318,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "junit": "wave3_WaveThreeCheckinConcurrencyTest_junit.xml"
+    }
+  ],
+  "totals": {
+    "tests": 86,
+    "assertions": 1302,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 5,
+    "warnings": 0
+  },
+  "wave3_anonymous_skips": 0,
+  "historical_skips_tracking": "wave3_application_rules_tracking.json",
+  "concurrency": {
+    "same_person_2": {
+      "workers": 2,
+      "checked_in": 1,
+      "already_checked_in": 1,
+      "raw_sql_errors": 0,
+      "logical_checkins": 1,
+      "attendance": 1
+    },
+    "same_person_10": {
+      "workers": 10,
+      "checked_in": 1,
+      "already_checked_in": 9,
+      "raw_sql_errors": 0,
+      "logical_checkins": 1,
+      "attendance": 1
+    },
+    "same_person_30": {
+      "workers": 30,
+      "checked_in": 1,
+      "already_checked_in": 29,
+      "raw_sql_errors": 0,
+      "logical_checkins": 1,
+      "attendance": 1
+    },
+    "same_person_50": {
+      "workers": 50,
+      "checked_in": 1,
+      "already_checked_in": 49,
+      "raw_sql_errors": 0,
+      "logical_checkins": 1,
+      "attendance": 1
+    },
+    "granular": {
+      "independent_worker_completed_before_release": true,
+      "blocked_worker_waited": true
+    },
+    "same_person_different_sessions": {
+      "independent_session_completed_before_release": true,
+      "shared_actor_and_token": true
+    }
+  },
+  "lifecycle": {
+    "fresh": "PASS",
+    "empty_rollback": "PASS",
+    "populated_upgrade": "PASS",
+    "populated_rollback": "PASS",
+    "remigrate": "PASS",
+    "baseline_tables": 78,
+    "baseline_data_and_ddl_identical": true,
+    "m1_guard_preserved": true,
+    "historical_transfers": 3,
+    "closed_at_values_preserved": [
+      "2026-09-13 11:12:13.123456",
+      "2026-09-14 14:15:16.654321",
+      null
+    ],
+    "states": {
+      "A": {
+        "wave3_table_count": 32,
+        "wave3_tables": [
+          "audiences",
+          "audit_logs",
+          "communication_campaigns",
+          "communication_templates",
+          "credential_class_styles",
+          "credential_classes",
+          "credential_templates",
+          "credential_types",
+          "credentials",
+          "department_activities",
+          "event_attendance",
+          "event_checkins",
+          "event_confirmations",
+          "event_counts",
+          "event_credentials",
+          "event_documents",
+          "event_invitation_lists",
+          "event_invitations",
+          "event_invitees",
+          "event_locations",
+          "event_organizers",
+          "event_registrations",
+          "event_sessions",
+          "event_types",
+          "events",
+          "governance_bodies",
+          "governance_body_memberships",
+          "governance_body_types",
+          "governance_resolutions",
+          "governance_sessions",
+          "invitation_criteria",
+          "messages"
+        ],
+        "m1_columns": [
+          "closed_at",
+          "open_flag"
+        ],
+        "m1_unique_present": true
+      },
+      "B": {
+        "wave3_table_count": 0,
+        "wave3_tables": [],
+        "m1_columns": [
+          "closed_at",
+          "open_flag"
+        ],
+        "m1_unique_present": true
+      },
+      "C": {
+        "wave3_table_count": 32,
+        "wave3_tables": [
+          "audiences",
+          "audit_logs",
+          "communication_campaigns",
+          "communication_templates",
+          "credential_class_styles",
+          "credential_classes",
+          "credential_templates",
+          "credential_types",
+          "credentials",
+          "department_activities",
+          "event_attendance",
+          "event_checkins",
+          "event_confirmations",
+          "event_counts",
+          "event_credentials",
+          "event_documents",
+          "event_invitation_lists",
+          "event_invitations",
+          "event_invitees",
+          "event_locations",
+          "event_organizers",
+          "event_registrations",
+          "event_sessions",
+          "event_types",
+          "events",
+          "governance_bodies",
+          "governance_body_memberships",
+          "governance_body_types",
+          "governance_resolutions",
+          "governance_sessions",
+          "invitation_criteria",
+          "messages"
+        ],
+        "m1_columns": [
+          "closed_at",
+          "open_flag"
+        ],
+        "m1_unique_present": true
+      }
+    },
+    "membership_number_ministry_departments_populated": true,
+    "foreign_key_checks": 1,
+    "baseline_sha256": "6732a768a7dc0f3431c99f460ed039e41506364d5f7ea7f91e0342d2ea2c0f48"
+  },
+  "physical_validator": "STRICT_PARITY_PASS",
+  "document_validator_errors": [],
+  "graphify": {
+    "status": "PASS",
+    "nodes": 2579,
+    "edges": 4503,
+    "queries": 12,
+    "shrink_guard": "PASS"
+  },
+  "internal_gate": "READY_FOR_AUDIT"
+}

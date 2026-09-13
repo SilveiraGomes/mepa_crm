@@ -1,0 +1,16 @@
+{
+  "mode": "INFORMATION_SCHEMA",
+  "engine": "8.4.11",
+  "physical_execution": true,
+  "tables": 74,
+  "columns": 629,
+  "foreign_keys": 131,
+  "checks": 57,
+  "cascade_count": 0,
+  "w1_f01": {
+    "status": "MATERIALIZED",
+    "verified": true
+  },
+  "status": "STRICT_PARITY_PASS",
+  "errors": []
+}

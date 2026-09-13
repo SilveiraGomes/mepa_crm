@@ -1,0 +1,21 @@
+{
+  "mode": "INFORMATION_SCHEMA",
+  "engine": "8.4.11",
+  "physical_execution": true,
+  "tables": 31,
+  "columns": 267,
+  "foreign_keys": 51,
+  "checks": 25,
+  "status": "STRICT_PARITY_PASS",
+  "errors": [],
+  "strict_errors": [],
+  "deferred_foreign_keys": [
+    {
+      "table": "files",
+      "column": "owner_department_id",
+      "target": "department_instances.id",
+      "wave": 2,
+      "reason": "Alvo Departamentos fora do âmbito autorizado; coluna e índice mantidos. Finding W1-F01; drift estrito permanece aberto."
+    }
+  ]
+}

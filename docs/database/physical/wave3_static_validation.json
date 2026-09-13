@@ -1,0 +1,12 @@
+{
+  "mode": "STATIC_CAPTURE_NOT_EXECUTION",
+  "engine": null,
+  "status": "STRICT_PARITY_PASS",
+  "scope": "31 Wave 3 tables plus audit_logs support",
+  "tables": 32,
+  "columns": 281,
+  "foreign_keys": 76,
+  "checks": 20,
+  "unexpected_drift": 0,
+  "errors": []
+}

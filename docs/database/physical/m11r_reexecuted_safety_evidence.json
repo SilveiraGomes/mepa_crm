@@ -1,0 +1,230 @@
+{
+    "database": "mepa_m1safety_test_m11r",
+    "mysql": "8.4.11",
+    "states": {
+        "A": {
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                },
+                {
+                    "COLUMN_NAME": "open_flag",
+                    "COLUMN_TYPE": "tinyint unsigned",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "STORED GENERATED",
+                    "GENERATION_EXPRESSION": "if((`closed_at` is null),1,NULL)"
+                }
+            ],
+            "unique": [
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 1,
+                    "COLUMN_NAME": "membership_id"
+                },
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 2,
+                    "COLUMN_NAME": "open_flag"
+                }
+            ]
+        },
+        "B": {
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                }
+            ],
+            "unique": []
+        },
+        "C": {
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                },
+                {
+                    "COLUMN_NAME": "open_flag",
+                    "COLUMN_TYPE": "tinyint unsigned",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "STORED GENERATED",
+                    "GENERATION_EXPRESSION": "if((`closed_at` is null),1,NULL)"
+                }
+            ],
+            "unique": [
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 1,
+                    "COLUMN_NAME": "membership_id"
+                },
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 2,
+                    "COLUMN_NAME": "open_flag"
+                }
+            ]
+        }
+    },
+    "before": [
+        {
+            "id": 1,
+            "public_id": "01M2E7AC09Z3JTA75Y85H98PNY",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-02-03 04:05:06.123456",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 2,
+            "public_id": "01M2E7AC19R98GKRSX4CEYK7J3",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-03-04 05:06:07.654321",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 3,
+            "public_id": "01M2E7AC3D4GX7ZC7ADGWZD8BP",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": null,
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        }
+    ],
+    "after_rollback": [
+        {
+            "id": 1,
+            "public_id": "01M2E7AC09Z3JTA75Y85H98PNY",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-02-03 04:05:06.123456",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 2,
+            "public_id": "01M2E7AC19R98GKRSX4CEYK7J3",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-03-04 05:06:07.654321",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 3,
+            "public_id": "01M2E7AC3D4GX7ZC7ADGWZD8BP",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": null,
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        }
+    ],
+    "after_reapply": [
+        {
+            "id": 1,
+            "public_id": "01M2E7AC09Z3JTA75Y85H98PNY",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-02-03 04:05:06.123456",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 2,
+            "public_id": "01M2E7AC19R98GKRSX4CEYK7J3",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": "2026-03-04 05:06:07.654321",
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        },
+        {
+            "id": 3,
+            "public_id": "01M2E7AC3D4GX7ZC7ADGWZD8BP",
+            "membership_id": 1,
+            "origin_unit_id": 1,
+            "destination_unit_id": 2,
+            "requested_at": "2026-01-01 01:02:03.123456",
+            "effective_at": null,
+            "closed_at": null,
+            "status": "SYNTHETIC_UNFIXED_VOCABULARY",
+            "workflow_instance_id": 1,
+            "source_document_id": null,
+            "created_at": "2026-01-01 01:02:03.654321",
+            "lock_version": 7
+        }
+    ],
+    "checksum_sha256": "6c315c7865a6bd62f958bfbababedf63e9a11fb39333a3401a3e11829967bc85",
+    "flags": {
+        "1": null,
+        "2": null,
+        "3": 1
+    },
+    "verified": true
+}

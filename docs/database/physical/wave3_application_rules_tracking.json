@@ -1,0 +1,71 @@
+{
+  "previous_rules_assigned_implementation_wave_3": 0,
+  "historical_wave1_skips": 5,
+  "wave3_anonymous_skips": 0,
+  "tracking_finding": "F-W1-03 tracking completed; domain rules remain deferred as required by the original Gate",
+  "rules": [
+    {
+      "id": "W1-APP-01",
+      "rule": "self-parent",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false
+    },
+    {
+      "id": "W1-APP-02",
+      "rule": "cycle",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false
+    },
+    {
+      "id": "W1-APP-03",
+      "rule": "invalid parent/child type",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false
+    },
+    {
+      "id": "W1-APP-04",
+      "rule": "second non-CLOSED General Center",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false
+    },
+    {
+      "id": "W1-APP-05",
+      "rule": "ACTIVE municipality minimum Center",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false
+    },
+    {
+      "id": "F-W2-02",
+      "rule": "ministerial period overlap",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "MinisterialPeriodService",
+      "implementation_wave": "P0.4.2 ministerial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.2 temporal concurrency",
+      "depends_on": [
+        "D-07",
+        "D-11"
+      ],
+      "wave3_skip": false
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "docs/database/09_open_database_decisions.md": {
+    "sha256": "b79e94e34d9a32d9d9b4a903ea28d1971644e7b5a03a87c4040cb7046e047700",
+    "unchanged_from_HEAD": true
+  },
+  "docs/database/model_catalog.json": {
+    "sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+    "unchanged_from_HEAD": true
+  },
+  "scripts/lib/wave2-catalog.cjs": {
+    "sha256": "ea1dc30130db35d1102566b7fad03460a2ee73b5950b3b5fd38a5493622bfb8d",
+    "unchanged_from_HEAD": true
+  },
+  "mepa_crm_v1.1.1.md": {
+    "sha256": "4f9111e8be30aa467968ff1740df2a93f947183e92809d974183817248731016",
+    "unchanged_from_HEAD": true
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "result": "PASS",
+  "lifecycle_checks": 63,
+  "checksum": "d8636c160f0523eda741e4090cf8b904602a587d3d6c37daf1e6cf5528e73fac",
+  "suites": [
+    {
+      "name": "Tests\\Database\\WaveOnePhysicalTest",
+      "tests": "14",
+      "assertions": "103",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "5"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoConcurrencyTest",
+      "tests": "4",
+      "assertions": "59",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoIndependentReconciliationTest",
+      "tests": "11",
+      "assertions": "44",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoM1IndependentAuditTest",
+      "tests": "10",
+      "assertions": "110",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoPhysicalTest",
+      "tests": "12",
+      "assertions": "232",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoTransferConcurrencyTest",
+      "tests": "10",
+      "assertions": "68",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "Tests\\Database\\WaveTwoTransferMigrationSafetyTest",
+      "tests": "3",
+      "assertions": "53",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0"
+    }
+  ],
+  "validators": "PASS",
+  "gate_append_only": true,
+  "audited_code_unchanged": true,
+  "graph_unchanged": true,
+  "implementer_evidence_preserved": true,
+  "critical": 0,
+  "pending_high": 0,
+  "low": 1,
+  "info": 2,
+  "F-M1R-01": "RESOLVED",
+  "wave2_gate": "APPROVED FOR WAVE 3",
+  "wave3_started": false
+}

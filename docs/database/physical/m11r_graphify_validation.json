@@ -1,0 +1,501 @@
+{
+  "nodes": 2329,
+  "edges": 3944,
+  "graph_sha256": "09a63e869119d0e362ff235965a3702ba1749467cc4564472e938f873354b237",
+  "real_graph_unchanged": true,
+  "shrink_probe": {
+    "attempt_nodes": 1,
+    "refused": true,
+    "copy_unchanged": true
+  },
+  "health": {
+    "node_count": 2329,
+    "unverified_node_count": 0,
+    "raw_edge_count": 3944,
+    "non_object_edges": 0,
+    "missing_endpoint_edges": 0,
+    "dangling_endpoint_edges": 0,
+    "self_loop_edges": 0,
+    "valid_candidate_edges": 3944,
+    "exact_duplicate_edges": 0,
+    "directed_unique_endpoint_pairs": 3944,
+    "directed_same_endpoint_collapsed_edges": 0,
+    "undirected_unique_endpoint_pairs": 3944,
+    "undirected_same_endpoint_collapsed_edges": 0,
+    "same_endpoint_group_count": 0,
+    "relation_variant_groups": 0,
+    "source_file_variant_groups": 0,
+    "source_location_variant_groups": 0,
+    "context_variant_groups": 0,
+    "post_build_graph_type": "Graph",
+    "post_build_node_count": 2329,
+    "post_build_edge_count": 3944,
+    "post_build_error": "",
+    "producer_suppression": {
+      "path": "C:\\Users\\silve\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+      "total_sites": 12,
+      "sites": [
+        {
+          "line": 1206,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 1739,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 1741,
+          "name": "seen_doc_refs",
+          "tuple_arity": 0,
+          "sample": "seen_doc_refs: set[str] = set()"
+        },
+        {
+          "line": 2111,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+        },
+        {
+          "line": 2258,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+        },
+        {
+          "line": 2896,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 3065,
+          "name": "seen_keys",
+          "tuple_arity": 0,
+          "sample": "seen_keys: set[tuple] = set()"
+        },
+        {
+          "line": 4757,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 4865,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 4944,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5459,
+          "name": "seen_ids",
+          "tuple_arity": 0,
+          "sample": "seen_ids: set[str] = set()"
+        },
+        {
+          "line": 5460,
+          "name": "seen_edges",
+          "tuple_arity": 4,
+          "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+        }
+      ],
+      "error": ""
+    },
+    "examples": []
+  },
+  "source_coverage": {
+    "apps\\api\\database\\migrations\\2026_09_14_000000_wave2m1_add_transfers_closed_at.php": [
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000000_wave2m1_add_transfers_closed_at_down",
+        "label": "down()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "down()",
+        "source_file": "apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+        "source_location": "L24"
+      },
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000000_wave2m1_add_transfers_closed_at_up",
+        "label": "up()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "up()",
+        "source_file": "apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+        "source_location": "L14"
+      },
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000000_wave2m1_add_transfers_closed_at",
+        "label": "2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+        "source_file": "apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+        "source_location": "L1"
+      }
+    ],
+    "apps\\api\\database\\migrations\\2026_09_14_000001_wave2m1_add_transfers_open_guard.php": [
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000001_wave2m1_add_transfers_open_guard_down",
+        "label": "down()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "down()",
+        "source_file": "apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+        "source_location": "L38"
+      },
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000001_wave2m1_add_transfers_open_guard_up",
+        "label": "up()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "up()",
+        "source_file": "apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+        "source_location": "L14"
+      },
+      {
+        "id": "apps_api_database_migrations_2026_09_14_000001_wave2m1_add_transfers_open_guard",
+        "label": "2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+        "_origin": "ast",
+        "community": 18,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+        "source_file": "apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+        "source_location": "L1"
+      }
+    ],
+    "apps\\api\\app\\Domain\\Membership\\TransferService.php": [
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice",
+        "label": "TransferService",
+        "_callable": true,
+        "_callable_class": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": "transferservice",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L32"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice_cancel",
+        "label": ".cancel()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": ".cancel()",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L119"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice_construct",
+        "label": ".__construct()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": ".__construct()",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L39"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice_effectuate",
+        "label": ".effectuate()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": ".effectuate()",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L95"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice_request",
+        "label": ".request()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": ".request()",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L47"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice_transferservice_violates",
+        "label": ".violates()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": ".violates()",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L139"
+      },
+      {
+        "id": "apps_api_app_domain_membership_transferservice",
+        "label": "TransferService.php",
+        "_origin": "ast",
+        "community": 56,
+        "community_name": "Governança, Património e Storage",
+        "file_type": "code",
+        "norm_label": "transferservice.php",
+        "source_file": "apps/api/app/Domain/Membership/TransferService.php",
+        "source_location": "L1"
+      }
+    ],
+    "apps\\api\\tests\\Database\\WaveTwoTransferMigrationSafetyTest.php": [
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest",
+        "label": "WaveTwoTransferMigrationSafetyTest",
+        "_callable": true,
+        "_callable_class": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": "wavetwotransfermigrationsafetytest",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L21"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_guardpath",
+        "label": ".guardPath()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".guardpath()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L129"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_inserttransfer",
+        "label": ".insertTransfer()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".inserttransfer()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L158"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_lookup",
+        "label": ".lookup()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".lookup()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L77"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_membershiprow",
+        "label": ".membershipRow()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".membershiprow()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L104"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_person",
+        "label": ".person()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".person()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L97"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_rows",
+        "label": ".rows()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".rows()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L149"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_setupbeforeclass",
+        "label": ".setUpBeforeClass()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".setupbeforeclass()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L29"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_state",
+        "label": ".state()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".state()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L134"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_teardownafterclass",
+        "label": ".tearDownAfterClass()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".teardownafterclass()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L246"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_test_empty_database_guard_rollback_reapply",
+        "label": ".test_empty_database_guard_rollback_reapply()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".test_empty_database_guard_rollback_reapply()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L169"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_test_invalid_open_duplicates_abort_before_technical_ddl_without_data_changes",
+        "label": ".test_invalid_open_duplicates_abort_before_technical_ddl_without_data_changes()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".test_invalid_open_duplicates_abort_before_technical_ddl_without_data_changes()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L222"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_test_populated_history_survives_rollback_and_reapply_exactly",
+        "label": ".test_populated_history_survives_rollback_and_reapply_exactly()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".test_populated_history_survives_rollback_and_reapply_exactly()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L180"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_unit",
+        "label": ".unit()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".unit()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L90"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_unittypeid",
+        "label": ".unitTypeId()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".unittypeid()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L85"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_user",
+        "label": ".user()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".user()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L112"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest_wavetwotransfermigrationsafetytest_workflowinstance",
+        "label": ".workflowInstance()",
+        "_callable": true,
+        "_origin": "ast",
+        "community": 10,
+        "community_name": "Planeamento por ondas",
+        "file_type": "code",
+        "norm_label": ".workflowinstance()",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L119"
+      },
+      {
+        "id": "apps_api_tests_database_wavetwotransfermigrationsafetytest",
+        "label": "WaveTwoTransferMigrationSafetyTest.php",
+        "_origin": "ast",
+        "community": 14,
+        "community_name": "Wave 2 Ministério & Departamentos Migrations",
+        "file_type": "code",
+        "norm_label": "wavetwotransfermigrationsafetytest.php",
+        "source_file": "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php",
+        "source_location": "L1"
+      }
+    ]
+  },
+  "code_sha256": {
+    "apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php": "0389a75ecd8cbe4bcf8b546106e34f976da5bb16d141e301d338996a5157149d",
+    "apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php": "043513624678c43f1ea3df8ec10451eafa2d0c07569c3a7cc75a33d66d539e12",
+    "apps/api/app/Domain/Membership/TransferService.php": "d81f97323b3e5b4339e23eb7e82adfc37e70ebfbbfdf08734c43da7c0d99578d",
+    "apps/api/tests/Database/WaveTwoTransferMigrationSafetyTest.php": "72428fb590fd71e115df902cdb363671a58516eaf5dbd2e9b42602f8e590557a"
+  }
+}

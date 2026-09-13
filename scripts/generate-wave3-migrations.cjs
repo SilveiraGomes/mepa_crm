@@ -1,0 +1,10 @@
+﻿'use strict';
+const fs=require('node:fs');const crypto=require('node:crypto');const w=require('./lib/wave3-catalog.cjs');
+const tables=w.orderedTables();const migrations=[];
+for(const [i,t]of tables.entries()){const sql=w.createSql(w.model(t));const file=`2026_09_15_${String(i+1).padStart(6,'0')}_wave3_create_${t.name}.php`;
+const body=`<?php\n\ndeclare(strict_types=1);\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Support\\Facades\\DB;\n\n// P0.3.3; approved catalogue. Early audit support: ADR 0012.\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        if (DB::getDriverName() !== 'mysql') throw new RuntimeException('Qualified MySQL required');\n        DB::statement(<<<'SQL'\n${sql}\nSQL\n        );\n    }\n\n    public function down(): void\n    {\n        DB::statement('DROP TABLE \`${t.name}\`');\n    }\n};\n`;
+fs.writeFileSync(w.root+'/apps/api/database/migrations/'+file,body);migrations.push(file);}
+const models=tables.map(w.model);const manifest={phase:'P0.3.3',catalog_sha256:crypto.createHash('sha256').update(fs.readFileSync(w.root+'/docs/database/model_catalog.json')).digest('hex'),tables:tables.map(t=>t.name),business_tables:w.names,support_tables:w.support,migrations,early_dependency:'ADR 0012; audit_logs remains assigned to Wave 8 in the approved partition; future Wave 8 must adopt this existing table'};
+fs.writeFileSync(w.root+'/docs/database/physical/wave3_manifest.json',JSON.stringify(manifest,null,2)+'\n');
+const stats={migrations:migrations.length,tables:models.length,business_tables:w.names.length,support_tables:1,columns:models.reduce((n,t)=>n+t.columns.length,0),foreign_keys:models.reduce((n,t)=>n+t.foreign_keys.length,0),checks:models.reduce((n,t)=>n+t.checks.length,0),unique:models.reduce((n,t)=>n+t.indexes.filter(x=>x.unique).length,0),public_id:models.filter(t=>t.columns.some(c=>c.name==='public_id')).length,cascade:0};
+fs.writeFileSync(w.root+'/docs/database/physical/wave3_planned_stats.json',JSON.stringify(stats,null,2)+'\n');console.log(stats);

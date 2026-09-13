@@ -1,0 +1,10 @@
+{
+  "tables": 199,
+  "columns": 1752,
+  "fks": 439,
+  "master_relations": 439,
+  "local_links": "checked",
+  "identifier_strategy": "ACCEPTED",
+  "public_id_entities": 54,
+  "errors": []
+}

@@ -1,0 +1,788 @@
+{
+    "mysql": "8.4.11",
+    "database": "mepa_m11r_test_lifecycle_final",
+    "states": {
+        "A": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  `open_flag` tinyint unsigned GENERATED ALWAYS AS (if((`closed_at` is null),1,NULL)) STORED,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  UNIQUE KEY `uq_transfers_membership_open` (`membership_id`,`open_flag`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                },
+                {
+                    "COLUMN_NAME": "open_flag",
+                    "COLUMN_TYPE": "tinyint unsigned",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "STORED GENERATED",
+                    "GENERATION_EXPRESSION": "if((`closed_at` is null),1,NULL)"
+                }
+            ],
+            "unique": [
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 1,
+                    "COLUMN_NAME": "membership_id"
+                },
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 2,
+                    "COLUMN_NAME": "open_flag"
+                }
+            ]
+        },
+        "B": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                }
+            ],
+            "unique": []
+        },
+        "C": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  `open_flag` tinyint unsigned GENERATED ALWAYS AS (if((`closed_at` is null),1,NULL)) STORED,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  UNIQUE KEY `uq_transfers_membership_open` (`membership_id`,`open_flag`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                },
+                {
+                    "COLUMN_NAME": "open_flag",
+                    "COLUMN_TYPE": "tinyint unsigned",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "STORED GENERATED",
+                    "GENERATION_EXPRESSION": "if((`closed_at` is null),1,NULL)"
+                }
+            ],
+            "unique": [
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 1,
+                    "COLUMN_NAME": "membership_id"
+                },
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 2,
+                    "COLUMN_NAME": "open_flag"
+                }
+            ]
+        }
+    },
+    "before": {
+        "rows": [
+            {
+                "closed_at": "2026-01-02 03:04:05.123456",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": "2026-01-02 03:04:05.123456",
+                "id": 1,
+                "lock_version": 4,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000007",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_ALPHA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": "2026-02-03 04:05:06.987654",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 2,
+                "lock_version": 5,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000008",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_BETA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": null,
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 3,
+                "lock_version": 6,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000009",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_GAMMA",
+                "workflow_instance_id": 1
+            }
+        ],
+        "serialized": "[{\"closed_at\":\"2026-01-02 03:04:05.123456\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":\"2026-01-02 03:04:05.123456\",\"id\":1,\"lock_version\":4,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000007\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_ALPHA\",\"workflow_instance_id\":1},{\"closed_at\":\"2026-02-03 04:05:06.987654\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":2,\"lock_version\":5,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000008\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_BETA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":3,\"lock_version\":6,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000009\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_GAMMA\",\"workflow_instance_id\":1}]",
+        "checksum_sha256": "d8636c160f0523eda741e4090cf8b904602a587d3d6c37daf1e6cf5528e73fac"
+    },
+    "after_rollback": {
+        "rows": [
+            {
+                "closed_at": "2026-01-02 03:04:05.123456",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": "2026-01-02 03:04:05.123456",
+                "id": 1,
+                "lock_version": 4,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000007",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_ALPHA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": "2026-02-03 04:05:06.987654",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 2,
+                "lock_version": 5,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000008",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_BETA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": null,
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 3,
+                "lock_version": 6,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000009",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_GAMMA",
+                "workflow_instance_id": 1
+            }
+        ],
+        "serialized": "[{\"closed_at\":\"2026-01-02 03:04:05.123456\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":\"2026-01-02 03:04:05.123456\",\"id\":1,\"lock_version\":4,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000007\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_ALPHA\",\"workflow_instance_id\":1},{\"closed_at\":\"2026-02-03 04:05:06.987654\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":2,\"lock_version\":5,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000008\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_BETA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":3,\"lock_version\":6,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000009\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_GAMMA\",\"workflow_instance_id\":1}]",
+        "checksum_sha256": "d8636c160f0523eda741e4090cf8b904602a587d3d6c37daf1e6cf5528e73fac"
+    },
+    "after_reapply": {
+        "rows": [
+            {
+                "closed_at": "2026-01-02 03:04:05.123456",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": "2026-01-02 03:04:05.123456",
+                "id": 1,
+                "lock_version": 4,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000007",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_ALPHA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": "2026-02-03 04:05:06.987654",
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 2,
+                "lock_version": 5,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000008",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_BETA",
+                "workflow_instance_id": 1
+            },
+            {
+                "closed_at": null,
+                "created_at": "2026-09-13 15:16:17.111222",
+                "destination_unit_id": 2,
+                "effective_at": null,
+                "id": 3,
+                "lock_version": 6,
+                "membership_id": 1,
+                "origin_unit_id": 1,
+                "public_id": "01000000000000000000000009",
+                "requested_at": "2026-01-01 00:00:00.100001",
+                "source_document_id": null,
+                "status": "AUDIT_GAMMA",
+                "workflow_instance_id": 1
+            }
+        ],
+        "serialized": "[{\"closed_at\":\"2026-01-02 03:04:05.123456\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":\"2026-01-02 03:04:05.123456\",\"id\":1,\"lock_version\":4,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000007\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_ALPHA\",\"workflow_instance_id\":1},{\"closed_at\":\"2026-02-03 04:05:06.987654\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":2,\"lock_version\":5,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000008\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_BETA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":3,\"lock_version\":6,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000009\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_GAMMA\",\"workflow_instance_id\":1}]",
+        "checksum_sha256": "d8636c160f0523eda741e4090cf8b904602a587d3d6c37daf1e6cf5528e73fac"
+    },
+    "flags": [
+        {
+            "id": 1,
+            "open_flag": null
+        },
+        {
+            "id": 2,
+            "open_flag": null
+        },
+        {
+            "id": 3,
+            "open_flag": 1
+        }
+    ],
+    "invalid": {
+        "before": {
+            "rows": [
+                {
+                    "closed_at": "2026-01-02 03:04:05.123456",
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": "2026-01-02 03:04:05.123456",
+                    "id": 1,
+                    "lock_version": 4,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000007",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_ALPHA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": "2026-02-03 04:05:06.987654",
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 2,
+                    "lock_version": 5,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000008",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_BETA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": null,
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 3,
+                    "lock_version": 6,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000009",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_GAMMA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": null,
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 4,
+                    "lock_version": 19,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000010",
+                    "requested_at": "2026-09-13 15:16:17.111222",
+                    "source_document_id": null,
+                    "status": "AUDIT_DELTA",
+                    "workflow_instance_id": 1
+                }
+            ],
+            "serialized": "[{\"closed_at\":\"2026-01-02 03:04:05.123456\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":\"2026-01-02 03:04:05.123456\",\"id\":1,\"lock_version\":4,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000007\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_ALPHA\",\"workflow_instance_id\":1},{\"closed_at\":\"2026-02-03 04:05:06.987654\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":2,\"lock_version\":5,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000008\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_BETA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":3,\"lock_version\":6,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000009\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_GAMMA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":4,\"lock_version\":19,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000010\",\"requested_at\":\"2026-09-13 15:16:17.111222\",\"source_document_id\":null,\"status\":\"AUDIT_DELTA\",\"workflow_instance_id\":1}]",
+            "checksum_sha256": "9fc77853fdd7cb7b3941369b4f67369f20bb68b5249b9c0dcc874254932c2136"
+        },
+        "after": {
+            "rows": [
+                {
+                    "closed_at": "2026-01-02 03:04:05.123456",
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": "2026-01-02 03:04:05.123456",
+                    "id": 1,
+                    "lock_version": 4,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000007",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_ALPHA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": "2026-02-03 04:05:06.987654",
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 2,
+                    "lock_version": 5,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000008",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_BETA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": null,
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 3,
+                    "lock_version": 6,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000009",
+                    "requested_at": "2026-01-01 00:00:00.100001",
+                    "source_document_id": null,
+                    "status": "AUDIT_GAMMA",
+                    "workflow_instance_id": 1
+                },
+                {
+                    "closed_at": null,
+                    "created_at": "2026-09-13 15:16:17.111222",
+                    "destination_unit_id": 2,
+                    "effective_at": null,
+                    "id": 4,
+                    "lock_version": 19,
+                    "membership_id": 1,
+                    "origin_unit_id": 1,
+                    "public_id": "01000000000000000000000010",
+                    "requested_at": "2026-09-13 15:16:17.111222",
+                    "source_document_id": null,
+                    "status": "AUDIT_DELTA",
+                    "workflow_instance_id": 1
+                }
+            ],
+            "serialized": "[{\"closed_at\":\"2026-01-02 03:04:05.123456\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":\"2026-01-02 03:04:05.123456\",\"id\":1,\"lock_version\":4,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000007\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_ALPHA\",\"workflow_instance_id\":1},{\"closed_at\":\"2026-02-03 04:05:06.987654\",\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":2,\"lock_version\":5,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000008\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_BETA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":3,\"lock_version\":6,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000009\",\"requested_at\":\"2026-01-01 00:00:00.100001\",\"source_document_id\":null,\"status\":\"AUDIT_GAMMA\",\"workflow_instance_id\":1},{\"closed_at\":null,\"created_at\":\"2026-09-13 15:16:17.111222\",\"destination_unit_id\":2,\"effective_at\":null,\"id\":4,\"lock_version\":19,\"membership_id\":1,\"origin_unit_id\":1,\"public_id\":\"01000000000000000000000010\",\"requested_at\":\"2026-09-13 15:16:17.111222\",\"source_document_id\":null,\"status\":\"AUDIT_DELTA\",\"workflow_instance_id\":1}]",
+            "checksum_sha256": "9fc77853fdd7cb7b3941369b4f67369f20bb68b5249b9c0dcc874254932c2136"
+        },
+        "error": "TRANSFER_OPEN_GUARD_INVALID_DATA: multiple open transfers for a membership; no data changed.",
+        "state": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                }
+            ],
+            "unique": []
+        },
+        "queries": [
+            {
+                "query": "select `migration` from `migrations` order by `batch` asc, `migration` asc",
+                "bindings": [],
+                "time": 11.28
+            },
+            {
+                "query": "select max(`batch`) as aggregate from `migrations`",
+                "bindings": [],
+                "time": 5.32
+            },
+            {
+                "query": "select column_name as `column_name` from information_schema.columns where table_schema = ? and table_name = ?",
+                "bindings": [
+                    "mepa_m11r_test_lifecycle_final",
+                    "transfers"
+                ],
+                "time": 10.52
+            },
+            {
+                "query": "select exists(select `membership_id` from `transfers` where `closed_at` is null group by `membership_id` having COUNT(*) > 1) as `exists`",
+                "bindings": [],
+                "time": 17.58
+            }
+        ]
+    },
+    "durable_migrator_rollback_reapply": "PASS",
+    "empty": {
+        "before": {
+            "rows": [],
+            "serialized": "[]",
+            "checksum_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "A": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  `open_flag` tinyint unsigned GENERATED ALWAYS AS (if((`closed_at` is null),1,NULL)) STORED,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  UNIQUE KEY `uq_transfers_membership_open` (`membership_id`,`open_flag`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                },
+                {
+                    "COLUMN_NAME": "open_flag",
+                    "COLUMN_TYPE": "tinyint unsigned",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "STORED GENERATED",
+                    "GENERATION_EXPRESSION": "if((`closed_at` is null),1,NULL)"
+                }
+            ],
+            "unique": [
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 1,
+                    "COLUMN_NAME": "membership_id"
+                },
+                {
+                    "INDEX_NAME": "uq_transfers_membership_open",
+                    "NON_UNIQUE": 0,
+                    "SEQ_IN_INDEX": 2,
+                    "COLUMN_NAME": "open_flag"
+                }
+            ]
+        },
+        "B": {
+            "show_create": "CREATE TABLE `transfers` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `public_id` char(26) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,\n  `membership_id` bigint unsigned NOT NULL,\n  `origin_unit_id` bigint unsigned NOT NULL,\n  `destination_unit_id` bigint unsigned NOT NULL,\n  `requested_at` datetime(6) NOT NULL,\n  `effective_at` datetime(6) DEFAULT NULL,\n  `closed_at` datetime(6) DEFAULT NULL,\n  `status` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,\n  `workflow_instance_id` bigint unsigned NOT NULL,\n  `source_document_id` bigint unsigned DEFAULT NULL,\n  `created_at` datetime(6) NOT NULL,\n  `lock_version` int unsigned NOT NULL DEFAULT '0',\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_transfers_public_id` (`public_id`),\n  KEY `ix_transfers_membership_id_status` (`membership_id`,`status`),\n  KEY `ix_transfers_destination_unit_id_status` (`destination_unit_id`,`status`),\n  KEY `ix_transfers_origin_unit_id` (`origin_unit_id`),\n  KEY `ix_transfers_workflow_instance_id` (`workflow_instance_id`),\n  KEY `ix_transfers_source_document_id` (`source_document_id`),\n  CONSTRAINT `fk_transfers_destination_unit_id` FOREIGN KEY (`destination_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_membership_id` FOREIGN KEY (`membership_id`) REFERENCES `memberships` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_origin_unit_id` FOREIGN KEY (`origin_unit_id`) REFERENCES `organizational_units` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_source_document_id` FOREIGN KEY (`source_document_id`) REFERENCES `legal_documents` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `fk_transfers_workflow_instance_id` FOREIGN KEY (`workflow_instance_id`) REFERENCES `workflow_instances` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,\n  CONSTRAINT `ck_transfers_origin_destination` CHECK ((`origin_unit_id` <> `destination_unit_id`))\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            "columns": [
+                {
+                    "COLUMN_NAME": "closed_at",
+                    "COLUMN_TYPE": "datetime(6)",
+                    "IS_NULLABLE": "YES",
+                    "EXTRA": "",
+                    "GENERATION_EXPRESSION": ""
+                }
+            ],
+            "unique": []
+        }
+    },
+    "historical": {
+        "source_commit": "7f4e400",
+        "source_sha256": "a54d529c904fccea4559b1d6061c99565466ebbc1a73e4d41dee0fb20d8681a7",
+        "before": [
+            {
+                "id": 1,
+                "membership_id": 1,
+                "effective_at": "2026-01-02 03:04:05.123456",
+                "closed_at": "2026-01-02 03:04:05.123456",
+                "status": "HISTORY_0",
+                "open_flag": null
+            },
+            {
+                "id": 2,
+                "membership_id": 1,
+                "effective_at": null,
+                "closed_at": "2026-02-03 04:05:06.987654",
+                "status": "HISTORY_1",
+                "open_flag": null
+            },
+            {
+                "id": 3,
+                "membership_id": 1,
+                "effective_at": null,
+                "closed_at": null,
+                "status": "HISTORY_2",
+                "open_flag": 1
+            }
+        ],
+        "after_rollback": [
+            {
+                "id": 1,
+                "membership_id": 1,
+                "effective_at": "2026-01-02 03:04:05.123456",
+                "status": "HISTORY_0"
+            },
+            {
+                "id": 2,
+                "membership_id": 1,
+                "effective_at": null,
+                "status": "HISTORY_1"
+            },
+            {
+                "id": 3,
+                "membership_id": 1,
+                "effective_at": null,
+                "status": "HISTORY_2"
+            }
+        ],
+        "reapply_error": {
+            "code": 1062,
+            "message": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '1-1' for key 'transfers.uq_transfers_membership_open' (SQL: ALTER TABLE `transfers` ADD UNIQUE KEY `uq_transfers_membership_open` (`membership_id`, `open_flag`))"
+        }
+    },
+    "checks": [
+        {
+            "check": "independent schema initially empty",
+            "pass": true
+        },
+        {
+            "check": "scaffolding applies",
+            "pass": true
+        },
+        {
+            "check": "Wave 1 applies",
+            "pass": true
+        },
+        {
+            "check": "Wave 2 applies",
+            "pass": true
+        },
+        {
+            "check": "durable column before guard",
+            "pass": true
+        },
+        {
+            "check": "technical guard applies",
+            "pass": true
+        },
+        {
+            "check": "state columns 1",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "nullable generated flag",
+            "pass": true
+        },
+        {
+            "check": "generated expression depends only on closed_at",
+            "pass": true
+        },
+        {
+            "check": "unique column order",
+            "pass": true
+        },
+        {
+            "check": "unique physical enforcement",
+            "pass": true
+        },
+        {
+            "check": "empty durable rollback\/adoption preserves data",
+            "pass": true
+        },
+        {
+            "check": "empty exact guard rollback",
+            "pass": true
+        },
+        {
+            "check": "state columns ",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "guard unique absent",
+            "pass": true
+        },
+        {
+            "check": "empty guard rollback preserves data",
+            "pass": true
+        },
+        {
+            "check": "empty guard reapply",
+            "pass": true
+        },
+        {
+            "check": "state columns 1",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "nullable generated flag",
+            "pass": true
+        },
+        {
+            "check": "generated expression depends only on closed_at",
+            "pass": true
+        },
+        {
+            "check": "unique column order",
+            "pass": true
+        },
+        {
+            "check": "unique physical enforcement",
+            "pass": true
+        },
+        {
+            "check": "A\/B\/C generated flags",
+            "pass": true
+        },
+        {
+            "check": "populated exact guard rollback",
+            "pass": true
+        },
+        {
+            "check": "state columns ",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "guard unique absent",
+            "pass": true
+        },
+        {
+            "check": "all rows and deterministic checksum identical after rollback",
+            "pass": true
+        },
+        {
+            "check": "microseconds and null unchanged",
+            "pass": true
+        },
+        {
+            "check": "populated durable rollback\/adoption preserves history",
+            "pass": true
+        },
+        {
+            "check": "valid populated reapply",
+            "pass": true
+        },
+        {
+            "check": "state columns 1",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "nullable generated flag",
+            "pass": true
+        },
+        {
+            "check": "generated expression depends only on closed_at",
+            "pass": true
+        },
+        {
+            "check": "unique column order",
+            "pass": true
+        },
+        {
+            "check": "unique physical enforcement",
+            "pass": true
+        },
+        {
+            "check": "all rows and checksum identical after reapply",
+            "pass": true
+        },
+        {
+            "check": "membership unchanged",
+            "pass": true
+        },
+        {
+            "check": "flags restored",
+            "pass": true
+        },
+        {
+            "check": "second exact guard rollback",
+            "pass": true
+        },
+        {
+            "check": "explicit understandable precheck error",
+            "pass": true
+        },
+        {
+            "check": "no mutation during invalid precheck",
+            "pass": true
+        },
+        {
+            "check": "no mutation during invalid precheck",
+            "pass": true
+        },
+        {
+            "check": "no mutation during invalid precheck",
+            "pass": true
+        },
+        {
+            "check": "no mutation during invalid precheck",
+            "pass": true
+        },
+        {
+            "check": "state columns ",
+            "pass": true
+        },
+        {
+            "check": "durable microsecond datetime",
+            "pass": true
+        },
+        {
+            "check": "guard unique absent",
+            "pass": true
+        },
+        {
+            "check": "invalid C\/D rows and checksum unchanged",
+            "pass": true
+        },
+        {
+            "check": "failed guard not marked applied",
+            "pass": true
+        },
+        {
+            "check": "durable migration rollback through Migrator",
+            "pass": true
+        },
+        {
+            "check": "Migrator durable rollback retains populated history",
+            "pass": true
+        },
+        {
+            "check": "durable migration reapply adopts existing history",
+            "pass": true
+        },
+        {
+            "check": "durable reapply retains invalid dataset without repairing it",
+            "pass": true
+        },
+        {
+            "check": "separate historical reproduction schema empty",
+            "pass": true
+        },
+        {
+            "check": "existing historical M1 adoption is nonmutating",
+            "pass": true
+        },
+        {
+            "check": "historical rollback really deletes closed_at",
+            "pass": true
+        },
+        {
+            "check": "historical reapply really fails duplicate-key",
+            "pass": true
+        },
+        {
+            "check": "historical reapply loses open\/closed distinction",
+            "pass": true
+        }
+    ],
+    "result": "PASS"
+}

@@ -1,0 +1,16 @@
+mysql_version	server_uuid
+8.4.11	6f6e9e99-afb1-11f1-9b3e-5ec43cdde019
+TABLE_SCHEMA	tables_count
+mepa_m11r_test_lifecycle_final	78
+mepa_wave2f_test_m11r	78
+foreign_keys	non_restrict
+131	0
+check_constraints
+57
+id	membership_id	closed_at	status	lock_version
+1	1	2026-01-02 03:04:05.123456	AUDIT_ALPHA	4
+2	1	2026-02-03 04:05:06.987654	AUDIT_BETA	5
+3	1	NULL	AUDIT_GAMMA	6
+4	1	NULL	AUDIT_DELTA	19
+COLUMN_NAME	COLUMN_TYPE	EXTRA	GENERATION_EXPRESSION
+closed_at	datetime(6)		

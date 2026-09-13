@@ -1,0 +1,31 @@
+{
+  "phase": "P0.3.3",
+  "internal_gate": "READY_FOR_AUDIT",
+  "totals": {
+    "tests": 86,
+    "assertions": 1302,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 5,
+    "warnings": 0
+  },
+  "wave3_tests": 22,
+  "wave3_assertions": 633,
+  "wave3_skips": 0,
+  "unexpected_drift": 0,
+  "document_errors": [],
+  "broken_links": [],
+  "utf8_documents_verified": 5,
+  "diff_check": "PASS",
+  "lifecycle_states": [
+    32,
+    0,
+    32
+  ],
+  "historical_transfers_preserved": 3,
+  "graphify_queries": 12,
+  "graphify_shrink_guard": "PASS",
+  "approved_migrations_changed": [],
+  "production_data_used": false,
+  "wave4_started": false
+}

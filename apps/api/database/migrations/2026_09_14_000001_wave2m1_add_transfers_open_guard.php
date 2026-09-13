@@ -4,23 +4,11 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-// P0.3.2-M1: fixes F-W2F-01 (independent reconciliation finding). Two concurrent, incompatible
-// PENDING transfers for the same membership could previously both persist - nothing tied
-// membership_id to "at most one transfer still in flight".
-//
-// `transfers.status` has no institutionally fixed vocabulary yet (D-11 pending: dictionary
-// description is the generic placeholder "status", example "DRAFT" - see 04_database_constraints.md
-// "catálogo exacto por tabela... antes de migrations"). So the invariant here is deliberately
-// status-string-agnostic: `closed_at` is set the moment a transfer stops being "in flight", for
-// ANY reason (effectuated via `effective_at`, or abandoned/cancelled without ever taking effect -
-// `effective_at` stays NULL forever in that case, which is what makes it distinct from
-// `effective_at IS NULL` alone). `open_flag` is a generated column that is 1 only while
-// `closed_at IS NULL`, and NULL once closed - MySQL treats NULL as distinct for UNIQUE indexes
-// (multiple NULLs allowed), so `UNIQUE(membership_id, open_flag)` is the MySQL-native equivalent
-// of a Postgres partial unique index: at most one *open* transfer per membership, physically
-// enforced, while any number of *closed* (historical) transfers coexist freely. History is never
-// deleted or rewritten.
+// P0.3.2-M1.1 / F-M1R-01: reversible technical enforcement only.
+// Durable closed_at belongs to 2026_09_14_000000_wave2m1_add_transfers_closed_at.php.
+// Open means closed_at IS NULL, independently of the unresolved D-11 status vocabulary.
 return new class extends Migration
 {
     public function up(): void
@@ -28,20 +16,32 @@ return new class extends Migration
         if (DB::getDriverName() !== 'mysql') {
             throw new RuntimeException('Wave 2 requires the qualified MySQL driver; SQLite is not supported.');
         }
+        if (!Schema::hasColumn('transfers', 'closed_at')) {
+            throw new RuntimeException('TRANSFER_CLOSURE_HISTORY_REQUIRED: apply the closed_at domain migration first.');
+        }
+        $invalid = DB::table('transfers')->select('membership_id')->whereNull('closed_at')
+            ->groupBy('membership_id')->havingRaw('COUNT(*) > 1')->exists();
+        if ($invalid) {
+            throw new RuntimeException('TRANSFER_OPEN_GUARD_INVALID_DATA: multiple open transfers for a membership; no data changed.');
+        }
 
+        // One MySQL atomic DDL statement: a racing duplicate also fails enforcement without
+        // leaving a partially installed generated column. No data is repaired or inferred.
         DB::statement(<<<'SQL'
 ALTER TABLE `transfers`
-  ADD COLUMN `closed_at` DATETIME(6) NULL DEFAULT NULL AFTER `effective_at`,
-  ADD COLUMN `open_flag` TINYINT UNSIGNED GENERATED ALWAYS AS (IF(`closed_at` IS NULL, 1, NULL)) STORED
+  ADD COLUMN `open_flag` TINYINT UNSIGNED GENERATED ALWAYS AS (IF(`closed_at` IS NULL, 1, NULL)) STORED,
+  ADD UNIQUE KEY `uq_transfers_membership_open` (`membership_id`, `open_flag`)
 SQL
         );
-        DB::statement('ALTER TABLE `transfers` ADD UNIQUE KEY `uq_transfers_membership_open` (`membership_id`, `open_flag`)');
     }
 
     public function down(): void
     {
-        DB::statement('ALTER TABLE `transfers` DROP KEY `uq_transfers_membership_open`');
-        DB::statement('ALTER TABLE `transfers` DROP COLUMN `open_flag`');
-        DB::statement('ALTER TABLE `transfers` DROP COLUMN `closed_at`');
+        DB::statement(<<<'SQL'
+ALTER TABLE `transfers`
+  DROP KEY `uq_transfers_membership_open`,
+  DROP COLUMN `open_flag`
+SQL
+        );
     }
 };

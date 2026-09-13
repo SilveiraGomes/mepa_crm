@@ -1,0 +1,12 @@
+{
+  "migrations": 32,
+  "tables": 32,
+  "business_tables": 31,
+  "support_tables": 1,
+  "columns": 281,
+  "foreign_keys": 76,
+  "checks": 20,
+  "unique": 35,
+  "public_id": 8,
+  "cascade": 0
+}

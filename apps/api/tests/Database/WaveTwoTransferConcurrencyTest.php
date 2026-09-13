@@ -55,6 +55,7 @@ final class WaveTwoTransferConcurrencyTest extends TestCase
         $wave2Manifest = json_decode(file_get_contents(self::$root . '/docs/database/physical/wave2_manifest.json'), true, 512, JSON_THROW_ON_ERROR);
         $wave1Paths = array_map(static fn($m) => self::$root . '/apps/api/database/migrations/' . $m['file'], $wave1Manifest['migrations']);
         $wave2Paths = array_map(static fn($f) => self::$root . '/apps/api/database/migrations/' . $f, $wave2Manifest['migrations']);
+        $domainPath = self::$root . '/apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php';
         $m1Path = self::$root . '/apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php';
         $repository = new DatabaseMigrationRepository(self::$capsule->getDatabaseManager(), 'migrations');
         $repository->createRepository();
@@ -65,6 +66,7 @@ final class WaveTwoTransferConcurrencyTest extends TestCase
         self::assertCount(4, $migrator->run($scaffolding));
         self::assertCount(31, $migrator->run($wave1Paths));
         self::assertCount(44, $migrator->run($wave2Paths));
+        self::assertCount(1, $migrator->run([$domainPath]));
         self::assertCount(1, $migrator->run([$m1Path]));
         self::$ready = true;
     }
