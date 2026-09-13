@@ -1,0 +1,8 @@
+{
+  "tables": 43,
+  "columns": 362,
+  "public_id": 11,
+  "foreign_keys": 81,
+  "checks": 32,
+  "cascade": 0
+}

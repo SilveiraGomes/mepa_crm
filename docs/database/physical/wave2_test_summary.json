@@ -1,0 +1,19 @@
+{
+  "phase": "P0.3.2",
+  "generated_by": "self-implemented, self-audited (non-independent; see gate document caveat)",
+  "engine": { "family": "MySQL", "version": "8.4.11", "docker_test_only": true, "container": "mepa-wave2-mysql (disposable, port 33092)" },
+  "suites": [
+    { "suite": "php -l (syntax)", "files_checked": 49, "failures": 0, "status": "PASS" },
+    { "suite": "node scripts/validate-database-docs.cjs", "tables": 199, "errors": 0, "status": "PASS" },
+    { "suite": "node scripts/validate-wave1-schema.cjs --static", "status": "PASS", "note": "Wave-1-only scope; strict_errors correctly retains 1 entry for W1-F01 (expected - Wave 1 alone never materializes it)" },
+    { "suite": "node scripts/validate-wave2-schema.cjs (information_schema)", "tables": 74, "columns": 629, "foreign_keys": 131, "checks": 57, "cascade_count": 0, "status": "STRICT_PARITY_PASS", "errors": [] },
+    { "suite": "node scripts/validate-wave2-schema.cjs --static", "tables": 73, "columns": 618, "foreign_keys": 129, "checks": 55, "cascade_count": 0, "status": "STRICT_PARITY_PASS", "errors": [] },
+    { "suite": "phpunit tests/Database/WaveOnePhysicalTest.php", "tests": 14, "assertions": 103, "failures": 0, "errors": 0, "skipped": 5, "status": "PASS (5 intentional APPLICATION_ENFORCED skips, unchanged from Wave 1)" },
+    { "suite": "phpunit tests/Database/WaveTwoPhysicalTest.php", "tests": 12, "assertions": 232, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS" },
+    { "suite": "phpunit tests/Database/WaveTwoConcurrencyTest.php", "tests": 4, "assertions": 59, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "note": "real proc_open worker processes, not simulated interleaving; batches of 2, 10, and 30" },
+    { "suite": "phpunit tests/Feature", "tests": 2, "assertions": 3, "failures": 0, "status": "PASS" },
+    { "suite": "phpunit tests/Unit", "tests": 1, "assertions": 1, "failures": 0, "status": "PASS" },
+    { "suite": "graphify --update", "nodes_before": 2177, "nodes_after": 2112, "edges_before": 3073, "edges_after": 3444, "net_node_delta": -65, "shrink_investigated": true, "shrink_cause": "pre-existing cross-document duplicate 'concept' nodes (306 exact + 38 fuzzy) collapsed by the installed dedup pass, unrelated to Wave 2 content; verified by sampling removed node IDs and confirming they are same-named table/column concepts repeated across multiple pre-existing docs. New Wave 2 content itself added 278 nodes / net new edges; health check reported zero dangling/missing/self-loop/collapsed edges.", "forced": true }
+  ],
+  "totals": { "phpunit_tests": 33, "phpunit_assertions": 398, "phpunit_failures": 0, "phpunit_errors": 0, "phpunit_skipped": 5 }
+}

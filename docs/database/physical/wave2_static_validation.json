@@ -1,0 +1,16 @@
+{
+  "mode": "STATIC_CAPTURE_NOT_EXECUTION",
+  "engine": null,
+  "physical_execution": false,
+  "tables": 73,
+  "columns": 618,
+  "foreign_keys": 129,
+  "checks": 55,
+  "cascade_count": 0,
+  "w1_f01": {
+    "status": "MATERIALIZED",
+    "verified": true
+  },
+  "status": "STRICT_PARITY_PASS",
+  "errors": []
+}
