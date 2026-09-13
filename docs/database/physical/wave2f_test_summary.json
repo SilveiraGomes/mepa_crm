@@ -1,0 +1,51 @@
+{
+  "phase": "P0.3.2-F",
+  "generated_by": "same session as implementer/self-auditor, methodologically independent re-execution (fresh container, fresh databases, new adversarial scenarios, raw SQL cross-checks) - see method disclosure in P0.3.2_wave2_independent_reconciliation.md",
+  "engine": { "family": "MySQL", "version": "8.4.11", "docker_test_only": true, "container": "mepa-wave2f-mysql (disposable, port 33093, never reused from the implementer's mepa-wave2-mysql)" },
+  "independent_raw_sql_counts": {
+    "base_tables": 78,
+    "total_foreign_keys": 131,
+    "non_restrict_foreign_keys": 0,
+    "check_constraints": 57,
+    "unique_indexes": 69,
+    "nonunique_indexes": 126,
+    "public_id_columns_total_db": 19,
+    "total_columns_total_db": 651,
+    "note": "obtained via hand-written information_schema queries, not by re-running validate-wave2-schema.cjs - cross-checked against it afterwards and matched exactly (131 FKs, 0 CASCADE, 57 checks)"
+  },
+  "suites": [
+    { "suite": "preflight (check-database-capabilities.php)", "status": "READ_ONLY_PREFLIGHT_PASS", "engine": "MySQL 8.4.11" },
+    { "suite": "fresh path (php artisan migrate, 79 migrations)", "status": "PASS" },
+    { "suite": "upgrade path (Wave1 batch1=31, Wave2 batch2=44)", "status": "PASS" },
+    { "suite": "rollback Wave2 (independent raw SQL verification)", "status": "PASS", "note": "36 tables remain, W1-F01 FK count=0, users.account_kind absent, memberships table absent" },
+    { "suite": "remigrate Wave2", "status": "PASS", "note": "78 tables, W1-F01 FK count=1" },
+    { "suite": "node validate-wave2-schema.cjs (information_schema)", "status": "STRICT_PARITY_PASS", "tables": 74, "foreign_keys": 131, "checks": 57, "cascade_count": 0, "errors": [] },
+    { "suite": "node validate-wave2-schema.cjs --static", "status": "STRICT_PARITY_PASS", "tables": 73, "foreign_keys": 129, "checks": 55, "cascade_count": 0, "errors": [] },
+    { "suite": "phpunit WaveOnePhysicalTest (fresh DB)", "tests": 14, "assertions": 103, "failures": 0, "skipped": 5, "status": "PASS (no regression)" },
+    { "suite": "phpunit WaveTwoPhysicalTest (fresh DB)", "tests": 12, "assertions": 232, "failures": 0, "status": "PASS" },
+    { "suite": "phpunit WaveTwoConcurrencyTest (fresh DB, 2/10/30 workers)", "tests": 4, "assertions": 59, "failures": 0, "status": "PASS" },
+    { "suite": "phpunit WaveTwoIndependentReconciliationTest (NEW adversarial suite)", "tests": 11, "assertions": 44, "failures": 0, "status": "PASS", "scenarios": [
+      "50-worker concurrency stress batch",
+      "connection killed mid-transaction leaves no gap (raw PDO, no COMMIT, connection dropped)",
+      "10 workers racing the SAME membership converge to 1 number, sequence +1",
+      "December->January boundary with the brief's exact values (MEPA2612000999 -> MEPA2701001000)",
+      "second membership for same person physically rejected (1062)",
+      "transfer with same origin/destination rejected (3819 CHECK)",
+      "repeated transfer chain A->B->C preserves identity and full history",
+      "two concurrent incompatible PENDING transfers for the same membership - FINDING F-W2F-01: not physically guarded",
+      "department definition reused across all FOUR territorial levels (Provincia/Municipio/Centro/Congregacao)",
+      "Person/User/Membership structural independence (SERVICE account, HUMAN account without membership, no FK users->memberships)",
+      "institutional queries with brief's exact names (Director de Estatisticas, Direccao Municipal da Caala)"
+    ] }
+  ],
+  "totals": { "phpunit_tests": 41, "phpunit_assertions": 438, "phpunit_failures": 0, "phpunit_errors": 0, "phpunit_skipped": 5 },
+  "new_findings": [
+    { "id": "F-W2F-01", "severity": "MEDIUM", "description": "transfers has no physical guard against two concurrent incompatible PENDING rows for the same membership_id" },
+    { "id": "F-W2F-02", "severity": "INFO", "description": "last_value is a MySQL 8 reserved window-function keyword; hand-written raw SQL must backtick-quote it (production code path via Laravel query builder / generated DDL already does)" },
+    { "id": "F-W2F-03", "severity": "INFO", "description": "1 self-loop edge introduced in this Graphify update pass, cosmetic extraction artifact, no information loss" }
+  ],
+  "original_findings_reconfirmed_unchanged": ["F-W2-01", "F-W2-02", "F-W2-03", "F-W2-04"],
+  "critical_findings": 0,
+  "high_findings": 0,
+  "gate": "P0.3.2 - APROVADA INDEPENDENTEMENTE PARA WAVE 3"
+}
