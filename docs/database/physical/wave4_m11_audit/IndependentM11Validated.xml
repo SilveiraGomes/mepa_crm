@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" tests="6" assertions="104" errors="5" warnings="0" failures="1" skipped="0" time="72.191744">
+    <testcase name="test_independent_contact_expires_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="51" assertions="9" time="17.169263">
+      <error type="TypeError">Tests\Database\IndependentM11ValidatedTest::test_independent_contact_expires_after_real_lock_wait
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:51</error>
+    </testcase>
+    <testcase name="test_independent_step_expires_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="52" assertions="7" time="17.839069">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\IndependentM11ValidatedTest::test_independent_step_expires_after_real_lock_wait
+Failed asserting that 1 is identical to 0.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:46
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:52</failure>
+    </testcase>
+    <testcase name="test_independent_progress_expires_after_later_step_lock" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="53" assertions="8" time="18.630812">
+      <error type="TypeError">Tests\Database\IndependentM11ValidatedTest::test_independent_progress_expires_after_later_step_lock
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:53</error>
+    </testcase>
+    <testcase name="test_independent_valid_contact_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="54" assertions="8" time="7.430735">
+      <error type="TypeError">Tests\Database\IndependentM11ValidatedTest::test_independent_valid_contact_after_real_lock_wait
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:54</error>
+    </testcase>
+    <testcase name="test_scope_provenance_adversarial" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="55" assertions="4" time="10.033472">
+      <error type="TypeError">Tests\Database\IndependentM11ValidatedTest::test_scope_provenance_adversarial
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:66</error>
+    </testcase>
+    <testcase name="test_clock_and_caller_dates" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="68" assertions="68" time="1.088393">
+      <error type="TypeError">Tests\Database\IndependentM11ValidatedTest::test_clock_and_caller_dates
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:74</error>
+    </testcase>
+  </testsuite>
+</testsuites>

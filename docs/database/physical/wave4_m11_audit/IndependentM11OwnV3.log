@@ -1,0 +1,17 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+.F....                                                              6 / 6 (100%)
+
+Time: 01:50.747, Memory: 16.00 MB
+
+There was 1 failure:
+
+1) Tests\Database\IndependentM11Test::test_independent_step_expires_after_real_lock_wait
+session valid while worker actually blocked
+Failed asserting that '2026-09-14 15:30:35.461904' is less than '2026-09-14 15:30:27.667351'.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php:36
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php:51
+
+FAILURES!
+Tests: 6, Assertions: 99, Failures: 1.

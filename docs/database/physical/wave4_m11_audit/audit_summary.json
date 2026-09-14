@@ -1,0 +1,900 @@
+{
+  "gate": "REJECTED",
+  "W4R-01": "RESOLVED",
+  "W4R-02": "RESOLVED",
+  "W4R-03": "RESOLVED",
+  "W4R-M1R-01": "PARTIALLY_RESOLVED",
+  "TEST-TIMING-01": "OPEN",
+  "new_findings": [
+    {
+      "id": "W4R-M11R-01",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "DISCIPLESHIP_CONFIGURE expires behind audit FK wait; final wrapper checks only OUTREACH_WRITE"
+    },
+    {
+      "id": "W4R-M11R-02",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "progress commits after session expires during audit FK wait following decisive check"
+    },
+    {
+      "id": "W4R-M11R-03",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Original collect has unbounded blocking read and missing failure-path cleanup"
+    }
+  ],
+  "distinct_active_issues": {
+    "CRITICAL": 0,
+    "HIGH": 2,
+    "MEDIUM": 2
+  },
+  "note": "W4R-M1R-01 is the aggregate remediation finding represented by the two HIGH child findings, not an additional distinct issue. TEST-TIMING-01 is the other MEDIUM issue.",
+  "isolated": [
+    {
+      "label": "isolated_8",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_8",
+      "exit": 0,
+      "seconds": 18.78,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_9",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_9",
+      "exit": 1,
+      "seconds": 75.74,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_10",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_10",
+      "exit": 0,
+      "seconds": 12.36,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_11",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_11",
+      "exit": 0,
+      "seconds": 12.84,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_12",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_12",
+      "exit": 0,
+      "seconds": 36.87,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_13",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_13",
+      "exit": 0,
+      "seconds": 14.25,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_14",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_14",
+      "exit": 0,
+      "seconds": 71.57,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_15",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_15",
+      "exit": 0,
+      "seconds": 19.76,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_16",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_16",
+      "exit": 0,
+      "seconds": 13.09,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_17",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_17",
+      "exit": 0,
+      "seconds": 65.68,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_18",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_18",
+      "exit": 0,
+      "seconds": 20.72,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_19",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_19",
+      "exit": 0,
+      "seconds": 24.12,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_20",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_20",
+      "exit": 0,
+      "seconds": 81.65,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_21",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_21",
+      "exit": 0,
+      "seconds": 11.88,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_22",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_22",
+      "exit": 0,
+      "seconds": 66.01,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_23",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_23",
+      "exit": 0,
+      "seconds": 13.14,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_24",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_24",
+      "exit": 0,
+      "seconds": 16.58,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_25",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_25",
+      "exit": 0,
+      "seconds": 13.0,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_26",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_26",
+      "exit": 0,
+      "seconds": 63.69,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_27",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_27",
+      "exit": 0,
+      "seconds": 20.88,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_28",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_28",
+      "exit": 0,
+      "seconds": 22.8,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_29",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_29",
+      "exit": 0,
+      "seconds": 14.15,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_30",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_30",
+      "exit": 0,
+      "seconds": 82.92,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "extra_isolated_1",
+      "exit": 0,
+      "seconds": 12.827446222305298,
+      "schema": "mepa_wave3_test_m11_extra_isolated_1",
+      "start": 1789401831.2379982,
+      "end": 1789401844.0654445
+    },
+    {
+      "label": "extra_isolated_2",
+      "exit": 0,
+      "seconds": 12.531676769256592,
+      "schema": "mepa_wave3_test_m11_extra_isolated_2",
+      "start": 1789401844.3965812,
+      "end": 1789401856.928258
+    },
+    {
+      "label": "extra_isolated_3",
+      "exit": 0,
+      "seconds": 11.83172059059143,
+      "schema": "mepa_wave3_test_m11_extra_isolated_3",
+      "start": 1789401857.3266008,
+      "end": 1789401869.1583214
+    },
+    {
+      "label": "extra_isolated_4",
+      "exit": 0,
+      "seconds": 35.19239664077759,
+      "schema": "mepa_wave3_test_m11_extra_isolated_4",
+      "start": 1789401869.4845197,
+      "end": 1789401904.6769164
+    },
+    {
+      "label": "extra_isolated_5",
+      "exit": 0,
+      "seconds": 64.47604274749756,
+      "schema": "mepa_wave3_test_m11_extra_isolated_5",
+      "start": 1789401905.0660822,
+      "end": 1789401969.542125
+    },
+    {
+      "label": "extra_isolated_6",
+      "exit": 0,
+      "seconds": 11.812291383743286,
+      "schema": "mepa_wave3_test_m11_extra_isolated_6",
+      "start": 1789401969.8319,
+      "end": 1789401981.6441913
+    },
+    {
+      "label": "extra_isolated_7",
+      "exit": 0,
+      "seconds": 33.55944609642029,
+      "schema": "mepa_wave3_test_m11_extra_isolated_7",
+      "start": 1789401981.9097447,
+      "end": 1789402015.4691908
+    }
+  ],
+  "loaded": [
+    {
+      "label": "loaded_1",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_1",
+      "exit": 0,
+      "seconds": 22.93,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_2",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_2",
+      "exit": 0,
+      "seconds": 75.82,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_3",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_3",
+      "exit": 0,
+      "seconds": 24.79,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_4",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_4",
+      "exit": 0,
+      "seconds": 19.33,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_5",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_5",
+      "exit": 0,
+      "seconds": 16.38,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_6",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_6",
+      "exit": 0,
+      "seconds": 37.43,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_7",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_7",
+      "exit": 0,
+      "seconds": 73.33,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_8",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_8",
+      "exit": 0,
+      "seconds": 67.24,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_9",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_9",
+      "exit": 0,
+      "seconds": 66.38,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "loaded_10",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_loaded_10",
+      "exit": 0,
+      "seconds": 68.83,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    }
+  ],
+  "parallel": [
+    {
+      "label": "parallel_2",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_parallel_2",
+      "exit": 0,
+      "seconds": 73.46,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "parallel_1",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_parallel_1",
+      "exit": 1,
+      "seconds": 82.54,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    }
+  ],
+  "candidate_runs": [
+    {
+      "label": "isolated_1",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_1",
+      "exit": 0,
+      "seconds": 12.57,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_2",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_2",
+      "exit": 0,
+      "seconds": 63.39,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_3",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_3",
+      "exit": 0,
+      "seconds": 20.76,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_4",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_4",
+      "exit": 0,
+      "seconds": 67.18,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_5",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_5",
+      "exit": 1,
+      "seconds": 74.02,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_6",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_6",
+      "exit": 0,
+      "seconds": 15.94,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_7",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_7",
+      "exit": 0,
+      "seconds": 16.57,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_8",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_8",
+      "exit": 0,
+      "seconds": 18.78,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_9",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_9",
+      "exit": 1,
+      "seconds": 75.74,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_10",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_10",
+      "exit": 0,
+      "seconds": 12.36,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_11",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_11",
+      "exit": 0,
+      "seconds": 12.84,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_12",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_12",
+      "exit": 0,
+      "seconds": 36.87,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_13",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_13",
+      "exit": 0,
+      "seconds": 14.25,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_14",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_14",
+      "exit": 0,
+      "seconds": 71.57,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_15",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_15",
+      "exit": 0,
+      "seconds": 19.76,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_16",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_16",
+      "exit": 0,
+      "seconds": 13.09,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_17",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_17",
+      "exit": 0,
+      "seconds": 65.68,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_18",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_18",
+      "exit": 0,
+      "seconds": 20.72,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_19",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_19",
+      "exit": 0,
+      "seconds": 24.12,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_20",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_20",
+      "exit": 0,
+      "seconds": 81.65,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_21",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_21",
+      "exit": 0,
+      "seconds": 11.88,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_22",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_22",
+      "exit": 0,
+      "seconds": 66.01,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_23",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_23",
+      "exit": 0,
+      "seconds": 13.14,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_24",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_24",
+      "exit": 0,
+      "seconds": 16.58,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_25",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_25",
+      "exit": 0,
+      "seconds": 13.0,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_26",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_26",
+      "exit": 0,
+      "seconds": 63.69,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_27",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_27",
+      "exit": 0,
+      "seconds": 20.88,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_28",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_28",
+      "exit": 0,
+      "seconds": 22.8,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_29",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_29",
+      "exit": 0,
+      "seconds": 14.15,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "isolated_30",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_isolated_30",
+      "exit": 0,
+      "seconds": 82.92,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    }
+  ],
+  "qualification": {
+    "reason": "Early filtered runs overlapped development of independent probes; not counted as isolated. No failures removed and no retry of a failed repetition.",
+    "excluded_from_isolated": [
+      "isolated_1",
+      "isolated_2",
+      "isolated_3",
+      "isolated_4",
+      "isolated_5",
+      "isolated_6",
+      "isolated_7"
+    ],
+    "aux_end": 1789400275.92743,
+    "additional_runs": [
+      {
+        "label": "extra_isolated_1",
+        "exit": 0,
+        "seconds": 12.827446222305298,
+        "schema": "mepa_wave3_test_m11_extra_isolated_1",
+        "start": 1789401831.2379982,
+        "end": 1789401844.0654445
+      },
+      {
+        "label": "extra_isolated_2",
+        "exit": 0,
+        "seconds": 12.531676769256592,
+        "schema": "mepa_wave3_test_m11_extra_isolated_2",
+        "start": 1789401844.3965812,
+        "end": 1789401856.928258
+      },
+      {
+        "label": "extra_isolated_3",
+        "exit": 0,
+        "seconds": 11.83172059059143,
+        "schema": "mepa_wave3_test_m11_extra_isolated_3",
+        "start": 1789401857.3266008,
+        "end": 1789401869.1583214
+      },
+      {
+        "label": "extra_isolated_4",
+        "exit": 0,
+        "seconds": 35.19239664077759,
+        "schema": "mepa_wave3_test_m11_extra_isolated_4",
+        "start": 1789401869.4845197,
+        "end": 1789401904.6769164
+      },
+      {
+        "label": "extra_isolated_5",
+        "exit": 0,
+        "seconds": 64.47604274749756,
+        "schema": "mepa_wave3_test_m11_extra_isolated_5",
+        "start": 1789401905.0660822,
+        "end": 1789401969.542125
+      },
+      {
+        "label": "extra_isolated_6",
+        "exit": 0,
+        "seconds": 11.812291383743286,
+        "schema": "mepa_wave3_test_m11_extra_isolated_6",
+        "start": 1789401969.8319,
+        "end": 1789401981.6441913
+      },
+      {
+        "label": "extra_isolated_7",
+        "exit": 0,
+        "seconds": 33.55944609642029,
+        "schema": "mepa_wave3_test_m11_extra_isolated_7",
+        "start": 1789401981.9097447,
+        "end": 1789402015.4691908
+      }
+    ],
+    "qualified_isolated": [
+      "isolated_8",
+      "isolated_9",
+      "isolated_10",
+      "isolated_11",
+      "isolated_12",
+      "isolated_13",
+      "isolated_14",
+      "isolated_15",
+      "isolated_16",
+      "isolated_17",
+      "isolated_18",
+      "isolated_19",
+      "isolated_20",
+      "isolated_21",
+      "isolated_22",
+      "isolated_23",
+      "isolated_24",
+      "isolated_25",
+      "isolated_26",
+      "isolated_27",
+      "isolated_28",
+      "isolated_29",
+      "isolated_30",
+      "extra_isolated_1",
+      "extra_isolated_2",
+      "extra_isolated_3",
+      "extra_isolated_4",
+      "extra_isolated_5",
+      "extra_isolated_6",
+      "extra_isolated_7"
+    ]
+  },
+  "source_preservation": {
+    "changed": [],
+    "status": "PASS",
+    "files": 533
+  },
+  "strict_parity": {
+    "mode": "INFORMATION_SCHEMA",
+    "engine": "8.4.11",
+    "status": "STRICT_PARITY_PASS",
+    "scope": "Complete W1/W2/M1.1/W3/W4 catalogue parity plus explicit durable transfer history and guard",
+    "tables": 123,
+    "columns": 1068,
+    "foreign_keys": 255,
+    "checks": 81,
+    "unique": 115,
+    "public_id": 32,
+    "cascade": 0,
+    "unexpected_drift": 0,
+    "errors": []
+  },
+  "graph": {
+    "nodes": 3439,
+    "edges": 5714,
+    "dangling": 0,
+    "graph_sha256": "6297fdc8ebe94a2b45669836fc3e3fde24dfa126667f69019bb0955e16133bd0",
+    "mutated": false,
+    "queries": [
+      {
+        "concept": "EvangelismService::run",
+        "expanded": [
+          "evangelism",
+          "service",
+          "run"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "DomainClock",
+        "expanded": [
+          "domain",
+          "clock"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "ChildParticipationSafetyGate",
+        "expanded": [
+          "child",
+          "participation",
+          "safety",
+          "gate"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "DiscipleshipEnrollmentScope",
+        "expanded": [
+          "discipleship",
+          "enrollment",
+          "scope"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "campaign",
+        "expanded": [
+          "evangelism",
+          "campaign"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "contact",
+        "expanded": [
+          "evangelism",
+          "contact"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "followup",
+        "expanded": [
+          "evangelism",
+          "followup"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "decision",
+        "expanded": [
+          "evangelism",
+          "decision"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "track",
+        "expanded": [
+          "evangelism",
+          "track"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "step",
+        "expanded": [
+          "evangelism",
+          "step"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "enroll",
+        "expanded": [
+          "evangelism",
+          "enroll"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "integrate",
+        "expanded": [
+          "evangelism",
+          "integrate"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      },
+      {
+        "concept": "progress",
+        "expanded": [
+          "evangelism",
+          "progress"
+        ],
+        "exit": 0,
+        "sources_visible": true
+      }
+    ]
+  },
+  "barrier_isolation": {
+    "runs": [
+      {
+        "label": "parallel_2",
+        "suite": "WaveThreeCheckinConcurrencyTest",
+        "schema": "mepa_wave3_test_m11_parallel_2",
+        "exit": 0,
+        "seconds": 73.46,
+        "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+      },
+      {
+        "label": "parallel_1",
+        "suite": "WaveThreeCheckinConcurrencyTest",
+        "schema": "mepa_wave3_test_m11_parallel_1",
+        "exit": 1,
+        "seconds": 82.54,
+        "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+      }
+    ],
+    "new_barrier_directories": [
+      "mepa_wave3_barrier_b00b42d7f901e0e4",
+      "mepa_wave3_barrier_fdd8d9ca08a7cb5a"
+    ],
+    "count": 2,
+    "two_schemas_observed_simultaneously": true,
+    "same_namespace_collision": false,
+    "source_namespace": "mepa_wave3_barrier_ + bin2hex(random_bytes(8))",
+    "note": "Suite FAIL is lock contention, not file namespace collision. Captured both schemas independently waiting on their own PRIMARY locks."
+  }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" tests="6" assertions="99" errors="0" warnings="0" failures="1" skipped="0" time="89.612531">
+    <testcase name="test_independent_contact_expires_after_real_lock_wait" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="50" assertions="9" time="20.848765"/>
+    <testcase name="test_independent_step_expires_after_real_lock_wait" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="51" assertions="2" time="24.080715">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\IndependentM11Test::test_independent_step_expires_after_real_lock_wait
+session valid while worker actually blocked
+Failed asserting that '2026-09-14 15:30:35.461904' is less than '2026-09-14 15:30:27.667351'.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php:36
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php:51</failure>
+    </testcase>
+    <testcase name="test_independent_progress_expires_after_later_step_lock" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="52" assertions="8" time="18.606634"/>
+    <testcase name="test_independent_valid_contact_after_real_lock_wait" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="53" assertions="8" time="20.262053"/>
+    <testcase name="test_scope_provenance_adversarial" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="54" assertions="4" time="4.477333"/>
+    <testcase name="test_clock_and_caller_dates" class="Tests\Database\IndependentM11Test" classname="Tests.Database.IndependentM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11Test.php" line="67" assertions="68" time="1.337032"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,15 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+F.                                                                  2 / 2 (100%)
+
+Time: 00:32.383, Memory: 14.00 MB
+
+There was 1 failure:
+
+1) Tests\Database\AdditionalM11Test::test_progress_session_expires_during_audit_fk_wait
+Failed asserting that '2026-09-14 15:31:13.831554' is less than '2026-09-14 15:31:04.023688'.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\AdditionalM11Test.php:17
+
+FAILURES!
+Tests: 2, Assertions: 20, Failures: 1.

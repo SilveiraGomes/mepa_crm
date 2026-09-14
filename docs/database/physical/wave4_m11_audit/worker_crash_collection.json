@@ -1,0 +1,5 @@
+{
+  "exit": 0,
+  "stdout": "{\"accepted\":false,\"assertion\":\"PHPUnit\\\\Framework\\\\ExpectationFailedException\",\"message\":\"Worker must converge: {\\\"worker_error\\\":\\\"UNEXPECTED\\\"}\\n\\nFailed asserting that 3 is identical to 0.\",\"done_exists\":true}",
+  "stderr": ""
+}

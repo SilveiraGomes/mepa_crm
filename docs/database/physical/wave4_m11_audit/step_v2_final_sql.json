@@ -1,0 +1,7 @@
+{
+  "case": "IndependentM11OwnV2/test_independent_step_expires_after_real_lock_wait",
+  "note": "This method passed in V2 although other V2 methods had monitoring precondition failures. Its per-instance evidence was overwritten by later method; JUnit and SQL retained.",
+  "sql": "SELECT id,expires_at,revoked_at FROM mepa_wave4_test_m11_ownv2.auth_sessions WHERE id=2; SELECT id,code FROM mepa_wave4_test_m11_ownv2.discipleship_tracks WHERE id=2; SELECT COUNT(*) FROM mepa_wave4_test_m11_ownv2.discipleship_steps WHERE track_id=2; SELECT COUNT(*) FROM mepa_wave4_test_m11_ownv2.audit_logs WHERE entity_type='discipleship_steps' AND entity_id IN (SELECT id FROM mepa_wave4_test_m11_ownv2.discipleship_steps WHERE track_id=2);",
+  "output": "id\texpires_at\trevoked_at\n2\t2026-09-14 15:28:38.240770\tNULL\nid\tcode\n2\tSYNTHETIC_212920c444dd7047\nCOUNT(*)\n0\nCOUNT(*)\n0\n",
+  "exit": 0
+}

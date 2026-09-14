@@ -1,0 +1,16 @@
+{
+    "writers": [
+        "campaign",
+        "contact",
+        "followup",
+        "decision",
+        "track",
+        "step",
+        "enroll",
+        "integrate",
+        "progress"
+    ],
+    "result": "DENIED",
+    "rows_delta": 0,
+    "audit_delta": 0
+}

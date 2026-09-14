@@ -1,0 +1,6 @@
+UTC_TIMESTAMP(6)	NAME	COUNT	STATUS
+2026-09-14 16:06:59.721949	lock_deadlocks	0	enabled
+2026-09-14 16:06:59.721949	lock_timeouts	35	enabled
+2026-09-14 16:06:59.721949	lock_row_lock_current_waits	0	enabled
+2026-09-14 16:06:59.721949	lock_row_lock_time	8386704	enabled
+2026-09-14 16:06:59.721949	lock_row_lock_waits	2274	enabled

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" tests="1" assertions="9" errors="0" warnings="0" failures="0" skipped="0" time="1.687324">
+    <testcase name="test_same_person_different_sessions_do_not_share_a_checkin_lock" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="149" assertions="9" time="1.687324"/>
+  </testsuite>
+</testsuites>

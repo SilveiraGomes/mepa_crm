@@ -1,0 +1,7 @@
+{
+    "cross_unit": "DENIED",
+    "missing": "DENIED",
+    "unrelated": "IGNORED",
+    "same_scope": "PASS",
+    "ambiguous": "DENIED"
+}

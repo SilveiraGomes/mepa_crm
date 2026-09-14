@@ -1,0 +1,16 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+F                                                                   1 / 1 (100%)
+
+Time: 00:59.126, Memory: 16.00 MB
+
+There was 1 failure:
+
+1) Tests\Database\ConfigureLateLockTest::test_configuration_expiring_while_audit_fk_waits
+ready
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\ConfigureLateLockTest.php:8
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\ConfigureLateLockTest.php:17
+
+FAILURES!
+Tests: 1, Assertions: 1, Failures: 1.

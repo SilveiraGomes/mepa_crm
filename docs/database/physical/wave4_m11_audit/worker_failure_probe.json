@@ -1,0 +1,9 @@
+{
+  "exit": 2,
+  "done_exists": true,
+  "ready_exists": true,
+  "stdout": "{\"domain_error\":\"CONTEXT_MISMATCH\"}\n",
+  "stderr": "",
+  "collector_would_accept": false,
+  "namespace": "mepa_m11_crash_probe_bn0t_yuz"
+}

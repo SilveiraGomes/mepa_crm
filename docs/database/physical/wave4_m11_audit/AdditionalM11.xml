@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\AdditionalM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\AdditionalM11Test.php" tests="2" assertions="20" errors="0" warnings="0" failures="1" skipped="0" time="32.274875">
+    <testcase name="test_progress_session_expires_during_audit_fk_wait" class="Tests\Database\AdditionalM11Test" classname="Tests.Database.AdditionalM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\AdditionalM11Test.php" line="10" assertions="1" time="28.006045">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\AdditionalM11Test::test_progress_session_expires_during_audit_fk_wait
+Failed asserting that '2026-09-14 15:31:13.831554' is less than '2026-09-14 15:31:04.023688'.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\AdditionalM11Test.php:17</failure>
+    </testcase>
+    <testcase name="test_already_expired_all_nine_writers" class="Tests\Database\AdditionalM11Test" classname="Tests.Database.AdditionalM11Test" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\AdditionalM11Test.php" line="23" assertions="19" time="4.268830"/>
+  </testsuite>
+</testsuites>

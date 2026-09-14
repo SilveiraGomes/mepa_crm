@@ -1,0 +1,21 @@
+{
+  "container": "mepa-wave4-m11-independent-mysql",
+  "id": "83d8726ca7e99b74cd6c74e1b433473e972881e3f5d2c2b543d9b96ebde74656",
+  "created": "2026-09-14T15:20:56.610415394Z",
+  "image": "sha256:85b9bf2e29cf836ecb8c2a15a935d4ba0c606631dff1dd79531a11983c638f2a",
+  "mounts": [
+    {
+      "Type": "volume",
+      "Name": "b9417ce804c47b0c869a67ec41ef3b6fea701e8573ba43284e8b4e37adda17ff",
+      "Source": "/var/lib/docker/volumes/b9417ce804c47b0c869a67ec41ef3b6fea701e8573ba43284e8b4e37adda17ff/_data",
+      "Destination": "/var/lib/mysql",
+      "Driver": "local",
+      "Mode": "",
+      "RW": true,
+      "Propagation": ""
+    }
+  ],
+  "port": 33114,
+  "server": "8.4.11\tONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\tREPEATABLE-READ\t1\tUTC\n",
+  "executor_reused": false
+}

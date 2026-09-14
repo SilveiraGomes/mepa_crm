@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\StepLongLeaseTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\StepLongLeaseTest.php" tests="1" assertions="8" errors="0" warnings="0" failures="0" skipped="0" time="61.537588">
+    <testcase name="test_independent_step_expires_after_real_lock_wait" class="Tests\Database\StepLongLeaseTest" classname="Tests.Database.StepLongLeaseTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\StepLongLeaseTest.php" line="52" assertions="8" time="61.537588"/>
+  </testsuite>
+</testsuites>

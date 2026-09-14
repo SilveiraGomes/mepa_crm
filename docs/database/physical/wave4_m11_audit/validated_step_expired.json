@@ -1,0 +1,20 @@
+{
+    "result": {
+        "result": "ACTOR_NOT_AUTHORIZED",
+        "started": "2026-09-14 15:36:55.748165",
+        "insert_statements": [],
+        "transaction_level": 0
+    },
+    "sql_delta": 0,
+    "audit_delta": 0,
+    "expiry": "2026-09-14 15:37:55.701477",
+    "observed_lock_wait": [
+        {
+            "trx_id": 420399482276968,
+            "trx_state": "LOCK WAIT",
+            "trx_query": "select * from `discipleship_tracks` where `id` = 13 limit 1 lock in share mode",
+            "trx_wait_started": "2026-09-14 15:36:55"
+        }
+    ],
+    "barrier": "mepa_m11_independent_8ab0456901b92de67fc5e5bad1e7f8cd"
+}

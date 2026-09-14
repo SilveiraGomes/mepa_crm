@@ -1,0 +1,22 @@
+{
+    "result": {
+        "result": "PASS",
+        "id": 1,
+        "insert_statements": [
+            "insert into `discipleship_tracks` (`code`, `version`, `name`, `status`, `created_at`) values (?, ?, ?, ?, ?)",
+            "insert into `audit_logs` (`actor_id`, `actor_kind`, `action`, `entity_type`, `entity_id`, `unit_id`, `reason`, `source`, `occurred_at`, `session_id`, `correlation_id`, `after_metadata`, `created_at`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ],
+        "transaction_level": 0
+    },
+    "config_expiry": "2026-09-14 15:31:14.402755",
+    "after": "2026-09-14 15:31:14.773425",
+    "observed_wait": [
+        {
+            "trx_state": "LOCK WAIT",
+            "trx_query": "insert into `audit_logs` (`actor_id`, `actor_kind`, `action`, `entity_type`, `entity_id`, `unit_id`, `reason`, `source`, `occurred_at`, `session_id`, `correlation_id`, `after_metadata`, `created_at`) values (1, 'USER', 'OUTREACH_RECORD_CREATED', 'discipleship_tracks', 1, 1, 'RECORDED', 'WAVE4_DOMAIN', '2026-09-14 15:30:59.625296', 1, '01M2G8P0DKK7FX9VFHHM2PQGXA', NULL, '2026-09-14 15:30:59.625296')"
+        }
+    ],
+    "tracks_delta": 1,
+    "audit_delta": 1,
+    "expected": "ACTOR_NOT_AUTHORIZED and zero writes"
+}

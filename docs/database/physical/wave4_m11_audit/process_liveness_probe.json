@@ -1,0 +1,10 @@
+{
+  "outer_timeout": true,
+  "collector_still_running": true,
+  "done_exists": true,
+  "seconds": 6.009075403213501,
+  "original_method": "WaveThreeCheckinConcurrencyTest::collect via reflection, no code modification",
+  "worker": "controlled sleeping worker after done",
+  "result": "unbounded collection confirmed; requires external timeout",
+  "stderr": ""
+}

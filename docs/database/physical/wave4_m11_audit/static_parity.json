@@ -1,0 +1,15 @@
+{
+  "mode": "STATIC_CAPTURE_NOT_EXECUTION",
+  "engine": null,
+  "status": "STRICT_PARITY_PASS",
+  "scope": "17 Wave 4 catalogue tables",
+  "tables": 17,
+  "columns": 156,
+  "foreign_keys": 48,
+  "checks": 4,
+  "unique": 12,
+  "public_id": 5,
+  "cascade": 0,
+  "unexpected_drift": 0,
+  "errors": []
+}

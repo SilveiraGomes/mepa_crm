@@ -1,0 +1,8 @@
+VERSION()	@@innodb_flush_log_at_trx_commit	@@sync_binlog	@@transaction_isolation	@@foreign_key_checks
+8.4.11	2	0	REPEATABLE-READ	1
+COUNT(*)
+17
+Variable_name	Value
+Innodb_row_lock_current_waits	0
+Innodb_row_lock_time	8386704
+Innodb_row_lock_waits	2274

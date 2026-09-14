@@ -1,0 +1,130 @@
+{
+  "nodes": 3439,
+  "edges": 5714,
+  "dangling": 0,
+  "graph_sha256": "6297fdc8ebe94a2b45669836fc3e3fde24dfa126667f69019bb0955e16133bd0",
+  "mutated": false,
+  "queries": [
+    {
+      "concept": "EvangelismService::run",
+      "expanded": [
+        "evangelism",
+        "service",
+        "run"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "DomainClock",
+      "expanded": [
+        "domain",
+        "clock"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "ChildParticipationSafetyGate",
+      "expanded": [
+        "child",
+        "participation",
+        "safety",
+        "gate"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "DiscipleshipEnrollmentScope",
+      "expanded": [
+        "discipleship",
+        "enrollment",
+        "scope"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "campaign",
+      "expanded": [
+        "evangelism",
+        "campaign"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "contact",
+      "expanded": [
+        "evangelism",
+        "contact"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "followup",
+      "expanded": [
+        "evangelism",
+        "followup"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "decision",
+      "expanded": [
+        "evangelism",
+        "decision"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "track",
+      "expanded": [
+        "evangelism",
+        "track"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "step",
+      "expanded": [
+        "evangelism",
+        "step"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "enroll",
+      "expanded": [
+        "evangelism",
+        "enroll"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "integrate",
+      "expanded": [
+        "evangelism",
+        "integrate"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    },
+    {
+      "concept": "progress",
+      "expanded": [
+        "evangelism",
+        "progress"
+      ],
+      "exit": 0,
+      "sources_visible": true
+    }
+  ]
+}

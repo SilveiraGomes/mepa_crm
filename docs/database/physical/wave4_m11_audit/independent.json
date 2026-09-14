@@ -1,0 +1,8 @@
+{
+    "clock": {
+        "utc": "2026-09-14 15:31:20.191128",
+        "one_microsecond_past": "DENIED",
+        "future": "PASS",
+        "caller_old_future_dates": "DENIED_WHEN_EXPIRED"
+    }
+}

@@ -1,0 +1,4 @@
+{
+  "output": "UTC_TIMESTAMP(6)\tNAME\tCOUNT\tSTATUS\n2026-09-14 15:44:44.192624\tlock_deadlocks\t0\tenabled\n2026-09-14 15:44:44.192624\tlock_timeouts\t13\tenabled\n2026-09-14 15:44:44.192624\tlock_row_lock_current_waits\t0\tenabled\n2026-09-14 15:44:44.192624\tlock_row_lock_time\t1972802\tenabled\n2026-09-14 15:44:44.192624\tlock_row_lock_waits\t453\tenabled\n",
+  "exit": 0
+}

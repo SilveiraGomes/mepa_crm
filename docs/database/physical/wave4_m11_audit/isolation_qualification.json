@@ -1,0 +1,103 @@
+{
+  "reason": "Early filtered runs overlapped development of independent probes; not counted as isolated. No failures removed and no retry of a failed repetition.",
+  "excluded_from_isolated": [
+    "isolated_1",
+    "isolated_2",
+    "isolated_3",
+    "isolated_4",
+    "isolated_5",
+    "isolated_6",
+    "isolated_7"
+  ],
+  "aux_end": 1789400275.92743,
+  "additional_runs": [
+    {
+      "label": "extra_isolated_1",
+      "exit": 0,
+      "seconds": 12.827446222305298,
+      "schema": "mepa_wave3_test_m11_extra_isolated_1",
+      "start": 1789401831.2379982,
+      "end": 1789401844.0654445
+    },
+    {
+      "label": "extra_isolated_2",
+      "exit": 0,
+      "seconds": 12.531676769256592,
+      "schema": "mepa_wave3_test_m11_extra_isolated_2",
+      "start": 1789401844.3965812,
+      "end": 1789401856.928258
+    },
+    {
+      "label": "extra_isolated_3",
+      "exit": 0,
+      "seconds": 11.83172059059143,
+      "schema": "mepa_wave3_test_m11_extra_isolated_3",
+      "start": 1789401857.3266008,
+      "end": 1789401869.1583214
+    },
+    {
+      "label": "extra_isolated_4",
+      "exit": 0,
+      "seconds": 35.19239664077759,
+      "schema": "mepa_wave3_test_m11_extra_isolated_4",
+      "start": 1789401869.4845197,
+      "end": 1789401904.6769164
+    },
+    {
+      "label": "extra_isolated_5",
+      "exit": 0,
+      "seconds": 64.47604274749756,
+      "schema": "mepa_wave3_test_m11_extra_isolated_5",
+      "start": 1789401905.0660822,
+      "end": 1789401969.542125
+    },
+    {
+      "label": "extra_isolated_6",
+      "exit": 0,
+      "seconds": 11.812291383743286,
+      "schema": "mepa_wave3_test_m11_extra_isolated_6",
+      "start": 1789401969.8319,
+      "end": 1789401981.6441913
+    },
+    {
+      "label": "extra_isolated_7",
+      "exit": 0,
+      "seconds": 33.55944609642029,
+      "schema": "mepa_wave3_test_m11_extra_isolated_7",
+      "start": 1789401981.9097447,
+      "end": 1789402015.4691908
+    }
+  ],
+  "qualified_isolated": [
+    "isolated_8",
+    "isolated_9",
+    "isolated_10",
+    "isolated_11",
+    "isolated_12",
+    "isolated_13",
+    "isolated_14",
+    "isolated_15",
+    "isolated_16",
+    "isolated_17",
+    "isolated_18",
+    "isolated_19",
+    "isolated_20",
+    "isolated_21",
+    "isolated_22",
+    "isolated_23",
+    "isolated_24",
+    "isolated_25",
+    "isolated_26",
+    "isolated_27",
+    "isolated_28",
+    "isolated_29",
+    "isolated_30",
+    "extra_isolated_1",
+    "extra_isolated_2",
+    "extra_isolated_3",
+    "extra_isolated_4",
+    "extra_isolated_5",
+    "extra_isolated_6",
+    "extra_isolated_7"
+  ]
+}

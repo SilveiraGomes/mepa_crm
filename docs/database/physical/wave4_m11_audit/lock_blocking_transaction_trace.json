@@ -1,0 +1,5 @@
+{
+  "query": "SELECT UTC_TIMESTAMP(6),r.OBJECT_SCHEMA,r.OBJECT_NAME,r.INDEX_NAME,r.LOCK_MODE,r.LOCK_DATA,rt.trx_query,b.INDEX_NAME,b.LOCK_MODE,b.LOCK_DATA,bt.trx_state,bt.trx_query FROM performance_schema.data_lock_waits w JOIN performance_schema.data_locks r ON r.ENGINE_LOCK_ID=w.REQUESTING_ENGINE_LOCK_ID JOIN performance_schema.data_locks b ON b.ENGINE_LOCK_ID=w.BLOCKING_ENGINE_LOCK_ID LEFT JOIN information_schema.innodb_trx rt ON rt.trx_id=w.REQUESTING_ENGINE_TRANSACTION_ID LEFT JOIN information_schema.innodb_trx bt ON bt.trx_id=w.BLOCKING_ENGINE_TRANSACTION_ID WHERE r.OBJECT_SCHEMA LIKE 'mepa_%test_m11%';",
+  "output": "",
+  "exit": 0
+}

@@ -1,0 +1,29 @@
+{
+  "runs": [
+    {
+      "label": "parallel_2",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_parallel_2",
+      "exit": 0,
+      "seconds": 73.46,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    },
+    {
+      "label": "parallel_1",
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "schema": "mepa_wave3_test_m11_parallel_1",
+      "exit": 1,
+      "seconds": 82.54,
+      "filter": "test_same_person_different_sessions_do_not_share_a_checkin_lock"
+    }
+  ],
+  "new_barrier_directories": [
+    "mepa_wave3_barrier_b00b42d7f901e0e4",
+    "mepa_wave3_barrier_fdd8d9ca08a7cb5a"
+  ],
+  "count": 2,
+  "two_schemas_observed_simultaneously": true,
+  "same_namespace_collision": false,
+  "source_namespace": "mepa_wave3_barrier_ + bin2hex(random_bytes(8))",
+  "note": "Suite FAIL is lock contention, not file namespace collision. Captured both schemas independently waiting on their own PRIMARY locks."
+}

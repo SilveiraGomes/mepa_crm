@@ -1,0 +1,23 @@
+{
+    "result": {
+        "result": "ACTOR_NOT_AUTHORIZED",
+        "started": "2026-09-14 15:33:58.650341",
+        "insert_statements": [
+            "insert into `outreach_contacts` (`campaign_id`, `person_id`, `assigned_to_person_id`, `status`, `created_at`) values (?, ?, ?, ?, ?)",
+            "insert into `audit_logs` (`actor_id`, `actor_kind`, `action`, `entity_type`, `entity_id`, `unit_id`, `reason`, `source`, `occurred_at`, `session_id`, `correlation_id`, `after_metadata`, `created_at`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ],
+        "transaction_level": 0
+    },
+    "sql_delta": 0,
+    "audit_delta": 0,
+    "expiry": "2026-09-14 15:34:13.590419",
+    "observed_lock_wait": [
+        {
+            "trx_id": 37154,
+            "trx_state": "LOCK WAIT",
+            "trx_query": "select * from `people` where `id` = 23 limit 1 for update",
+            "trx_wait_started": "2026-09-14 15:33:58"
+        }
+    ],
+    "barrier": "mepa_m11_independent_70ed0f59feb781629458853103388cde"
+}

@@ -1,0 +1,19 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+.F....                                                              6 / 6 (100%)
+
+Time: 01:33.062, Memory: 14.00 MB
+
+There was 1 failure:
+
+1) Tests\Database\IndependentM11ValidatedTest::test_independent_step_expires_after_real_lock_wait
+real target LOCK WAIT not observed
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:17
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:36
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:52
+
+FAILURES!
+Tests: 6, Assertions: 99, Failures: 1.
+
+Supplemental StepLongLease completed; see StepLongLease.log.

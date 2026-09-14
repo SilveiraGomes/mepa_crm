@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" tests="1" assertions="3" errors="0" warnings="0" failures="1" skipped="0" time="60.867990">
+    <testcase name="test_same_person_different_sessions_do_not_share_a_checkin_lock" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="149" assertions="3" time="60.867990">
+      <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock
+Independent session worker did not signal completion (harness fail-safe)
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:188</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

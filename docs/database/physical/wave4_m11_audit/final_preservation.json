@@ -1,0 +1,9 @@
+{
+  "unexpected_source_changes": [],
+  "source_status": "PASS",
+  "files": 533,
+  "gate_original_prefix_preserved": true,
+  "graph_hash_preserved": true,
+  "report_last_line": "P0.3.4 \u2014 CONTINUA N\u00c3O APROVADA PARA WAVE 5",
+  "regression_table_delimiter_present": true
+}

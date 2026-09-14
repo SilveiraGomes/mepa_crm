@@ -1,0 +1,27 @@
+{
+    "result": {
+        "result": "PASS",
+        "id": 3,
+        "started": "2026-09-14 15:32:35.387300",
+        "insert_statements": [
+            "insert into `discipleship_progress` (`enrollment_id`, `step_id`, `completed_at`, `status`, `created_at`) values (?, ?, ?, ?, ?)",
+            "insert into `audit_logs` (`actor_id`, `actor_kind`, `action`, `entity_type`, `entity_id`, `unit_id`, `reason`, `source`, `occurred_at`, `session_id`, `correlation_id`, `after_metadata`, `created_at`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        ],
+        "transaction_level": 0
+    },
+    "expiry": "2026-09-14 15:32:49.833964",
+    "after": "2026-09-14 15:32:50.008035",
+    "observed_wait": [
+        {
+            "trx_state": "LOCK WAIT",
+            "trx_query": "insert into `audit_logs` (`actor_id`, `actor_kind`, `action`, `entity_type`, `entity_id`, `unit_id`, `reason`, `source`, `occurred_at`, `session_id`, `correlation_id`, `after_metadata`, `created_at`) values (11, 'USER', 'OUTREACH_RECORD_CREATED', 'discipleship_progress', 3, 11, 'RECORDED', 'WAVE4_DOMAIN', '2026-09-14 15:32:35.709771', 11, '01M2G8RY82T80E9AMQYCGJEP33', NULL, '2026-09-14 15:32:35.709771')"
+        },
+        {
+            "trx_state": "LOCK WAIT",
+            "trx_query": "select * from `discipleship_tracks` where `id` = 11 limit 1 lock in share mode"
+        }
+    ],
+    "progress_delta": 1,
+    "audit_delta": 1,
+    "expected": "DENIED, zero writes"
+}

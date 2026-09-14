@@ -1,0 +1,53 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+EFEEEE                                                              6 / 6 (100%)
+
+Time: 01:12.319, Memory: 14.00 MB
+
+There were 5 errors:
+
+1) Tests\Database\IndependentM11ValidatedTest::test_independent_contact_expires_after_real_lock_wait
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:51
+
+2) Tests\Database\IndependentM11ValidatedTest::test_independent_progress_expires_after_later_step_lock
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:53
+
+3) Tests\Database\IndependentM11ValidatedTest::test_independent_valid_contact_after_real_lock_wait
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:48
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:54
+
+4) Tests\Database\IndependentM11ValidatedTest::test_scope_provenance_adversarial
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:66
+
+5) Tests\Database\IndependentM11ValidatedTest::test_clock_and_caller_dates
+TypeError: Unsupported operand types: string + string
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:10
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:74
+
+--
+
+There was 1 failure:
+
+1) Tests\Database\IndependentM11ValidatedTest::test_independent_step_expires_after_real_lock_wait
+Failed asserting that 1 is identical to 0.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:46
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:52
+
+ERRORS!
+Tests: 6, Assertions: 104, Errors: 5, Failures: 1.

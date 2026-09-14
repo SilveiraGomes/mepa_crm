@@ -1,0 +1,6 @@
+{
+  "schema": "mepa_wave4_test_m11_wavefourchildcheckinboundarytest",
+  "query": "USE mepa_wave4_test_m11_wavefourchildcheckinboundarytest; SELECT v.session_id,v.child_person_id,COUNT(*) AS visits,(SELECT COUNT(*) FROM event_checkins c WHERE c.session_id=v.session_id AND c.person_id=v.child_person_id) AS checkins,(SELECT COUNT(*) FROM event_attendance a WHERE a.session_id=v.session_id AND a.person_id=v.child_person_id) AS attendance FROM child_custody_visits v GROUP BY v.session_id,v.child_person_id; SELECT COUNT(*) AS orphan_visits FROM child_custody_visits v LEFT JOIN event_attendance a ON a.session_id=v.session_id AND a.person_id=v.child_person_id LEFT JOIN event_checkins c ON c.id=a.checkin_id WHERE a.id IS NULL OR c.id IS NULL; SELECT COUNT(*) AS protected_attendance_without_custody FROM event_attendance a JOIN child_profiles p ON p.person_id=a.person_id LEFT JOIN child_custody_visits v ON v.session_id=a.session_id AND v.child_person_id=a.person_id WHERE v.id IS NULL;",
+  "output": "session_id\tchild_person_id\tvisits\tcheckins\tattendance\n1\t1\t1\t1\t1\n8\t30\t1\t1\t1\n9\t34\t1\t1\t1\n10\t38\t1\t1\t1\n11\t42\t1\t1\t1\norphan_visits\n0\nprotected_attendance_without_custody\n0\n",
+  "exit": 0
+}

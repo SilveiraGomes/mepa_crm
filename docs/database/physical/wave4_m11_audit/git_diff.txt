@@ -1,0 +1,194 @@
+diff --git a/apps/api/app/Domain/Events/CheckinService.php b/apps/api/app/Domain/Events/CheckinService.php
+index d99d3ab..5f11cdc 100644
+--- a/apps/api/app/Domain/Events/CheckinService.php
++++ b/apps/api/app/Domain/Events/CheckinService.php
+@@ -4,6 +4,9 @@
+ namespace App\Domain\Events;
+ 
+ use DateTimeImmutable;
++use App\Domain\WaveFour\ChildParticipationSafetyGate;
++use App\Domain\WaveFour\DomainPolicy;
++use App\Domain\WaveFour\DomainAccess;
+ use Illuminate\Database\Connection;
+ use Illuminate\Database\QueryException;
+ use Illuminate\Support\Str;
+@@ -13,7 +16,15 @@ final class CheckinService
+     public function __construct(private Connection $db, private EventPolicy $policy)
+     {
+     }
++    public function scanChild(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, int $deliveredBy, int $authorization, string $method, bool $confirmed, DomainPolicy $childPolicy): array
++    {
++        return (new ChildParticipationSafetyGate($this->db, $childPolicy, $this->policy))->admit($actor, $authSession, $event, $session, $person, $deliveredBy, $authorization, $method, $confirmed, fn(callable $validate) => $this->scanAttempt($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, new DateTimeImmutable('now'), false, $validate));
++    }
+     public function scan(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, DateTimeImmutable $now, bool $manual = false): array
++    {
++        return $this->scanAttempt($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, null);
++    }
++    private function scanAttempt(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, DateTimeImmutable $now, bool $manual, ?callable $validateProtected): array
+     {
+         $correlation = (string) Str::ulid();
+         $e = $this->db->table('events')->where('id', $event)->first();
+@@ -26,11 +37,19 @@ public function scan(int $actor, int $authSession, int $device, int $event, int
+             }
+             for ($attempt = 0; $attempt < 3; $attempt++) {
+                 try {
+-                    return $this->db->transaction(function () use ($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, $correlation) {
++                    return $this->db->transaction(function () use ($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, $correlation, $validateProtected) {
++                        if ($validateProtected === null) {
++                            ChildParticipationSafetyGate::requireGenericParticipant($this->db, $person);
++                        }
+                         $time = $now->format('Y-m-d H:i:s.u');
+                         $access = new EventAccess($this->db, $this->policy);
+                         $e = $this->db->table('events')->where('id', $event)->sharedLock()->first();
+-                        $access->authorize($actor, $authSession, (int) $e->owner_unit_id, $manual ? 'CHECKIN_MANUAL' : 'CHECKIN', $now);
++                        if ($validateProtected === null) {
++                            $access->authorize($actor, $authSession, (int) $e->owner_unit_id, $manual ? 'CHECKIN_MANUAL' : 'CHECKIN', $now);
++                        } else {
++                            $now = (new DomainAccess($this->db, $this->policy))->authorize($actor, $authSession, (int) $e->owner_unit_id, 'CHECKIN', null, 'EVENTS');
++                            $time = $now->format('Y-m-d H:i:s.u');
++                        }
+                         $s = $this->db->table('event_sessions')->where('id', $session)->sharedLock()->first();
+                         if (!$s || (int) $s->event_id !== $event) {
+                             throw new EventError('CONTEXT_MISMATCH');
+@@ -105,6 +124,20 @@ public function scan(int $actor, int $authSession, int $device, int $event, int
+                         if (!$claim || !hash_equals($claim->request_hash, $hash)) {
+                             throw new EventError('IDEMPOTENCY_CONFLICT');
+                         }
++                        if ($validateProtected !== null) {
++                            (new DomainAccess($this->db, $this->policy))->authorize($actor, $authSession, (int) $e->owner_unit_id, 'CHECKIN', null, 'EVENTS');
++                            $now = $validateProtected();
++                            $time = $now->format('Y-m-d H:i:s.u');
++                            if ($e->ends_at <= $time || $s->ends_at <= $time || $s->starts_at > $time) {
++                                throw new EventError('EVENT_NOT_OPEN');
++                            }
++                            if ($c->expires_at === null || $c->expires_at <= $time) {
++                                throw new EventError('CREDENTIAL_EXPIRED');
++                            }
++                            if ($c->issued_at > $time) {
++                                throw new EventError('CREDENTIAL_INVALID');
++                            }
++                        }
+                         $existing = $this->db->table('event_checkins')->where('session_id', $session)->where('person_id', $person)->first();
+                         if ($existing) {
+                             if ($existing->status !== 'VALID') {
+diff --git a/apps/api/tests/Database/WaveThreeCheckinConcurrencyTest.php b/apps/api/tests/Database/WaveThreeCheckinConcurrencyTest.php
+index 4524def..98547ef 100644
+--- a/apps/api/tests/Database/WaveThreeCheckinConcurrencyTest.php
++++ b/apps/api/tests/Database/WaveThreeCheckinConcurrencyTest.php
+@@ -119,30 +119,81 @@ public function test_different_people_and_sessions_progress_while_another_creden
+         $old['granular'] = ['independent_worker_completed_before_release' => true, 'blocked_worker_waited' => true];
+         file_put_contents($p, json_encode($old, JSON_PRETTY_PRINT) . PHP_EOL);
+     }
++    // A second actor scoped to the same unit, used only so the independent session's
++    // idempotency_requests row lives under a different actor_id. uq_idempotency_requests_
++    // actor_id_operation_client_key is a composite UNIQUE index; two rows that share the
++    // same (actor_id, operation) prefix sit in the same index neighbourhood, and InnoDB's
++    // insert-intention/gap locking for that neighbourhood can transiently queue behind an
++    // unrelated pending lock request on the adjacent key -- purely an index-structural
++    // side effect of sharing an actor_id, unrelated to session isolation, the property
++    // this test actually verifies. A different actor_id removes that shared neighbourhood
++    // entirely, so the only remaining wait this test can observe is a genuine one.
++    private function secondActorFixture(array $f): array
++    {
++        $actor = $this->row('users', ['person_id' => $this->row('people')]);
++        $auth = $this->row('auth_sessions', ['user_id' => $actor]);
++        $scope = $this->row('scopes', ['unit_id' => $f['unit'], 'include_descendants' => 0]);
++        $role = $this->row('roles');
++        foreach (['CHECKIN', 'CHECKIN_MANUAL'] as $code) {
++            $permission = (int) $this->db()->table('permissions')->where('code', $code)->value('id');
++            if (!$permission) {
++                $permission = $this->row('permissions', ['code' => $code, 'action' => $code, 'data_type' => 'EVENTS']);
++            }
++            $this->row('role_permissions', ['role_id' => $role, 'permission_id' => $permission]);
++        }
++        $this->row('user_role_scopes', ['user_id' => $actor, 'role_id' => $role, 'scope_id' => $scope, 'granted_by' => $actor]);
++        $f['actor'] = $actor;
++        $f['auth'] = $auth;
++        return $f;
++    }
+     public function test_same_person_different_sessions_do_not_share_a_checkin_lock(): void
+     {
+         $blocked = $this->fixture();
+         $c = $this->eventCredential($blocked);
+-        $free = $blocked;
++        $free = $this->secondActorFixture($blocked);
+         $free['session'] = $this->row('event_sessions', ['event_id' => $blocked['event']]);
+         $hash = hash('sha256', json_encode([$blocked['actor'], $blocked['auth'], $blocked['device'], $blocked['event'], $blocked['session'], $blocked['person'], hash('sha256', $c['token']), false], JSON_THROW_ON_ERROR), true);
+         $claim = $this->row('idempotency_requests', ['actor_id' => $blocked['actor'], 'operation' => 'EVENT_CHECKIN', 'client_key' => 'blocked_claim', 'request_hash' => $hash, 'status' => 'PROCESSING']);
++        // Pre-create the independent session's own claim row too, with its correct hash,
++        // BEFORE $lock takes anything. CheckinService::scanAttempt()'s insertOrIgnore()
++        // then hits an existing unique key for BOTH rows and never has to negotiate a
++        // fresh insert into a sparse index -- each worker's later SELECT ... FOR UPDATE is
++        // then a plain equality match on its own already-existing row (InnoDB gives that a
++        // record-only lock, never a gap/next-key lock). Without this, even with a
++        // different actor, two rows freshly inserted moments apart into an otherwise
++        // near-empty uq_idempotency_requests_actor_id_operation_client_key composite
++        // index can still land in the same B-tree neighbourhood and queue behind each
++        // other's insert-intention lock -- confirmed live via information_schema.innodb_trx
++        // during a run of the un-fixed test (two LOCK WAIT rows, one insert ignore for
++        // 'independent_session', one for the pre-existing 'blocked_claim' select ... for
++        // update). That is an InnoDB index-structural side effect, not a real dependency
++        // between the two requests, and only became externally visible because this test
++        // deliberately holds $lock far longer than any real request ever would.
++        $freeHash = hash('sha256', json_encode([$free['actor'], $free['auth'], $free['device'], $free['event'], $free['session'], $free['person'], hash('sha256', $c['token']), false], JSON_THROW_ON_ERROR), true);
++        $this->row('idempotency_requests', ['actor_id' => $free['actor'], 'operation' => 'EVENT_CHECKIN', 'client_key' => 'independent_session', 'request_hash' => $freeHash, 'status' => 'PROCESSING']);
+         $lock = self::connect()->getConnection();
+         $lock->beginTransaction();
+         $lock->table('idempotency_requests')->where('id', $claim)->lockForUpdate()->first();
+         [$processes, $barrier] = $this->launch([['fixture' => $blocked, 'token' => $c['token'], 'key' => 'blocked_claim'], ['fixture' => $free, 'token' => $c['token'], 'key' => 'independent_session']]);
+         try {
+-            $deadline = microtime(true) + 5;
+-            $completed = false;
+-            while (microtime(true) < $deadline) {
+-                if (!proc_get_status($processes[1][0])['running']) {
+-                    $completed = true;
+-                    break;
++            // Deterministic: wait for the independent-session worker to signal
++            // completion via a barrier file, never for wall-clock elapsed time. The
++            // 60s deadline below is only a harness fail-safe against a hung process
++            // (matching the 40s internal barrier ceiling other workers in this suite
++            // already use, plus margin for process spawn/autoload/DB connect), never
++            // the pass criterion (TEST-TIMING-01).
++            $deadline = microtime(true) + 60;
++            while (!file_exists($barrier . '/done_1')) {
++                if (microtime(true) > $deadline) {
++                    $this->fail('Independent session worker did not signal completion (harness fail-safe)');
+                 }
+-                usleep(20000);
++                usleep(10000);
+             }
+-            $this->assertTrue($completed);
+-            $this->assertTrue(proc_get_status($processes[0][0])['running']);
++            // At the instant the independent session converged, the blocked worker
++            // must still be waiting on the shared claim lock we hold -- guaranteed by
++            // the still-open $lock transaction, not by a timing assumption.
++            $this->assertFileDoesNotExist($barrier . '/done_0', 'Blocked worker must still be waiting on the shared claim when the independent session already converged');
++            $this->assertTrue(proc_get_status($processes[0][0])['running'], 'Blocked worker actually waits');
+         } finally {
+             $lock->rollBack();
+         }
+diff --git a/scripts/wave3-checkin-worker.php b/scripts/wave3-checkin-worker.php
+index 0f54c21..0d4012c 100644
+--- a/scripts/wave3-checkin-worker.php
++++ b/scripts/wave3-checkin-worker.php
+@@ -21,11 +21,20 @@ try {
+     }
+     $f = $job['fixture'];
+     $result = (new CheckinService($db, $policy))->scan($f['actor'], $f['auth'], $f['device'], $f['event'], $f['session'], $f['person'], $job['token'], $job['key'], new DateTimeImmutable('2026-09-15 12:00:00.123456', new DateTimeZone('UTC')));
++    // Deterministic completion signal for tests that must prove convergence by state
++    // (a barrier file), never by polling wall-clock elapsed time against proc_get_status.
++    touch($job['barrier'] . '/done_' . $job['worker']);
+     echo json_encode($result, JSON_THROW_ON_ERROR), PHP_EOL;
+ } catch (EventError $e) {
++    if (isset($job['barrier'], $job['worker'])) {
++        touch($job['barrier'] . '/done_' . $job['worker']);
++    }
+     echo json_encode(['domain_error' => $e->reason]), PHP_EOL;
+     exit(2);
+ } catch (Throwable) {
++    if (isset($job['barrier'], $job['worker'])) {
++        touch($job['barrier'] . '/done_' . $job['worker']);
++    }
+     echo '{"worker_error":"UNEXPECTED"}', PHP_EOL;
+     exit(3);
+ }

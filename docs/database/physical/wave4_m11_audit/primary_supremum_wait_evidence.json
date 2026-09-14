@@ -1,0 +1,207 @@
+[
+  {
+    "sample": 0,
+    "sql_output": "2026-09-14 15:38:38.487467\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:38.487467\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 1,
+    "sql_output": "2026-09-14 15:38:41.263247\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:41.263247\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 2,
+    "sql_output": "2026-09-14 15:38:43.814047\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:43.814047\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 3,
+    "sql_output": "2026-09-14 15:38:46.582746\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:46.582746\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 4,
+    "sql_output": "2026-09-14 15:38:49.072108\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:49.072108\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 5,
+    "sql_output": "2026-09-14 15:38:51.648366\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:51.648366\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 6,
+    "sql_output": "2026-09-14 15:38:54.054887\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:54.054887\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 7,
+    "sql_output": "2026-09-14 15:38:56.537507\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:56.537507\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 8,
+    "sql_output": "2026-09-14 15:38:59.465815\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:38:59.465815\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 9,
+    "sql_output": "2026-09-14 15:39:02.468905\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:02.468905\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 10,
+    "sql_output": "2026-09-14 15:39:04.894138\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:04.894138\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 11,
+    "sql_output": "2026-09-14 15:39:07.330287\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:07.330287\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 12,
+    "sql_output": "2026-09-14 15:39:09.802050\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:09.802050\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 13,
+    "sql_output": "2026-09-14 15:39:12.298639\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:12.298639\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 14,
+    "sql_output": "2026-09-14 15:39:14.970988\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:14.970988\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 15,
+    "sql_output": "2026-09-14 15:39:17.490288\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:17.490288\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 16,
+    "sql_output": "2026-09-14 15:39:19.851403\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:19.851403\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 17,
+    "sql_output": "2026-09-14 15:39:22.225061\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:22.225061\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 18,
+    "sql_output": "2026-09-14 15:39:24.640502\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:39:24.640502\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 19,
+    "sql_output": "2026-09-14 15:39:27.225126\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n2026-09-14 15:39:27.225126\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n",
+    "exit": 0
+  },
+  {
+    "sample": 20,
+    "sql_output": "2026-09-14 15:39:30.087606\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n2026-09-14 15:39:30.087606\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n",
+    "exit": 0
+  },
+  {
+    "sample": 21,
+    "sql_output": "2026-09-14 15:39:32.621163\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n2026-09-14 15:39:32.621163\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n",
+    "exit": 0
+  },
+  {
+    "sample": 22,
+    "sql_output": "2026-09-14 15:39:34.969365\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n2026-09-14 15:39:34.969365\tmepa_wave3_test_m11_isolated_9\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n",
+    "exit": 0
+  },
+  {
+    "sample": 62,
+    "sql_output": "2026-09-14 15:41:16.076553\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:16.076553\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 63,
+    "sql_output": "2026-09-14 15:41:18.907701\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:18.907701\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 64,
+    "sql_output": "2026-09-14 15:41:21.993264\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:21.993264\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 65,
+    "sql_output": "2026-09-14 15:41:24.828765\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:24.828765\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 66,
+    "sql_output": "2026-09-14 15:41:27.230169\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:27.230169\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 67,
+    "sql_output": "2026-09-14 15:41:29.776774\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:29.776774\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 68,
+    "sql_output": "2026-09-14 15:41:33.025054\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:33.025054\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 69,
+    "sql_output": "2026-09-14 15:41:35.882274\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:35.882274\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 70,
+    "sql_output": "2026-09-14 15:41:38.336569\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:38.336569\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 71,
+    "sql_output": "2026-09-14 15:41:40.830099\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:40.830099\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 72,
+    "sql_output": "2026-09-14 15:41:43.266264\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:43.266264\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 73,
+    "sql_output": "2026-09-14 15:41:45.730801\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:45.730801\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 74,
+    "sql_output": "2026-09-14 15:41:48.321895\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:48.321895\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 75,
+    "sql_output": "2026-09-14 15:41:50.957845\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:50.957845\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 76,
+    "sql_output": "2026-09-14 15:41:53.405211\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:53.405211\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 77,
+    "sql_output": "2026-09-14 15:41:55.845841\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:55.845841\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 78,
+    "sql_output": "2026-09-14 15:41:58.288351\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:41:58.288351\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  },
+  {
+    "sample": 79,
+    "sql_output": "2026-09-14 15:42:01.017508\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tselect * from `idempotency_requests` where `actor_id` = 1 and `operation` = 'EVENT_CHECKIN' and\tidempotency_requests\tPRIMARY\tX,REC_NOT_GAP\t1\tPRIMARY\tX,REC_NOT_GAP\t1\n2026-09-14 15:42:01.017508\tmepa_wave3_test_m11_isolated_14\tLOCK WAIT\tinsert ignore into `idempotency_requests` (`actor_id`, `operation`, `client_key`, `request_hash\tidempotency_requests\tPRIMARY\tX,INSERT_INTENTION\tsupremum pseudo-record\tPRIMARY\tX\tsupremum pseudo-record\n",
+    "exit": 0
+  }
+]

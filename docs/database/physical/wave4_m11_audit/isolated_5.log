@@ -1,0 +1,15 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+F                                                                   1 / 1 (100%)
+
+Time: 01:13.492, Memory: 16.00 MB
+
+There was 1 failure:
+
+1) Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock
+Independent session worker did not signal completion (harness fail-safe)
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:188
+
+FAILURES!
+Tests: 1, Assertions: 3, Failures: 1.

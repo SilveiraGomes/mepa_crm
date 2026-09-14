@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" tests="6" assertions="99" errors="0" warnings="0" failures="1" skipped="0" time="92.949701">
+    <testcase name="test_independent_contact_expires_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="51" assertions="9" time="27.292150"/>
+    <testcase name="test_independent_step_expires_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="52" assertions="2" time="26.038753">
+      <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Database\IndependentM11ValidatedTest::test_independent_step_expires_after_real_lock_wait
+real target LOCK WAIT not observed
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:17
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:36
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php:52</failure>
+    </testcase>
+    <testcase name="test_independent_progress_expires_after_later_step_lock" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="53" assertions="8" time="17.850505"/>
+    <testcase name="test_independent_valid_contact_after_real_lock_wait" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="54" assertions="8" time="17.275900"/>
+    <testcase name="test_scope_provenance_adversarial" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="55" assertions="4" time="3.252896"/>
+    <testcase name="test_clock_and_caller_dates" class="Tests\Database\IndependentM11ValidatedTest" classname="Tests.Database.IndependentM11ValidatedTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\IndependentM11ValidatedTest.php" line="68" assertions="68" time="1.239497"/>
+  </testsuite>
+</testsuites>

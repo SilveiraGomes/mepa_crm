@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\ConfigureLateLockTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\ConfigureLateLockTest.php" tests="1" assertions="1" errors="0" warnings="0" failures="1" skipped="0" time="10.383818">
+    <testcase name="test_configuration_expiring_while_audit_fk_waits" class="Tests\Database\ConfigureLateLockTest" classname="Tests.Database.ConfigureLateLockTest" file="C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\ConfigureLateLockTest.php" line="9" assertions="1" time="10.383818">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\ConfigureLateLockTest::test_configuration_expiring_while_audit_fk_waits
+Failed asserting that '2026-09-14 15:28:47.376727' is less than '2026-09-14 15:28:42.955844'.
+
+C:\xampp\htdocs\mepa-crm\scripts\audit-wave4-m11\ConfigureLateLockTest.php:19</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
