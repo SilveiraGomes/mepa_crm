@@ -1,0 +1,10 @@
+{
+  "migrations": 17,
+  "tables": 17,
+  "columns": 156,
+  "foreign_keys": 48,
+  "checks": 4,
+  "unique": 12,
+  "public_id": 5,
+  "cascade": 0
+}

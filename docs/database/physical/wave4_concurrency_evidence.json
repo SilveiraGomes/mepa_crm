@@ -1,0 +1,47 @@
+{
+    "workers_2": {
+        "workers": 2,
+        "checked_out": 1,
+        "already_checked_out": 1,
+        "logical_visits_sql": 1,
+        "checkout_audits_sql": 1,
+        "raw_sql_errors": 0
+    },
+    "workers_10": {
+        "workers": 10,
+        "checked_out": 1,
+        "already_checked_out": 9,
+        "logical_visits_sql": 1,
+        "checkout_audits_sql": 1,
+        "raw_sql_errors": 0
+    },
+    "workers_30": {
+        "workers": 30,
+        "checked_out": 1,
+        "already_checked_out": 29,
+        "logical_visits_sql": 1,
+        "checkout_audits_sql": 1,
+        "raw_sql_errors": 0
+    },
+    "workers_50": {
+        "workers": 50,
+        "checked_out": 1,
+        "already_checked_out": 49,
+        "logical_visits_sql": 1,
+        "checkout_audits_sql": 1,
+        "raw_sql_errors": 0
+    },
+    "revocation_race": {
+        "trials": 20,
+        "checkout_first": 10,
+        "revocation_first": 10,
+        "stale_authorization_after_revocation_commit": 0,
+        "raw_sql_errors": 0
+    },
+    "granularity": {
+        "same_event": true,
+        "same_session": true,
+        "independent_child_completed_before_release": true,
+        "blocked_child_waited": true
+    }
+}

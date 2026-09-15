@@ -1,0 +1,92 @@
+[
+  {
+    "suite": "WaveOnePhysicalTest",
+    "schema": "mepa_wave1_test_independent",
+    "exit": 0,
+    "seconds": 41.34
+  },
+  {
+    "suite": "WaveTwoPhysicalTest",
+    "schema": "mepa_wave2_test_independent",
+    "exit": 0,
+    "seconds": 31.43
+  },
+  {
+    "suite": "WaveTwoConcurrencyTest",
+    "schema": "mepa_wave2_test_independent_number",
+    "exit": 0,
+    "seconds": 19.57
+  },
+  {
+    "suite": "WaveTwoIndependentReconciliationTest",
+    "schema": "mepa_wave2f_test_independent",
+    "exit": 0,
+    "seconds": 30.26
+  },
+  {
+    "suite": "WaveTwoTransferConcurrencyTest",
+    "schema": "mepa_wave2m1_test_independent",
+    "exit": 0,
+    "seconds": 19.96
+  },
+  {
+    "suite": "WaveTwoM1IndependentAuditTest",
+    "schema": "mepa_m1audit_test_independent",
+    "exit": 0,
+    "seconds": 23.04
+  },
+  {
+    "suite": "WaveTwoTransferMigrationSafetyTest",
+    "schema": "mepa_m1safety_test_independent",
+    "exit": 0,
+    "seconds": 128.33
+  },
+  {
+    "suite": "WaveThreePhysicalTest",
+    "schema": "mepa_wave3_test_independent",
+    "exit": 0,
+    "seconds": 90.78
+  },
+  {
+    "suite": "WaveThreeDomainTest",
+    "schema": "mepa_wave3_test_independent_domain",
+    "exit": 0,
+    "seconds": 99.83
+  },
+  {
+    "suite": "WaveThreeCheckinConcurrencyTest",
+    "schema": "mepa_wave3_test_independent_concurrency",
+    "exit": 0,
+    "seconds": 36.38
+  },
+  {
+    "suite": "WaveFourPhysicalTest",
+    "schema": "mepa_wave4_test_independent_physical",
+    "exit": 0,
+    "seconds": 44.09
+  },
+  {
+    "suite": "WaveFourEvangelismTest",
+    "schema": "mepa_wave4_test_independent_evangelism",
+    "exit": 0,
+    "seconds": 19.37
+  },
+  {
+    "suite": "WaveFourChildrenSafetyTest",
+    "schema": "mepa_wave4_test_independent_children",
+    "exit": 0,
+    "seconds": 36.37
+  },
+  {
+    "suite": "WaveFourCheckoutConcurrencyTest",
+    "schema": "mepa_wave4_test_independent_concurrency",
+    "exit": 0,
+    "seconds": 106.85
+  },
+  {
+    "suite": "WaveFourIndependentAuditTest",
+    "schema": "mepa_wave4_test_independent_adversarial",
+    "exit": 0,
+    "seconds": 281.83
+  }
+]

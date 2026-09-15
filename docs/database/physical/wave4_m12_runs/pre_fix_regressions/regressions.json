@@ -1,0 +1,211 @@
+[
+  {
+    "label": "WaveFourCommitAuthorizationTest",
+    "run_id": "123cb0cb14af989c836937c3",
+    "schema": "mepa_wave4_test_m12_123cb0cb14af989c836937c3",
+    "suite": "WaveFourCommitAuthorizationTest",
+    "filter": null,
+    "exit": 1,
+    "seconds": 89.28,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_123cb0cb14af989c836937c3.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_123cb0cb14af989c836937c3.xml"
+  },
+  {
+    "label": "WaveFourProgressCommitBoundaryTest",
+    "run_id": "46a959ed730b0e98857abc66",
+    "schema": "mepa_wave4_test_m12_46a959ed730b0e98857abc66",
+    "suite": "WaveFourProgressCommitBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 38.44,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_46a959ed730b0e98857abc66.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_46a959ed730b0e98857abc66.xml"
+  },
+  {
+    "label": "WaveFourCommitAuthorizationTest",
+    "run_id": "0dd1e093eb001b3253637beb",
+    "schema": "mepa_wave4_test_m12_0dd1e093eb001b3253637beb",
+    "suite": "WaveFourCommitAuthorizationTest",
+    "filter": null,
+    "exit": 1,
+    "seconds": 103.89,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_0dd1e093eb001b3253637beb.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_0dd1e093eb001b3253637beb.xml"
+  },
+  {
+    "label": "WaveFourProgressCommitBoundaryTest",
+    "run_id": "a49acc6c8d67c548baa7e520",
+    "schema": "mepa_wave4_test_m12_a49acc6c8d67c548baa7e520",
+    "suite": "WaveFourProgressCommitBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 42.8,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_a49acc6c8d67c548baa7e520.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_a49acc6c8d67c548baa7e520.xml"
+  },
+  {
+    "label": "WaveFourChildCheckinBoundaryTest",
+    "run_id": "6a58aa7c9b025b43c2ccd381",
+    "schema": "mepa_wave4_test_m12_6a58aa7c9b025b43c2ccd381",
+    "suite": "WaveFourChildCheckinBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 82.28,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildCheckinBoundaryTest_6a58aa7c9b025b43c2ccd381.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildCheckinBoundaryTest_6a58aa7c9b025b43c2ccd381.xml"
+  },
+  {
+    "label": "WaveFourCommitAuthorizationTest",
+    "run_id": "69d92d1a03593245ce022e79",
+    "schema": "mepa_wave4_test_m12_69d92d1a03593245ce022e79",
+    "suite": "WaveFourCommitAuthorizationTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 218.61,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_69d92d1a03593245ce022e79.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCommitAuthorizationTest_69d92d1a03593245ce022e79.xml"
+  },
+  {
+    "label": "WaveFourProgressCommitBoundaryTest",
+    "run_id": "9e09fab13fa852d4b6e4e46a",
+    "schema": "mepa_wave4_test_m12_9e09fab13fa852d4b6e4e46a",
+    "suite": "WaveFourProgressCommitBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 100.09,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_9e09fab13fa852d4b6e4e46a.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourProgressCommitBoundaryTest_9e09fab13fa852d4b6e4e46a.xml"
+  },
+  {
+    "label": "WaveFourChildCheckinBoundaryTest",
+    "run_id": "c720aa8d570a896c1ad88eb0",
+    "schema": "mepa_wave4_test_m12_c720aa8d570a896c1ad88eb0",
+    "suite": "WaveFourChildCheckinBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 106.5,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildCheckinBoundaryTest_c720aa8d570a896c1ad88eb0.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildCheckinBoundaryTest_c720aa8d570a896c1ad88eb0.xml"
+  },
+  {
+    "label": "WaveFourChildrenSafetyTest",
+    "run_id": "1ba3204e9f2763aaa49a0cb5",
+    "schema": "mepa_wave4_test_m12_1ba3204e9f2763aaa49a0cb5",
+    "suite": "WaveFourChildrenSafetyTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 53.16,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildrenSafetyTest_1ba3204e9f2763aaa49a0cb5.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourChildrenSafetyTest_1ba3204e9f2763aaa49a0cb5.xml"
+  },
+  {
+    "label": "WaveFourCheckoutConcurrencyTest",
+    "run_id": "fd674ad0aa52269e0ae3eae2",
+    "schema": "mepa_wave4_test_m12_fd674ad0aa52269e0ae3eae2",
+    "suite": "WaveFourCheckoutConcurrencyTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 112.58,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCheckoutConcurrencyTest_fd674ad0aa52269e0ae3eae2.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourCheckoutConcurrencyTest_fd674ad0aa52269e0ae3eae2.xml"
+  },
+  {
+    "label": "WaveFourTemporalAuthorizationTest",
+    "run_id": "1174908b6ce56c789d21a04b",
+    "schema": "mepa_wave4_test_m12_1174908b6ce56c789d21a04b",
+    "suite": "WaveFourTemporalAuthorizationTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 19.92,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourTemporalAuthorizationTest_1174908b6ce56c789d21a04b.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourTemporalAuthorizationTest_1174908b6ce56c789d21a04b.xml"
+  },
+  {
+    "label": "WaveFourDiscipleshipScopeTest",
+    "run_id": "d14fa947d724deafe8a349bb",
+    "schema": "mepa_wave4_test_m12_d14fa947d724deafe8a349bb",
+    "suite": "WaveFourDiscipleshipScopeTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 16.92,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourDiscipleshipScopeTest_d14fa947d724deafe8a349bb.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourDiscipleshipScopeTest_d14fa947d724deafe8a349bb.xml"
+  },
+  {
+    "label": "WaveFourEvangelismTest",
+    "run_id": "f6f6c0535d672163e966bf57",
+    "schema": "mepa_wave4_test_m12_f6f6c0535d672163e966bf57",
+    "suite": "WaveFourEvangelismTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 68.05,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourEvangelismTest_f6f6c0535d672163e966bf57.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourEvangelismTest_f6f6c0535d672163e966bf57.xml"
+  },
+  {
+    "label": "WaveFourEvangelismTemporalBoundaryTest",
+    "run_id": "3b99bda955fbcc8f42d009b3",
+    "schema": "mepa_wave4_test_m12_3b99bda955fbcc8f42d009b3",
+    "suite": "WaveFourEvangelismTemporalBoundaryTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 28.06,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourEvangelismTemporalBoundaryTest_3b99bda955fbcc8f42d009b3.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourEvangelismTemporalBoundaryTest_3b99bda955fbcc8f42d009b3.xml"
+  },
+  {
+    "label": "WaveFourIndependentAuditM1RTest",
+    "run_id": "5729906f6755f7302be689a8",
+    "schema": "mepa_wave4_test_m12_5729906f6755f7302be689a8",
+    "suite": "WaveFourIndependentAuditM1RTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 54.06,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourIndependentAuditM1RTest_5729906f6755f7302be689a8.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourIndependentAuditM1RTest_5729906f6755f7302be689a8.xml"
+  },
+  {
+    "label": "WaveFourPhysicalTest",
+    "run_id": "e490fae0ab8bf02cd7819d22",
+    "schema": "mepa_wave4_test_m12_e490fae0ab8bf02cd7819d22",
+    "suite": "WaveFourPhysicalTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 45.72,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourPhysicalTest_e490fae0ab8bf02cd7819d22.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveFourPhysicalTest_e490fae0ab8bf02cd7819d22.xml"
+  },
+  {
+    "label": "WaveThreeDomainTest",
+    "run_id": "60e7e5f03e983d857fe7eb68",
+    "schema": "mepa_wave3_test_m12_60e7e5f03e983d857fe7eb68",
+    "suite": "WaveThreeDomainTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 29.55,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreeDomainTest_60e7e5f03e983d857fe7eb68.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreeDomainTest_60e7e5f03e983d857fe7eb68.xml"
+  },
+  {
+    "label": "WaveThreeCheckinConcurrencyTest",
+    "run_id": "467b9b467db3dda14bc74242",
+    "schema": "mepa_wave3_test_m12_467b9b467db3dda14bc74242",
+    "suite": "WaveThreeCheckinConcurrencyTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 35.22,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreeCheckinConcurrencyTest_467b9b467db3dda14bc74242.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreeCheckinConcurrencyTest_467b9b467db3dda14bc74242.xml"
+  },
+  {
+    "label": "WaveThreePhysicalTest",
+    "run_id": "24f1f01d69c10897f6661dc3",
+    "schema": "mepa_wave3_test_m12_24f1f01d69c10897f6661dc3",
+    "suite": "WaveThreePhysicalTest",
+    "filter": null,
+    "exit": 0,
+    "seconds": 27.28,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreePhysicalTest_24f1f01d69c10897f6661dc3.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\regressions_WaveThreePhysicalTest_24f1f01d69c10897f6661dc3.xml"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "container": "mepa-wave4-audit-mysql",
+  "id": "9490de1301e13b32bb69f9bd5ed1cebb8ebde5e3372c6f39a578bba235bc3273",
+  "image": "sha256:85b9bf2e29cf836ecb8c2a15a935d4ba0c606631dff1dd79531a11983c638f2a",
+  "created": "2026-09-14T09:52:44.452105129Z",
+  "mounts": [
+    {
+      "Type": "volume",
+      "Name": "ede4aa1b2c1ab6bb433046527e2e8a766a9a884381cb710043cb2ac5bcae5118",
+      "Source": "/var/lib/docker/volumes/ede4aa1b2c1ab6bb433046527e2e8a766a9a884381cb710043cb2ac5bcae5118/_data",
+      "Destination": "/var/lib/mysql",
+      "Driver": "local",
+      "Mode": "",
+      "RW": true,
+      "Propagation": ""
+    }
+  ],
+  "port": 33104,
+  "sql": "VERSION()\t@@sql_mode\t@@foreign_key_checks\t@@transaction_isolation\n8.4.11\tONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\t1\tREPEATABLE-READ\n",
+  "executor_reused": false,
+  "password_recorded": false
+}

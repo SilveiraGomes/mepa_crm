@@ -1472,6 +1472,8 @@ Departamentos, actividades, presença, check-in, Crianças, Juventude, Mulheres,
 
 Plano de contas, fundos, rubricas, ledger, quotas, contribuições, dízimos, ofertas, caixas, bancos, transferências, orçamento e relatórios.
 
+**Tracking FIN-PAYROLL-01 — Pessoal, Remunerações e Encargos (P4 Financeiro/RH):** antes do encerramento final de P4, verificar se Custos com Pessoal cobre funcionários internos das Direcções, vínculo à estrutura/unidade, salário base, subsídios, 13.º salário quando aplicável, subsídio de férias, INSS/encargos, pensões/reforma, subsídios relacionados com terceira idade quando institucionalmente aplicáveis, outros encargos aprovados, histórico salarial, processamento por período e ligação íntegra ao ledger. Escopo pendente de aprovação; sem implementação na P0.3.4-M1.2.
+
 ## P5 — MEPA Academia
 
 Programas, cursos, turmas, professores, alunos internos/externos, vídeos, avaliações, progresso e certificados.

@@ -1,0 +1,14 @@
+{
+  "phase": "P0.3.4-R",
+  "status": "AUDIT_COMPLETE_GATE_REJECTED",
+  "original_sources_unchanged": 385,
+  "changed": [],
+  "reports_sha256": {
+    "P0.3.4_wave4_audit.md": "9757f0b5c5363a88486843ef6c218fc0f8d64f360cbdc62bae3a7507f2797002",
+    "P0.3.4_wave4_gate.md": "d8c5e9d635be7b1e8e4832912d877dd0964fafae5299a486e847b91a3bc51159"
+  },
+  "graphify_update": "PASS",
+  "graphify_final_query": "PASS",
+  "gate": "REJECTED",
+  "wave5_started": false
+}

@@ -1,0 +1,7 @@
+{
+  "container": "mepa-wave4-audit-mysql",
+  "id": "9490de1301e13b32bb69f9bd5ed1cebb8ebde5e3372c6f39a578bba235bc3273",
+  "state": "exited",
+  "synthetic_volume_retained_for_review": true,
+  "executor_container_untouched": true
+}

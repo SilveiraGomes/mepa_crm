@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveFourCommitAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php" tests="4" assertions="7" errors="0" warnings="0" failures="3" skipped="0" time="79.898259">
+    <testcase name="test_track_configure_expires_during_success_audit_fk_wait" class="Tests\Database\WaveFourCommitAuthorizationTest" classname="Tests.Database.WaveFourCommitAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php" line="113" assertions="1" time="26.389411">
+      <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Database\WaveFourCommitAuthorizationTest::test_track_configure_expires_during_success_audit_fk_wait
+Expected real SQL lock wait on audit_logs
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:59
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:95
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:113</failure>
+    </testcase>
+    <testcase name="test_step_configure_expires_during_success_audit_fk_wait" class="Tests\Database\WaveFourCommitAuthorizationTest" classname="Tests.Database.WaveFourCommitAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php" line="114" assertions="1" time="26.207264">
+      <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Database\WaveFourCommitAuthorizationTest::test_step_configure_expires_during_success_audit_fk_wait
+Expected real SQL lock wait on audit_logs
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:59
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:95
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:114</failure>
+    </testcase>
+    <testcase name="test_campaign_session_expires_during_last_sql_wait_in_generic_run" class="Tests\Database\WaveFourCommitAuthorizationTest" classname="Tests.Database.WaveFourCommitAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php" line="115" assertions="1" time="25.972182">
+      <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Database\WaveFourCommitAuthorizationTest::test_campaign_session_expires_during_last_sql_wait_in_generic_run
+Expected real SQL lock wait on outreach_campaigns
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:59
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:95
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php:115</failure>
+    </testcase>
+    <testcase name="test_worker_crash_fails_and_cleans_barrier" class="Tests\Database\WaveFourCommitAuthorizationTest" classname="Tests.Database.WaveFourCommitAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCommitAuthorizationTest.php" line="116" assertions="4" time="1.329402"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" tests="6" assertions="312" errors="0" warnings="0" failures="1" skipped="0" time="31.035501">
+    <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges" tests="4" assertions="300" errors="0" warnings="0" failures="0" skipped="0" time="21.593113">
+      <testcase name="test_same_person_session_token_converges with data set #0" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="61" assertions="12" time="1.324257"/>
+      <testcase name="test_same_person_session_token_converges with data set #1" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="61" assertions="36" time="2.716573"/>
+      <testcase name="test_same_person_session_token_converges with data set #2" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="61" assertions="96" time="7.281639"/>
+      <testcase name="test_same_person_session_token_converges with data set #3" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="61" assertions="156" time="10.270643"/>
+    </testsuite>
+    <testcase name="test_different_people_and_sessions_progress_while_another_credential_is_locked" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="84" assertions="9" time="3.124475"/>
+    <testcase name="test_same_person_different_sessions_do_not_share_a_checkin_lock" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="122" assertions="3" time="6.317913">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock
+Failed asserting that false is true.
+
+C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:144</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

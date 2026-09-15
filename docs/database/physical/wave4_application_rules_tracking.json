@@ -1,0 +1,256 @@
+{
+  "previous_rules_assigned_implementation_wave_4": 0,
+  "wave4_anonymous_skips": 0,
+  "rules": [
+    {
+      "rule": "self-parent",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false,
+      "rule_id": "W1-APP-01",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule": "cycle",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false,
+      "rule_id": "W1-APP-02",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule": "invalid parent/child type",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false,
+      "rule_id": "W1-APP-03",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule": "second non-CLOSED General Center",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false,
+      "rule_id": "W1-APP-04",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule": "ACTIVE municipality minimum Center",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "OrganizationalStructureService",
+      "implementation_wave": "P0.4.1 territorial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.1 territorial concurrency/integrity",
+      "source": "docs/reviews/P0.3.1_wave1_gate.md:43",
+      "wave3_skip": false,
+      "rule_id": "W1-APP-05",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule": "ministerial period overlap",
+      "status": "DEFERRED_EXPLICIT",
+      "owner_component": "MinisterialPeriodService",
+      "implementation_wave": "P0.4.2 ministerial service (proposed scheduling; separate authorization required)",
+      "test_wave": "P0.4.2 temporal concurrency",
+      "depends_on": [
+        "D-07",
+        "D-11"
+      ],
+      "wave3_skip": false,
+      "rule_id": "F-W2-02",
+      "reason": "Scheduled outside Wave 4 by previous Gate; no anonymous Wave 4 skip."
+    },
+    {
+      "rule_id": "W4-F07",
+      "rule": "Child profile anchor; one open custody visit per child/session",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest"
+    },
+    {
+      "rule_id": "W4-CTX-01",
+      "rule": "Child/guardian/authorization kind, vigency, revocation and identification",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest"
+    },
+    {
+      "rule_id": "W4-CTX-02",
+      "rule": "Emergency contact belongs to contact Person; relationship concerns child/guardian",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest"
+    },
+    {
+      "rule_id": "W4-CHECKOUT-01",
+      "rule": "Single audited checkout; repeated transition cannot overwrite recipient",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourCheckoutConcurrencyTest_junit.xml",
+      "suite": "WaveFourCheckoutConcurrencyTest"
+    },
+    {
+      "rule_id": "W4-REVOKE-01",
+      "rule": "Authorization revocation and checkout share child profile anchor",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourCheckoutConcurrencyTest_junit.xml",
+      "suite": "WaveFourCheckoutConcurrencyTest"
+    },
+    {
+      "rule_id": "W4-IDENTITY-01",
+      "rule": "Outreach/discipleship/integration and later membership reuse Person",
+      "owner_component": "EvangelismService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourEvangelismTest_junit.xml",
+      "suite": "WaveFourEvangelismTest"
+    },
+    {
+      "rule_id": "W4-CONSENT-01",
+      "rule": "Versioned participation consent, revoked_at history preserved",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest",
+      "m1_update": "P0.3.4-R found this rule did not certify entries from the generic CheckinService (W4R-01). P0.3.4-M1 closed that gap in ChildParticipationSafetyGate; see rule_id W4M1-01."
+    },
+    {
+      "rule_id": "W4-SCOPE-01",
+      "rule": "Permission action/data type and unit belong to same grant",
+      "owner_component": "DomainAccess",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest",
+      "m1_update": "P0.3.4-R found this rule did not certify entries from the generic CheckinService (W4R-01). P0.3.4-M1 closed that gap in ChildParticipationSafetyGate; see rule_id W4M1-01."
+    },
+    {
+      "rule_id": "W4-PROGRESS-01",
+      "rule": "Step belongs to enrollment track; integration membership belongs to Person",
+      "owner_component": "EvangelismService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourEvangelismTest_junit.xml",
+      "suite": "WaveFourEvangelismTest"
+    },
+    {
+      "rule_id": "W4-AGE-01",
+      "rule": "Configured age rule creates recommendation, never rewrites membership/attendance",
+      "owner_component": "ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "suite": "WaveFourChildrenSafetyTest"
+    },
+    {
+      "rule_id": "W4-ROLLBACK-01",
+      "rule": "Any Wave 4 data blocks entire rollback before first DROP",
+      "owner_component": "WaveFourMigrations",
+      "implementation_wave": 4,
+      "test_wave": 4,
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Final suite PASS, zero skips; see wave4_WaveFourPhysicalTest_junit.xml",
+      "suite": "WaveFourPhysicalTest"
+    },
+    {
+      "rule_id": "F-W3A-02",
+      "rule": "Governance composition period overlap",
+      "owner_component": "GovernanceMembershipService",
+      "implementation_wave": "Future governance write service; separate scope",
+      "test_wave": "Same service phase; real concurrency",
+      "status": "DEFERRED_EXPLICIT",
+      "reason": "Wave 4 does not add a governance_body_memberships writer; tracking recommendation recorded."
+    },
+    {
+      "rule_id": "W4M1-01",
+      "rule": "The generic event check-in entry (CheckinService::scan) must refuse any person with a child_profiles row and require the ChildrenService/ChildParticipationSafetyGate boundary; that boundary is the sole authority admitting a protected participant, revalidating CHILDREN permission, guardian delivery authorization and unrevoked participation consent under the child_profiles.id anchor before any event_checkins/event_attendance/child_custody_visits row is written.",
+      "owner_component": "ChildParticipationSafetyGate",
+      "enforcement_layer": "Domain service (App\\Domain\\Events\\CheckinService::scanAttempt + App\\Domain\\WaveFour\\ChildParticipationSafetyGate::admit), backend-only, independent of any future controller/job/command caller",
+      "implementation_wave": "P0.3.4-M1",
+      "test_wave": "P0.3.4-M1",
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Closes W4R-01 (HIGH, P0.3.4-R). Direct calls to the generic service for a child_profiles person now throw CHILD_SAFETY_FLOW_REQUIRED before any write; the original bypass scenario (revoked consent, actor without CHILDREN) is preserved as an adversarial test and now denies with zero durable writes.",
+      "suite": "WaveFourChildCheckinBoundaryTest",
+      "supersedes_finding": "W4R-01"
+    },
+    {
+      "rule_id": "W4M1-02",
+      "rule": "discipleship_enrollments has no owner_unit column in the approved catalogue; EvangelismService::progress() must resolve the enrollment's true owning unit from its creation provenance (audit_logs OUTREACH_RECORD_CREATED) via DiscipleshipEnrollmentScope, and authorize the actor against that resolved unit, never against the caller-supplied unit_id.",
+      "owner_component": "DiscipleshipEnrollmentScope",
+      "enforcement_layer": "Domain service (App\\Domain\\WaveFour\\EvangelismService::progress + DiscipleshipEnrollmentScope::resolve)",
+      "implementation_wave": "P0.3.4-M1",
+      "test_wave": "P0.3.4-M1",
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Closes W4R-02 (MEDIUM, P0.3.4-R). An actor scoped only to a different unit is denied ACTOR_NOT_AUTHORIZED even when the Person is also a legitimate contact in that actor's unit and even when the caller passes the true owning unit_id as a parameter; same-unit progress is unaffected.",
+      "suite": "WaveFourDiscipleshipScopeTest",
+      "supersedes_finding": "W4R-02"
+    },
+    {
+      "rule_id": "W4M1-03",
+      "rule": "The decisive server clock for a temporal authorization/consent decision must be sampled (DomainClock::now, DB UTC_TIMESTAMP(6)) only after the child_profiles.id anchor lock is acquired and immediately before the write, never captured earlier and reused after a lock wait.",
+      "owner_component": "DomainClock",
+      "enforcement_layer": "Domain service (App\\Domain\\WaveFour\\DomainAccess::authorize with now=null, App\\Domain\\WaveFour\\ChildrenService::checkout, ChildParticipationSafetyGate::admit)",
+      "implementation_wave": "P0.3.4-M1",
+      "test_wave": "P0.3.4-M1",
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Closes W4R-03 (MEDIUM, P0.3.4-R). A deterministic real-process/real-lock test holds the child anchor across the authorization's expiry window; the waiting checkout is denied PICKUP_NOT_AUTHORIZED because its decisive clock is sampled only after the anchor is finally acquired. A microsecond-boundary test confirms DATETIME(6) precision is not truncated.",
+      "suite": "WaveFourTemporalAuthorizationTest",
+      "supersedes_finding": "W4R-03"
+    },
+    {
+      "rule_id": "W4R-M1R-01",
+      "rule": "EvangelismService::run() authorizes the actor's session/grant with a clock (EvangelismService::now(), a PHP-process clock, not DomainClock) sampled before any lock wait performed by the wrapped operation, and never re-validates after the wait. Affects campaign/contact/followup/decision/track/step/enroll/integrate/history; progress() was already fixed correctly by W4M1-03 with a post-lock, null-now decisive re-check.",
+      "owner_component": "EvangelismService",
+      "enforcement_layer": "Domain service (App\\Domain\\WaveFour\\EvangelismService::run, ::track, ::step, ::progress)",
+      "implementation_wave": "P0.3.4-M1.1",
+      "test_wave": "P0.3.4-M1.1",
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "Discovered and confirmed independently during the P0.3.4-M1-R re-audit via a real-process/real-lock test: a session whose expires_at passes purely from wall-clock time elapsing during an unrelated row-lock wait (no competing writer needed) still completed the write. Fixed in P0.3.4-M1.1: EvangelismService::now() now delegates to DomainClock; run() performs a decisive re-authorize (now=null) immediately after $work() returns, covering every lock the wrapped operation took; track()/step()'s own additional DISCIPLESHIP_CONFIGURE check was made decisive too (and moved after the track lock in step()); progress() gained a second decisive re-check after its step lock and participation check. The exact reproduction scenario (session expires during a real lock wait) now denies with zero writes for both a run()-backed writer (contact()) and a track/step-backed writer (step()); an already-expired session is denied immediately, with zero writes, for all nine writers.",
+      "suite": "WaveFourEvangelismTemporalBoundaryTest",
+      "evidence": "docs/database/physical/wave4_m1r_evangelism_clock_evidence.json",
+      "supersedes_finding": "W4R-M1R-01"
+    },
+    {
+      "rule_id": "TEST-TIMING-01",
+      "rule": "WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock synchronized by polling proc_get_status()->running against a fixed 5-second wall-clock deadline for a real PHP subprocess (spawn + autoload + DB connect + full generic check-in validation) to complete, instead of a deterministic state signal.",
+      "owner_component": "WaveThreeCheckinConcurrencyTest",
+      "enforcement_layer": "Test harness only (apps/api/tests/Database/WaveThreeCheckinConcurrencyTest.php, scripts/wave3-checkin-worker.php); not a production code or security finding",
+      "implementation_wave": "P0.3.4-M1.1",
+      "test_wave": "P0.3.4-M1.1",
+      "status": "IMPLEMENTED_TESTED",
+      "reason": "P0.3.4-M1-R measured a 50% failure rate in full isolation (10/10 runs). Root cause traced live via information_schema.innodb_trx: the two workers' idempotency_requests rows shared the same (actor_id, operation) prefix of the composite UNIQUE KEY uq_idempotency_requests_actor_id_operation_client_key; on a near-empty table, InnoDB's insert-intention/gap locking for that shared B-tree neighbourhood could transiently queue an unrelated worker's INSERT IGNORE behind the artificially-long-held lock the test itself takes -- an InnoDB index-structural side effect, not a security/correctness race (the independent worker always eventually converges correctly) and not reproducible under any real, millisecond-lived production transaction. Fixed: (1) the shared worker script now signals completion via a deterministic barrier file (done_<worker>) instead of proc_get_status polling; (2) the independent worker uses a second actor (further isolation); (3) both idempotency claim rows are now pre-created by the test itself, with correct hashes, before the artificial lock is taken, so neither worker's INSERT IGNORE ever needs to negotiate a fresh key into a near-empty index -- each hits an existing row and gets a plain record lock. 20/20 isolated runs pass (0 failures, versus 50% before); the loaded full suite (6 tests) also passes. The 60s deadline that remains is a harness fail-safe only, never the pass criterion.",
+      "suite": "WaveThreeCheckinConcurrencyTest"
+    }
+  ]
+}

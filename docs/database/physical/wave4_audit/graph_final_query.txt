@@ -1,0 +1,87 @@
+Graph: graphify-out/graph.json (2903 nodes) | Traversal: BFS depth=2 | Start: ['REJECTED Wave 4 gate', 'Gate Final Still Pending After D-01 Closure', 'W4R-01 HIGH: generic event check-in bypasses child safety'] | 33 nodes found
+
+[i] Complete answer over budget: all 33 nodes and 50 edges shown (~3665 tokens vs the requested ~2500-token budget). Edges are never dropped once every node fits, so this is already the full answer — raising --budget further will not shrink it. Narrow with context_filter=['call'] or use get_node for a specific symbol to reduce size instead.
+
+NODE REJECTED Wave 4 gate [src=docs/reviews/P0.3.4_wave4_gate.md loc=None community=Auditoria independente Wave 4]
+NODE Gate Final Still Pending After D-01 Closure [src=docs/reviews/P0.2_D01_resolution.md loc=None community=Planeamento por ondas]
+NODE W4R-01 HIGH: generic event check-in bypasses child safety [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE P0.3.4-R independent Wave 4 audit [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE ChildrenService custody boundary [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE P0.2-F Gate Addendum (Re-audit Update) [src=docs/reviews/P0.2_database_gate.md loc=None community=Planeamento por ondas]
+NODE P0.3.4-R independent Wave 4 gate [src=docs/reviews/P0.3.4_wave4_gate.md loc=None community=Auditoria independente Wave 4]
+NODE Green adversarial tests prove reproduced findings [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE P0.3.4 not approved for Wave 5 [src=docs/reviews/P0.3.4_wave4_gate.md loc=None community=Auditoria independente Wave 4]
+NODE child_custody_visits custody record [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Child consent and CHILDREN permission enforcement [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Shared Wave 3 event_attendance [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE CheckinService.scan generic domain entry [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE P0.2-F Differential Database Architecture Re-audit [src=docs/reviews/P0.2_database_reaudit.md loc=None community=Planeamento por ondas]
+NODE D-01: Internal PK / External ID Strategy (RESOLVED) [src=docs/database/09_open_database_decisions.md loc=None community=Planeamento por ondas]
+NODE P0.2 Database Architecture Gate Conclusion [src=docs/reviews/P0.2_database_gate.md loc=None community=Planeamento por ondas]
+NODE W4R-03 MEDIUM: checkout validates stale server time after actor lock wait [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE W4R-02 MEDIUM: discipleship enrollment lacks origin scope [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE W4-F07 and W4-CHECKOUT-01 are APPLICATION_ENFORCED [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE P0.2-F Later Test Evidence Note [src=docs/database/08_migration_strategy.md loc=None community=Planeamento por ondas]
+NODE Independent checkout concurrency 2 10 30 50 PASS [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Eleven children demonstrate child profile lock granularity PASS [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Declared database PK FK UNIQUE CHECK constraints remain enforced [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Durable Wave 4 data blocks rollback before first DROP [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Same Person reused across visitor contact disciple integration membership [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Independent fresh upgrade empty rollback remigrate and strict parity PASS [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Independent revocation and consent serialization PASS [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Decision and baptism do not create membership [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE Graphify source map with eleven independent queries [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE New MySQL 8.4.11 container, anonymous volume and virgin schemas [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE D-02 through D-12 preserved and not closed [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE 119 tests 2463 assertions zero failures five historical skips [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+NODE W4R-04 INFO: dedicated admission workflow is absent [src=docs/reviews/P0.3.4_wave4_audit.md loc=None community=Auditoria independente Wave 4]
+EDGE Gate Final Still Pending After D-01 Closure --references [INFERRED]--> P0.2-F Gate Addendum (Re-audit Update)
+EDGE Green adversarial tests prove reproduced findings --references [EXTRACTED]--> W4R-01 HIGH: generic event check-in bypasses child safety
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> W4R-01 HIGH: generic event check-in bypasses child safety
+EDGE W4R-01 HIGH: generic event check-in bypasses child safety --references [EXTRACTED]--> Child consent and CHILDREN permission enforcement
+EDGE W4R-01 HIGH: generic event check-in bypasses child safety --references [EXTRACTED]--> child_custody_visits custody record
+EDGE W4R-01 HIGH: generic event check-in bypasses child safety --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE W4R-01 HIGH: generic event check-in bypasses child safety --references [EXTRACTED]--> Shared Wave 3 event_attendance
+EDGE W4R-01 HIGH: generic event check-in bypasses child safety --references [EXTRACTED]--> CheckinService.scan generic domain entry
+EDGE P0.3.4 not approved for Wave 5 --references [EXTRACTED]--> W4R-01 HIGH: generic event check-in bypasses child safety
+EDGE P0.3.4-R independent Wave 4 gate --references [EXTRACTED]--> REJECTED Wave 4 gate
+EDGE P0.3.4 not approved for Wave 5 --references [EXTRACTED]--> W4R-02 MEDIUM: discipleship enrollment lacks origin scope
+EDGE P0.3.4 not approved for Wave 5 --references [EXTRACTED]--> W4R-03 MEDIUM: checkout validates stale server time after actor lock wait
+EDGE Green adversarial tests prove reproduced findings --references [EXTRACTED]--> W4R-02 MEDIUM: discipleship enrollment lacks origin scope
+EDGE Green adversarial tests prove reproduced findings --references [EXTRACTED]--> W4R-03 MEDIUM: checkout validates stale server time after actor lock wait
+EDGE W4-F07 and W4-CHECKOUT-01 are APPLICATION_ENFORCED --references [EXTRACTED]--> child_custody_visits custody record
+EDGE W4-F07 and W4-CHECKOUT-01 are APPLICATION_ENFORCED --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE Independent checkout concurrency 2 10 30 50 PASS --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE Eleven children demonstrate child profile lock granularity PASS --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE Independent revocation and consent serialization PASS --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE W4R-03 MEDIUM: checkout validates stale server time after actor lock wait --references [EXTRACTED]--> ChildrenService custody boundary
+EDGE P0.3.4-R independent Wave 4 gate --references [EXTRACTED]--> W4R-02 MEDIUM: discipleship enrollment lacks origin scope
+EDGE P0.3.4-R independent Wave 4 gate --references [EXTRACTED]--> W4R-03 MEDIUM: checkout validates stale server time after actor lock wait
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> W4-F07 and W4-CHECKOUT-01 are APPLICATION_ENFORCED
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Independent checkout concurrency 2 10 30 50 PASS
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Eleven children demonstrate child profile lock granularity PASS
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Declared database PK FK UNIQUE CHECK constraints remain enforced
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Decision and baptism do not create membership
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Durable Wave 4 data blocks rollback before first DROP
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Graphify source map with eleven independent queries
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> New MySQL 8.4.11 container, anonymous volume and virgin schemas
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> D-02 through D-12 preserved and not closed
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Same Person reused across visitor contact disciple integration membership
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Independent fresh upgrade empty rollback remigrate and strict parity PASS
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> 119 tests 2463 assertions zero failures five historical skips
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Independent revocation and consent serialization PASS
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> W4R-02 MEDIUM: discipleship enrollment lacks origin scope
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> W4R-03 MEDIUM: checkout validates stale server time after actor lock wait
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> W4R-04 INFO: dedicated admission workflow is absent
+EDGE P0.2-F Gate Addendum (Re-audit Update) --rationale_for [EXTRACTED]--> D-01: Internal PK / External ID Strategy (RESOLVED)
+EDGE P0.2-F Gate Addendum (Re-audit Update) --references [EXTRACTED]--> P0.2 Database Architecture Gate Conclusion
+EDGE P0.2-F Gate Addendum (Re-audit Update) --references [EXTRACTED]--> P0.2-F Differential Database Architecture Re-audit
+EDGE P0.2-F Later Test Evidence Note --conceptually_related_to [INFERRED]--> P0.2-F Gate Addendum (Re-audit Update)
+EDGE P0.2-F Later Test Evidence Note --references [EXTRACTED]--> D-01: Internal PK / External ID Strategy (RESOLVED)
+EDGE P0.2-F Differential Database Architecture Re-audit --references [EXTRACTED]--> P0.2 Database Architecture Gate Conclusion
+EDGE P0.3.4-R independent Wave 4 audit --references [EXTRACTED]--> Green adversarial tests prove reproduced findings
+EDGE W4-F07 and W4-CHECKOUT-01 are APPLICATION_ENFORCED --conceptually_related_to [EXTRACTED]--> Declared database PK FK UNIQUE CHECK constraints remain enforced
+EDGE Independent fresh upgrade empty rollback remigrate and strict parity PASS --references [EXTRACTED]--> Durable Wave 4 data blocks rollback before first DROP
+EDGE P0.3.4-R independent Wave 4 gate --references [EXTRACTED]--> P0.3.4-R independent Wave 4 audit
+EDGE REJECTED Wave 4 gate --references [EXTRACTED]--> W4R-01 HIGH: generic event check-in bypasses child safety
+EDGE P0.3.4-R independent Wave 4 gate --references [EXTRACTED]--> P0.3.4 not approved for Wave 5

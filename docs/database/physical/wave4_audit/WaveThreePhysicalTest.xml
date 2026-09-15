@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreePhysicalTest.php" tests="1" assertions="21" errors="0" warnings="0" failures="0" skipped="0" time="25.189599">
+    <testcase name="test_fresh_populated_upgrade_rollback_and_remigrate_preserve_baseline" class="Tests\Database\WaveThreePhysicalTest" classname="Tests.Database.WaveThreePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveThreePhysicalTest.php" line="33" assertions="21" time="25.189599"/>
+  </testsuite>
+</testsuites>

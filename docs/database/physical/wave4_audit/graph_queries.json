@@ -1,0 +1,132 @@
+{
+  "graph_sha256": "551d3142c5c58d252b31ea5278ce63987e56ba2b160a5b035f644e6e4089828b",
+  "nodes": 2846,
+  "edges": 5184,
+  "dangling": 0,
+  "queries": [
+    {
+      "concept": "outreach campaigns",
+      "expanded": [
+        "outreach",
+        "campaigns"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "outreach_campaigns.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "outreach contacts",
+      "expanded": [
+        "outreach",
+        "contacts"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "outreach_contacts.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "followups",
+      "expanded": [
+        "followups"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "followups.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "decisions",
+      "expanded": [
+        "decisions"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "decisions.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "discipleship",
+      "expanded": [
+        "discipleship"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "discipleship.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "child safety",
+      "expanded": [
+        "child",
+        "safety"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "child_safety.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "guardians/responsibles",
+      "expanded": [
+        "guardian"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "guardians_responsibles.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "consents",
+      "expanded": [
+        "consents",
+        "consent"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "consents.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "pickup authorization",
+      "expanded": [
+        "pickup",
+        "authorization"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "pickup_authorization.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "checkin",
+      "expanded": [
+        "child",
+        "checkin"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "checkin.txt",
+      "status": "PASS"
+    },
+    {
+      "concept": "checkout",
+      "expanded": [
+        "child",
+        "checkout"
+      ],
+      "exit": 0,
+      "wave4_source_visible": true,
+      "output_file": "checkout.txt",
+      "status": "PASS"
+    }
+  ],
+  "executor_counts": {
+    "initial": 2579,
+    "final": 2846
+  },
+  "shrink": false,
+  "force_used": false,
+  "status": "PASS"
+}

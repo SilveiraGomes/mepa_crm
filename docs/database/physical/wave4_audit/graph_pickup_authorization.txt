@@ -1,0 +1,106 @@
+Graph: graphify-out/graph.json (2846 nodes) | Traversal: BFS depth=2 | Start: ['Authorization revocation', '.test_member_and_pass_without_pickup_authorization_are_denied()'] | 38 nodes found
+
+NODE Authorization revocation [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE .test_member_and_pass_without_pickup_authorization_are_denied() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L26 community=Events governance credentials check-in]
+NODE WaveFourChildrenSafetyTest [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L8 community=Events governance credentials check-in]
+NODE ADR 0013 custody and rollback [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Guardian Authorizations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Custody and revocation lock order [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE document [src=docs/database/README.md loc=1 community=Arquitectura e Módulos Oficiais]
+NODE people [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE legal_documents [src=docs/database/physical/P0.3.1_wave1_tables.md loc=None community=Planeamento por ondas]
+NODE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation [src=docs/reviews/P0.3.4_wave4_implementation.md loc=L1 community=Events governance credentials check-in]
+NODE WaveFourCase [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L18 community=Frontend Web Tooling]
+NODE person_relationships [src=docs/database/physical/P0.3.1_wave1_tables.md loc=None community=Laravel Middleware e Providers]
+NODE P0.3.4 Wave 4 physical tables [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 [src=docs/database/12_physical_migration_plan.md loc=None community=Identidade e Árvore Institucional]
+NODE Child Custody Visits [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Person Consents [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Child Profiles [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Custody [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 durable-data rollback guard [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE WaveFourChildrenSafetyTest.php [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L1 community=Events governance credentials check-in]
+NODE Wave 3 CheckinService [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Governança, Património e Storage]
+NODE Checkout [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE .test_unconfigured_vocabularies_fail_closed() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L104 community=Events governance credentials check-in]
+NODE Versioned consents [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE DDL writer-free window [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE In-person identification policy [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Rollback validation [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE .test_age_changes_create_recommendation_without_rewriting_department_or_attendance() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L110 community=Events governance credentials check-in]
+NODE .test_checkout_is_single_append_audited_transition_and_replay_preserves_recipient() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L72 community=Events governance credentials check-in]
+NODE .test_child_and_nonmember_guardians_share_person_family_and_emergency() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L10 community=Events governance credentials check-in]
+NODE .test_consent_is_versioned_and_revoked_without_deletion() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L60 community=Events governance credentials check-in]
+NODE .test_family_and_emergency_context_cannot_reference_unrelated_people() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L97 community=Events governance credentials check-in]
+NODE .test_horizontal_scope_cannot_read_or_checkout_another_congregation() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L89 community=Events governance credentials check-in]
+NODE .test_revoked_actor_and_role_scope_cannot_be_combined_across_units() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L129 community=Events governance credentials check-in]
+NODE .test_revoked_expired_and_future_authorizations_preserve_history() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L46 community=Events governance credentials check-in]
+NODE .test_wrong_child_wrong_purpose_and_missing_identity_are_denied() [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L37 community=Events governance credentials check-in]
+NODE Restore/export and retention policy [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Explicit server configuration [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_member_and_pass_without_pickup_authorization_are_denied() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L26
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Authorization revocation
+EDGE Authorization revocation --references [EXTRACTED]--> Custody and revocation lock order
+EDGE Authorization revocation --references [EXTRACTED]--> Guardian Authorizations
+EDGE Child Custody Visits --references [EXTRACTED]--> Guardian Authorizations
+EDGE Guardian Authorizations --references [EXTRACTED]--> people
+EDGE Guardian Authorizations --references [EXTRACTED]--> legal_documents
+EDGE Guardian Authorizations --references [EXTRACTED]--> person_relationships
+EDGE Wave 4 --references [EXTRACTED]--> Guardian Authorizations
+EDGE document --references [EXTRACTED]--> Guardian Authorizations
+EDGE Guardian Authorizations --semantically_similar_to [INFERRED]--> Person Consents
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Guardian Authorizations
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Wave 3 CheckinService
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Checkout
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Versioned consents
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Custody
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> DDL writer-free window
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> In-person identification policy
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Restore/export and retention policy
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Wave 4 durable-data rollback guard
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Rollback validation
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Explicit server configuration
+EDGE WaveFourChildrenSafetyTest.php --contains [EXTRACTED]--> WaveFourChildrenSafetyTest at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourChildrenSafetyTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_child_and_nonmember_guardians_share_person_family_and_emergency() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L10
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_unconfigured_vocabularies_fail_closed() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L104
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_age_changes_create_recommendation_without_rewriting_department_or_attendance() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L110
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_revoked_actor_and_role_scope_cannot_be_combined_across_units() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L129
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_wrong_child_wrong_purpose_and_missing_identity_are_denied() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L37
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_revoked_expired_and_future_authorizations_preserve_history() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L46
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_consent_is_versioned_and_revoked_without_deletion() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L60
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_checkout_is_single_append_audited_transition_and_replay_preserves_recipient() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L72
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_horizontal_scope_cannot_read_or_checkout_another_congregation() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L89
+EDGE WaveFourChildrenSafetyTest --method [EXTRACTED]--> .test_family_and_emergency_context_cannot_reference_unrelated_people() at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L97
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE Custody --references [EXTRACTED]--> Custody and revocation lock order
+EDGE Custody and revocation lock order --references [EXTRACTED]--> Child Profiles
+EDGE WaveFourChildrenSafetyTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L7
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> WaveFourCase at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Custody and revocation lock order
+EDGE Checkout --references [EXTRACTED]--> Child Custody Visits
+EDGE Versioned consents --references [EXTRACTED]--> Person Consents
+EDGE Custody --references [EXTRACTED]--> In-person identification policy
+EDGE Custody --references [EXTRACTED]--> Child Custody Visits
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> DDL writer-free window
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> P0.3.4 Wave 4 physical tables
+EDGE Rollback validation --references [EXTRACTED]--> Wave 4 durable-data rollback guard
+EDGE Child Custody Visits --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Child Custody Visits
+EDGE document --references [EXTRACTED]--> Child Custody Visits
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Custody Visits
+EDGE Child Profiles --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Child Profiles
+EDGE document --references [EXTRACTED]--> Child Profiles
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Profiles
+EDGE Person Consents --references [EXTRACTED]--> people
+EDGE person_relationships --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> people
+EDGE Person Consents --references [EXTRACTED]--> legal_documents
+EDGE Wave 4 --references [EXTRACTED]--> Person Consents
+EDGE document --references [EXTRACTED]--> Person Consents
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Person Consents
+EDGE person_relationships --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> person_relationships

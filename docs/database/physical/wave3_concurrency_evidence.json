@@ -37,6 +37,9 @@
     },
     "same_person_different_sessions": {
         "independent_session_completed_before_release": true,
-        "shared_actor_and_token": true
+        "shared_actor_and_token": true,
+        "fresh_claims": true,
+        "lock_table": "event_sessions",
+        "run_id": "6cebc1268d07a8554536d63b8f1def29"
     }
 }

@@ -13,7 +13,7 @@
         "collation": "utf8mb4_0900_ai_ci",
         "fk_checks": 1,
         "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
-        "db": "mepa_wave3_test_audit_phys"
+        "db": "mepa_wave3_test_m12_24f1f01d69c10897f6661dc3"
     },
     "innodb": {
         "Engine": "InnoDB",

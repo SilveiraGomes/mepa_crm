@@ -4,6 +4,9 @@ declare (strict_types=1);
 namespace App\Domain\Events;
 
 use DateTimeImmutable;
+use App\Domain\WaveFour\ChildParticipationSafetyGate;
+use App\Domain\WaveFour\DomainPolicy;
+use App\Domain\WaveFour\DomainAccess;
 use Illuminate\Database\Connection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
@@ -13,7 +16,15 @@ final class CheckinService
     public function __construct(private Connection $db, private EventPolicy $policy)
     {
     }
+    public function scanChild(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, int $deliveredBy, int $authorization, string $method, bool $confirmed, DomainPolicy $childPolicy): array
+    {
+        return (new ChildParticipationSafetyGate($this->db, $childPolicy, $this->policy))->admit($actor, $authSession, $event, $session, $person, $deliveredBy, $authorization, $method, $confirmed, fn(callable $validate) => $this->scanAttempt($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, new DateTimeImmutable('now'), false, $validate));
+    }
     public function scan(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, DateTimeImmutable $now, bool $manual = false): array
+    {
+        return $this->scanAttempt($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, null);
+    }
+    private function scanAttempt(int $actor, int $authSession, int $device, int $event, int $session, int $person, string $token, string $clientKey, DateTimeImmutable $now, bool $manual, ?callable $validateProtected): array
     {
         $correlation = (string) Str::ulid();
         $e = $this->db->table('events')->where('id', $event)->first();
@@ -26,11 +37,19 @@ final class CheckinService
             }
             for ($attempt = 0; $attempt < 3; $attempt++) {
                 try {
-                    return $this->db->transaction(function () use ($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, $correlation) {
+                    return $this->db->transaction(function () use ($actor, $authSession, $device, $event, $session, $person, $token, $clientKey, $now, $manual, $correlation, $validateProtected) {
+                        if ($validateProtected === null) {
+                            ChildParticipationSafetyGate::requireGenericParticipant($this->db, $person);
+                        }
                         $time = $now->format('Y-m-d H:i:s.u');
                         $access = new EventAccess($this->db, $this->policy);
                         $e = $this->db->table('events')->where('id', $event)->sharedLock()->first();
-                        $access->authorize($actor, $authSession, (int) $e->owner_unit_id, $manual ? 'CHECKIN_MANUAL' : 'CHECKIN', $now);
+                        if ($validateProtected === null) {
+                            $access->authorize($actor, $authSession, (int) $e->owner_unit_id, $manual ? 'CHECKIN_MANUAL' : 'CHECKIN', $now);
+                        } else {
+                            $now = (new DomainAccess($this->db, $this->policy))->authorize($actor, $authSession, (int) $e->owner_unit_id, 'CHECKIN', null, 'EVENTS');
+                            $time = $now->format('Y-m-d H:i:s.u');
+                        }
                         $s = $this->db->table('event_sessions')->where('id', $session)->sharedLock()->first();
                         if (!$s || (int) $s->event_id !== $event) {
                             throw new EventError('CONTEXT_MISMATCH');
@@ -104,6 +123,20 @@ final class CheckinService
                         $claim = $this->db->table('idempotency_requests')->where('actor_id', $actor)->where('operation', 'EVENT_CHECKIN')->where('client_key', $clientKey)->lockForUpdate()->first();
                         if (!$claim || !hash_equals($claim->request_hash, $hash)) {
                             throw new EventError('IDEMPOTENCY_CONFLICT');
+                        }
+                        if ($validateProtected !== null) {
+                            (new DomainAccess($this->db, $this->policy))->authorize($actor, $authSession, (int) $e->owner_unit_id, 'CHECKIN', null, 'EVENTS');
+                            $now = $validateProtected();
+                            $time = $now->format('Y-m-d H:i:s.u');
+                            if ($e->ends_at <= $time || $s->ends_at <= $time || $s->starts_at > $time) {
+                                throw new EventError('EVENT_NOT_OPEN');
+                            }
+                            if ($c->expires_at === null || $c->expires_at <= $time) {
+                                throw new EventError('CREDENTIAL_EXPIRED');
+                            }
+                            if ($c->issued_at > $time) {
+                                throw new EventError('CREDENTIAL_INVALID');
+                            }
                         }
                         $existing = $this->db->table('event_checkins')->where('session_id', $session)->where('person_id', $person)->first();
                         if ($existing) {

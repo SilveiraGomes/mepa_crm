@@ -1,0 +1,118 @@
+{
+  "files": 28,
+  "errors": 0,
+  "results": [
+    {
+      "file": "apps\\api\\app\\Domain\\WaveFour\\ChildrenService.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\app\\Domain\\WaveFour\\DomainAccess.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\app\\Domain\\WaveFour\\DomainError.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\app\\Domain\\WaveFour\\DomainPolicy.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\app\\Domain\\WaveFour\\EvangelismService.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\tests\\Database\\WaveFourCheckoutConcurrencyTest.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\tests\\Database\\WaveFourChildrenSafetyTest.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\tests\\Database\\WaveFourEvangelismTest.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\tests\\Database\\WaveFourPhysicalTest.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\tests\\Database\\Support\\WaveFourCase.php",
+      "status": 0
+    },
+    {
+      "file": "scripts\\wave4-checkout-worker.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000001_wave4_create_child_profiles.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000002_wave4_create_guardian_authorizations.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000003_wave4_create_person_consents.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000004_wave4_create_child_emergency_contacts.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000005_wave4_create_child_custody_visits.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000006_wave4_create_age_band_rules.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000007_wave4_create_department_transition_recommendations.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000008_wave4_create_outreach_campaigns.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000009_wave4_create_outreach_contacts.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000010_wave4_create_followups.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000011_wave4_create_decisions.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000012_wave4_create_discipleship_tracks.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000013_wave4_create_discipleship_enrollments.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000014_wave4_create_integration_events.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000015_wave4_create_courses.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000016_wave4_create_discipleship_steps.php",
+      "status": 0
+    },
+    {
+      "file": "apps\\api\\database\\migrations\\2026_09_16_000017_wave4_create_discipleship_progress.php",
+      "status": 0
+    }
+  ]
+}

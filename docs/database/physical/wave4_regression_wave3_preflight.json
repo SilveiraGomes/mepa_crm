@@ -1,0 +1,30 @@
+{
+    "status": "READ_ONLY_PREFLIGHT_PASS",
+    "engine": {
+        "family": "MySQL",
+        "numeric": "8.4.11",
+        "minimum": "8.0.16",
+        "supported": true
+    },
+    "server": {
+        "version": "8.4.11",
+        "comment": "MySQL Community Server - GPL",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "fk_checks": 1,
+        "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
+        "db": "mepa_wave3_test_wave4_physical"
+    },
+    "innodb": {
+        "Engine": "InnoDB",
+        "Support": "DEFAULT",
+        "Comment": "Supports transactions, row-level locking, and foreign keys",
+        "Transactions": "YES",
+        "XA": "YES",
+        "Savepoints": "YES"
+    },
+    "check_enforcement": "VERSION_SUPPORTED_NOT_EMPIRICALLY_PROBED",
+    "empirical_qualification": "REQUIRED_IN_ISOLATED_DATABASE_BEFORE_DEPLOYMENT",
+    "tables_examined": 0,
+    "failures": []
+}

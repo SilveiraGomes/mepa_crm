@@ -1,0 +1,110 @@
+{
+    "cross_domain": {
+        "same_person": 3,
+        "followups": 3,
+        "progress": 3,
+        "duplicate_people": 0,
+        "decision_created_membership": false,
+        "admission_boundary": "approved synthetic membership fixture + existing MemberNumberGenerator\/CredentialService; no AdmissionService exists"
+    },
+    "W4R_01": {
+        "reproduced": true,
+        "generic_result": "CHECKED_IN",
+        "consent_revoked": true,
+        "child_permissions": 0,
+        "attendance": 1,
+        "custody_visits": 0,
+        "severity": "HIGH",
+        "test_kind": "REPRODUCTION_ASSERTS_OBSERVED_BUG"
+    },
+    "db_boundary": {
+        "direct_recipient_rewrite_allowed": true,
+        "same_child_session_duplicate_allowed": true,
+        "checkout_and_F07": "APPLICATION_ENFORCED",
+        "tracking": [
+            "W4-F07",
+            "W4-CHECKOUT-01"
+        ],
+        "db_double_delivery_guarantee": false
+    },
+    "independent_workers_2": {
+        "counts": {
+            "ALREADY_CHECKED_OUT": 1,
+            "CHECKED_OUT": 1
+        },
+        "sql_visits": 1,
+        "sql_checkout_audits": 1,
+        "raw_errors": 0
+    },
+    "independent_workers_10": {
+        "counts": {
+            "ALREADY_CHECKED_OUT": 9,
+            "CHECKED_OUT": 1
+        },
+        "sql_visits": 1,
+        "sql_checkout_audits": 1,
+        "raw_errors": 0
+    },
+    "independent_workers_30": {
+        "counts": {
+            "ALREADY_CHECKED_OUT": 29,
+            "CHECKED_OUT": 1
+        },
+        "sql_visits": 1,
+        "sql_checkout_audits": 1,
+        "raw_errors": 0
+    },
+    "independent_workers_50": {
+        "counts": {
+            "ALREADY_CHECKED_OUT": 49,
+            "CHECKED_OUT": 1
+        },
+        "sql_visits": 1,
+        "sql_checkout_audits": 1,
+        "raw_errors": 0
+    },
+    "independent_races": {
+        "pickup_trials": 10,
+        "consent_trials": 10,
+        "both_orders": true,
+        "stale_allow": 0
+    },
+    "independent_granularity": {
+        "same_event": true,
+        "same_session": true,
+        "children": 11,
+        "ten_completed_while_one_locked": true
+    },
+    "independent_checkin": {
+        "workers": 10,
+        "one_checkin": true,
+        "session_B_initial_rows": 0,
+        "explicit_session_B_in": "CHECKED_IN",
+        "orphan_checkout": "CONTEXT_MISMATCH"
+    },
+    "W4R_02": {
+        "reproduced": true,
+        "actor_scope_B_only": true,
+        "enrollment_created_in_A": true,
+        "same_person_contact_in_B": true,
+        "progress_other_unit_allowed": true,
+        "severity": "MEDIUM",
+        "test_kind": "REPRODUCTION_ASSERTS_OBSERVED_SCOPE_GAP"
+    },
+    "independent_rich_rollback": {
+        "all_17_tables_populated": true,
+        "raw_rows_and_ddl_hash_before": "1a86f8ade146f6911c2554d2e35f6215cd2741a6f63f115c6547e08086abee74",
+        "raw_rows_and_ddl_hash_after": "1a86f8ade146f6911c2554d2e35f6215cd2741a6f63f115c6547e08086abee74",
+        "migration_history_in_hash": true,
+        "result": "REFUSED_WITHOUT_LOSS"
+    },
+    "W4R_03": {
+        "reproduced": true,
+        "expiry": "2026-09-14 10:15:00.628069",
+        "db_utc_before_validation_unblocked": "2026-09-14 10:15:03.103891",
+        "recorded_checkout_time": "2026-09-14 10:14:58.642678",
+        "result": "CHECKED_OUT",
+        "severity": "MEDIUM",
+        "test_kind": "REPRODUCTION_ASSERTS_STALE_CLOCK_ALLOW"
+    }
+}

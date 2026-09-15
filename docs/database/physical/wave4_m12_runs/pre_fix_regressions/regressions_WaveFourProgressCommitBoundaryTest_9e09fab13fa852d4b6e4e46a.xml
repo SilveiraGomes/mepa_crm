@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveFourProgressCommitBoundaryTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourProgressCommitBoundaryTest.php" tests="1" assertions="9" errors="0" warnings="0" failures="0" skipped="0" time="63.427937">
+    <testcase name="test_progress_session_expires_during_success_audit_fk_wait_and_rolls_back" class="Tests\Database\WaveFourProgressCommitBoundaryTest" classname="Tests.Database.WaveFourProgressCommitBoundaryTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourProgressCommitBoundaryTest.php" line="14" assertions="9" time="63.427937"/>
+  </testsuite>
+</testsuites>

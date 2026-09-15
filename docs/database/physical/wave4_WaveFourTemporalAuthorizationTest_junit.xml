@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveFourTemporalAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourTemporalAuthorizationTest.php" tests="2" assertions="12" errors="0" warnings="0" failures="0" skipped="0" time="8.194172">
+    <testcase name="test_authorization_expiring_during_lock_wait_is_denied_with_post_lock_clock" class="Tests\Database\WaveFourTemporalAuthorizationTest" classname="Tests.Database.WaveFourTemporalAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourTemporalAuthorizationTest.php" line="64" assertions="9" time="5.662697"/>
+    <testcase name="test_authorization_boundary_respects_microsecond_precision" class="Tests\Database\WaveFourTemporalAuthorizationTest" classname="Tests.Database.WaveFourTemporalAuthorizationTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourTemporalAuthorizationTest.php" line="90" assertions="3" time="2.531475"/>
+  </testsuite>
+</testsuites>

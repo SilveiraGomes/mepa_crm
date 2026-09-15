@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" tests="6" assertions="505" errors="0" warnings="0" failures="0" skipped="0" time="187.340842">
+    <testsuite name="Tests\Database\WaveFourCheckoutConcurrencyTest::test_real_workers_two_authorized_collectors_have_one_logical_checkout" tests="4" assertions="296" errors="0" warnings="0" failures="0" skipped="0" time="41.937475">
+      <testcase name="test_real_workers_two_authorized_collectors_have_one_logical_checkout with data set #0" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="67" assertions="11" time="4.951368"/>
+      <testcase name="test_real_workers_two_authorized_collectors_have_one_logical_checkout with data set #1" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="67" assertions="35" time="8.378145"/>
+      <testcase name="test_real_workers_two_authorized_collectors_have_one_logical_checkout with data set #2" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="67" assertions="95" time="13.642547"/>
+      <testcase name="test_real_workers_two_authorized_collectors_have_one_logical_checkout with data set #3" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="67" assertions="155" time="14.965415"/>
+    </testsuite>
+    <testcase name="test_revocation_and_checkout_linearize_in_both_orders" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="86" assertions="200" time="137.183711"/>
+    <testcase name="test_different_children_in_same_session_progress_without_global_lock" class="Tests\Database\WaveFourCheckoutConcurrencyTest" classname="Tests.Database.WaveFourCheckoutConcurrencyTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourCheckoutConcurrencyTest.php" line="120" assertions="9" time="8.219656"/>
+  </testsuite>
+</testsuites>

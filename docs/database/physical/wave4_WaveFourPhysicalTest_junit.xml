@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveFourPhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourPhysicalTest.php" tests="2" assertions="25" errors="0" warnings="0" failures="0" skipped="0" time="95.295045">
+    <testcase name="test_fresh_upgrade_empty_rollback_remigrate_and_populated_rollback_guard" class="Tests\Database\WaveFourPhysicalTest" classname="Tests.Database.WaveFourPhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourPhysicalTest.php" line="25" assertions="18" time="92.502651"/>
+    <testcase name="test_foreign_keys_unique_checks_and_restrict_are_enforced" class="Tests\Database\WaveFourPhysicalTest" classname="Tests.Database.WaveFourPhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveFourPhysicalTest.php" line="93" assertions="7" time="2.792394"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,232 @@
+Graph: graphify-out/graph.json (2846 nodes) | Traversal: BFS depth=2 | Start: ['Outreach Contacts', 'outreach_contacts Wave4 approved physical table'] | 68 nodes found
+
+[i] Complete answer over budget: all 68 nodes and 160 edges shown (~10675 tokens vs the requested ~6000-token budget). Edges are never dropped once every node fits, so this is already the full answer — raising --budget further will not shrink it. Narrow with context_filter=['call'] or use get_node for a specific symbol to reduce size instead.
+
+NODE Outreach Contacts [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE outreach_contacts Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000009_wave4_create_outreach_contacts.php loc=up() SQL community=Events governance credentials check-in]
+NODE document [src=docs/database/README.md loc=1 community=Arquitectura e Módulos Oficiais]
+NODE people [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation [src=docs/reviews/P0.3.4_wave4_implementation.md loc=L1 community=Events governance credentials check-in]
+NODE P0.3.4 Wave 4 physical tables [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 [src=docs/database/12_physical_migration_plan.md loc=None community=Identidade e Árvore Institucional]
+NODE Decisions [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Outreach Campaigns [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Followups [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE decisions Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000011_wave4_create_decisions.php loc=up() SQL community=Events governance credentials check-in]
+NODE followups Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000010_wave4_create_followups.php loc=up() SQL community=Events governance credentials check-in]
+NODE outreach_campaigns Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000008_wave4_create_outreach_campaigns.php loc=up() SQL community=Events governance credentials check-in]
+NODE legal_documents [src=docs/database/physical/P0.3.1_wave1_tables.md loc=None community=Planeamento por ondas]
+NODE organizational_units [src=docs/database/physical/P0.3.1_wave1_tables.md loc=None community=Financeiro e Tesouraria]
+NODE WaveFourCase [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L18 community=Frontend Web Tooling]
+NODE ChildrenService [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L13 community=Events governance credentials check-in]
+NODE EvangelismService [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L12 community=Events governance credentials check-in]
+NODE WaveFourCase.php [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE WaveFourChildrenSafetyTest [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L8 community=Events governance credentials check-in]
+NODE 12_physical_migration_plan [src=docs/database/12_physical_migration_plan.md loc=None community=Património e Estrutura Territorial]
+NODE DomainPolicy [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L7 community=Events governance credentials check-in]
+NODE Events [src=docs/database/02_data_dictionary.md loc=None community=Governança, Património e Storage]
+NODE WaveFourCheckoutConcurrencyTest [src=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php loc=L8 community=Events governance credentials check-in]
+NODE Child Custody Visits [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE ChildrenService.php [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE DomainAccess [src=apps/api/app/Domain/WaveFour/DomainAccess.php loc=L11 community=Wave 2 Ministério & Departamentos Migrations]
+NODE Guardian Authorizations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE EvangelismService.php [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE Person Consents [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE WaveFourEvangelismTest [src=apps/api/tests/Database/WaveFourEvangelismTest.php loc=L9 community=Events governance credentials check-in]
+NODE Courses [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Department Transition Recommendations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Enrollments [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Integration Events [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE DomainAccess.php [src=apps/api/app/Domain/WaveFour/DomainAccess.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE WaveFourPhysicalTest [src=apps/api/tests/Database/WaveFourPhysicalTest.php loc=L8 community=Events governance credentials check-in]
+NODE Child Profiles [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Steps [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Age Band Rules [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Child Emergency Contacts [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Progress [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Tracks [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE child check-in reuses Event Session CheckinService event_attendance same Person custody child_profiles lock [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Segurança infantil community=Events governance credentials check-in]
+NODE WaveFourEvangelismTest.php [src=apps/api/tests/Database/WaveFourEvangelismTest.php loc=L1 community=Events governance credentials check-in]
+NODE Wave 4 durable-data rollback guard [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE discipleship_steps Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php loc=up() SQL community=Events governance credentials check-in]
+NODE WaveFourCheckoutConcurrencyTest.php [src=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php loc=L1 community=Events governance credentials check-in]
+NODE WaveFourChildrenSafetyTest.php [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L1 community=Events governance credentials check-in]
+NODE WaveFourPhysicalTest.php [src=apps/api/tests/Database/WaveFourPhysicalTest.php loc=L1 community=Events governance credentials check-in]
+NODE discipleship_enrollments Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000013_wave4_create_discipleship_enrollments.php loc=up() SQL community=Events governance credentials check-in]
+NODE discipleship_progress Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php loc=up() SQL community=Events governance credentials check-in]
+NODE discipleship_tracks Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000012_wave4_create_discipleship_tracks.php loc=up() SQL community=Events governance credentials check-in]
+NODE DomainPolicy.php [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L1 community=Events governance credentials check-in]
+NODE One Person outreach contact decision discipleship integration membership non-member child guardian identity reuse [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Pipeline community=Events governance credentials check-in]
+NODE age_band_rules Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000006_wave4_create_age_band_rules.php loc=up() SQL community=Events governance credentials check-in]
+NODE child_custody_visits Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000005_wave4_create_child_custody_visits.php loc=up() SQL community=Events governance credentials check-in]
+NODE courses Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000015_wave4_create_courses.php loc=up() SQL community=Events governance credentials check-in]
+NODE department_transition_recommendations Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000007_wave4_create_department_transition_recommendations.php loc=up() SQL community=Events governance credentials check-in]
+NODE guardian_authorizations Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000002_wave4_create_guardian_authorizations.php loc=up() SQL community=Events governance credentials check-in]
+NODE Physical schema policy [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+NODE child check-out pickup authorization guardian revocation transactional single checkout real 2 10 30 50 workers [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Checkout concurrency community=Events governance credentials check-in]
+NODE Wave 4 durable data rollback blocked before first DROP empty remigrate previous waves preserved [src=docs/adr/0013-wave4-custody-and-rollback.md loc=Rollback community=Events governance credentials check-in]
+NODE child_emergency_contacts Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000004_wave4_create_child_emergency_contacts.php loc=up() SQL community=Events governance credentials check-in]
+NODE child_profiles Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000001_wave4_create_child_profiles.php loc=up() SQL community=Events governance credentials check-in]
+NODE integration_events Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000014_wave4_create_integration_events.php loc=up() SQL community=Events governance credentials check-in]
+NODE person_consents Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000003_wave4_create_person_consents.php loc=up() SQL community=Events governance credentials check-in]
+NODE Wave 4 APPLICATION_ENFORCED rules tracked owner implementation_wave test_wave status reason [src=docs/database/physical/wave4_application_rules_tracking.json loc=rules community=Events governance credentials check-in]
+EDGE Decisions --references [EXTRACTED]--> Outreach Contacts
+EDGE Followups --references [EXTRACTED]--> Outreach Contacts
+EDGE Outreach Contacts --references [EXTRACTED]--> Outreach Campaigns
+EDGE Outreach Contacts --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Outreach Contacts
+EDGE document --references [EXTRACTED]--> Outreach Contacts
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Outreach Contacts
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE outreach_contacts Wave4 approved physical table --references campaign_id [EXTRACTED]--> outreach_campaigns Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000009_wave4_create_outreach_contacts.php:FOREIGN KEY campaign_id
+EDGE decisions Wave4 approved physical table --references contact_id [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000011_wave4_create_decisions.php:FOREIGN KEY contact_id
+EDGE followups Wave4 approved physical table --references contact_id [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000010_wave4_create_followups.php:FOREIGN KEY contact_id
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> child check-in reuses Event Session CheckinService event_attendance same Person custody child_profiles lock at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> child check-out pickup authorization guardian revocation transactional single checkout real 2 10 30 50 workers at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> One Person outreach contact decision discipleship integration membership non-member child guardian identity reuse at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> Wave 4 durable data rollback blocked before first DROP empty remigrate previous waves preserved at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> Wave 4 APPLICATION_ENFORCED rules tracked owner implementation_wave test_wave status reason at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> ChildrenService.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> ChildrenService at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainAccess.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainAccess at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainPolicy.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainPolicy at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> EvangelismService.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> EvangelismService at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> WaveFourCase.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> WaveFourCase at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> age_band_rules Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_custody_visits Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_emergency_contacts Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_profiles Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> courses Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> department_transition_recommendations Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_enrollments Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_progress Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_steps Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> guardian_authorizations Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> integration_events Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> person_consents Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourCheckoutConcurrencyTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourCheckoutConcurrencyTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourEvangelismTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourEvangelismTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourPhysicalTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourPhysicalTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> P0.3.4 Wave 4 physical tables
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Age Band Rules
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Custody Visits
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Emergency Contacts
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Profiles
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Courses
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Department Transition Recommendations
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Enrollments
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Progress
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Steps
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Tracks
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Guardian Authorizations
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Integration Events
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Person Consents
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Physical schema policy
+EDGE Outreach Campaigns --references [EXTRACTED]--> Events
+EDGE Outreach Campaigns --references [EXTRACTED]--> organizational_units
+EDGE Decisions --references [EXTRACTED]--> legal_documents
+EDGE 12_physical_migration_plan --references [EXTRACTED]--> Wave 4
+EDGE Wave 4 --references [EXTRACTED]--> Age Band Rules
+EDGE Wave 4 --references [EXTRACTED]--> Child Custody Visits
+EDGE Wave 4 --references [EXTRACTED]--> Child Emergency Contacts
+EDGE Wave 4 --references [EXTRACTED]--> Child Profiles
+EDGE Wave 4 --references [EXTRACTED]--> Courses
+EDGE Wave 4 --references [EXTRACTED]--> Department Transition Recommendations
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Enrollments
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Progress
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Steps
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Tracks
+EDGE Wave 4 --references [EXTRACTED]--> Guardian Authorizations
+EDGE Wave 4 --references [EXTRACTED]--> Integration Events
+EDGE Wave 4 --references [EXTRACTED]--> Person Consents
+EDGE ChildrenService.php --contains [EXTRACTED]--> ChildrenService at=apps/api/app/Domain/WaveFour/ChildrenService.php:L13
+EDGE ChildrenService --references [EXTRACTED context=field]--> DomainPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE DomainAccess.php --contains [EXTRACTED]--> DomainAccess at=apps/api/app/Domain/WaveFour/DomainAccess.php:L11
+EDGE DomainPolicy.php --contains [EXTRACTED]--> DomainPolicy at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L7
+EDGE EvangelismService --references [EXTRACTED context=field]--> DomainPolicy at=apps/api/app/Domain/WaveFour/EvangelismService.php:L14
+EDGE EvangelismService.php --contains [EXTRACTED]--> EvangelismService at=apps/api/app/Domain/WaveFour/EvangelismService.php:L12
+EDGE WaveFourCase.php --contains [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/Support/WaveFourCase.php:L18
+EDGE WaveFourCheckoutConcurrencyTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L7
+EDGE WaveFourChildrenSafetyTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L7
+EDGE WaveFourEvangelismTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourEvangelismTest.php:L7
+EDGE WaveFourPhysicalTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourPhysicalTest.php:L7
+EDGE WaveFourCheckoutConcurrencyTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L8
+EDGE WaveFourChildrenSafetyTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourEvangelismTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourEvangelismTest.php:L9
+EDGE WaveFourPhysicalTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourPhysicalTest.php:L8
+EDGE WaveFourCheckoutConcurrencyTest.php --contains [EXTRACTED]--> WaveFourCheckoutConcurrencyTest at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L8
+EDGE WaveFourChildrenSafetyTest.php --contains [EXTRACTED]--> WaveFourChildrenSafetyTest at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourEvangelismTest.php --contains [EXTRACTED]--> WaveFourEvangelismTest at=apps/api/tests/Database/WaveFourEvangelismTest.php:L9
+EDGE WaveFourPhysicalTest.php --contains [EXTRACTED]--> WaveFourPhysicalTest at=apps/api/tests/Database/WaveFourPhysicalTest.php:L8
+EDGE Department Transition Recommendations --references [EXTRACTED]--> Age Band Rules
+EDGE document --references [EXTRACTED]--> Age Band Rules
+EDGE Child Custody Visits --references [EXTRACTED]--> Guardian Authorizations
+EDGE Child Custody Visits --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Child Custody Visits
+EDGE Child Emergency Contacts --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Child Emergency Contacts
+EDGE Child Profiles --references [EXTRACTED]--> people
+EDGE Child Profiles --references [EXTRACTED]--> organizational_units
+EDGE document --references [EXTRACTED]--> Child Profiles
+EDGE Discipleship Steps --references [EXTRACTED]--> Courses
+EDGE document --references [EXTRACTED]--> Courses
+EDGE Decisions --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Decisions
+EDGE document --references [EXTRACTED]--> Decisions
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Decisions
+EDGE Department Transition Recommendations --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Department Transition Recommendations
+EDGE Discipleship Enrollments --references [EXTRACTED]--> Discipleship Tracks
+EDGE Discipleship Enrollments --references [EXTRACTED]--> people
+EDGE Discipleship Enrollments --references [EXTRACTED]--> legal_documents
+EDGE Discipleship Progress --references [EXTRACTED]--> Discipleship Enrollments
+EDGE document --references [EXTRACTED]--> Discipleship Enrollments
+EDGE Discipleship Progress --references [EXTRACTED]--> Discipleship Steps
+EDGE document --references [EXTRACTED]--> Discipleship Progress
+EDGE Discipleship Steps --references [EXTRACTED]--> Discipleship Tracks
+EDGE document --references [EXTRACTED]--> Discipleship Steps
+EDGE document --references [EXTRACTED]--> Discipleship Tracks
+EDGE Events --references [EXTRACTED]--> organizational_units
+EDGE document --references [EXTRACTED]--> Events
+EDGE Followups --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Followups
+EDGE document --references [EXTRACTED]--> Followups
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Followups
+EDGE Guardian Authorizations --references [EXTRACTED]--> people
+EDGE Guardian Authorizations --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> Guardian Authorizations
+EDGE Guardian Authorizations --semantically_similar_to [INFERRED]--> Person Consents
+EDGE Integration Events --references [EXTRACTED]--> people
+EDGE Integration Events --references [EXTRACTED]--> legal_documents
+EDGE Integration Events --references [EXTRACTED]--> organizational_units
+EDGE document --references [EXTRACTED]--> Integration Events
+EDGE Wave 4 --references [EXTRACTED]--> Outreach Campaigns
+EDGE document --references [EXTRACTED]--> Outreach Campaigns
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Outreach Campaigns
+EDGE Person Consents --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> people
+EDGE Person Consents --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> Person Consents
+EDGE legal_documents --references [EXTRACTED]--> organizational_units
+EDGE document --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> organizational_units
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> decisions Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> followups Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> outreach_campaigns Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE department_transition_recommendations Wave4 approved physical table --references rule_id [EXTRACTED]--> age_band_rules Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000007_wave4_create_department_transition_recommendations.php:FOREIGN KEY rule_id
+EDGE child_custody_visits Wave4 approved physical table --references collection_authorization_id [EXTRACTED]--> guardian_authorizations Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000005_wave4_create_child_custody_visits.php:FOREIGN KEY collection_authorization_id
+EDGE discipleship_steps Wave4 approved physical table --references course_id [EXTRACTED]--> courses Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php:FOREIGN KEY course_id
+EDGE discipleship_progress Wave4 approved physical table --references enrollment_id [EXTRACTED]--> discipleship_enrollments Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php:FOREIGN KEY enrollment_id
+EDGE discipleship_enrollments Wave4 approved physical table --references track_id [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000013_wave4_create_discipleship_enrollments.php:FOREIGN KEY track_id
+EDGE discipleship_progress Wave4 approved physical table --references step_id [EXTRACTED]--> discipleship_steps Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php:FOREIGN KEY step_id
+EDGE discipleship_steps Wave4 approved physical table --references track_id [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php:FOREIGN KEY track_id

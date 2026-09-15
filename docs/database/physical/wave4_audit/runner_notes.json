@@ -1,0 +1,5 @@
+{
+  "audit_runner_issue": "SQL1064 reserved alias cascade in auxiliary raw counts capture after 11 passing suites",
+  "production_issue": false,
+  "resolution": "alias changed only in auditor runner; raw SQL recaptured; remaining four suites resumed in fresh schemas; first 11 not rerun or replaced"
+}

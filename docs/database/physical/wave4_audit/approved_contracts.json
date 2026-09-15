@@ -1,0 +1,834 @@
+{
+  "status": "APPROVED_CONTRACTS_UNCHANGED",
+  "comparison": "Git LF-normalized text; checkout CRLF is not a domain/schema change",
+  "files": 118,
+  "drift": 0,
+  "results": [
+    {
+      "file": "apps/api/database/migrations/2014_10_12_000000_create_users_table.php",
+      "unchanged": true,
+      "git_lf_sha256": "f8affe063423895fedd394355c4ef0d437ef32d09b4b16d89e31e248c32e86a3",
+      "working_lf_sha256": "f8affe063423895fedd394355c4ef0d437ef32d09b4b16d89e31e248c32e86a3",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2014_10_12_100000_create_password_resets_table.php",
+      "unchanged": true,
+      "git_lf_sha256": "fc81bc1fc4c8e933f520b445ff56b5015c0c124c8505e90cd26e724acf94c418",
+      "working_lf_sha256": "fc81bc1fc4c8e933f520b445ff56b5015c0c124c8505e90cd26e724acf94c418",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2019_08_19_000000_create_failed_jobs_table.php",
+      "unchanged": true,
+      "git_lf_sha256": "69197c463f551c7e5d92247786502e4da0dbaa39d4a206604d39b20f54931d29",
+      "working_lf_sha256": "69197c463f551c7e5d92247786502e4da0dbaa39d4a206604d39b20f54931d29",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php",
+      "unchanged": true,
+      "git_lf_sha256": "d735ee832acf547e420e94170c6eb6f526fac9f6452ca4900d551fd9cc42ded0",
+      "working_lf_sha256": "d735ee832acf547e420e94170c6eb6f526fac9f6452ca4900d551fd9cc42ded0",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000001_wave1_create_person_statuses.php",
+      "unchanged": true,
+      "git_lf_sha256": "56d561b1c7ea7a27a680af5fa1687b5dd389b40272dacfb210e6b9b87e8f3c99",
+      "working_lf_sha256": "56d561b1c7ea7a27a680af5fa1687b5dd389b40272dacfb210e6b9b87e8f3c99",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000002_wave1_create_sex_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "fbb49aa11e5486931064691c5b443833f18c849e2361dad42f054fcc5c17a58b",
+      "working_lf_sha256": "fbb49aa11e5486931064691c5b443833f18c849e2361dad42f054fcc5c17a58b",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000003_wave1_create_civil_status_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "da326d216cc4ce6122f0282b4cda3410f00480b4aee861afc25a7ce1448cfc61",
+      "working_lf_sha256": "da326d216cc4ce6122f0282b4cda3410f00480b4aee861afc25a7ce1448cfc61",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000004_wave1_create_people.php",
+      "unchanged": true,
+      "git_lf_sha256": "a59b4633c86126b7fbc329ed96982aa22c5604ec2973081877d49c25a5372393",
+      "working_lf_sha256": "a59b4633c86126b7fbc329ed96982aa22c5604ec2973081877d49c25a5372393",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000005_wave1_create_identity_document_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "d306beb8589adebd1a8a2c29d7cb4ebca62014cb0301a403945077085088d707",
+      "working_lf_sha256": "d306beb8589adebd1a8a2c29d7cb4ebca62014cb0301a403945077085088d707",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000006_wave1_create_contact_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "9b5387c9bf107aa61ee5c315e992af59b2af227f8f33f6c7965087669d914d5d",
+      "working_lf_sha256": "9b5387c9bf107aa61ee5c315e992af59b2af227f8f33f6c7965087669d914d5d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000007_wave1_create_person_contacts.php",
+      "unchanged": true,
+      "git_lf_sha256": "588a88a8f93706c049ebfb26f5e8ed3c3f0d4f3bde58cc2d2045ecefa127fa55",
+      "working_lf_sha256": "588a88a8f93706c049ebfb26f5e8ed3c3f0d4f3bde58cc2d2045ecefa127fa55",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000008_wave1_create_household_role_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "346c86bc9421b7398e115956110c1b7b5524ca7ef835e25e855deae8ca144011",
+      "working_lf_sha256": "346c86bc9421b7398e115956110c1b7b5524ca7ef835e25e855deae8ca144011",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000009_wave1_create_relationship_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "02deab7693736baecc51d9499074d4c2b8bbb4a493a3a3e1b1d6addc0bc9d098",
+      "working_lf_sha256": "02deab7693736baecc51d9499074d4c2b8bbb4a493a3a3e1b1d6addc0bc9d098",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000010_wave1_create_territorial_area_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "8aa4db63827879835b77cc9d316177cfc884fa2c7eaa611808c772b00a024d47",
+      "working_lf_sha256": "8aa4db63827879835b77cc9d316177cfc884fa2c7eaa611808c772b00a024d47",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000011_wave1_create_territorial_areas.php",
+      "unchanged": true,
+      "git_lf_sha256": "3ab23c91f286c6fe3b5342c5db4306c1ea7706ff4abde513f668282b31f7a2e2",
+      "working_lf_sha256": "3ab23c91f286c6fe3b5342c5db4306c1ea7706ff4abde513f668282b31f7a2e2",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000012_wave1_create_addresses.php",
+      "unchanged": true,
+      "git_lf_sha256": "c4d49fcfe7231712d8b4d3d82c9d9707b1388b290892d42f96dec9157cd6e542",
+      "working_lf_sha256": "c4d49fcfe7231712d8b4d3d82c9d9707b1388b290892d42f96dec9157cd6e542",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000013_wave1_create_households.php",
+      "unchanged": true,
+      "git_lf_sha256": "5025dc747d0f45b190e18109f4d13ef8af8f55122772079662a4830cfac46e7c",
+      "working_lf_sha256": "5025dc747d0f45b190e18109f4d13ef8af8f55122772079662a4830cfac46e7c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000014_wave1_create_organizational_unit_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "ec249d44aca42977eab2cdf575cfe6f41bf4021aa4341789627a2296a88eaf87",
+      "working_lf_sha256": "ec249d44aca42977eab2cdf575cfe6f41bf4021aa4341789627a2296a88eaf87",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000015_wave1_create_unit_parent_rules.php",
+      "unchanged": true,
+      "git_lf_sha256": "cbf8ad84ca9addf21ab36c7a9ea20c1d3cc1d84004358fadc7fd3d5ab02f6d74",
+      "working_lf_sha256": "cbf8ad84ca9addf21ab36c7a9ea20c1d3cc1d84004358fadc7fd3d5ab02f6d74",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000016_wave1_create_organizational_units.php",
+      "unchanged": true,
+      "git_lf_sha256": "84c0844eba61a39c0ccb88a61385384ec7b3ab8aec3aefcd62373f07e066bded",
+      "working_lf_sha256": "84c0844eba61a39c0ccb88a61385384ec7b3ab8aec3aefcd62373f07e066bded",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000017_wave1_create_organizational_structure_lock.php",
+      "unchanged": true,
+      "git_lf_sha256": "9adda4659a6f6e025be4ef7ec68701e66224e92e613bb9ff2e5f63ebf68c9707",
+      "working_lf_sha256": "9adda4659a6f6e025be4ef7ec68701e66224e92e613bb9ff2e5f63ebf68c9707",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000018_wave1_create_files.php",
+      "unchanged": true,
+      "git_lf_sha256": "c76cd0b51e4068bbddfc85cb923ab57d9f18e6c099689669ffc6053d70589403",
+      "working_lf_sha256": "c76cd0b51e4068bbddfc85cb923ab57d9f18e6c099689669ffc6053d70589403",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000019_wave1_create_person_documents.php",
+      "unchanged": true,
+      "git_lf_sha256": "3914e1a48c00735828ee0c2344b2019ab3b271e51031423395ede8ade6b3c483",
+      "working_lf_sha256": "3914e1a48c00735828ee0c2344b2019ab3b271e51031423395ede8ade6b3c483",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000020_wave1_create_person_files.php",
+      "unchanged": true,
+      "git_lf_sha256": "a813f9d6ff27f2b43461a7e10e37eee914f1f3d7621fde51a63d1e1f38605fea",
+      "working_lf_sha256": "a813f9d6ff27f2b43461a7e10e37eee914f1f3d7621fde51a63d1e1f38605fea",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000021_wave1_create_legal_document_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "495fde7246e637db9e8c7da26da85b54fe48816dc97fda4d9153cea84377853a",
+      "working_lf_sha256": "495fde7246e637db9e8c7da26da85b54fe48816dc97fda4d9153cea84377853a",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000022_wave1_create_legal_documents.php",
+      "unchanged": true,
+      "git_lf_sha256": "e80ad0cfde46b686ce05962e895223dd82f1609f9c5da009877c52c9a662ab1c",
+      "working_lf_sha256": "e80ad0cfde46b686ce05962e895223dd82f1609f9c5da009877c52c9a662ab1c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000023_wave1_create_person_addresses.php",
+      "unchanged": true,
+      "git_lf_sha256": "f5c243ef2d2977ea74e628c19fb81f0ea4f844bf7fbdf58c43e092feb20ba9c2",
+      "working_lf_sha256": "f5c243ef2d2977ea74e628c19fb81f0ea4f844bf7fbdf58c43e092feb20ba9c2",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000024_wave1_create_household_members.php",
+      "unchanged": true,
+      "git_lf_sha256": "d3f0a5ff6a48b3ac92389467fa95c7e69369083a4fde864edf0db2986c198841",
+      "working_lf_sha256": "d3f0a5ff6a48b3ac92389467fa95c7e69369083a4fde864edf0db2986c198841",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000025_wave1_create_person_relationships.php",
+      "unchanged": true,
+      "git_lf_sha256": "782c7a9e5e059e561bc2d8dfb9aa88e5b3f56117f564cac732de6a81f02b6d3e",
+      "working_lf_sha256": "782c7a9e5e059e561bc2d8dfb9aa88e5b3f56117f564cac732de6a81f02b6d3e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000026_wave1_create_unit_parent_periods.php",
+      "unchanged": true,
+      "git_lf_sha256": "b483fc8ad946bc23704cccbbe87159998752874535af8316c6b238af5e859193",
+      "working_lf_sha256": "b483fc8ad946bc23704cccbbe87159998752874535af8316c6b238af5e859193",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000027_wave1_create_document_versions.php",
+      "unchanged": true,
+      "git_lf_sha256": "4f921429275ef4bef8d0d4c8cbea531c70e40e467e0cf0ced860aff6641d0f98",
+      "working_lf_sha256": "4f921429275ef4bef8d0d4c8cbea531c70e40e467e0cf0ced860aff6641d0f98",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000028_wave1_create_physical_locations.php",
+      "unchanged": true,
+      "git_lf_sha256": "c173c5fdf7e754e4fa5f52e070e9d02a0a123c388c02338b65f7ec98d2a70eb7",
+      "working_lf_sha256": "c173c5fdf7e754e4fa5f52e070e9d02a0a123c388c02338b65f7ec98d2a70eb7",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000029_wave1_create_properties.php",
+      "unchanged": true,
+      "git_lf_sha256": "b3df0b8b868b70bedf025b2eded4dc2b85613b0887f1c7000edfb15f31f766b0",
+      "working_lf_sha256": "b3df0b8b868b70bedf025b2eded4dc2b85613b0887f1c7000edfb15f31f766b0",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000030_wave1_create_occupation_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "80e6655dd74444ab35ca60d4e39b8e5cf4a90c77e2f65cb3910f07aa4cb800af",
+      "working_lf_sha256": "80e6655dd74444ab35ca60d4e39b8e5cf4a90c77e2f65cb3910f07aa4cb800af",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_12_000031_wave1_create_unit_location_links.php",
+      "unchanged": true,
+      "git_lf_sha256": "3da3049a3b3a7d9a6172cf78c89e2ed2f4004864ec207d56febd4e38b49834a4",
+      "working_lf_sha256": "3da3049a3b3a7d9a6172cf78c89e2ed2f4004864ec207d56febd4e38b49834a4",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000001_wave2_create_education_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "87e6cfeff3e8f6ee1758c82ad3ad4ee9f46ad02518292b2683350b309cd35675",
+      "working_lf_sha256": "87e6cfeff3e8f6ee1758c82ad3ad4ee9f46ad02518292b2683350b309cd35675",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000002_wave2_create_employment_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "c23ebb58e092e80b6731305eceb2c944bbac039da75f7bc7611ae2c84808b169",
+      "working_lf_sha256": "c23ebb58e092e80b6731305eceb2c944bbac039da75f7bc7611ae2c84808b169",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000003_wave2_create_person_qualifications.php",
+      "unchanged": true,
+      "git_lf_sha256": "e4fdaeff7f194a87d9491ff0e833c10da08011dfadf2c8c144b52a003e42f2c5",
+      "working_lf_sha256": "e4fdaeff7f194a87d9491ff0e833c10da08011dfadf2c8c144b52a003e42f2c5",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000004_wave2_create_person_employment.php",
+      "unchanged": true,
+      "git_lf_sha256": "cac5fe5afee6db7c9962db4b2802e80d9f0ed6dae968dc54ec085dc23c06e269",
+      "working_lf_sha256": "cac5fe5afee6db7c9962db4b2802e80d9f0ed6dae968dc54ec085dc23c06e269",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000005_wave2_create_person_merges.php",
+      "unchanged": true,
+      "git_lf_sha256": "574f7a0362b7f21c23258dca8a6fd3f21b9c096097a62d0fae18dd3eafd27e93",
+      "working_lf_sha256": "574f7a0362b7f21c23258dca8a6fd3f21b9c096097a62d0fae18dd3eafd27e93",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000006_wave2_create_membership_statuses.php",
+      "unchanged": true,
+      "git_lf_sha256": "8b5097d15cf45868e24867654f192bea90527c43821be06c6693ebda787099fe",
+      "working_lf_sha256": "8b5097d15cf45868e24867654f192bea90527c43821be06c6693ebda787099fe",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000007_wave2_create_memberships.php",
+      "unchanged": true,
+      "git_lf_sha256": "01349ecc74641e5c741ffe34cb01678eb44fe391a1ce8e1a80f5784c853ed40d",
+      "working_lf_sha256": "01349ecc74641e5c741ffe34cb01678eb44fe391a1ce8e1a80f5784c853ed40d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000008_wave2_create_membership_periods.php",
+      "unchanged": true,
+      "git_lf_sha256": "57631d76a793fc1863734d4a2212dfe2459795357e584f4d29b30c287a690ab9",
+      "working_lf_sha256": "57631d76a793fc1863734d4a2212dfe2459795357e584f4d29b30c287a690ab9",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000009_wave2_create_member_number_sequences.php",
+      "unchanged": true,
+      "git_lf_sha256": "3d0bcc90bf3c43cdb487d851f48c2ea2109314174a964421d0c5864e99bc5bdb",
+      "working_lf_sha256": "3d0bcc90bf3c43cdb487d851f48c2ea2109314174a964421d0c5864e99bc5bdb",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000010_wave2_create_member_numbers.php",
+      "unchanged": true,
+      "git_lf_sha256": "853a5f177bfa95ec45e1d31a3b86a842ca27b3fc42321dee4536fcfdcf006708",
+      "working_lf_sha256": "853a5f177bfa95ec45e1d31a3b86a842ca27b3fc42321dee4536fcfdcf006708",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000011_wave2_create_milestone_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "497363e499a97daa87ea5a233e665c3e77d550c586d541bb7481e242beb284c0",
+      "working_lf_sha256": "497363e499a97daa87ea5a233e665c3e77d550c586d541bb7481e242beb284c0",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000012_wave2_create_ecclesiastical_milestones.php",
+      "unchanged": true,
+      "git_lf_sha256": "52efefcf411cd2ac9239707933d23ba4c7edb181073031fc5c70ff1c45079544",
+      "working_lf_sha256": "52efefcf411cd2ac9239707933d23ba4c7edb181073031fc5c70ff1c45079544",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000013_wave2_create_ministerial_classes.php",
+      "unchanged": true,
+      "git_lf_sha256": "f8a09ea57e43ee3be6d9e34106082e6edf44b3c1a371bee11badbc3254063787",
+      "working_lf_sha256": "f8a09ea57e43ee3be6d9e34106082e6edf44b3c1a371bee11badbc3254063787",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000014_wave2_create_positions.php",
+      "unchanged": true,
+      "git_lf_sha256": "a6dcb3a5b02221c9a664235b02f9faf3fc8b75328e077ef9a4b2e49f878cf4bc",
+      "working_lf_sha256": "a6dcb3a5b02221c9a664235b02f9faf3fc8b75328e077ef9a4b2e49f878cf4bc",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000015_wave2_create_functions.php",
+      "unchanged": true,
+      "git_lf_sha256": "78857cdaa5177131e3b29b3d5b6225b6790e1731f0150227ed72781866ce5cb8",
+      "working_lf_sha256": "78857cdaa5177131e3b29b3d5b6225b6790e1731f0150227ed72781866ce5cb8",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000016_wave2_create_ministerial_class_periods.php",
+      "unchanged": true,
+      "git_lf_sha256": "22c917eb7d0d0ae865ae513016adc42c193535439dfa4dd50c54f33e47067d5d",
+      "working_lf_sha256": "22c917eb7d0d0ae865ae513016adc42c193535439dfa4dd50c54f33e47067d5d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000017_wave2_create_organizational_posts.php",
+      "unchanged": true,
+      "git_lf_sha256": "1a6f4caef05cee5ddaa2f256c71bfa90f2b7cb11ea49245b77e77a2bb41598f6",
+      "working_lf_sha256": "1a6f4caef05cee5ddaa2f256c71bfa90f2b7cb11ea49245b77e77a2bb41598f6",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000018_wave2_create_ministerial_assignments.php",
+      "unchanged": true,
+      "git_lf_sha256": "85af620aecc70c657bcef62e6a13efb693dae635dcf2d868d24b142c3a74a48e",
+      "working_lf_sha256": "85af620aecc70c657bcef62e6a13efb693dae635dcf2d868d24b142c3a74a48e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000019_wave2_create_function_assignments.php",
+      "unchanged": true,
+      "git_lf_sha256": "e4377a91817b47b1885d9d41fac38fa87682f9360275b1f70678170eca434617",
+      "working_lf_sha256": "e4377a91817b47b1885d9d41fac38fa87682f9360275b1f70678170eca434617",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000020_wave2_create_department_categories.php",
+      "unchanged": true,
+      "git_lf_sha256": "e1b3184d5301e5cbfd928d3713268238ffc1cd417a2e2380616911460506d4f9",
+      "working_lf_sha256": "e1b3184d5301e5cbfd928d3713268238ffc1cd417a2e2380616911460506d4f9",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000021_wave2_create_departments.php",
+      "unchanged": true,
+      "git_lf_sha256": "e12197e1489be7bc7ea199757a749ccbae1261fcd8a472375b3e2558ef2be3ed",
+      "working_lf_sha256": "e12197e1489be7bc7ea199757a749ccbae1261fcd8a472375b3e2558ef2be3ed",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000022_wave2_create_department_applicability.php",
+      "unchanged": true,
+      "git_lf_sha256": "9b05100eba7477bd578a01a5b758beee0ed2d623fb40475eada6b9e7cd4df0af",
+      "working_lf_sha256": "9b05100eba7477bd578a01a5b758beee0ed2d623fb40475eada6b9e7cd4df0af",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000023_wave2_create_department_instances.php",
+      "unchanged": true,
+      "git_lf_sha256": "561cdd7cf0c29e8ff7218005283de21be0310c51325bac580554bb18689746e3",
+      "working_lf_sha256": "561cdd7cf0c29e8ff7218005283de21be0310c51325bac580554bb18689746e3",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000024_wave2_materialize_w1_f01_files_owner_department_id.php",
+      "unchanged": true,
+      "git_lf_sha256": "e2076be6b83cc2c8b7bada37c6cee42c6b1b8658a1ab1ededd284ae59b677313",
+      "working_lf_sha256": "e2076be6b83cc2c8b7bada37c6cee42c6b1b8658a1ab1ededd284ae59b677313",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000025_wave2_create_department_posts.php",
+      "unchanged": true,
+      "git_lf_sha256": "094cdef78dd5e8116b64cbc559f0428d556d23b27ce35f64e12ce5e5e3c9d44d",
+      "working_lf_sha256": "094cdef78dd5e8116b64cbc559f0428d556d23b27ce35f64e12ce5e5e3c9d44d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000026_wave2_create_department_appointments.php",
+      "unchanged": true,
+      "git_lf_sha256": "2f5a56252f0eed7eca460d1e783a0fe2c0bc8edb4af1b94b31b40fc143dfb00f",
+      "working_lf_sha256": "2f5a56252f0eed7eca460d1e783a0fe2c0bc8edb4af1b94b31b40fc143dfb00f",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000027_wave2_create_department_memberships.php",
+      "unchanged": true,
+      "git_lf_sha256": "ed5b446f4f1949b49b798c7f5154710c91b94fbb2cd07f130a32c9ed34e23315",
+      "working_lf_sha256": "ed5b446f4f1949b49b798c7f5154710c91b94fbb2cd07f130a32c9ed34e23315",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000028_wave2_create_devices.php",
+      "unchanged": true,
+      "git_lf_sha256": "5f6d1d24a4a63cbc3e71eb5fb3c989f3854c3f8920b5ac07dfec91507f4684b6",
+      "working_lf_sha256": "5f6d1d24a4a63cbc3e71eb5fb3c989f3854c3f8920b5ac07dfec91507f4684b6",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000029_wave2_create_auth_sessions.php",
+      "unchanged": true,
+      "git_lf_sha256": "02c8de94b6f2525cdfe247b23d3c615542ed10f7b9ed570c5a9c29c1566d8ba6",
+      "working_lf_sha256": "02c8de94b6f2525cdfe247b23d3c615542ed10f7b9ed570c5a9c29c1566d8ba6",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000030_wave2_create_roles.php",
+      "unchanged": true,
+      "git_lf_sha256": "be810e5bcf16687367415b0f5d4580e3bb0dcbc660a0f52c3a395df519dcc979",
+      "working_lf_sha256": "be810e5bcf16687367415b0f5d4580e3bb0dcbc660a0f52c3a395df519dcc979",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000031_wave2_create_permissions.php",
+      "unchanged": true,
+      "git_lf_sha256": "ed248e3cfc11e6747685a4a99763720e121f149bf9a477189a0c3d306db0d574",
+      "working_lf_sha256": "ed248e3cfc11e6747685a4a99763720e121f149bf9a477189a0c3d306db0d574",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000032_wave2_create_role_permissions.php",
+      "unchanged": true,
+      "git_lf_sha256": "9360a7718b2e0d808c0d8a76f04f8233e77210773b942d695c406ffe7ed557e2",
+      "working_lf_sha256": "9360a7718b2e0d808c0d8a76f04f8233e77210773b942d695c406ffe7ed557e2",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000033_wave2_create_scopes.php",
+      "unchanged": true,
+      "git_lf_sha256": "15fee3513fd1bf76a3fc4189aea7f05cd45d3849fffef283fad3dc2821bcf511",
+      "working_lf_sha256": "15fee3513fd1bf76a3fc4189aea7f05cd45d3849fffef283fad3dc2821bcf511",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000034_wave2_create_user_role_scopes.php",
+      "unchanged": true,
+      "git_lf_sha256": "a3731786c2484aeaa4336270bc2d8d4f046c69d20a3a2419c123e50e3b57291c",
+      "working_lf_sha256": "a3731786c2484aeaa4336270bc2d8d4f046c69d20a3a2419c123e50e3b57291c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000035_wave2_create_workflows.php",
+      "unchanged": true,
+      "git_lf_sha256": "40b017485fad120d4f7b756db1c9a0845d9f855ea7384b9aa8349fdce8274ba3",
+      "working_lf_sha256": "40b017485fad120d4f7b756db1c9a0845d9f855ea7384b9aa8349fdce8274ba3",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000036_wave2_create_workflow_instances.php",
+      "unchanged": true,
+      "git_lf_sha256": "a3138130b63b8b8287f5bb455af81cfe463bda84c9ea3d930128383dba72c1bf",
+      "working_lf_sha256": "a3138130b63b8b8287f5bb455af81cfe463bda84c9ea3d930128383dba72c1bf",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000037_wave2_create_transfers.php",
+      "unchanged": true,
+      "git_lf_sha256": "acdc63cd6e78ff8f287b7090c08cb99e8a87c1c2d772a48fe03527f9dac4deb5",
+      "working_lf_sha256": "acdc63cd6e78ff8f287b7090c08cb99e8a87c1c2d772a48fe03527f9dac4deb5",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000038_wave2_create_idempotency_requests.php",
+      "unchanged": true,
+      "git_lf_sha256": "9722d5961e75dfc9fa333e3b19276fdc2bf0bacc4424c9a72e7b0df1ced4db06",
+      "working_lf_sha256": "9722d5961e75dfc9fa333e3b19276fdc2bf0bacc4424c9a72e7b0df1ced4db06",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000039_wave2_create_import_batches.php",
+      "unchanged": true,
+      "git_lf_sha256": "b0136f966f3a85e34381ed03c6611a5ba62e55a40ffd00773e88c0c90f12b7dd",
+      "working_lf_sha256": "b0136f966f3a85e34381ed03c6611a5ba62e55a40ffd00773e88c0c90f12b7dd",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000040_wave2_create_import_records.php",
+      "unchanged": true,
+      "git_lf_sha256": "2ff20bb0c933279538e2b38451575bab105588ceed6e85f121c1bbb70280320a",
+      "working_lf_sha256": "2ff20bb0c933279538e2b38451575bab105588ceed6e85f121c1bbb70280320a",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000041_wave2_create_legacy_member_numbers.php",
+      "unchanged": true,
+      "git_lf_sha256": "3d5675497ad39673d30c4c446850a7cdfa93add1f400fb98ca3fb0d717019f94",
+      "working_lf_sha256": "3d5675497ad39673d30c4c446850a7cdfa93add1f400fb98ca3fb0d717019f94",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000042_wave2_create_import_issues.php",
+      "unchanged": true,
+      "git_lf_sha256": "9962aa661c7e34a0c7f1e8fdf2b791353adb21b8ba1504468e120fc6f8ed3f61",
+      "working_lf_sha256": "9962aa661c7e34a0c7f1e8fdf2b791353adb21b8ba1504468e120fc6f8ed3f61",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000043_wave2_create_import_identity_maps.php",
+      "unchanged": true,
+      "git_lf_sha256": "12ba38234add99b2fbf8fe4a519a0bc5a0eef6566b25eca615ab3c4821f48324",
+      "working_lf_sha256": "12ba38234add99b2fbf8fe4a519a0bc5a0eef6566b25eca615ab3c4821f48324",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_13_000044_wave2_adapt_users_table.php",
+      "unchanged": true,
+      "git_lf_sha256": "5e3def812039ede6abb2770f06713fed6afc17ff81a017ed50c0e8419fcfc980",
+      "working_lf_sha256": "5e3def812039ede6abb2770f06713fed6afc17ff81a017ed50c0e8419fcfc980",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_14_000000_wave2m1_add_transfers_closed_at.php",
+      "unchanged": true,
+      "git_lf_sha256": "c1468b51cb660f97bbb2b77a8ceb5106c3283a186726cf0fb0744c9b45052501",
+      "working_lf_sha256": "c1468b51cb660f97bbb2b77a8ceb5106c3283a186726cf0fb0744c9b45052501",
+      "raw_checkout_matches_git_blob": false
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_14_000001_wave2m1_add_transfers_open_guard.php",
+      "unchanged": true,
+      "git_lf_sha256": "0022d35d95a32df42c9b7d91ab9f69c3efda249bed3eca1ee5a9130401c7d8b9",
+      "working_lf_sha256": "0022d35d95a32df42c9b7d91ab9f69c3efda249bed3eca1ee5a9130401c7d8b9",
+      "raw_checkout_matches_git_blob": false
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000001_wave3_create_credential_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "45f49a0a24a6d2291dc18610dd62a0409c7e691ff3d4e4e8cf2c49f7dc668c97",
+      "working_lf_sha256": "45f49a0a24a6d2291dc18610dd62a0409c7e691ff3d4e4e8cf2c49f7dc668c97",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000002_wave3_create_credential_classes.php",
+      "unchanged": true,
+      "git_lf_sha256": "86dc9b0fcbd4e5af3e7dbeb2925485a444bb39633283bfe8668420d7eb73a1a1",
+      "working_lf_sha256": "86dc9b0fcbd4e5af3e7dbeb2925485a444bb39633283bfe8668420d7eb73a1a1",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000003_wave3_create_credential_templates.php",
+      "unchanged": true,
+      "git_lf_sha256": "65868b7ef9bcaec0489d093ed9c24f92cba0469f70e0ea922d60179fcfa92cb1",
+      "working_lf_sha256": "65868b7ef9bcaec0489d093ed9c24f92cba0469f70e0ea922d60179fcfa92cb1",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000004_wave3_create_credential_class_styles.php",
+      "unchanged": true,
+      "git_lf_sha256": "ca07b13b6b68ba947571ebcb17765441d15a20451ee09621285da66cb9817c57",
+      "working_lf_sha256": "ca07b13b6b68ba947571ebcb17765441d15a20451ee09621285da66cb9817c57",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000005_wave3_create_credentials.php",
+      "unchanged": true,
+      "git_lf_sha256": "2854ffaf8c8a2fe390372c439b3c0a00cf461ef2e24ed1eb09e249648b1343a8",
+      "working_lf_sha256": "2854ffaf8c8a2fe390372c439b3c0a00cf461ef2e24ed1eb09e249648b1343a8",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000006_wave3_create_governance_body_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "8ce01be11126215533a98f53ea8617d0558a398a60989190ece30fab3875af19",
+      "working_lf_sha256": "8ce01be11126215533a98f53ea8617d0558a398a60989190ece30fab3875af19",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000007_wave3_create_governance_bodies.php",
+      "unchanged": true,
+      "git_lf_sha256": "dcc7a0680e6b928b30371928bdefd4afd18fbe637994f33b0fc53d2a2002c032",
+      "working_lf_sha256": "dcc7a0680e6b928b30371928bdefd4afd18fbe637994f33b0fc53d2a2002c032",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000008_wave3_create_governance_body_memberships.php",
+      "unchanged": true,
+      "git_lf_sha256": "10f41038c141ec30734b825a6c55d0721571b59babe8d1c0918a43d052a6c003",
+      "working_lf_sha256": "10f41038c141ec30734b825a6c55d0721571b59babe8d1c0918a43d052a6c003",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000009_wave3_create_event_types.php",
+      "unchanged": true,
+      "git_lf_sha256": "d8ec6f00699ad2ad689c14144abfc2d61771adca86193157d56ec03be05213a8",
+      "working_lf_sha256": "d8ec6f00699ad2ad689c14144abfc2d61771adca86193157d56ec03be05213a8",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000010_wave3_create_events.php",
+      "unchanged": true,
+      "git_lf_sha256": "5d31e5a49fd48543defe966ce3e6139f87312d229fefc5df7db61e2a0e92f23f",
+      "working_lf_sha256": "5d31e5a49fd48543defe966ce3e6139f87312d229fefc5df7db61e2a0e92f23f",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000011_wave3_create_department_activities.php",
+      "unchanged": true,
+      "git_lf_sha256": "229aa6758c44b8afd69dd3d61448f2671a9f1de6b209e94514d217e7286744e9",
+      "working_lf_sha256": "229aa6758c44b8afd69dd3d61448f2671a9f1de6b209e94514d217e7286744e9",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000012_wave3_create_event_sessions.php",
+      "unchanged": true,
+      "git_lf_sha256": "bfe43aed3b2aba0235e64e9c9de20e08c526ac3a7f3ce83e5353c80d20e12a2f",
+      "working_lf_sha256": "bfe43aed3b2aba0235e64e9c9de20e08c526ac3a7f3ce83e5353c80d20e12a2f",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000013_wave3_create_governance_sessions.php",
+      "unchanged": true,
+      "git_lf_sha256": "fd0f470d4ce8b93283ceef64a364125db65890bbb5f19745657642c7873a37cb",
+      "working_lf_sha256": "fd0f470d4ce8b93283ceef64a364125db65890bbb5f19745657642c7873a37cb",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000014_wave3_create_governance_resolutions.php",
+      "unchanged": true,
+      "git_lf_sha256": "3d27ef21adb180ae820708f481bc7ea60dc439b58b5f66ef58b560fc3a4067b4",
+      "working_lf_sha256": "3d27ef21adb180ae820708f481bc7ea60dc439b58b5f66ef58b560fc3a4067b4",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000015_wave3_create_event_organizers.php",
+      "unchanged": true,
+      "git_lf_sha256": "523efbfaeabf1f2cf5124a75f4cf44cbcf6be901a08c22c5c2ce51920cd383f4",
+      "working_lf_sha256": "523efbfaeabf1f2cf5124a75f4cf44cbcf6be901a08c22c5c2ce51920cd383f4",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000016_wave3_create_event_locations.php",
+      "unchanged": true,
+      "git_lf_sha256": "12d61c88880a28a3fc86f6551f13c3de2caef76f657476621be30548809e597d",
+      "working_lf_sha256": "12d61c88880a28a3fc86f6551f13c3de2caef76f657476621be30548809e597d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000017_wave3_create_event_documents.php",
+      "unchanged": true,
+      "git_lf_sha256": "f70e02ecd5112596e2fb01a4d072876caabeadb420d759f75753668a3f9760b5",
+      "working_lf_sha256": "f70e02ecd5112596e2fb01a4d072876caabeadb420d759f75753668a3f9760b5",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000018_wave3_create_event_invitation_lists.php",
+      "unchanged": true,
+      "git_lf_sha256": "d18d27152d742d9405006ed9ae0170446885ecfae6b9a29f5505ef85cdeeb898",
+      "working_lf_sha256": "d18d27152d742d9405006ed9ae0170446885ecfae6b9a29f5505ef85cdeeb898",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000019_wave3_create_invitation_criteria.php",
+      "unchanged": true,
+      "git_lf_sha256": "c0a79423c9c24efa61df3af0b9cce10876f241fc743410a1028042616c4b21c2",
+      "working_lf_sha256": "c0a79423c9c24efa61df3af0b9cce10876f241fc743410a1028042616c4b21c2",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000020_wave3_create_event_invitees.php",
+      "unchanged": true,
+      "git_lf_sha256": "3aec5192ce523c1f317945d38411a3ec9d40d78f145f29871d0608a890e2522c",
+      "working_lf_sha256": "3aec5192ce523c1f317945d38411a3ec9d40d78f145f29871d0608a890e2522c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000021_wave3_create_event_registrations.php",
+      "unchanged": true,
+      "git_lf_sha256": "7aa29eedc5cecc172c02db7aeb52dd1e914b34e7fecbb99ca14f13af90ef2e72",
+      "working_lf_sha256": "7aa29eedc5cecc172c02db7aeb52dd1e914b34e7fecbb99ca14f13af90ef2e72",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000022_wave3_create_event_confirmations.php",
+      "unchanged": true,
+      "git_lf_sha256": "f4ee5b32560d3cac753bb9bc48d735ca3926eceefe8dc1583da4f30e4b502751",
+      "working_lf_sha256": "f4ee5b32560d3cac753bb9bc48d735ca3926eceefe8dc1583da4f30e4b502751",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000023_wave3_create_event_credentials.php",
+      "unchanged": true,
+      "git_lf_sha256": "24efc379b825817d14b36844637c4838519cdb7a95d72a29972f52fb5a3586c2",
+      "working_lf_sha256": "24efc379b825817d14b36844637c4838519cdb7a95d72a29972f52fb5a3586c2",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000024_wave3_create_event_checkins.php",
+      "unchanged": true,
+      "git_lf_sha256": "9c2e88786dfbb3859b6567657938220652866d1ff0e713733043fe98f8ce4952",
+      "working_lf_sha256": "9c2e88786dfbb3859b6567657938220652866d1ff0e713733043fe98f8ce4952",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000025_wave3_create_event_attendance.php",
+      "unchanged": true,
+      "git_lf_sha256": "b45e04ca0f846690d58aa662cfd1e81625498149c9cdb36e8c01696107216f8b",
+      "working_lf_sha256": "b45e04ca0f846690d58aa662cfd1e81625498149c9cdb36e8c01696107216f8b",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000026_wave3_create_event_counts.php",
+      "unchanged": true,
+      "git_lf_sha256": "df17d3c07148b094fef09e742f33f51c6157690d591d250418cd738bb3019521",
+      "working_lf_sha256": "df17d3c07148b094fef09e742f33f51c6157690d591d250418cd738bb3019521",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000027_wave3_create_communication_templates.php",
+      "unchanged": true,
+      "git_lf_sha256": "13a2e86abe8023f81618ea85ebbdda0a7d31529f1c519bf5d510df679bab2931",
+      "working_lf_sha256": "13a2e86abe8023f81618ea85ebbdda0a7d31529f1c519bf5d510df679bab2931",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000028_wave3_create_audiences.php",
+      "unchanged": true,
+      "git_lf_sha256": "575571c1d962b236731f23397f6cc7f3625fc1d77b41c5eb5e6d63381aa29071",
+      "working_lf_sha256": "575571c1d962b236731f23397f6cc7f3625fc1d77b41c5eb5e6d63381aa29071",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000029_wave3_create_communication_campaigns.php",
+      "unchanged": true,
+      "git_lf_sha256": "721bd3bc5255dd69ece8021c6df07141a92f0b5926a7baee2027da4d36fe8f5e",
+      "working_lf_sha256": "721bd3bc5255dd69ece8021c6df07141a92f0b5926a7baee2027da4d36fe8f5e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000030_wave3_create_messages.php",
+      "unchanged": true,
+      "git_lf_sha256": "2999aae17e71d51847703f3342912e267df6cf1ff3b447d4baaf6bfcefa5cb66",
+      "working_lf_sha256": "2999aae17e71d51847703f3342912e267df6cf1ff3b447d4baaf6bfcefa5cb66",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000031_wave3_create_event_invitations.php",
+      "unchanged": true,
+      "git_lf_sha256": "8fcc63cae984418a85e8da9e42ee5a9a7cf7b44aa1ed36b1e1905e6af0dd3421",
+      "working_lf_sha256": "8fcc63cae984418a85e8da9e42ee5a9a7cf7b44aa1ed36b1e1905e6af0dd3421",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_15_000032_wave3_create_audit_logs.php",
+      "unchanged": true,
+      "git_lf_sha256": "cedf420ab8b6e2b9f096f0d961b97dea24fce3f894e75be1ea54d81e47df212e",
+      "working_lf_sha256": "cedf420ab8b6e2b9f096f0d961b97dea24fce3f894e75be1ea54d81e47df212e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "docs/database/09_open_database_decisions.md",
+      "unchanged": true,
+      "git_lf_sha256": "b79e94e34d9a32d9d9b4a903ea28d1971644e7b5a03a87c4040cb7046e047700",
+      "working_lf_sha256": "b79e94e34d9a32d9d9b4a903ea28d1971644e7b5a03a87c4040cb7046e047700",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "docs/database/model_catalog.json",
+      "unchanged": true,
+      "git_lf_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+      "working_lf_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "docs/database/physical/migration_waves.json",
+      "unchanged": true,
+      "git_lf_sha256": "861d5ae3a05400c27a07e5a32026aed7c7f70fea71025f5cb9c05df83a903e8d",
+      "working_lf_sha256": "861d5ae3a05400c27a07e5a32026aed7c7f70fea71025f5cb9c05df83a903e8d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "docs/reviews/P0.2_open_decisions_matrix.md",
+      "unchanged": true,
+      "git_lf_sha256": "f66763ecf1d412c41bdddf0cb899e917312f725c013d2510b471c0358bdc4757",
+      "working_lf_sha256": "f66763ecf1d412c41bdddf0cb899e917312f725c013d2510b471c0358bdc4757",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "mepa_crm_v1.1.1.md",
+      "unchanged": true,
+      "git_lf_sha256": "4f9111e8be30aa467968ff1740df2a93f947183e92809d974183817248731016",
+      "working_lf_sha256": "4f9111e8be30aa467968ff1740df2a93f947183e92809d974183817248731016",
+      "raw_checkout_matches_git_blob": true
+    }
+  ]
+}

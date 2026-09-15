@@ -1,0 +1,35 @@
+[
+  {
+    "label": "00",
+    "run_id": "9864003daf9f74db9b01308d",
+    "schema": "mepa_wave3_test_m12_9864003daf9f74db9b01308d",
+    "suite": "WaveThreeCheckinConcurrencyTest",
+    "filter": "test_same_person_different_sessions",
+    "exit": 1,
+    "seconds": 60.19,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_00_9864003daf9f74db9b01308d.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_00_9864003daf9f74db9b01308d.xml"
+  },
+  {
+    "label": "01",
+    "run_id": "04a2b5314df0bfc74e4c536a",
+    "schema": "mepa_wave3_test_m12_04a2b5314df0bfc74e4c536a",
+    "suite": "WaveThreeCheckinConcurrencyTest",
+    "filter": "test_same_person_different_sessions",
+    "exit": 0,
+    "seconds": 23.5,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_01_04a2b5314df0bfc74e4c536a.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_01_04a2b5314df0bfc74e4c536a.xml"
+  },
+  {
+    "label": "02",
+    "run_id": "519186cd9f83c37a5d9ca97a",
+    "schema": "mepa_wave3_test_m12_519186cd9f83c37a5d9ca97a",
+    "suite": "WaveThreeCheckinConcurrencyTest",
+    "filter": "test_same_person_different_sessions",
+    "exit": 1,
+    "seconds": 59.91,
+    "log": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_02_519186cd9f83c37a5d9ca97a.log",
+    "junit": "docs\\database\\physical\\wave4_m12_runs\\sanity_check_02_519186cd9f83c37a5d9ca97a.xml"
+  }
+]

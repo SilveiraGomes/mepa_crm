@@ -1,0 +1,11 @@
+# ADR 0013 — Wave 4: custódia e rollback de dados duráveis
+
+Estado: decisão técnica de implementação P0.3.4, sujeita à auditoria.
+
+O catálogo e a partição aprovados são preservados. `child_custody_visits` regista entrega e recolha na mesma linha; os campos de saída são preenchidos uma única vez, num commit auditado. Não existe segunda attendance, tabela de checkout nem token de recolha no catálogo. Não se acrescentam esses recursos. A identificação presencial é uma política versionada configurada no servidor; o operador confirma a Pessoa identificada. Sem política de produção aprovada o serviço falha fechado. Passe ou token de evento não concede autorização de recolha.
+
+Custódia e revogação seguem child_profiles.id exclusivo → actor/sessão/concessões partilhados → visita/autorização/consentimento. Uma criança tem uma âncora própria; eventos e unidades não recebem lock exclusivo global. Check-in usa CheckinService da Wave 3 dentro da mesma transacção para criar event_checkins/event_attendance. Saída verifica a presença e actualiza a visita sob lock, com condição checked_out_at IS NULL. Repetição devolve ALREADY_CHECKED_OUT sem alterar a entrega anterior. Revogação bloqueia a mesma criança e fecha ends_at, conservando a autorização histórica. O instante efectivo é obtido no servidor depois de adquirir a âncora, nunca do cliente.
+
+Consentimentos são novas linhas por versão; revogação preenche revoked_at sem apagar. Catálogos, finalidades, métodos, estados e transições são configuração explícita de servidor, sem seeds ou defaults institucionais. D-02–D-12 permanecem abertas. Autorizações de entrega, recolha e responsável são finalidades distintas configuradas. Override, QR infantil, documentos enviados, custódia legal e classes académicas não são implementados.
+
+Qualquer down Wave 4 verifica todas as tabelas Wave 4 antes de DROP. Se houver dados em qualquer uma, aborta com WAVE4_DURABLE_DATA_ROLLBACK_BLOCKED antes de eliminar tabelas ou registos de migrations. Com tabelas vazias, rollback elimina apenas Wave 4. Restore/export e retenção operacional requerem política aprovada, não uma variável de bypass. DDL exige janela sem writers: a verificação não promete atomicidade entre vários DROPs. Testes ricos provam a recusa sem perda; testes vazios provam rollback/remigrate. Waves anteriores permanecem inalteradas.

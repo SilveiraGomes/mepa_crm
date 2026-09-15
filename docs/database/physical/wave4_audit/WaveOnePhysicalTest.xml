@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" tests="14" assertions="103" errors="0" warnings="0" failures="0" skipped="5" time="32.700497">
+    <testcase name="test_migrate_rollback_and_remigrate" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="86" assertions="66" time="16.025434"/>
+    <testcase name="test_information_schema_matches_staged_catalog" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="97" assertions="6" time="6.782692"/>
+    <testcase name="test_person_and_non_member_parent_family" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="132" assertions="8" time="2.735777"/>
+    <testcase name="test_boolean_birth_fk_and_public_id_rejections" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="156" assertions="6" time="2.156580"/>
+    <testcase name="test_contacts_preserve_encrypted_text_and_allow_shared_phone" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="169" assertions="2" time="1.151099"/>
+    <testcase name="test_coordinates_are_paired_and_bounded" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="185" assertions="4" time="0.572535"/>
+    <testcase name="test_all_approved_territorial_parent_child_states_can_be_persisted" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="201" assertions="3" time="0.571244"/>
+    <testcase name="test_personal_documents_keep_civil_dates_and_non_unique_candidate_index" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="227" assertions="5" time="0.495917"/>
+    <testcase name="test_location_change_preserves_unit_identity_and_period_history" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="245" assertions="3" time="1.111999"/>
+    <testsuite name="Tests\Database\WaveOnePhysicalTest::test_application_enforced_rule_is_not_a_database_guarantee" tests="5" assertions="0" errors="0" warnings="0" failures="0" skipped="5" time="1.097221">
+      <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #0" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="1.086824">
+        <skipped/>
+      </testcase>
+      <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #1" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.003150">
+        <skipped/>
+      </testcase>
+      <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #2" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.002897">
+        <skipped/>
+      </testcase>
+      <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #3" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.002513">
+        <skipped/>
+      </testcase>
+      <testcase name="test_application_enforced_rule_is_not_a_database_guarantee with data set #4" class="Tests\Database\WaveOnePhysicalTest" classname="Tests.Database.WaveOnePhysicalTest" file="C:\xampp\htdocs\mepa-crm\apps\api\tests\Database\WaveOnePhysicalTest.php" line="270" assertions="0" time="0.001838">
+        <skipped/>
+      </testcase>
+    </testsuite>
+  </testsuite>
+</testsuites>

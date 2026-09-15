@@ -1,0 +1,13 @@
+{
+    "fresh": "PASS",
+    "upgrade": "PASS",
+    "empty_rollback": "PASS",
+    "remigrate": "PASS",
+    "durable_rollback": "BLOCKED_WITHOUT_LOSS_PASS",
+    "all_wave4_tables_populated": 17,
+    "migration_rows_preserved": true,
+    "baseline_data_and_ddl_preserved": true,
+    "m1_guard_preserved": true,
+    "baseline_tables": 110,
+    "baseline_sha256": "df7e2fcf9765ddef66a40e2fe67aa4012214d2fdeaab745cf884a503d86d1e20"
+}

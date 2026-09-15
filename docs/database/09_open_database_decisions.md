@@ -27,3 +27,7 @@ D-05: colunas de configuração já propostas no modelo; falta política aprovad
 ## D-01 — fecho técnico
 
 ADR 0009 Accepted; ver ../reviews/P0.2_D01_resolution.md. D-02..D-12 não resolvidas; classificação de re-auditoria em ../reviews/P0.2_open_decisions_matrix.md. D-06 pode bloquear alteração estrutural de legal hold; D-10, bitemporalidade adicional; D-11, promoção de candidato/constraints apertadas. Nenhuma aprovação de produção ou sequenciamento P0.3 inferida.
+
+## FIN-PAYROLL-01 — tracking P4 Financeiro/RH
+
+Pessoal, Remunerações e Encargos: verificar antes do encerramento final de P4 se Custos com Pessoal cobre funcionários internos das Direcções, vínculo do funcionário à estrutura/unidade, salário base, subsídios, 13.º salário quando aplicável, subsídio de férias, INSS/encargos, pensões/reforma, subsídios relacionados com terceira idade quando institucionalmente aplicáveis, outros encargos/remunerações aprovados, histórico salarial, processamento por período e ligação correcta ao ledger financeiro. Owner: Financeiro/RH e Direcções; aprovação institucional pendente. Apenas tracking na P0.3.4-M1.2, sem schema, seeds ou processamento salarial.

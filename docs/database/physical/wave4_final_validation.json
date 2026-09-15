@@ -1,0 +1,31 @@
+{
+  "phase": "P0.3.4",
+  "status": "INTERNAL_GATE_PASS_READY_FOR_INDEPENDENT_AUDIT",
+  "tests": {
+    "tests": 109,
+    "assertions": 1900,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 5
+  },
+  "wave4": {
+    "tests": 23,
+    "assertions": 598,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "fresh": "PASS",
+  "upgrade": "PASS",
+  "rollback": "EMPTY_PASS_DURABLE_DATA_REFUSED_WITHOUT_LOSS",
+  "remigrate": "PASS",
+  "strict_parity": "PASS",
+  "unexpected_drift": 0,
+  "approved_contracts_drift": 0,
+  "documents_errors": 0,
+  "graphify": "PASS",
+  "wave5_started": false,
+  "institutional_decisions_modified": false
+}

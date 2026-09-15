@@ -1,0 +1,11 @@
+{
+    "invited": 2,
+    "confirmed": 1,
+    "present": 1,
+    "absent": 1,
+    "rate": 0.5,
+    "external_present": 1,
+    "credential_kind": "EVENT",
+    "uninvited_attempt_identified": true,
+    "queries_verified": true
+}

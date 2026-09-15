@@ -4,7 +4,9 @@ declare (strict_types=1);
 namespace Tests\Database;
 
 require_once __DIR__ . '/Support/WaveThreeCase.php';
+require_once __DIR__ . '/Support/WaveFourWorkerHarness.php';
 use Tests\Database\Support\WaveThreeCase;
+use Tests\Database\Support\WaveFourWorkerHarness;
 final class WaveThreeCheckinConcurrencyTest extends WaveThreeCase
 {
     private array $evidence = [];
@@ -14,48 +16,45 @@ final class WaveThreeCheckinConcurrencyTest extends WaveThreeCase
     }
     private function launch(array $jobs): array
     {
-        $barrier = sys_get_temp_dir() . '/mepa_wave3_barrier_' . bin2hex(random_bytes(8));
-        mkdir($barrier);
-        $processes = [];
-        foreach ($jobs as $i => $job) {
-            $pipes = [];
-            $process = proc_open([PHP_BINARY, self::$root . '/scripts/wave3-checkin-worker.php'], [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes, self::$root);
-            $this->assertIsResource($process);
-            $job['barrier'] = $barrier;
-            $job['worker'] = $i;
-            fwrite($pipes[0], json_encode($job, JSON_THROW_ON_ERROR));
-            fclose($pipes[0]);
-            $processes[] = [$process, $pipes[1], $pipes[2]];
+        $harness = new WaveFourWorkerHarness(self::$root, 'wave3-checkin-worker.php', 70);
+        try {
+            foreach ($jobs as $i => $job) $harness->start($i, $job);
+            foreach ($jobs as $i => $_) $harness->waitForState($i, 'ready', 90);
+            foreach ($jobs as $i => $_) $harness->signal($i, 'go');
+            return [$harness, count($jobs)];
+        } catch (\Throwable $error) {
+            $harness->close();
+            throw $error;
         }
-        $deadline = microtime(true) + 25;
-        while (count(glob($barrier . '/ready_*')) < count($jobs)) {
-            if (microtime(true) > $deadline) {
-                touch($barrier . '/release');
-                $this->fail('Worker readiness timeout');
-            }
-            usleep(20000);
-        }
-        touch($barrier . '/release');
-        return [$processes, $barrier];
     }
-    private function collect(array $processes, string $barrier): array
+    private function collect(WaveFourWorkerHarness $harness, int $workers): array
     {
         $results = [];
-        foreach ($processes as [$process, $stdout, $stderr]) {
-            $out = stream_get_contents($stdout);
-            $err = stream_get_contents($stderr);
-            fclose($stdout);
-            fclose($stderr);
-            $exit = proc_close($process);
-            $this->assertSame('', trim($err), 'No raw SQL or PHP warnings');
-            $this->assertSame(0, $exit, 'Worker must converge: ' . $out);
-            $results[] = json_decode($out, true, 512, JSON_THROW_ON_ERROR);
+        try {
+            for ($i = 0; $i < $workers; $i++) {
+                $worker = $harness->collect($i, 70);
+                $this->assertSame('', trim($worker['stderr']), 'No raw SQL or PHP warnings');
+                $this->assertSame(0, $worker['exit'], 'Worker must converge: ' . $worker['stdout']);
+                $this->assertTrue($worker['done'], 'Exit code alone is not convergence');
+                $results[] = json_decode(trim($worker['stdout']), true, 512, JSON_THROW_ON_ERROR);
+            }
+            return $results;
+        } finally {
+            $harness->close();
         }
-        foreach (glob($barrier . '/*') as $file) {
-            unlink($file);
+    }
+    private function waitForLockWait(string $table, int $seconds = 45): void
+    {
+        $deadline = microtime(true) + $seconds;
+        $schema = $this->db()->getDatabaseName();
+        while (microtime(true) < $deadline) {
+            $rows = $this->db()->select('SELECT t.trx_query FROM information_schema.innodb_trx t JOIN information_schema.processlist p ON p.id=t.trx_mysql_thread_id WHERE p.db=? AND t.trx_state=?', [$schema, 'LOCK WAIT']);
+            foreach ($rows as $row) {
+                if (str_contains(strtolower((string) $row->trx_query), $table)) return;
+            }
+            usleep(10000);
         }
-        rmdir($barrier);
-        return $results;
+        $this->fail('Target worker did not reach a real ' . $table . ' LOCK WAIT');
     }
     /** @dataProvider workers */
     public function test_same_person_session_token_converges(int $workers): void
@@ -66,8 +65,8 @@ final class WaveThreeCheckinConcurrencyTest extends WaveThreeCase
         for ($i = 0; $i < $workers; $i++) {
             $jobs[] = ['fixture' => $f, 'token' => $c['token'], 'key' => 'parallel_' . $i];
         }
-        [$processes, $barrier] = $this->launch($jobs);
-        $results = $this->collect($processes, $barrier);
+        [$harness, $count] = $this->launch($jobs);
+        $results = $this->collect($harness, $count);
         $counts = array_count_values(array_column($results, 'result'));
         $this->assertSame(1, $counts['CHECKED_IN'] ?? 0);
         $this->assertSame($workers - 1, $counts['ALREADY_CHECKED_IN'] ?? 0);
@@ -94,63 +93,63 @@ final class WaveThreeCheckinConcurrencyTest extends WaveThreeCase
         $freeToken = $this->eventCredential($free);
         $lock = self::connect()->getConnection();
         $lock->beginTransaction();
-        $lock->table('event_credentials')->where('id', $blockedToken['id'])->lockForUpdate()->first();
-        [$processes, $barrier] = $this->launch([['fixture' => $blocked, 'token' => $blockedToken['token'], 'key' => 'blocked'], ['fixture' => $free, 'token' => $freeToken['token'], 'key' => 'free']]);
+        $harness = null;
         try {
-            $deadline = microtime(true) + 5;
-            $completed = false;
-            while (microtime(true) < $deadline) {
-                $status = proc_get_status($processes[1][0]);
-                if (!$status['running']) {
-                    $completed = true;
-                    break;
-                }
-                usleep(20000);
-            }
-            $this->assertTrue($completed, 'Different person/session must not wait for locked credential');
-            $this->assertTrue(proc_get_status($processes[0][0])['running'], 'Blocked worker actually waits');
-        } finally {
+            $lock->table('event_credentials')->where('id', $blockedToken['id'])->lockForUpdate()->first();
+            [$harness, $count] = $this->launch([['fixture' => $blocked, 'token' => $blockedToken['token'], 'key' => 'blocked'], ['fixture' => $free, 'token' => $freeToken['token'], 'key' => 'free']]);
+            $harness->waitForState(1, 'done', 60);
+            $this->assertFileDoesNotExist($harness->stateFile(0, 'done'));
+            $this->assertTrue(proc_get_status($harness->process(0))['running'], 'Blocked worker actually waits');
             $lock->rollBack();
+            $results = $this->collect($harness, $count);
+            $this->assertSame(['CHECKED_IN', 'CHECKED_IN'], array_column($results, 'result'));
+            $p = self::$root . '/docs/database/physical/wave3_concurrency_evidence.json';
+            $old = json_decode(file_get_contents($p), true);
+            $old['granular'] = ['independent_worker_completed_before_release' => true, 'blocked_worker_waited' => true];
+            file_put_contents($p, json_encode($old, JSON_PRETTY_PRINT) . PHP_EOL);
+        } finally {
+            if ($lock->transactionLevel()) $lock->rollBack();
+            if ($harness !== null) $harness->close();
         }
-        $results = $this->collect($processes, $barrier);
-        $this->assertSame(['CHECKED_IN', 'CHECKED_IN'], array_column($results, 'result'));
-        $p = self::$root . '/docs/database/physical/wave3_concurrency_evidence.json';
-        $old = json_decode(file_get_contents($p), true);
-        $old['granular'] = ['independent_worker_completed_before_release' => true, 'blocked_worker_waited' => true];
-        file_put_contents($p, json_encode($old, JSON_PRETTY_PRINT) . PHP_EOL);
     }
     public function test_same_person_different_sessions_do_not_share_a_checkin_lock(): void
     {
         $blocked = $this->fixture();
-        $c = $this->eventCredential($blocked);
-        $free = $blocked;
+        $credential = $this->eventCredential($blocked);
+        $free = $blocked; // Same actor and token: restore the original isolation property.
         $free['session'] = $this->row('event_sessions', ['event_id' => $blocked['event']]);
-        $hash = hash('sha256', json_encode([$blocked['actor'], $blocked['auth'], $blocked['device'], $blocked['event'], $blocked['session'], $blocked['person'], hash('sha256', $c['token']), false], JSON_THROW_ON_ERROR), true);
-        $claim = $this->row('idempotency_requests', ['actor_id' => $blocked['actor'], 'operation' => 'EVENT_CHECKIN', 'client_key' => 'blocked_claim', 'request_hash' => $hash, 'status' => 'PROCESSING']);
         $lock = self::connect()->getConnection();
         $lock->beginTransaction();
-        $lock->table('idempotency_requests')->where('id', $claim)->lockForUpdate()->first();
-        [$processes, $barrier] = $this->launch([['fixture' => $blocked, 'token' => $c['token'], 'key' => 'blocked_claim'], ['fixture' => $free, 'token' => $c['token'], 'key' => 'independent_session']]);
+        $harness = null;
         try {
-            $deadline = microtime(true) + 5;
-            $completed = false;
-            while (microtime(true) < $deadline) {
-                if (!proc_get_status($processes[1][0])['running']) {
-                    $completed = true;
-                    break;
-                }
-                usleep(20000);
-            }
-            $this->assertTrue($completed);
-            $this->assertTrue(proc_get_status($processes[0][0])['running']);
-        } finally {
+            // Block only the target session. Neither idempotency key exists yet;
+            // both workers exercise the normal insertOrIgnore path.
+            $lock->table('event_sessions')->where('id', $blocked['session'])->lockForUpdate()->first();
+            [$harness, $count] = $this->launch([
+                ['fixture' => $blocked, 'token' => $credential['token'], 'key' => 'blocked_claim'],
+                ['fixture' => $free, 'token' => $credential['token'], 'key' => 'independent_session'],
+            ]);
+            $this->waitForLockWait('event_sessions');
+            $harness->waitForState(1, 'done', 60);
+            $this->assertFileDoesNotExist($harness->stateFile(0, 'done'), 'Blocked session must remain behind its own lock');
+            $this->assertTrue(proc_get_status($harness->process(0))['running'], 'Blocked worker actually waits');
             $lock->rollBack();
+            $results = $this->collect($harness, $count);
+            $this->assertSame(['CHECKED_IN', 'CHECKED_IN'], array_column($results, 'result'));
+            $this->assertSame(2, $this->db()->table('event_checkins')->where('person_id', $blocked['person'])->count());
+            $p = self::$root . '/docs/database/physical/wave3_concurrency_evidence.json';
+            $old = file_exists($p) ? json_decode(file_get_contents($p), true) : [];
+            $old['same_person_different_sessions'] = [
+                'independent_session_completed_before_release' => true,
+                'shared_actor_and_token' => true,
+                'fresh_claims' => true,
+                'lock_table' => 'event_sessions',
+                'run_id' => $harness->runId(),
+            ];
+            file_put_contents($p, json_encode($old, JSON_PRETTY_PRINT) . PHP_EOL);
+        } finally {
+            if ($lock->transactionLevel()) $lock->rollBack();
+            if ($harness !== null) $harness->close();
         }
-        $results = $this->collect($processes, $barrier);
-        $this->assertSame(['CHECKED_IN', 'CHECKED_IN'], array_column($results, 'result'));
-        $p = self::$root . '/docs/database/physical/wave3_concurrency_evidence.json';
-        $old = json_decode(file_get_contents($p), true);
-        $old['same_person_different_sessions'] = ['independent_session_completed_before_release' => true, 'shared_actor_and_token' => true];
-        file_put_contents($p, json_encode($old, JSON_PRETTY_PRINT) . PHP_EOL);
     }
 }

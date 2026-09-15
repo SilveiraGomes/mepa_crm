@@ -1,0 +1,42 @@
+{
+    "same_person_2": {
+        "workers": 2,
+        "checked_in": 1,
+        "already_checked_in": 1,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
+    "same_person_10": {
+        "workers": 10,
+        "checked_in": 1,
+        "already_checked_in": 9,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
+    "same_person_30": {
+        "workers": 30,
+        "checked_in": 1,
+        "already_checked_in": 29,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
+    "same_person_50": {
+        "workers": 50,
+        "checked_in": 1,
+        "already_checked_in": 49,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
+    "granular": {
+        "independent_worker_completed_before_release": true,
+        "blocked_worker_waited": true
+    },
+    "same_person_different_sessions": {
+        "independent_session_completed_before_release": true,
+        "shared_actor_and_token": true
+    }
+}

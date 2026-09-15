@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "method": "Independent raw SQL/catalogue comparison; no wave4 model library imported; full strict validator separately reexecuted",
+  "wave4": {
+    "tables": 17,
+    "columns": 156,
+    "foreign_keys": 48,
+    "checks": 4,
+    "unique": 12,
+    "public_id": 5,
+    "cascade": 0
+  },
+  "catalogued": {
+    "tables": 123,
+    "columns": 1068,
+    "foreign_keys": 255,
+    "checks": 81,
+    "unique": 115,
+    "public_id": 32,
+    "cascade": 0
+  },
+  "physical_including_scaffolding": {
+    "tables": 127,
+    "columns": 1090,
+    "foreign_keys": 255,
+    "checks": 81,
+    "unique": 117,
+    "public_id": 32,
+    "cascade": 0
+  },
+  "errors": []
+}

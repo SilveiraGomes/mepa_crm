@@ -1,0 +1,110 @@
+Graph: graphify-out/graph.json (2846 nodes) | Traversal: BFS depth=2 | Start: ['Decisions'] | 25 nodes found
+
+NODE Decisions [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE document [src=docs/database/README.md loc=1 community=Arquitectura e Módulos Oficiais]
+NODE people [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE legal_documents [src=docs/database/physical/P0.3.1_wave1_tables.md loc=None community=Planeamento por ondas]
+NODE P0.3.4 Wave 4 physical tables [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 [src=docs/database/12_physical_migration_plan.md loc=None community=Identidade e Árvore Institucional]
+NODE Outreach Contacts [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE 12_physical_migration_plan [src=docs/database/12_physical_migration_plan.md loc=None community=Património e Estrutura Territorial]
+NODE Child Custody Visits [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Guardian Authorizations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Person Consents [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Courses [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Department Transition Recommendations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Enrollments [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Integration Events [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Child Profiles [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Steps [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Outreach Campaigns [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Age Band Rules [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Child Emergency Contacts [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Progress [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Discipleship Tracks [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Followups [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 durable-data rollback guard [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Physical schema policy [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+EDGE Decisions --references [EXTRACTED]--> Outreach Contacts
+EDGE Decisions --references [EXTRACTED]--> people
+EDGE Decisions --references [EXTRACTED]--> legal_documents
+EDGE Wave 4 --references [EXTRACTED]--> Decisions
+EDGE document --references [EXTRACTED]--> Decisions
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Decisions
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> P0.3.4 Wave 4 physical tables
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Age Band Rules
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Custody Visits
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Emergency Contacts
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Profiles
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Courses
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Department Transition Recommendations
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Enrollments
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Progress
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Steps
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Discipleship Tracks
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Followups
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Guardian Authorizations
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Integration Events
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Outreach Campaigns
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Person Consents
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Physical schema policy
+EDGE 12_physical_migration_plan --references [EXTRACTED]--> Wave 4
+EDGE Wave 4 --references [EXTRACTED]--> Age Band Rules
+EDGE Wave 4 --references [EXTRACTED]--> Child Custody Visits
+EDGE Wave 4 --references [EXTRACTED]--> Child Emergency Contacts
+EDGE Wave 4 --references [EXTRACTED]--> Child Profiles
+EDGE Wave 4 --references [EXTRACTED]--> Courses
+EDGE Wave 4 --references [EXTRACTED]--> Department Transition Recommendations
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Enrollments
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Progress
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Steps
+EDGE Wave 4 --references [EXTRACTED]--> Discipleship Tracks
+EDGE Wave 4 --references [EXTRACTED]--> Followups
+EDGE Wave 4 --references [EXTRACTED]--> Guardian Authorizations
+EDGE Wave 4 --references [EXTRACTED]--> Integration Events
+EDGE Wave 4 --references [EXTRACTED]--> Outreach Campaigns
+EDGE Wave 4 --references [EXTRACTED]--> Person Consents
+EDGE Followups --references [EXTRACTED]--> Outreach Contacts
+EDGE Outreach Contacts --references [EXTRACTED]--> Outreach Campaigns
+EDGE Department Transition Recommendations --references [EXTRACTED]--> Age Band Rules
+EDGE document --references [EXTRACTED]--> Age Band Rules
+EDGE Child Custody Visits --references [EXTRACTED]--> Guardian Authorizations
+EDGE Child Custody Visits --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Child Custody Visits
+EDGE Child Emergency Contacts --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Child Emergency Contacts
+EDGE Child Profiles --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Child Profiles
+EDGE Discipleship Steps --references [EXTRACTED]--> Courses
+EDGE document --references [EXTRACTED]--> Courses
+EDGE Department Transition Recommendations --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Department Transition Recommendations
+EDGE Discipleship Enrollments --references [EXTRACTED]--> Discipleship Tracks
+EDGE Discipleship Enrollments --references [EXTRACTED]--> people
+EDGE Discipleship Enrollments --references [EXTRACTED]--> legal_documents
+EDGE Discipleship Progress --references [EXTRACTED]--> Discipleship Enrollments
+EDGE document --references [EXTRACTED]--> Discipleship Enrollments
+EDGE Discipleship Progress --references [EXTRACTED]--> Discipleship Steps
+EDGE document --references [EXTRACTED]--> Discipleship Progress
+EDGE Discipleship Steps --references [EXTRACTED]--> Discipleship Tracks
+EDGE document --references [EXTRACTED]--> Discipleship Steps
+EDGE document --references [EXTRACTED]--> Discipleship Tracks
+EDGE Followups --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Followups
+EDGE Guardian Authorizations --references [EXTRACTED]--> people
+EDGE Guardian Authorizations --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> Guardian Authorizations
+EDGE Guardian Authorizations --semantically_similar_to [INFERRED]--> Person Consents
+EDGE Integration Events --references [EXTRACTED]--> people
+EDGE Integration Events --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> Integration Events
+EDGE document --references [EXTRACTED]--> Outreach Campaigns
+EDGE Outreach Contacts --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Outreach Contacts
+EDGE document --references [EXTRACTED]--> Outreach Contacts
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Outreach Contacts
+EDGE Person Consents --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> people
+EDGE Person Consents --references [EXTRACTED]--> legal_documents
+EDGE document --references [EXTRACTED]--> Person Consents
+EDGE document --references [EXTRACTED]--> legal_documents

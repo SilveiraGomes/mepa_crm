@@ -1,0 +1,114 @@
+{
+    "fresh": "PASS",
+    "empty_rollback": "PASS",
+    "populated_upgrade": "PASS",
+    "populated_rollback": "PASS",
+    "remigrate": "PASS",
+    "baseline_tables": 78,
+    "baseline_data_and_ddl_identical": true,
+    "m1_guard_preserved": true,
+    "historical_transfers": 3,
+    "closed_at_values_preserved": [
+        "2026-09-13 11:12:13.123456",
+        "2026-09-14 14:15:16.654321",
+        null
+    ],
+    "states": {
+        "A": {
+            "wave3_table_count": 32,
+            "wave3_tables": [
+                "audiences",
+                "audit_logs",
+                "communication_campaigns",
+                "communication_templates",
+                "credential_class_styles",
+                "credential_classes",
+                "credential_templates",
+                "credential_types",
+                "credentials",
+                "department_activities",
+                "event_attendance",
+                "event_checkins",
+                "event_confirmations",
+                "event_counts",
+                "event_credentials",
+                "event_documents",
+                "event_invitation_lists",
+                "event_invitations",
+                "event_invitees",
+                "event_locations",
+                "event_organizers",
+                "event_registrations",
+                "event_sessions",
+                "event_types",
+                "events",
+                "governance_bodies",
+                "governance_body_memberships",
+                "governance_body_types",
+                "governance_resolutions",
+                "governance_sessions",
+                "invitation_criteria",
+                "messages"
+            ],
+            "m1_columns": [
+                "closed_at",
+                "open_flag"
+            ],
+            "m1_unique_present": true
+        },
+        "B": {
+            "wave3_table_count": 0,
+            "wave3_tables": [],
+            "m1_columns": [
+                "closed_at",
+                "open_flag"
+            ],
+            "m1_unique_present": true
+        },
+        "C": {
+            "wave3_table_count": 32,
+            "wave3_tables": [
+                "audiences",
+                "audit_logs",
+                "communication_campaigns",
+                "communication_templates",
+                "credential_class_styles",
+                "credential_classes",
+                "credential_templates",
+                "credential_types",
+                "credentials",
+                "department_activities",
+                "event_attendance",
+                "event_checkins",
+                "event_confirmations",
+                "event_counts",
+                "event_credentials",
+                "event_documents",
+                "event_invitation_lists",
+                "event_invitations",
+                "event_invitees",
+                "event_locations",
+                "event_organizers",
+                "event_registrations",
+                "event_sessions",
+                "event_types",
+                "events",
+                "governance_bodies",
+                "governance_body_memberships",
+                "governance_body_types",
+                "governance_resolutions",
+                "governance_sessions",
+                "invitation_criteria",
+                "messages"
+            ],
+            "m1_columns": [
+                "closed_at",
+                "open_flag"
+            ],
+            "m1_unique_present": true
+        }
+    },
+    "membership_number_ministry_departments_populated": true,
+    "foreign_key_checks": 1,
+    "baseline_sha256": "dc24cfd2aff8c6cef08c1cadfd3742e30fdd0918a27e67428eb2a81cc2c35037"
+}

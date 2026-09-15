@@ -1,0 +1,7 @@
+{
+    "scenario": "authorization_expires_during_lock_wait",
+    "authorization_window_seconds": 2,
+    "lock_held_seconds": 2.6,
+    "second_worker_result": "PICKUP_NOT_AUTHORIZED",
+    "stale_clock_regression": 0
+}

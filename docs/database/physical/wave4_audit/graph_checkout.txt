@@ -1,0 +1,441 @@
+Graph: graphify-out/graph.json (2846 nodes) | Traversal: BFS depth=2 | Start: ['Checkout', 'child check-out pickup authorization guardian revocation transactional single checkout real 2 10 30 50 workers', '.child()'] | 114 nodes found
+
+[i] Complete answer over budget: all 114 nodes and 323 edges shown (~19998 tokens vs the requested ~6000-token budget). Edges are never dropped once every node fits, so this is already the full answer — raising --budget further will not shrink it. Narrow with context_filter=['call'] or use get_node for a specific symbol to reduce size instead.
+
+NODE Checkout [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE child check-out pickup authorization guardian revocation transactional single checkout real 2 10 30 50 workers [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Checkout concurrency community=Events governance credentials check-in]
+NODE .child() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L30 community=Events governance credentials check-in]
+NODE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation [src=docs/reviews/P0.3.4_wave4_implementation.md loc=L1 community=Events governance credentials check-in]
+NODE DomainError [src=apps/api/app/Domain/WaveFour/DomainError.php loc=L6 community=Events governance credentials check-in]
+NODE ChildrenService [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L13 community=Events governance credentials check-in]
+NODE ADR 0013 custody and rollback [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE .authorizeGuardian() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L85 community=Events governance credentials check-in]
+NODE .recommendTransition() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L278 community=Events governance credentials check-in]
+NODE Child Custody Visits [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE Event Attendance [src=docs/database/02_data_dictionary.md loc=None community=Governança, Património e Storage]
+NODE .checkin() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L189 community=Events governance credentials check-in]
+NODE .checkout() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L229 community=Events governance credentials check-in]
+NODE .emergency() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L173 community=Events governance credentials check-in]
+NODE .consent() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L142 community=Events governance credentials check-in]
+NODE .revokeAuthorization() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L117 community=Events governance credentials check-in]
+NODE .revokeConsent() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L155 community=Events governance credentials check-in]
+NODE .person() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L39 community=Events governance credentials check-in]
+NODE .view() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L312 community=Events governance credentials check-in]
+NODE document [src=docs/database/README.md loc=1 community=Arquitectura e Módulos Oficiais]
+NODE RuntimeException [src= loc= community=Frontend Web Tooling]
+NODE people [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE DateTimeImmutable [src= loc= community=Wave 2 Ministério & Departamentos Migrations]
+NODE Users [src=docs/database/02_data_dictionary.md loc=None community=Planeamento por ondas]
+NODE WaveFourCase [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L18 community=Frontend Web Tooling]
+NODE Wave 3 [src=docs/database/12_physical_migration_plan.md loc=None community=Governança, Património e Storage]
+NODE EvangelismService [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L12 community=Events governance credentials check-in]
+NODE Illuminate\Database\Connection [src= loc= community=Wave 2 Ministério & Departamentos Migrations]
+NODE P0.3.4 Wave 4 physical tables [src=docs/database/physical/P0.3.4_wave4_tables.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 [src=docs/database/12_physical_migration_plan.md loc=None community=Identidade e Árvore Institucional]
+NODE .now() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L18 community=Events governance credentials check-in]
+NODE WaveFourCase.php [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE WaveFourChildrenSafetyTest [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L8 community=Events governance credentials check-in]
+NODE .audit() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L62 community=Events governance credentials check-in]
+NODE .authorize() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L58 community=Events governance credentials check-in]
+NODE .run() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L29 community=Events governance credentials check-in]
+NODE Event Checkins [src=docs/database/02_data_dictionary.md loc=None community=Governança, Património e Storage]
+NODE .run() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L50 community=Events governance credentials check-in]
+NODE .time() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L22 community=Events governance credentials check-in]
+NODE DomainPolicy [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L7 community=Events governance credentials check-in]
+NODE App\Domain\Events\EventPolicy [src= loc= community=Wave 2 Ministério & Departamentos Migrations]
+NODE WaveFourCheckoutConcurrencyTest [src=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php loc=L8 community=Events governance credentials check-in]
+NODE ChildrenService.php [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE .register() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L66 community=Events governance credentials check-in]
+NODE DomainAccess [src=apps/api/app/Domain/WaveFour/DomainAccess.php loc=L11 community=Wave 2 Ministério & Departamentos Migrations]
+NODE Event Registrations [src=docs/database/02_data_dictionary.md loc=None community=Governança, Património e Storage]
+NODE Guardian Authorizations [src=docs/database/02_data_dictionary.md loc=None community=Identidade e Árvore Institucional]
+NODE .guardian() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L107 community=Events governance credentials check-in]
+NODE EvangelismService.php [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE .enroll() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L165 community=Events governance credentials check-in]
+NODE Event Sessions [src=docs/database/02_data_dictionary.md loc=None community=Governança, Património e Storage]
+NODE .decision() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L125 community=Events governance credentials check-in]
+NODE .integrate() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L195 community=Events governance credentials check-in]
+NODE .participation() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L76 community=Events governance credentials check-in]
+NODE .progress() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L179 community=Events governance credentials check-in]
+NODE WaveFourEvangelismTest [src=apps/api/tests/Database/WaveFourEvangelismTest.php loc=L9 community=Events governance credentials check-in]
+NODE DomainAccess.php [src=apps/api/app/Domain/WaveFour/DomainAccess.php loc=L1 community=Wave 2 Ministério & Departamentos Migrations]
+NODE .campaign() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L84 community=Events governance credentials check-in]
+NODE .contactRow() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L67 community=Events governance credentials check-in]
+NODE .person() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L40 community=Events governance credentials check-in]
+NODE .step() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L154 community=Events governance credentials check-in]
+NODE .track() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L143 community=Events governance credentials check-in]
+NODE .children() [src=apps/api/tests/Database/Support/WaveFourCase.php loc=L263 community=Frontend Web Tooling]
+NODE WaveFourPhysicalTest [src=apps/api/tests/Database/WaveFourPhysicalTest.php loc=L8 community=Events governance credentials check-in]
+NODE DateTimeZone [src= loc= community=Events governance credentials check-in]
+NODE Academic Attendance [src=docs/database/02_data_dictionary.md loc=None community=Planeamento por ondas]
+NODE .access() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L26 community=Events governance credentials check-in]
+NODE child check-in reuses Event Session CheckinService event_attendance same Person custody child_profiles lock [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Segurança infantil community=Events governance credentials check-in]
+NODE .__construct() [src=apps/api/app/Domain/WaveFour/ChildrenService.php loc=L15 community=Wave 2 Ministério & Departamentos Migrations]
+NODE .campaignRow() [src=apps/api/app/Domain/WaveFour/EvangelismService.php loc=L59 community=Events governance credentials check-in]
+NODE WaveFourEvangelismTest.php [src=apps/api/tests/Database/WaveFourEvangelismTest.php loc=L1 community=Events governance credentials check-in]
+NODE Custody [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Custody and revocation lock order [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 durable-data rollback guard [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE discipleship_steps Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php loc=up() SQL community=Events governance credentials check-in]
+NODE outreach_contacts Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000009_wave4_create_outreach_contacts.php loc=up() SQL community=Events governance credentials check-in]
+NODE .authorize() [src=apps/api/app/Domain/WaveFour/DomainAccess.php loc=L16 community=Wave 2 Ministério & Departamentos Migrations]
+NODE .__construct() [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L9 community=Events governance credentials check-in]
+NODE .require() [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L24 community=Events governance credentials check-in]
+NODE WaveFourCheckoutConcurrencyTest.php [src=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php loc=L1 community=Events governance credentials check-in]
+NODE WaveFourChildrenSafetyTest.php [src=apps/api/tests/Database/WaveFourChildrenSafetyTest.php loc=L1 community=Events governance credentials check-in]
+NODE WaveFourPhysicalTest.php [src=apps/api/tests/Database/WaveFourPhysicalTest.php loc=L1 community=Events governance credentials check-in]
+NODE Wave 3 CheckinService [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Governança, Património e Storage]
+NODE Authorization revocation [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE wave4-checkout-worker.php [src=scripts/wave4-checkout-worker.php loc=L1 community=Events governance credentials check-in]
+NODE discipleship_enrollments Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000013_wave4_create_discipleship_enrollments.php loc=up() SQL community=Events governance credentials check-in]
+NODE discipleship_progress Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php loc=up() SQL community=Events governance credentials check-in]
+NODE discipleship_tracks Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000012_wave4_create_discipleship_tracks.php loc=up() SQL community=Events governance credentials check-in]
+NODE DateTimeImmutable [src= loc= community=Events governance credentials check-in]
+NODE DomainPolicy.php [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L1 community=Events governance credentials check-in]
+NODE .identify() [src=apps/api/app/Domain/WaveFour/DomainPolicy.php loc=L34 community=Events governance credentials check-in]
+NODE Versioned consents [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE DDL writer-free window [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE In-person identification policy [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Rollback validation [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE One Person outreach contact decision discipleship integration membership non-member child guardian identity reuse [src=docs/reviews/P0.3.4_wave4_implementation.md loc=Pipeline community=Events governance credentials check-in]
+NODE age_band_rules Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000006_wave4_create_age_band_rules.php loc=up() SQL community=Events governance credentials check-in]
+NODE child_custody_visits Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000005_wave4_create_child_custody_visits.php loc=up() SQL community=Events governance credentials check-in]
+NODE courses Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000015_wave4_create_courses.php loc=up() SQL community=Events governance credentials check-in]
+NODE decisions Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000011_wave4_create_decisions.php loc=up() SQL community=Events governance credentials check-in]
+NODE department_transition_recommendations Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000007_wave4_create_department_transition_recommendations.php loc=up() SQL community=Events governance credentials check-in]
+NODE followups Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000010_wave4_create_followups.php loc=up() SQL community=Events governance credentials check-in]
+NODE guardian_authorizations Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000002_wave4_create_guardian_authorizations.php loc=up() SQL community=Events governance credentials check-in]
+NODE outreach_campaigns Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000008_wave4_create_outreach_campaigns.php loc=up() SQL community=Events governance credentials check-in]
+NODE DomainError.php [src=apps/api/app/Domain/WaveFour/DomainError.php loc=L1 community=Events governance credentials check-in]
+NODE .__construct() [src=apps/api/app/Domain/WaveFour/DomainError.php loc=L8 community=Events governance credentials check-in]
+NODE Restore/export and retention policy [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Explicit server configuration [src=docs/adr/0013-wave4-custody-and-rollback.md loc=None community=Identidade e Árvore Institucional]
+NODE Wave 4 durable data rollback blocked before first DROP empty remigrate previous waves preserved [src=docs/adr/0013-wave4-custody-and-rollback.md loc=Rollback community=Events governance credentials check-in]
+NODE child_emergency_contacts Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000004_wave4_create_child_emergency_contacts.php loc=up() SQL community=Events governance credentials check-in]
+NODE child_profiles Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000001_wave4_create_child_profiles.php loc=up() SQL community=Events governance credentials check-in]
+NODE integration_events Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000014_wave4_create_integration_events.php loc=up() SQL community=Events governance credentials check-in]
+NODE person_consents Wave4 approved physical table [src=apps/api/database/migrations/2026_09_16_000003_wave4_create_person_consents.php loc=up() SQL community=Events governance credentials check-in]
+NODE Wave 4 APPLICATION_ENFORCED rules tracked owner implementation_wave test_wave status reason [src=docs/database/physical/wave4_application_rules_tracking.json loc=rules community=Events governance credentials check-in]
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L88
+EDGE .checkin() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L193
+EDGE .checkout() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L237
+EDGE .child() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L36
+EDGE .consent() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L145
+EDGE .emergency() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L176
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L281
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L124
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L162
+EDGE .view() --calls [EXTRACTED context=call]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L315
+EDGE ChildrenService --method [EXTRACTED]--> .child() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L30
+EDGE .child() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L34
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Checkout
+EDGE Checkout --references [EXTRACTED]--> Child Custody Visits
+EDGE Checkout --references [EXTRACTED]--> Event Attendance
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> child check-out pickup authorization guardian revocation transactional single checkout real 2 10 30 50 workers at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE Event Attendance --references [EXTRACTED]--> Event Checkins
+EDGE Event Attendance --references [EXTRACTED]--> Event Registrations
+EDGE Event Attendance --references [EXTRACTED]--> Event Sessions
+EDGE Event Attendance --references [EXTRACTED]--> people
+EDGE Event Attendance --references [EXTRACTED]--> Users
+EDGE Wave 3 --references [EXTRACTED]--> Event Attendance
+EDGE document --references [EXTRACTED]--> Event Attendance
+EDGE Academic Attendance --semantically_similar_to [INFERRED]--> Event Attendance
+EDGE Wave 3 CheckinService --references [EXTRACTED]--> Event Attendance
+EDGE .consent() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L144
+EDGE .consent() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L146
+EDGE .consent() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L147
+EDGE .consent() --calls [EXTRACTED context=call]--> .guardian() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L148
+EDGE .consent() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L150
+EDGE .consent() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L151
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Wave 3 CheckinService
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Versioned consents
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Custody
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> DDL writer-free window
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> In-person identification policy
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Custody and revocation lock order
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Restore/export and retention policy
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Authorization revocation
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Wave 4 durable-data rollback guard
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Rollback validation
+EDGE ADR 0013 custody and rollback --references [EXTRACTED]--> Explicit server configuration
+EDGE .checkout() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L236
+EDGE .checkout() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L238
+EDGE .checkout() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L239
+EDGE .checkout() --calls [EXTRACTED context=call]--> .guardian() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L248
+EDGE .checkout() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L260
+EDGE .checkout() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L264
+EDGE .children() --calls [EXTRACTED context=call]--> ChildrenService at=apps/api/tests/Database/Support/WaveFourCase.php:L265
+EDGE ChildrenService --references [EXTRACTED context=field]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE ChildrenService --references [EXTRACTED context=field]--> DomainPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE ChildrenService --references [EXTRACTED context=field]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE wave4-checkout-worker.php --imports [EXTRACTED context=import]--> ChildrenService at=scripts/wave4-checkout-worker.php:L7
+EDGE ChildrenService.php --contains [EXTRACTED]--> ChildrenService at=apps/api/app/Domain/WaveFour/ChildrenService.php:L13
+EDGE ChildrenService --method [EXTRACTED]--> .guardian() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L107
+EDGE ChildrenService --method [EXTRACTED]--> .__construct() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE ChildrenService --method [EXTRACTED]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L18
+EDGE ChildrenService --method [EXTRACTED]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L22
+EDGE ChildrenService --method [EXTRACTED]--> .access() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L26
+EDGE ChildrenService --method [EXTRACTED]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L50
+EDGE ChildrenService --method [EXTRACTED]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L58
+EDGE ChildrenService --method [EXTRACTED]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L62
+EDGE ChildrenService --method [EXTRACTED]--> .register() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L66
+EDGE wave4-checkout-worker.php --imports [EXTRACTED context=import]--> DomainError at=scripts/wave4-checkout-worker.php:L8
+EDGE DomainError.php --contains [EXTRACTED]--> DomainError at=apps/api/app/Domain/WaveFour/DomainError.php:L6
+EDGE DomainError --inherits [EXTRACTED]--> RuntimeException at=apps/api/app/Domain/WaveFour/DomainError.php:L6
+EDGE DomainError --method [EXTRACTED]--> .__construct() at=apps/api/app/Domain/WaveFour/DomainError.php:L8
+EDGE .guardian() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L112
+EDGE .register() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L76
+EDGE .run() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L55
+EDGE .authorize() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/DomainAccess.php:L21
+EDGE .__construct() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L13
+EDGE .identify() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L37
+EDGE .require() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L27
+EDGE .campaign() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L88
+EDGE .campaignRow() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L63
+EDGE .contactRow() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L71
+EDGE .decision() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L132
+EDGE .enroll() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L174
+EDGE .integrate() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L202
+EDGE .participation() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L80
+EDGE .person() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L45
+EDGE .progress() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L185
+EDGE .run() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L37
+EDGE .step() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L160
+EDGE .track() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/EvangelismService.php:L147
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L161
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L163
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L164
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L169
+EDGE .revokeConsent() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L170
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L123
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L125
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L126
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L135
+EDGE .revokeAuthorization() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L139
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> child check-in reuses Event Session CheckinService event_attendance same Person custody child_profiles lock at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> One Person outreach contact decision discipleship integration membership non-member child guardian identity reuse at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> Wave 4 durable data rollback blocked before first DROP empty remigrate previous waves preserved at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --documents [EXTRACTED]--> Wave 4 APPLICATION_ENFORCED rules tracked owner implementation_wave test_wave status reason at=docs/reviews/P0.3.4_wave4_implementation.md:Provas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> ChildrenService.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainAccess.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainAccess at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainPolicy.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> DomainPolicy at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> EvangelismService.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> EvangelismService at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> WaveFourCase.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> WaveFourCase at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> age_band_rules Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_custody_visits Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_emergency_contacts Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> child_profiles Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> courses Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> decisions Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> department_transition_recommendations Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_enrollments Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_progress Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_steps Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> followups Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> guardian_authorizations Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> integration_events Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> outreach_campaigns Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implements [EXTRACTED]--> person_consents Wave4 approved physical table at=docs/reviews/P0.3.4_wave4_implementation.md:Tabelas f?sicas
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourCheckoutConcurrencyTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourCheckoutConcurrencyTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourChildrenSafetyTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourEvangelismTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourEvangelismTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourPhysicalTest.php at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --verified_by [EXTRACTED]--> WaveFourPhysicalTest at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE .guardian() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L114
+EDGE .register() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L70
+EDGE Child Custody Visits --references [EXTRACTED]--> Event Sessions
+EDGE Child Custody Visits --references [EXTRACTED]--> Guardian Authorizations
+EDGE Child Custody Visits --references [EXTRACTED]--> people
+EDGE Child Custody Visits --references [EXTRACTED]--> Users
+EDGE Wave 4 --references [EXTRACTED]--> Child Custody Visits
+EDGE document --references [EXTRACTED]--> Child Custody Visits
+EDGE Child Custody Visits --semantically_similar_to [INFERRED]--> Event Checkins
+EDGE Custody --references [EXTRACTED]--> Child Custody Visits
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Child Custody Visits
+EDGE .checkin() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L192
+EDGE .checkin() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L194
+EDGE .checkin() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L195
+EDGE .checkin() --calls [EXTRACTED context=call]--> .guardian() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L197
+EDGE .checkin() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L202
+EDGE .checkin() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L215
+EDGE .view() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L314
+EDGE .view() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L316
+EDGE .view() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L317
+EDGE .view() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L318
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L102
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L103
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L87
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L89
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L90
+EDGE .authorizeGuardian() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L85
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L280
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L282
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L283
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L294
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> DateTimeZone at=apps/api/app/Domain/WaveFour/ChildrenService.php:L294
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L301
+EDGE .recommendTransition() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L308
+EDGE .emergency() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L175
+EDGE .emergency() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L177
+EDGE .emergency() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L178
+EDGE .emergency() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L184
+EDGE .emergency() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L185
+EDGE DomainAccess --references [EXTRACTED context=field]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/DomainAccess.php:L13
+EDGE EvangelismService --references [EXTRACTED context=field]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/EvangelismService.php:L14
+EDGE ChildrenService.php --imports [EXTRACTED context=import]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L7
+EDGE DomainAccess.php --imports [EXTRACTED context=import]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/DomainAccess.php:L6
+EDGE EvangelismService.php --imports [EXTRACTED context=import]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/EvangelismService.php:L6
+EDGE WaveFourCase.php --imports [EXTRACTED context=import]--> App\Domain\Events\EventPolicy at=apps/api/tests/Database/Support/WaveFourCase.php:L6
+EDGE .__construct() --references [EXTRACTED context=parameter_type]--> App\Domain\Events\EventPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE ChildrenService.php --imports [EXTRACTED context=import]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/ChildrenService.php:L10
+EDGE ChildrenService.php --imports [EXTRACTED context=import]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L8
+EDGE ChildrenService.php --imports [EXTRACTED context=import]--> DateTimeZone at=apps/api/app/Domain/WaveFour/ChildrenService.php:L9
+EDGE ChildrenService --method [EXTRACTED]--> .revokeAuthorization() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L117
+EDGE ChildrenService --method [EXTRACTED]--> .consent() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L142
+EDGE ChildrenService --method [EXTRACTED]--> .revokeConsent() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L155
+EDGE ChildrenService --method [EXTRACTED]--> .emergency() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L173
+EDGE ChildrenService --method [EXTRACTED]--> .checkin() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L189
+EDGE ChildrenService --method [EXTRACTED]--> .checkout() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L229
+EDGE ChildrenService --method [EXTRACTED]--> .recommendTransition() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L278
+EDGE ChildrenService --method [EXTRACTED]--> .view() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L312
+EDGE ChildrenService --method [EXTRACTED]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L39
+EDGE ChildrenService --method [EXTRACTED]--> .authorizeGuardian() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L85
+EDGE P0.3.4 Wave 4 outreach evangelism discipleship children guardians consents custody check-in check-out implementation --implemented_by [EXTRACTED]--> ChildrenService at=docs/reviews/P0.3.4_wave4_implementation.md:Test suites
+EDGE .access() --calls [EXTRACTED context=call]--> DomainAccess at=apps/api/app/Domain/WaveFour/ChildrenService.php:L28
+EDGE .audit() --calls [EXTRACTED context=call]--> .access() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L64
+EDGE .authorize() --calls [EXTRACTED context=call]--> .access() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L60
+EDGE .register() --calls [EXTRACTED context=call]--> .access() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L72
+EDGE .register() --calls [EXTRACTED context=call]--> .audit() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L81
+EDGE .audit() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L62
+EDGE .register() --calls [EXTRACTED context=call]--> .authorize() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L72
+EDGE .authorize() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L58
+EDGE .authorizeGuardian() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L91
+EDGE .authorizeGuardian() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L94
+EDGE .checkin() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L200
+EDGE .checkout() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L233
+EDGE .__construct() --references [EXTRACTED context=parameter_type]--> DomainPolicy at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE .__construct() --references [EXTRACTED context=parameter_type]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/ChildrenService.php:L15
+EDGE .emergency() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L179
+EDGE .emergency() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L182
+EDGE .guardian() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L110
+EDGE .guardian() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L107
+EDGE .now() --calls [EXTRACTED context=call]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L20
+EDGE .now() --calls [EXTRACTED context=call]--> DateTimeZone at=apps/api/app/Domain/WaveFour/ChildrenService.php:L20
+EDGE .register() --calls [EXTRACTED context=call]--> .now() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L71
+EDGE .now() --references [EXTRACTED context=return_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L18
+EDGE .person() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L43
+EDGE .recommendTransition() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L289
+EDGE .register() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L68
+EDGE .register() --calls [EXTRACTED context=call]--> .time() at=apps/api/app/Domain/WaveFour/ChildrenService.php:L80
+EDGE .revokeAuthorization() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L121
+EDGE .revokeConsent() --calls [INFERRED context=call]--> DomainError at=apps/api/app/Domain/WaveFour/ChildrenService.php:L159
+EDGE .time() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/ChildrenService.php:L22
+EDGE DomainAccess.php --imports [EXTRACTED context=import]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/DomainAccess.php:L7
+EDGE DomainAccess.php --imports [EXTRACTED context=import]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/DomainAccess.php:L8
+EDGE DomainAccess.php --contains [EXTRACTED]--> DomainAccess at=apps/api/app/Domain/WaveFour/DomainAccess.php:L11
+EDGE DomainAccess --references [EXTRACTED context=field]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/DomainAccess.php:L13
+EDGE DomainAccess --method [EXTRACTED]--> .authorize() at=apps/api/app/Domain/WaveFour/DomainAccess.php:L16
+EDGE .authorize() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/DomainAccess.php:L16
+EDGE DomainPolicy.php --contains [EXTRACTED]--> DomainPolicy at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L7
+EDGE EvangelismService --references [EXTRACTED context=field]--> DomainPolicy at=apps/api/app/Domain/WaveFour/EvangelismService.php:L14
+EDGE DomainPolicy --method [EXTRACTED]--> .require() at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L24
+EDGE DomainPolicy --method [EXTRACTED]--> .identify() at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L34
+EDGE DomainPolicy --method [EXTRACTED]--> .__construct() at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L9
+EDGE .__construct() --calls [EXTRACTED context=call]--> .require() at=apps/api/app/Domain/WaveFour/DomainPolicy.php:L20
+EDGE EvangelismService.php --imports [EXTRACTED context=import]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/EvangelismService.php:L7
+EDGE EvangelismService.php --imports [EXTRACTED context=import]--> DateTimeZone at=apps/api/app/Domain/WaveFour/EvangelismService.php:L8
+EDGE EvangelismService.php --imports [EXTRACTED context=import]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/EvangelismService.php:L9
+EDGE EvangelismService.php --contains [EXTRACTED]--> EvangelismService at=apps/api/app/Domain/WaveFour/EvangelismService.php:L12
+EDGE EvangelismService --references [EXTRACTED context=field]--> Illuminate\Database\Connection at=apps/api/app/Domain/WaveFour/EvangelismService.php:L14
+EDGE EvangelismService --method [EXTRACTED]--> .decision() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L125
+EDGE EvangelismService --method [EXTRACTED]--> .track() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L143
+EDGE EvangelismService --method [EXTRACTED]--> .step() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L154
+EDGE EvangelismService --method [EXTRACTED]--> .enroll() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L165
+EDGE EvangelismService --method [EXTRACTED]--> .progress() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L179
+EDGE EvangelismService --method [EXTRACTED]--> .integrate() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L195
+EDGE EvangelismService --method [EXTRACTED]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L29
+EDGE EvangelismService --method [EXTRACTED]--> .person() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L40
+EDGE EvangelismService --method [EXTRACTED]--> .campaignRow() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L59
+EDGE EvangelismService --method [EXTRACTED]--> .contactRow() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L67
+EDGE EvangelismService --method [EXTRACTED]--> .participation() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L76
+EDGE EvangelismService --method [EXTRACTED]--> .campaign() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L84
+EDGE .campaign() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L86
+EDGE .campaign() --references [EXTRACTED context=parameter_type]--> DateTimeImmutable at=apps/api/app/Domain/WaveFour/EvangelismService.php:L84
+EDGE .contactRow() --calls [EXTRACTED context=call]--> .campaignRow() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L73
+EDGE .decision() --calls [EXTRACTED context=call]--> .contactRow() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L131
+EDGE .decision() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L127
+EDGE .decision() --calls [EXTRACTED context=call]--> .participation() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L128
+EDGE .enroll() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L167
+EDGE .enroll() --calls [EXTRACTED context=call]--> .participation() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L168
+EDGE .enroll() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L170
+EDGE .integrate() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L197
+EDGE .integrate() --calls [EXTRACTED context=call]--> .participation() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L198
+EDGE .participation() --calls [EXTRACTED context=call]--> .person() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L82
+EDGE .progress() --calls [EXTRACTED context=call]--> .participation() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L187
+EDGE .progress() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L181
+EDGE .step() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L156
+EDGE .track() --calls [EXTRACTED context=call]--> .run() at=apps/api/app/Domain/WaveFour/EvangelismService.php:L145
+EDGE WaveFourCase.php --imports [EXTRACTED context=import]--> RuntimeException at=apps/api/tests/Database/Support/WaveFourCase.php:L17
+EDGE WaveFourCase.php --imports [EXTRACTED context=import]--> DateTimeImmutable at=apps/api/tests/Database/Support/WaveFourCase.php:L7
+EDGE WaveFourCase.php --contains [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/Support/WaveFourCase.php:L18
+EDGE WaveFourCheckoutConcurrencyTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L7
+EDGE WaveFourChildrenSafetyTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L7
+EDGE WaveFourEvangelismTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourEvangelismTest.php:L7
+EDGE WaveFourPhysicalTest.php --imports [EXTRACTED context=import]--> WaveFourCase at=apps/api/tests/Database/WaveFourPhysicalTest.php:L7
+EDGE wave4-checkout-worker.php --imports [EXTRACTED context=import]--> WaveFourCase at=scripts/wave4-checkout-worker.php:L6
+EDGE WaveFourCheckoutConcurrencyTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L8
+EDGE WaveFourChildrenSafetyTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourEvangelismTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourEvangelismTest.php:L9
+EDGE WaveFourPhysicalTest --inherits [EXTRACTED]--> WaveFourCase at=apps/api/tests/Database/WaveFourPhysicalTest.php:L8
+EDGE WaveFourCase --method [EXTRACTED]--> .children() at=apps/api/tests/Database/Support/WaveFourCase.php:L263
+EDGE WaveFourCheckoutConcurrencyTest.php --contains [EXTRACTED]--> WaveFourCheckoutConcurrencyTest at=apps/api/tests/Database/WaveFourCheckoutConcurrencyTest.php:L8
+EDGE WaveFourChildrenSafetyTest.php --contains [EXTRACTED]--> WaveFourChildrenSafetyTest at=apps/api/tests/Database/WaveFourChildrenSafetyTest.php:L8
+EDGE WaveFourEvangelismTest.php --contains [EXTRACTED]--> WaveFourEvangelismTest at=apps/api/tests/Database/WaveFourEvangelismTest.php:L9
+EDGE WaveFourPhysicalTest.php --contains [EXTRACTED]--> WaveFourPhysicalTest at=apps/api/tests/Database/WaveFourPhysicalTest.php:L8
+EDGE Wave 3 CheckinService --references [EXTRACTED]--> Event Checkins
+EDGE Custody --references [EXTRACTED]--> In-person identification policy
+EDGE Custody --references [EXTRACTED]--> Custody and revocation lock order
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> DDL writer-free window
+EDGE Authorization revocation --references [EXTRACTED]--> Custody and revocation lock order
+EDGE Authorization revocation --references [EXTRACTED]--> Guardian Authorizations
+EDGE Wave 4 durable-data rollback guard --references [EXTRACTED]--> P0.3.4 Wave 4 physical tables
+EDGE Rollback validation --references [EXTRACTED]--> Wave 4 durable-data rollback guard
+EDGE Academic Attendance --references [EXTRACTED]--> Users
+EDGE document --references [EXTRACTED]--> Academic Attendance
+EDGE Event Checkins --references [EXTRACTED]--> Event Registrations
+EDGE Event Checkins --references [EXTRACTED]--> Event Sessions
+EDGE Event Checkins --references [EXTRACTED]--> people
+EDGE Event Checkins --references [EXTRACTED]--> Users
+EDGE Wave 3 --references [EXTRACTED]--> Event Checkins
+EDGE document --references [EXTRACTED]--> Event Checkins
+EDGE Event Registrations --references [EXTRACTED]--> people
+EDGE Wave 3 --references [EXTRACTED]--> Event Registrations
+EDGE document --references [EXTRACTED]--> Event Registrations
+EDGE Wave 3 --references [EXTRACTED]--> Event Sessions
+EDGE document --references [EXTRACTED]--> Event Sessions
+EDGE Guardian Authorizations --references [EXTRACTED]--> people
+EDGE Wave 4 --references [EXTRACTED]--> Guardian Authorizations
+EDGE document --references [EXTRACTED]--> Guardian Authorizations
+EDGE P0.3.4 Wave 4 physical tables --references [EXTRACTED]--> Guardian Authorizations
+EDGE Users --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> people
+EDGE document --references [EXTRACTED]--> Users
+EDGE department_transition_recommendations Wave4 approved physical table --references rule_id [EXTRACTED]--> age_band_rules Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000007_wave4_create_department_transition_recommendations.php:FOREIGN KEY rule_id
+EDGE child_custody_visits Wave4 approved physical table --references collection_authorization_id [EXTRACTED]--> guardian_authorizations Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000005_wave4_create_child_custody_visits.php:FOREIGN KEY collection_authorization_id
+EDGE discipleship_steps Wave4 approved physical table --references course_id [EXTRACTED]--> courses Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php:FOREIGN KEY course_id
+EDGE decisions Wave4 approved physical table --references contact_id [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000011_wave4_create_decisions.php:FOREIGN KEY contact_id
+EDGE discipleship_progress Wave4 approved physical table --references enrollment_id [EXTRACTED]--> discipleship_enrollments Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php:FOREIGN KEY enrollment_id
+EDGE discipleship_enrollments Wave4 approved physical table --references track_id [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000013_wave4_create_discipleship_enrollments.php:FOREIGN KEY track_id
+EDGE discipleship_progress Wave4 approved physical table --references step_id [EXTRACTED]--> discipleship_steps Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php:FOREIGN KEY step_id
+EDGE discipleship_steps Wave4 approved physical table --references track_id [EXTRACTED]--> discipleship_tracks Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php:FOREIGN KEY track_id
+EDGE followups Wave4 approved physical table --references contact_id [EXTRACTED]--> outreach_contacts Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000010_wave4_create_followups.php:FOREIGN KEY contact_id
+EDGE outreach_contacts Wave4 approved physical table --references campaign_id [EXTRACTED]--> outreach_campaigns Wave4 approved physical table at=apps/api/database/migrations/2026_09_16_000009_wave4_create_outreach_contacts.php:FOREIGN KEY campaign_id

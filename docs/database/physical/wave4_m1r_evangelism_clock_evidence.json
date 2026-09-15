@@ -1,0 +1,7 @@
+{
+    "scenario": "evangelism_session_expires_during_unrelated_lock_wait",
+    "session_window_seconds": 2,
+    "lock_held_seconds": 2.6,
+    "outcome": "ACTOR_NOT_AUTHORIZED",
+    "write_completed": false
+}

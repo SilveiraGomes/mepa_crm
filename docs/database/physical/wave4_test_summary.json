@@ -1,0 +1,418 @@
+{
+  "phase": "P0.3.4",
+  "engine": "MySQL 8.4.11",
+  "php": "8.0.30",
+  "phpunit": "9.6.36",
+  "status": "WAVE4_READY_FOR_AUDIT",
+  "totals": {
+    "tests": 109,
+    "assertions": 1900,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 5
+  },
+  "wave4_totals": {
+    "tests": 23,
+    "assertions": 598,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "suite": "WaveFourPhysicalTest",
+      "evidence": "wave4_WaveFourPhysicalTest_junit.xml",
+      "tests": 2,
+      "assertions": 25,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveFourEvangelismTest",
+      "evidence": "wave4_WaveFourEvangelismTest_junit.xml",
+      "tests": 4,
+      "assertions": 21,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveFourChildrenSafetyTest",
+      "evidence": "wave4_WaveFourChildrenSafetyTest_junit.xml",
+      "tests": 11,
+      "assertions": 47,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveFourCheckoutConcurrencyTest",
+      "evidence": "wave4_WaveFourCheckoutConcurrencyTest_junit.xml",
+      "tests": 6,
+      "assertions": 505,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveOnePhysicalTest",
+      "evidence": "wave4_WaveOnePhysicalTest_junit.xml",
+      "tests": 14,
+      "assertions": 103,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 5,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoPhysicalTest",
+      "evidence": "wave4_WaveTwoPhysicalTest_junit.xml",
+      "tests": 12,
+      "assertions": 232,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoConcurrencyTest",
+      "evidence": "wave4_WaveTwoConcurrencyTest_junit.xml",
+      "tests": 4,
+      "assertions": 59,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoIndependentReconciliationTest",
+      "evidence": "wave4_WaveTwoIndependentReconciliationTest_junit.xml",
+      "tests": 11,
+      "assertions": 44,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoTransferConcurrencyTest",
+      "evidence": "wave4_WaveTwoTransferConcurrencyTest_junit.xml",
+      "tests": 10,
+      "assertions": 68,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoM1IndependentAuditTest",
+      "evidence": "wave4_WaveTwoM1IndependentAuditTest_junit.xml",
+      "tests": 10,
+      "assertions": 110,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveTwoTransferMigrationSafetyTest",
+      "evidence": "wave4_WaveTwoTransferMigrationSafetyTest_junit.xml",
+      "tests": 3,
+      "assertions": 53,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveThreePhysicalTest",
+      "evidence": "wave4_WaveThreePhysicalTest_junit.xml",
+      "tests": 1,
+      "assertions": 21,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveThreeDomainTest",
+      "evidence": "wave4_WaveThreeDomainTest_junit.xml",
+      "tests": 15,
+      "assertions": 294,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    },
+    {
+      "suite": "WaveThreeCheckinConcurrencyTest",
+      "evidence": "wave4_WaveThreeCheckinConcurrencyTest_junit.xml",
+      "tests": 6,
+      "assertions": 318,
+      "errors": 0,
+      "warnings": 0,
+      "failures": 0,
+      "skipped": 0,
+      "status": "PASS"
+    }
+  ],
+  "historical_skips": {
+    "suite": "WaveOnePhysicalTest",
+    "count": 5,
+    "tracking": "wave4_application_rules_tracking.json"
+  },
+  "initial_wave3_concurrency_attempt": {
+    "failures": 1,
+    "reason": "Five-second granular completion assertion under concurrent DDL load",
+    "isolated_rerun": "PASS",
+    "previous_test_or_service_modified": false
+  },
+  "lifecycle": {
+    "fresh": "PASS",
+    "upgrade": "PASS",
+    "empty_rollback": "PASS",
+    "remigrate": "PASS",
+    "durable_rollback": "BLOCKED_WITHOUT_LOSS_PASS",
+    "all_wave4_tables_populated": 17,
+    "migration_rows_preserved": true,
+    "baseline_data_and_ddl_preserved": true,
+    "m1_guard_preserved": true,
+    "baseline_tables": 110,
+    "baseline_sha256": "568b5194d1d395f4605cc039fb8ce178e83a8b2012e3a4f030efc6451b4b0bf1"
+  },
+  "concurrency": {
+    "workers_2": {
+      "workers": 2,
+      "checked_out": 1,
+      "already_checked_out": 1,
+      "logical_visits_sql": 1,
+      "checkout_audits_sql": 1,
+      "raw_sql_errors": 0
+    },
+    "workers_10": {
+      "workers": 10,
+      "checked_out": 1,
+      "already_checked_out": 9,
+      "logical_visits_sql": 1,
+      "checkout_audits_sql": 1,
+      "raw_sql_errors": 0
+    },
+    "workers_30": {
+      "workers": 30,
+      "checked_out": 1,
+      "already_checked_out": 29,
+      "logical_visits_sql": 1,
+      "checkout_audits_sql": 1,
+      "raw_sql_errors": 0
+    },
+    "workers_50": {
+      "workers": 50,
+      "checked_out": 1,
+      "already_checked_out": 49,
+      "logical_visits_sql": 1,
+      "checkout_audits_sql": 1,
+      "raw_sql_errors": 0
+    },
+    "revocation_race": {
+      "trials": 20,
+      "checkout_first": 10,
+      "revocation_first": 10,
+      "stale_authorization_after_revocation_commit": 0,
+      "raw_sql_errors": 0
+    },
+    "granularity": {
+      "same_event": true,
+      "same_session": true,
+      "independent_child_completed_before_release": true,
+      "blocked_child_waited": true
+    }
+  },
+  "physical_validation": {
+    "mode": "INFORMATION_SCHEMA",
+    "engine": "8.4.11",
+    "status": "STRICT_PARITY_PASS",
+    "scope": "Complete W1/W2/M1.1/W3/W4 catalogue parity plus explicit durable transfer history and guard",
+    "tables": 123,
+    "columns": 1068,
+    "foreign_keys": 255,
+    "checks": 81,
+    "unique": 115,
+    "public_id": 32,
+    "cascade": 0,
+    "unexpected_drift": 0,
+    "errors": []
+  },
+  "static_validation": {
+    "mode": "STATIC_CAPTURE_NOT_EXECUTION",
+    "engine": null,
+    "status": "STRICT_PARITY_PASS",
+    "scope": "17 Wave 4 catalogue tables",
+    "tables": 17,
+    "columns": 156,
+    "foreign_keys": 48,
+    "checks": 4,
+    "unique": 12,
+    "public_id": 5,
+    "cascade": 0,
+    "unexpected_drift": 0,
+    "errors": []
+  },
+  "approved_contracts": {
+    "files": 118,
+    "drift": 0
+  },
+  "documents": {
+    "tables": 199,
+    "columns": 1752,
+    "fks": 439,
+    "master_relations": 439,
+    "local_links": "checked",
+    "identifier_strategy": "ACCEPTED",
+    "public_id_entities": 54,
+    "errors": []
+  },
+  "graphify": {
+    "before_nodes": 2836,
+    "after_nodes": 2846,
+    "before_edges": 5176,
+    "after_edges": 5184,
+    "force_used": false,
+    "shrink_guard": "PASS",
+    "shrink_rejection_probe": true,
+    "scratch_bytes_unchanged": true,
+    "health": {
+      "node_count": 2846,
+      "unverified_node_count": 0,
+      "raw_edge_count": 5184,
+      "non_object_edges": 0,
+      "missing_endpoint_edges": 0,
+      "dangling_endpoint_edges": 0,
+      "self_loop_edges": 0,
+      "valid_candidate_edges": 5184,
+      "exact_duplicate_edges": 0,
+      "directed_unique_endpoint_pairs": 5184,
+      "directed_same_endpoint_collapsed_edges": 0,
+      "undirected_unique_endpoint_pairs": 5184,
+      "undirected_same_endpoint_collapsed_edges": 0,
+      "same_endpoint_group_count": 0,
+      "relation_variant_groups": 0,
+      "source_file_variant_groups": 0,
+      "source_location_variant_groups": 0,
+      "context_variant_groups": 0,
+      "post_build_graph_type": "Graph",
+      "post_build_node_count": 2846,
+      "post_build_edge_count": 5184,
+      "post_build_error": "",
+      "producer_suppression": {
+        "path": "C:\\Users\\silve\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+        "total_sites": 12,
+        "sites": [
+          {
+            "line": 1206,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+          },
+          {
+            "line": 1739,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+          },
+          {
+            "line": 1741,
+            "name": "seen_doc_refs",
+            "tuple_arity": 0,
+            "sample": "seen_doc_refs: set[str] = set()"
+          },
+          {
+            "line": 2111,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+          },
+          {
+            "line": 2258,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+          },
+          {
+            "line": 2896,
+            "name": "seen_keys",
+            "tuple_arity": 0,
+            "sample": "seen_keys: set[tuple] = set()"
+          },
+          {
+            "line": 3065,
+            "name": "seen_keys",
+            "tuple_arity": 0,
+            "sample": "seen_keys: set[tuple] = set()"
+          },
+          {
+            "line": 4757,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids: set[str] = set()"
+          },
+          {
+            "line": 4865,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids: set[str] = set()"
+          },
+          {
+            "line": 4944,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids: set[str] = set()"
+          },
+          {
+            "line": 5459,
+            "name": "seen_ids",
+            "tuple_arity": 0,
+            "sample": "seen_ids: set[str] = set()"
+          },
+          {
+            "line": 5460,
+            "name": "seen_edges",
+            "tuple_arity": 4,
+            "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+          }
+        ],
+        "error": ""
+      },
+      "examples": []
+    },
+    "queries": 18,
+    "queries_pass": true,
+    "tokens": {
+      "input": 4015,
+      "output": 11861
+    },
+    "token_count_method": "reported agent tokens plus estimated chars/4 for grounded report and DDL; AST deterministic",
+    "semantic_extraction": "Agent extraction of ADR 0013 and physical tables; grounded report and approved DDL; historical graph retained"
+  },
+  "ready_for_audit": true,
+  "open_institutional_decisions": "D-02 through D-12 unchanged; activation remains blocked where applicable"
+}

@@ -1,0 +1,146 @@
+{
+  "phase": "P0.3.4-R",
+  "environment": {
+    "container": "mepa-wave4-audit-mysql",
+    "id": "9490de1301e13b32bb69f9bd5ed1cebb8ebde5e3372c6f39a578bba235bc3273",
+    "image": "sha256:85b9bf2e29cf836ecb8c2a15a935d4ba0c606631dff1dd79531a11983c638f2a",
+    "created": "2026-09-14T09:52:44.452105129Z",
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "ede4aa1b2c1ab6bb433046527e2e8a766a9a884381cb710043cb2ac5bcae5118",
+        "Source": "/var/lib/docker/volumes/ede4aa1b2c1ab6bb433046527e2e8a766a9a884381cb710043cb2ac5bcae5118/_data",
+        "Destination": "/var/lib/mysql",
+        "Driver": "local",
+        "Mode": "",
+        "RW": true,
+        "Propagation": ""
+      }
+    ],
+    "port": 33104,
+    "sql": "VERSION()\t@@sql_mode\t@@foreign_key_checks\t@@transaction_isolation\n8.4.11\tONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\t1\tREPEATABLE-READ\n",
+    "executor_reused": false,
+    "password_recorded": false
+  },
+  "counts": {
+    "status": "PASS",
+    "method": "Independent raw SQL/catalogue comparison; no wave4 model library imported; full strict validator separately reexecuted",
+    "wave4": {
+      "tables": 17,
+      "columns": 156,
+      "foreign_keys": 48,
+      "checks": 4,
+      "unique": 12,
+      "public_id": 5,
+      "cascade": 0
+    },
+    "catalogued": {
+      "tables": 123,
+      "columns": 1068,
+      "foreign_keys": 255,
+      "checks": 81,
+      "unique": 115,
+      "public_id": 32,
+      "cascade": 0
+    },
+    "physical_including_scaffolding": {
+      "tables": 127,
+      "columns": 1090,
+      "foreign_keys": 255,
+      "checks": 81,
+      "unique": 117,
+      "public_id": 32,
+      "cascade": 0
+    },
+    "errors": []
+  },
+  "strict_parity": "STRICT_PARITY_PASS",
+  "unexpected_drift": 0,
+  "tests": {
+    "tests": 119,
+    "assertions": 2463,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 5
+  },
+  "regressions": {
+    "tests": 86,
+    "assertions": 1302,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 5
+  },
+  "wave4_executor_tests_reexecuted": {
+    "tests": 23,
+    "assertions": 598,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "independent_adversarial": {
+    "suite": "WaveFourIndependentAuditTest",
+    "tests": 10,
+    "assertions": 563,
+    "errors": 0,
+    "warnings": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "id": "W4R-01",
+      "severity": "HIGH",
+      "title": "Check-in genérico contorna consentimento e permissões infantis",
+      "owner_component": "CheckinService / gateway de eventos e ChildrenService",
+      "implementation_wave": 4,
+      "test_wave": "P0.3.4-R",
+      "status": "OPEN_REPRODUCED"
+    },
+    {
+      "id": "W4R-02",
+      "severity": "MEDIUM",
+      "title": "Progresso de inscrição sem vinculação à unidade de origem",
+      "owner_component": "EvangelismService",
+      "implementation_wave": 4,
+      "test_wave": "P0.3.4-R",
+      "status": "OPEN_REPRODUCED"
+    },
+    {
+      "id": "W4R-03",
+      "severity": "MEDIUM",
+      "title": "Instante de validação anterior à espera pelo actor",
+      "owner_component": "ChildrenService / DomainAccess",
+      "implementation_wave": 4,
+      "test_wave": "P0.3.4-R",
+      "status": "OPEN_REPRODUCED_TEMPORAL_POLICY_REVIEW"
+    },
+    {
+      "id": "W4R-04",
+      "severity": "INFO",
+      "title": "Boundary de admissão ainda não possui serviço dedicado",
+      "owner_component": "Futuro AdmissionService / MemberNumberGenerator",
+      "implementation_wave": "fase de admissão aprovada",
+      "test_wave": "mesma fase",
+      "status": "EXPLICIT_LIMITATION"
+    }
+  ],
+  "severity_counts": {
+    "CRITICAL": 0,
+    "HIGH": 1,
+    "MEDIUM": 2,
+    "LOW": 0,
+    "INFO": 1
+  },
+  "source_preservation": {
+    "changed": [],
+    "files": 385,
+    "status": "PASS"
+  },
+  "graphify": "PASS",
+  "gate": "REJECTED",
+  "wave5_started": false,
+  "implementation_report_modified": false
+}
