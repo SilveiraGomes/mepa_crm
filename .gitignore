@@ -50,3 +50,6 @@ Desktop.ini
 
 # Generated local knowledge graph
 graphify-out/
+
+__pycache__/
+*.pyc
