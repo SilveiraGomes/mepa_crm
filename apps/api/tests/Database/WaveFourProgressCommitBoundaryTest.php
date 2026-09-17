@@ -37,7 +37,7 @@ final class WaveFourProgressCommitBoundaryTest extends WaveFourCase
             $deadline = microtime(true) + 25;
             $observed = false;
             while (microtime(true) < $deadline) {
-                $rows = $this->db()->select('SELECT t.trx_query FROM information_schema.innodb_trx t JOIN information_schema.processlist p ON p.id=t.trx_mysql_thread_id WHERE p.db=? AND t.trx_state=?', [$this->db()->getDatabaseName(), 'LOCK WAIT']);
+                $rows = $this->db()->select('SELECT p.info AS trx_query FROM performance_schema.data_lock_waits w JOIN performance_schema.threads t ON t.thread_id=w.requesting_thread_id JOIN information_schema.processlist p ON p.id=t.processlist_id WHERE p.db=?', [$this->db()->getDatabaseName()]);
                 foreach ($rows as $row) {
                     if (str_contains(strtolower((string) $row->trx_query), 'audit_logs')) $observed = true;
                 }

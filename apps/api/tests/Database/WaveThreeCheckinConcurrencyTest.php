@@ -48,7 +48,7 @@ final class WaveThreeCheckinConcurrencyTest extends WaveThreeCase
         $deadline = microtime(true) + $seconds;
         $schema = $this->db()->getDatabaseName();
         while (microtime(true) < $deadline) {
-            $rows = $this->db()->select('SELECT t.trx_query FROM information_schema.innodb_trx t JOIN information_schema.processlist p ON p.id=t.trx_mysql_thread_id WHERE p.db=? AND t.trx_state=?', [$schema, 'LOCK WAIT']);
+            $rows = $this->db()->select('SELECT p.info AS trx_query FROM performance_schema.data_lock_waits w JOIN performance_schema.threads t ON t.thread_id=w.requesting_thread_id JOIN information_schema.processlist p ON p.id=t.processlist_id WHERE p.db=?', [$schema]);
             foreach ($rows as $row) {
                 if (str_contains(strtolower((string) $row->trx_query), $table)) return;
             }

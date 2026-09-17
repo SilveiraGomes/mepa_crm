@@ -1,12 +1,9 @@
 {
   "status": "APPROVED_CONTRACTS_UNCHANGED",
   "comparison": "Git LF-normalized text; only exact FIN-PAYROLL-01 tracking blocks are excluded from approved business-rule comparison",
-  "files": 118,
+  "files": 135,
   "drift": 0,
-  "tracking_extensions": [
-    "docs/database/09_open_database_decisions.md",
-    "mepa_crm_v1.1.1.md"
-  ],
+  "tracking_extensions": [],
   "results": [
     {
       "file": "apps/api/database/migrations/2014_10_12_000000_create_users_table.php",
@@ -1026,12 +1023,165 @@
       "raw_checkout_matches_git_blob": true
     },
     {
+      "file": "apps/api/database/migrations/2026_09_16_000001_wave4_create_child_profiles.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "31920d794603badb791d72c7a26ee125f8a45ba48a0b5982da4f30ea7c115424",
+      "working_lf_sha256": "31920d794603badb791d72c7a26ee125f8a45ba48a0b5982da4f30ea7c115424",
+      "approved_comparison_lf_sha256": "31920d794603badb791d72c7a26ee125f8a45ba48a0b5982da4f30ea7c115424",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000002_wave4_create_guardian_authorizations.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "fc096b8595a3241ddd4b8c84b2fe3f026abb077e97b7175f068abef1f88962ee",
+      "working_lf_sha256": "fc096b8595a3241ddd4b8c84b2fe3f026abb077e97b7175f068abef1f88962ee",
+      "approved_comparison_lf_sha256": "fc096b8595a3241ddd4b8c84b2fe3f026abb077e97b7175f068abef1f88962ee",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000003_wave4_create_person_consents.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "accd304f5fa59f218abd63f6209ffad447464d64ba2c2bcf407fb74c9fa16394",
+      "working_lf_sha256": "accd304f5fa59f218abd63f6209ffad447464d64ba2c2bcf407fb74c9fa16394",
+      "approved_comparison_lf_sha256": "accd304f5fa59f218abd63f6209ffad447464d64ba2c2bcf407fb74c9fa16394",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000004_wave4_create_child_emergency_contacts.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "601f9aa34e8abec61a0cef086ad45aee79751bba60b91065d4f2d9766af61f33",
+      "working_lf_sha256": "601f9aa34e8abec61a0cef086ad45aee79751bba60b91065d4f2d9766af61f33",
+      "approved_comparison_lf_sha256": "601f9aa34e8abec61a0cef086ad45aee79751bba60b91065d4f2d9766af61f33",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000005_wave4_create_child_custody_visits.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "486121b8cbfba600ff24cc8a1aef3e4d4cd463908082eb79a18509c559a9c20d",
+      "working_lf_sha256": "486121b8cbfba600ff24cc8a1aef3e4d4cd463908082eb79a18509c559a9c20d",
+      "approved_comparison_lf_sha256": "486121b8cbfba600ff24cc8a1aef3e4d4cd463908082eb79a18509c559a9c20d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000006_wave4_create_age_band_rules.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "0de900f21db1f77a3f10a3172f8eb77062e6e257c0ac01250f51534f3876e34a",
+      "working_lf_sha256": "0de900f21db1f77a3f10a3172f8eb77062e6e257c0ac01250f51534f3876e34a",
+      "approved_comparison_lf_sha256": "0de900f21db1f77a3f10a3172f8eb77062e6e257c0ac01250f51534f3876e34a",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000007_wave4_create_department_transition_recommendations.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "0102ab89dd24c1922a05174f50487e3f3bf3be5d1e6e43e8c2dde603d10a0d37",
+      "working_lf_sha256": "0102ab89dd24c1922a05174f50487e3f3bf3be5d1e6e43e8c2dde603d10a0d37",
+      "approved_comparison_lf_sha256": "0102ab89dd24c1922a05174f50487e3f3bf3be5d1e6e43e8c2dde603d10a0d37",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000008_wave4_create_outreach_campaigns.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "7b8428af53dd7ff0961e916577a20d274bdc8a7e3e43dc5c1747169b35d9c266",
+      "working_lf_sha256": "7b8428af53dd7ff0961e916577a20d274bdc8a7e3e43dc5c1747169b35d9c266",
+      "approved_comparison_lf_sha256": "7b8428af53dd7ff0961e916577a20d274bdc8a7e3e43dc5c1747169b35d9c266",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000009_wave4_create_outreach_contacts.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "8614ffaf6cffba3f345a21c19ae922efff01640c845a8dcdba7ccd671032a3c0",
+      "working_lf_sha256": "8614ffaf6cffba3f345a21c19ae922efff01640c845a8dcdba7ccd671032a3c0",
+      "approved_comparison_lf_sha256": "8614ffaf6cffba3f345a21c19ae922efff01640c845a8dcdba7ccd671032a3c0",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000010_wave4_create_followups.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "9d94b0aa92f8e5c66da52e04a5f1e255635854b02343a63e5d19d8bbef74ec4f",
+      "working_lf_sha256": "9d94b0aa92f8e5c66da52e04a5f1e255635854b02343a63e5d19d8bbef74ec4f",
+      "approved_comparison_lf_sha256": "9d94b0aa92f8e5c66da52e04a5f1e255635854b02343a63e5d19d8bbef74ec4f",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000011_wave4_create_decisions.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "0bd23dcfc4a0eb376df2ffd27340a09130d6f1b2b846055fdee1eff015e56724",
+      "working_lf_sha256": "0bd23dcfc4a0eb376df2ffd27340a09130d6f1b2b846055fdee1eff015e56724",
+      "approved_comparison_lf_sha256": "0bd23dcfc4a0eb376df2ffd27340a09130d6f1b2b846055fdee1eff015e56724",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000012_wave4_create_discipleship_tracks.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "9d9cf7c37b6a99b5542a1e1e6123c67be07cdf839b724249f089a8bf6b1a65f7",
+      "working_lf_sha256": "9d9cf7c37b6a99b5542a1e1e6123c67be07cdf839b724249f089a8bf6b1a65f7",
+      "approved_comparison_lf_sha256": "9d9cf7c37b6a99b5542a1e1e6123c67be07cdf839b724249f089a8bf6b1a65f7",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000013_wave4_create_discipleship_enrollments.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "9e6d9495c31e1070430d8fe1a0484805edc4ea919466ff547323467995c00df1",
+      "working_lf_sha256": "9e6d9495c31e1070430d8fe1a0484805edc4ea919466ff547323467995c00df1",
+      "approved_comparison_lf_sha256": "9e6d9495c31e1070430d8fe1a0484805edc4ea919466ff547323467995c00df1",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000014_wave4_create_integration_events.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "f6811c10418fe910a085e011cf3cd8e47a3cc567ea1c3e27bec7a6f97732a56c",
+      "working_lf_sha256": "f6811c10418fe910a085e011cf3cd8e47a3cc567ea1c3e27bec7a6f97732a56c",
+      "approved_comparison_lf_sha256": "f6811c10418fe910a085e011cf3cd8e47a3cc567ea1c3e27bec7a6f97732a56c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000015_wave4_create_courses.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "8889defa06294f30f5cfa9b5416fccf46f06e3f9cfa9f2e752ea2b4c1567b627",
+      "working_lf_sha256": "8889defa06294f30f5cfa9b5416fccf46f06e3f9cfa9f2e752ea2b4c1567b627",
+      "approved_comparison_lf_sha256": "8889defa06294f30f5cfa9b5416fccf46f06e3f9cfa9f2e752ea2b4c1567b627",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000016_wave4_create_discipleship_steps.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "cef3fbddb0d02a043ab1c3c754b14fe979db7c6ea8fb5e5f73974681c031781b",
+      "working_lf_sha256": "cef3fbddb0d02a043ab1c3c754b14fe979db7c6ea8fb5e5f73974681c031781b",
+      "approved_comparison_lf_sha256": "cef3fbddb0d02a043ab1c3c754b14fe979db7c6ea8fb5e5f73974681c031781b",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_16_000017_wave4_create_discipleship_progress.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
+      "working_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
+      "approved_comparison_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
       "file": "docs/database/09_open_database_decisions.md",
       "unchanged": true,
-      "tracking_extension": "FIN-PAYROLL-01_EXACT",
-      "git_lf_sha256": "b79e94e34d9a32d9d9b4a903ea28d1971644e7b5a03a87c4040cb7046e047700",
+      "tracking_extension": null,
+      "git_lf_sha256": "1ec27dc632bd930da918334cf8fa1bde4095895a2d35df9d83648f1d50d1581d",
       "working_lf_sha256": "1ec27dc632bd930da918334cf8fa1bde4095895a2d35df9d83648f1d50d1581d",
-      "approved_comparison_lf_sha256": "b79e94e34d9a32d9d9b4a903ea28d1971644e7b5a03a87c4040cb7046e047700",
+      "approved_comparison_lf_sha256": "1ec27dc632bd930da918334cf8fa1bde4095895a2d35df9d83648f1d50d1581d",
       "raw_checkout_matches_git_blob": false
     },
     {
@@ -1064,10 +1214,10 @@
     {
       "file": "mepa_crm_v1.1.1.md",
       "unchanged": true,
-      "tracking_extension": "FIN-PAYROLL-01_EXACT",
-      "git_lf_sha256": "4f9111e8be30aa467968ff1740df2a93f947183e92809d974183817248731016",
+      "tracking_extension": null,
+      "git_lf_sha256": "d38a19c35b0dd42591f0c16ba0765416272ed1db9558cfd159934d3c0a275403",
       "working_lf_sha256": "d38a19c35b0dd42591f0c16ba0765416272ed1db9558cfd159934d3c0a275403",
-      "approved_comparison_lf_sha256": "4f9111e8be30aa467968ff1740df2a93f947183e92809d974183817248731016",
+      "approved_comparison_lf_sha256": "d38a19c35b0dd42591f0c16ba0765416272ed1db9558cfd159934d3c0a275403",
       "raw_checkout_matches_git_blob": false
     }
   ]

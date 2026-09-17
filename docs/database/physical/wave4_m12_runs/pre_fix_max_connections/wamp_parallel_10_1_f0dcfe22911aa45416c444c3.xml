@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" tests="6" assertions="163" errors="1" warnings="0" failures="0" skipped="0" time="59.131057">
+    <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges" tests="4" assertions="144" errors="1" warnings="0" failures="0" skipped="0" time="36.957057">
+      <testcase name="test_same_person_session_token_converges with data set #0" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="12" time="0.840055"/>
+      <testcase name="test_same_person_session_token_converges with data set #1" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="36" time="2.672353"/>
+      <testcase name="test_same_person_session_token_converges with data set #2" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="96" time="11.758363"/>
+      <testcase name="test_same_person_session_token_converges with data set #3" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="0" time="21.686286">
+        <error type="RuntimeException">Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges with data set #3 (50)
+RuntimeException: Worker 46 exited before ready: Illuminate\Database\QueryException: SQLSTATE[08004] [1040] Too many connections (SQL: select `id` from `credential_types` where `code` like SYNTHETIC_%)&#13;
+
+
+C:\wamp64\www\mepa-crm\apps\api\tests\Database\Support\WaveFourWorkerHarness.php:70
+C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:22
+C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:68</error>
+      </testcase>
+    </testsuite>
+    <testcase name="test_different_people_and_sessions_progress_while_another_credential_is_locked" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="83" assertions="9" time="15.276461"/>
+    <testcase name="test_same_person_different_sessions_do_not_share_a_checkin_lock" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="115" assertions="10" time="6.897539"/>
+  </testsuite>
+</testsuites>

@@ -2,18 +2,18 @@
     "status": "READ_ONLY_PREFLIGHT_PASS",
     "engine": {
         "family": "MySQL",
-        "numeric": "8.4.11",
+        "numeric": "8.4.7",
         "minimum": "8.0.16",
         "supported": true
     },
     "server": {
-        "version": "8.4.11",
+        "version": "8.4.7",
         "comment": "MySQL Community Server - GPL",
         "charset": "utf8mb4",
-        "collation": "utf8mb4_0900_ai_ci",
+        "collation": "utf8mb4_unicode_ci",
         "fk_checks": 1,
         "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
-        "db": "mepa_wave4_test_m12_e490fae0ab8bf02cd7819d22"
+        "db": "mepa_wave4_test_regression_physical"
     },
     "innodb": {
         "Engine": "InnoDB",

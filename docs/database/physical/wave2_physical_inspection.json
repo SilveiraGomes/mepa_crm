@@ -1,6 +1,6 @@
 {
   "mode": "INFORMATION_SCHEMA",
-  "engine": "8.4.11",
+  "engine": "8.4.7",
   "tables": [
     {
       "name": "person_statuses",

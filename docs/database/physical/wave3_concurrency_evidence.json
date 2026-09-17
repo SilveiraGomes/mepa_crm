@@ -40,6 +40,6 @@
         "shared_actor_and_token": true,
         "fresh_claims": true,
         "lock_table": "event_sessions",
-        "run_id": "c123988efb673bc5e27c0abba9f48428"
+        "run_id": "7cf1c042e0447b2fd63d254796d982fd"
     }
 }

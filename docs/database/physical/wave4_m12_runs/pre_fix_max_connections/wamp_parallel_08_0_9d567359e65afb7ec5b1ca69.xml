@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" tests="6" assertions="215" errors="0" warnings="0" failures="1" skipped="0" time="29.097545">
+    <testsuite name="Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges" tests="4" assertions="196" errors="0" warnings="0" failures="1" skipped="0" time="26.663885">
+      <testcase name="test_same_person_session_token_converges with data set #0" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="12" time="1.316929"/>
+      <testcase name="test_same_person_session_token_converges with data set #1" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="36" time="3.492232"/>
+      <testcase name="test_same_person_session_token_converges with data set #2" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="96" time="8.027865"/>
+      <testcase name="test_same_person_session_token_converges with data set #3" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="60" assertions="52" time="13.826858">
+        <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Database\WaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges with data set #3 (50)
+No raw SQL or PHP warnings
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-''
++'Illuminate\Database\QueryException: SQLSTATE[08004] [1040] Too many connections (SQL: select * from `events` where `id` = 4 limit 1)'
+
+C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:36
+C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php:69</failure>
+      </testcase>
+    </testsuite>
+    <testcase name="test_different_people_and_sessions_progress_while_another_credential_is_locked" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="83" assertions="9" time="1.269006"/>
+    <testcase name="test_same_person_different_sessions_do_not_share_a_checkin_lock" class="Tests\Database\WaveThreeCheckinConcurrencyTest" classname="Tests.Database.WaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveThreeCheckinConcurrencyTest.php" line="115" assertions="10" time="1.164654"/>
+  </testsuite>
+</testsuites>
