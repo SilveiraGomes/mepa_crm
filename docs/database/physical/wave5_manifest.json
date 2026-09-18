@@ -1,0 +1,442 @@
+{
+  "phase": "P0.3.5-A0",
+  "title": "Wave 5 — MEPA Academia — manifest de desenho (sem migrations)",
+  "generated_at": "2026-09-18",
+  "updated_at": "2026-09-18",
+  "baseline_commit": "ad0dc140d1927a3e6227853150e2ea6e8cfba468",
+  "status": "DESIGN READY FOR IMPLEMENTATION",
+  "decision_gate": "docs/reviews/P0.3.5_A0_1_academy_decision_gate.md",
+  "source_of_truth": "docs/database/model_catalog.json (domain == \"Academia\", 26 tables) + docs/database/physical/migration_waves.json (wave assignment). Este manifest nao substitui o catalogo canonico; consolida-o para efeitos de gate de Wave 5 e acrescenta os campos already_exists/decision/notes pedidos pela missao P0.3.5-A0.",
+  "totals": {
+    "catalog_tables_total": 199,
+    "academia_domain_tables_total": 26,
+    "already_physical_wave4": 1,
+    "planned_wave5": 25,
+    "new_tables_proposed_this_task": 0,
+    "additive_columns_proposed_this_task": 2,
+    "ready_for_migration_tables": 26,
+    "blocked_tables": 0
+  },
+  "tables": [
+    {
+      "planned_table": "courses",
+      "purpose": "Curso reutilizavel entre programas/curriculos e entre dominios (Academia + Discipulado Wave 4); elegibilidade e politica versionada",
+      "already_exists": true,
+      "wave5": false,
+      "physical_wave": 4,
+      "migration_file": "apps/api/database/migrations/2026_09_16_000015_wave4_create_courses.php",
+      "public_id": true,
+      "dependency": [],
+      "decision": "CONFIRMED_SHARED_CATALOG",
+      "notes": "Tabela ja fisica desde Wave 4, criada deliberadamente como dependencia partilhada (mesmo padrao usado para adiantar audit_logs em Wave 3). Reutilizada por discipleship_steps.course_id (Wave 4) E por curriculum_courses/course_prerequisites/course_versions (Wave 5). Nao criar tabela paralela.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "academic_units",
+      "purpose": "EBD, IBT, Formacao de Quadros/RH e outras unidades academicas aprovadas",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "organizational_units"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "Tabela plana, sem parent_id (nao hierarquica). Modela o nivel de 'instituicao'; um polo com identidade propria (ex.: 'IBT Huambo') modela-se como linha adicional em academic_units (convencao operacional registada em P0.3.5-A0.1), sem alteracao de schema.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "programs",
+      "purpose": "Programa academico de uma unidade academica",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "academic_units"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "public_id porque exposto em portal/API academica.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "curricula",
+      "purpose": "Versao de curriculo de um programa, imutavel apos publicacao",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "programs"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(program_id,version); published_at nullable marca o congelamento. Base do teste critico C8.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "curriculum_courses",
+      "purpose": "Cursos ordenados e obrigatoriedade dentro de um curriculo",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "curricula",
+        "courses"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(curriculum_id,course_id) e UNIQUE(curriculum_id,sequence).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "course_versions",
+      "purpose": "Conteudo do curso congelado por versao (ementa, politica de conclusao)",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "courses"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(course_id,version). completion_policy_metadata (JSON) permite parametrizar conclusao sem D-09 estar resolvida para a estrutura, apenas para os valores.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "course_prerequisites",
+      "purpose": "Pre-requisitos entre cursos, sem ciclos",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "courses"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(course_id,required_course_id). Deteccao de ciclos e responsabilidade de servico, nao de CHECK (SQL nao expressa aciclicidade de grafo).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "course_modules",
+      "purpose": "Modulos de uma versao de curso",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "course_versions"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(course_version_id,sequence).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "lessons",
+      "purpose": "Aulas de conteudo; distinta de sessao lectiva de turma",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "course_modules"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(module_id,sequence).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "resources",
+      "purpose": "Metadados de video externo (YouTube/Vimeo) ou material privado",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "files"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "file_id nullable (video externo nao usa files; material privado usa). Reuso directo do dominio Files, sem storage binario proprio (Seccao 27 da missao).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "lesson_resources",
+      "purpose": "Recursos de uma aula, por ordem",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "lessons",
+        "resources"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(lesson_id,resource_id) e UNIQUE(lesson_id,sequence).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "cohorts",
+      "purpose": "Coorte do programa/curriculo (ex.: turma de ingresso de um ano)",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "academic_units",
+        "curricula"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(code) e UNIQUE(public_id).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "classes",
+      "purpose": "Turma de uma versao de curso, opcionalmente numa coorte",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "academic_units",
+        "cohorts",
+        "course_versions",
+        "physical_locations"
+      ],
+      "decision": "RESOLVED_P0.3.5-A0.1 — unit_id REJECTED (redundant), location_id ACCEPTED (default class location; event_locations takes precedence per session). See ADR-0015 Decision A.",
+      "notes": "RESOLVED em P0.3.5-A0.1 (ADR-0015 Decisao A, ACCEPTED). classes.unit_id REJECTED (redundante via academic_units.unit_id). classes.location_id ACCEPTED (nullable, FK physical_locations, RESTRICT/RESTRICT) como local por defeito da turma; class_sessions.event_session_id -> event_locations prevalece por sessao quando presente.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "instructors",
+      "purpose": "Professor/formador reutiliza Pessoa; perfil nao exige membership",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "people"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(person_id) — um perfil de instrutor por Pessoa. Confirma reuso de Person (Seccao 16 da missao).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "class_instructors",
+      "purpose": "Professor atribuido a turma por periodo",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "classes",
+        "instructors",
+        "legal_documents"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "starts_at/ends_at semiabertos (ADR-0008). Base recomendada para verificacao de scope granular por turma (Seccao 8.2/35 da missao), em vez de estender scopes.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "enrollments",
+      "purpose": "Matricula directa Pessoa+turma; aluno externo nao exige membership",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "people",
+        "classes",
+        "users"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(person_id,class_id). SEM FK para memberships/member_number — confirma non-member support (teste critico C1). approved_by nullable (FK users).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "class_sessions",
+      "purpose": "Sessao lectiva concreta da turma",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "classes",
+        "lessons",
+        "event_sessions"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "event_session_id nullable — liga opcionalmente a infraestrutura generica de eventos (Opcao B da Seccao 21 da missao, ja escolhida no catalogo).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "academic_attendance",
+      "purpose": "Presenca por matricula e sessao lectiva, sem duplicacao de eventos",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "enrollments",
+        "class_sessions",
+        "users"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(enrollment_id,class_session_id) — idempotente por desenho (teste critico, ver relatorio Seccao 10).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "assessments",
+      "purpose": "Avaliacao da versao do curso com limites aprovados",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "course_versions",
+        "lessons"
+      ],
+      "decision": "READY_STRUCTURAL — schema not blocked; seed VALUES (max_score/pass_score/max_attempts/weight) remain gated by D-09 reference-data decision (institutional, pending).",
+      "notes": "Schema aprovado no catalogo (max_score/pass_score/max_attempts/weight como DECIMAL configuravel). Os VALORES concretos destes campos (politica de aprovacao/pesos/limites) dependem de D-09 (BLOCKED). Estrutura nao bloqueada; seed de valores institucionais bloqueado.",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "assessment_attempts",
+      "purpose": "Tentativas numeradas da matricula",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "assessments",
+        "enrollments"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(assessment_id,enrollment_id,attempt_number). attempt_number deve ser atribuido em transacao com lock no servico (Seccao 10 do relatorio).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "grades",
+      "purpose": "Nota versionada e homologada por tentativa",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "assessment_attempts",
+        "users"
+      ],
+      "decision": "READY_STRUCTURAL — schema not blocked; homologation CRITERIA remain gated by D-09 reference-data decision (institutional, pending).",
+      "notes": "Schema aprovado (UNIQUE(attempt_id,version), nunca overwrite). Escala de nota e criterio de homologacao dependem de D-09 (BLOCKED).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "progress",
+      "purpose": "Progresso derivado de evidencias; cache reproduzivel, nao diploma por si so",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "enrollments",
+        "lessons"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(enrollment_id,lesson_id). source_version regista a politica usada no calculo (auditabilidade do derivado).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "resource_progress",
+      "purpose": "Evidencias de acesso/video por matricula e recurso",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "enrollments",
+        "resources"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(enrollment_id,resource_id).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "certificates",
+      "purpose": "Certificado versionado apos homologacao; QR minimo, revogacao preservada",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "enrollments",
+        "files",
+        "users"
+      ],
+      "decision": "READY_STRUCTURAL — schema not blocked; issuance ELIGIBILITY criteria remain gated by D-09 reference-data decision (institutional, pending).",
+      "notes": "Schema aprovado (token_hash BINARY(32), nunca public_id como token — ADR-0009/0012). Criterio de conclusao valida para emissao depende de D-09 (BLOCKED).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "transcripts",
+      "purpose": "Historico oficial emitido e congelado por Pessoa/curriculo",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": true,
+      "dependency": [
+        "people",
+        "curricula",
+        "files",
+        "users"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(person_id,curriculum_id,version).",
+      "ready_for_migration": true
+    },
+    {
+      "planned_table": "transcript_lines",
+      "purpose": "Resultados historicos do transcript, referenciando versoes de notas/certificados",
+      "already_exists": false,
+      "wave5": true,
+      "physical_wave": 5,
+      "public_id": false,
+      "dependency": [
+        "transcripts",
+        "enrollments",
+        "certificates"
+      ],
+      "decision": "APPROVED_IN_CATALOG",
+      "notes": "UNIQUE(transcript_id,enrollment_id). certificate_id nullable.",
+      "ready_for_migration": true
+    }
+  ],
+  "open_decisions_this_task": [
+    {
+      "id": "WAVE5-DECISION-01",
+      "title": "Polo/localizacao directa em classes",
+      "affects_tables": [
+        "classes"
+      ],
+      "proposal": "Adicionar unit_id (FK organizational_units, nullable, RESTRICT) e location_id (FK physical_locations, nullable, RESTRICT) a classes.",
+      "status": "ACCEPTED (with modification) — resolved in P0.3.5-A0.1; see docs/reviews/P0.3.5_A0_1_academy_decision_gate.md Section 8 and docs/adr/0015-academia-scope-and-location-proposals.md Decision A",
+      "blocks": "Nothing — resolved",
+      "resolution": "classes.unit_id REJECTED (redundant via academic_units.unit_id); classes.location_id ACCEPTED as the class default location, overridden per-session by event_locations when class_sessions.event_session_id is set."
+    },
+    {
+      "id": "WAVE5-DECISION-02",
+      "title": "Scope granular por turma",
+      "affects_tables": [
+        "scopes",
+        "class_instructors"
+      ],
+      "proposal": "Recomendado: verificacao de servico via class_instructors/enrollments, sem alterar scopes. Alternativa registada: estender scopes.scope_kind com um novo valor academico + coluna academic_unit_id nullable.",
+      "status": "ACCEPTED — resolved in P0.3.5-A0.1; see docs/reviews/P0.3.5_A0_1_academy_decision_gate.md Section 9 and docs/adr/0015-academia-scope-and-location-proposals.md Decision B",
+      "blocks": "Nothing — resolved",
+      "resolution": "No new scope_kind. Authorization chain: permission (ACADEMY_*) + institutional scope (user_role_scopes) + class assignment (class_instructors) when action is class-scoped, with formal audited ACADEMY_ADMIN override."
+    }
+  ],
+  "preserved_institutional_decisions": {
+    "D-09": "PARTIALLY RESOLVED in P0.3.5-A0.1 — structural schema confirmed NOT blocked (per docs/reviews/P0.2_open_decisions_matrix.md: \"Bloqueia migrations base? NAO\"); reference-data values (grading policy, attempt limits, certification eligibility) remain BLOCKED, institutional decision pending from MEPA/Academia.",
+    "FIN-PAYROLL-01": "TRACKED, sem implementacao, sem remuneracao de instrutores nesta Wave",
+    "D-06_D-08_D-11": "Precisely classified in P0.3.5-A0.1 (docs/reviews/P0.3.5_A0_1_academy_decision_gate.md Section 6): none block Wave 5 base DDL. D-06 blocks only future purge/retention features (none in current 25 tables); D-08 blocks only production execution against unqualified hosting (project-wide); D-11 blocks only the final closed status enum/composite context FKs, not VARCHAR(64) status columns without CHECK.",
+    "D-02_D-03_D-04_D-05_D-07_D-10_D-12": "BLOCKED, preserved without alteration; not specific to Academia; do not block Wave 5."
+  }
+}
