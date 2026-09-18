@@ -49,16 +49,19 @@ def orphan_php_processes() -> list[str]:
 
 
 def orphan_schemas(prefix_like: str) -> list[str]:
-    from cleanup import _mysql
+    """M1.2.3: routed through cleanup.mysql_exec() -- the single centralized MySQL
+    command boundary (section 4) -- instead of duplicating its own subprocess
+    failure handling. Re-wraps CleanupInfrastructureError as VerificationError so
+    this function's existing external contract (raises VerificationError on
+    failure) is unchanged.
+    """
+    import cleanup
     try:
-        r = _mysql(f"SELECT SCHEMA_NAME FROM information_schema.schemata WHERE SCHEMA_NAME LIKE '{prefix_like}'", timeout=15)
-    except subprocess.TimeoutExpired as exc:
-        raise _verification_error(f"orphan_schemas({prefix_like}): query timed out: {exc}") from exc
-    except OSError as exc:
-        raise _verification_error(f"orphan_schemas({prefix_like}): could not invoke mysql client: {exc}") from exc
-    if r.returncode != 0:
-        raise _verification_error(f"orphan_schemas({prefix_like}): query failed rc={r.returncode}: {r.stderr.strip()}")
-    return [l.strip() for l in r.stdout.splitlines() if l.strip()]
+        stdout = cleanup.mysql_exec(
+            f"SELECT SCHEMA_NAME FROM information_schema.schemata WHERE SCHEMA_NAME LIKE '{prefix_like}'", timeout=15)
+    except cleanup.CleanupInfrastructureError as exc:
+        raise cleanup.VerificationError(f"orphan_schemas({prefix_like}): {exc}") from exc
+    return [l.strip() for l in stdout.splitlines() if l.strip()]
 
 
 def global_state_report() -> dict:

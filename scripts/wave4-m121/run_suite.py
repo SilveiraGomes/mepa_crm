@@ -17,7 +17,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cleanup import ENV_PREFIX, new_schema, guard_schema, cleanup_run, _mysql  # noqa: E402
+from cleanup import ENV_PREFIX, new_schema, guard_schema, run_id_of, create_run_root, cleanup_run, _mysql  # noqa: E402
 from verify import barrier_dirs  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -31,7 +31,7 @@ FUNCTIONAL_TEST_TIMEOUT_SECONDS = 300  # separate from cleanup's own budget (sec
 def run_one(label: str, suite: str, wave: str, filter_text: str = None, extra_env: dict = None) -> dict:
     schema = new_schema(wave)
     guard_schema(schema)
-    run_id = schema.rsplit("_", 1)[-1]
+    run_id = run_id_of(schema)
     prefix = ENV_PREFIX[wave]
     record = {"label": label, "run_id": run_id, "schema": schema, "suite": suite, "filter": filter_text,
                "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
@@ -40,6 +40,12 @@ def run_one(label: str, suite: str, wave: str, filter_text: str = None, extra_en
     if create.returncode != 0:
         record.update({"domain_exit": None, "domain_result": "SCHEMA_CREATE_FAILED", "cleanup_result": "NOT_CREATED"})
         return record
+
+    # M1.2.3: this run's own identity-owned root + owner marker, created and known
+    # BEFORE the domain process even starts (section 7 -- "a run conhece o caminho
+    # antes de iniciar"), not discovered later via before/after timing.
+    run_root = create_run_root(run_id, schema)
+    record["run_root"] = str(run_root)
 
     env = os.environ.copy()
     env.update({
@@ -85,10 +91,13 @@ def run_one(label: str, suite: str, wave: str, filter_text: str = None, extra_en
     record["log"] = str((OUT / f"{label}_{run_id}.log").relative_to(ROOT))
     record["junit"] = str(xml.relative_to(ROOT))
 
+    # Diagnostic only as of M1.2.3 (section 14) -- the before/after diff no longer
+    # decides ownership, deletion target, FILES_REMOVED, or PASS. That authority is
+    # now run_root, created above and verified by identity in cleanup_run().
     candidate_barriers = sorted(set(barrier_dirs()) - barriers_before)
     record["candidate_barriers"] = [str(p) for p in candidate_barriers]
     telemetry = cleanup_run(run_id, schema, exit_code, record["domain_result"], out_dir=OUT,
-                             candidate_barriers=candidate_barriers)
+                             candidate_barriers=candidate_barriers, run_root=run_root)
     record["cleanup"] = telemetry.__dict__
     record["cleanup_result"] = telemetry.cleanup_result
     record["overall_pass"] = (exit_code == 0) and (telemetry.cleanup_result == "PASS")

@@ -1,0 +1,82 @@
+[
+  {
+    "run": 1,
+    "fault": "bad_mysql_binary",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 2,
+    "fault": "bad_mysql_binary",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 3,
+    "fault": "bad_mysql_binary",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 4,
+    "fault": "bad_mysql_binary",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 1,
+    "fault": "kill_oserror",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 2,
+    "fault": "kill_oserror",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 3,
+    "fault": "kill_oserror",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 1,
+    "fault": "mysql_non_zero_exit",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 2,
+    "fault": "mysql_non_zero_exit",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  },
+  {
+    "run": 3,
+    "fault": "mysql_non_zero_exit",
+    "crashed": false,
+    "cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "zero_orphan": true
+  }
+]

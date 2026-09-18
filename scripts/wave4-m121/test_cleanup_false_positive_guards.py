@@ -10,6 +10,17 @@ the simulated outcome, so the suite leaves zero orphans behind it (section 21).
 
 Runs against the real WAMP MySQL, per this codebase's no-mocked-database convention:
 only the *verification instrument* is faked, never the database itself.
+
+M1.2.3 update: T4/T5 originally exercised H2's guarantee via the legacy before/after
+candidate_barriers diff. M1.2.3 deliberately moved FILES_REMOVED's authority to the
+new identity-owned run_root mechanism (see cleanup.py's module docstring and
+docs/reviews/P0.3.4_M1_2_3_cleanup_ownership_remediation.md) and made
+candidate_barriers diagnostic-only, per its own section 14. T4/T5 were updated to
+prove the guarantee via run_root instead; T4b/T5b are new and prove the deliberate
+behavior change itself (a surviving/erroring legacy candidate must NOT fail a run
+that has no run_root issue). The full ownership/failure-boundary model (M122R-01/
+M122R-02) has its own dedicated suite,
+test_cleanup_ownership_and_failure_boundary.py.
 """
 import subprocess
 import sys
@@ -119,41 +130,94 @@ def t3_database_absent_successful_verification():
     check("T3_no_rescue", t.rescue_used is False)
 
 
-def t4_barrier_persists():
-    """T4: the schema is genuinely dropped, but a candidate barrier directory (as
-    run_suite.py's before/after diff would surface) is left on disk. FILES_REMOVED/
-    CLEANUP_VERIFIED must not be reached -- reproduces invariant_probes.json's
-    'barrier_survives' (previously cleanup_result=PASS with barrier_still_exists=True).
+def t4_run_root_persists():
+    """T4: the schema is genuinely dropped, but this run's own identity-owned root
+    cannot be confirmed removed. FILES_REMOVED/CLEANUP_VERIFIED must not be reached
+    -- the M1.2.3 equivalent of invariant_probes.json's original 'barrier_survives'
+    finding, reproduced via the new ownership mechanism instead of the retired
+    timing-based candidate_barriers diff (see t4b below).
     """
     schema = new_schema("wave4")
+    _mysql(f"CREATE DATABASE `{schema}`")
+    # M1.2.3: FILES_REMOVED authority moved from the timing-based candidate_barriers
+    # diff to the identity-owned run_root (section 15) -- reproduce the FAIL via
+    # THAT mechanism now. safe_remove_run_root() is forced to report "not removed"
+    # (a stand-in for a transient real failure), proving the primary path still
+    # correctly refuses to claim FILES_REMOVED without confirmation.
+    run_id = cleanup_module.run_id_of(schema)
+    run_root = cleanup_module.create_run_root(run_id, schema)
+    real_safe_remove = cleanup_module.safe_remove_run_root
+    cleanup_module.safe_remove_run_root = lambda *a, **k: False
+    try:
+        t = cleanup_run(run_id, schema, 0, "PASS", run_root=run_root)
+        check("T4_cleanup_fail", t.cleanup_result == "CLEANUP_FAIL", t.cleanup_result)
+        check("T4_files_removed_never_reached", t.files_removed_at is None)
+        check("T4_database_still_dropped_for_real", not schema_exists(schema))
+    finally:
+        cleanup_module.safe_remove_run_root = real_safe_remove
+        _teardown_schema(schema)
+        if run_root.exists():
+            import shutil
+            shutil.rmtree(run_root, ignore_errors=True)
+    check("T4_real_teardown_run_root_absent", not run_root.exists())
+
+
+def t4b_legacy_barrier_diff_no_longer_gates():
+    """M1.2.3 section 14: the legacy before/after candidate_barriers diff is
+    diagnostic only now -- a barrier that persists must NOT fail the run on its
+    own (this was T4's exact assertion under M1.2.2; M1.2.3 deliberately inverts
+    it, since true ownership now lives in run_root instead).
+    """
+    schema = new_schema("wave3")
     _mysql(f"CREATE DATABASE `{schema}`")
     barrier = Path(tempfile.gettempdir()) / f"mepa_wave4_m12_{schema.rsplit('_', 1)[-1]}"
     barrier.mkdir()
     (barrier / "ready").write_text("ready", encoding="utf-8")
     try:
-        t = cleanup_run("T4", schema, 0, "PASS", candidate_barriers=[barrier])
-        check("T4_cleanup_fail", t.cleanup_result == "CLEANUP_FAIL", t.cleanup_result)
-        check("T4_files_removed_never_reached", t.files_removed_at is None)
-        check("T4_database_still_dropped_for_real", not schema_exists(schema))
-        # The primary path correctly never reaches FILES_REMOVED with the barrier
-        # present (asserted above) -- rescue_cleanup() then sweeps it up for real as
-        # part of leaving the environment clean (section 14), so by the time
-        # cleanup_run() returns the barrier is legitimately already gone via rescue,
-        # not via the primary path silently accepting it.
-        check("T4_rescue_removed_barrier_not_primary", t.rescue_used is True and t.state == "RESCUE_VERIFIED", t.state)
+        t = cleanup_run("T4b", schema, 0, "PASS", candidate_barriers=[barrier])
+        check("T4b_candidate_recorded_as_diagnostic", str(barrier) in t.candidate_barriers_present_diagnostic,
+              t.candidate_barriers_present_diagnostic)
+        check("T4b_pass_despite_surviving_candidate", t.cleanup_result == "PASS", t.cleanup_result)
     finally:
         _teardown_schema(schema)
         if barrier.exists():
             import shutil
             shutil.rmtree(barrier, ignore_errors=True)
-    check("T4_real_teardown_barrier_absent", not barrier.exists())
 
 
-def t5_barrier_verification_raises():
-    """T5: the barrier existence check itself errors (simulated filesystem stat
-    failure). Must be treated as UNKNOWN, never as 'barrier absent'.
+def t5_run_root_removal_raises():
+    """T5 (M1.2.3): a genuine infrastructure error while removing the run's own
+    root (not merely 'still there') must also fail the run, never be swallowed.
     """
     schema = new_schema("wave4")
+    _mysql(f"CREATE DATABASE `{schema}`")
+    run_id = cleanup_module.run_id_of(schema)
+    run_root = cleanup_module.create_run_root(run_id, schema)
+    real_safe_remove = cleanup_module.safe_remove_run_root
+
+    def exploding(*_a, **_k):
+        raise cleanup_module.CleanupInfrastructureError("simulated filesystem failure removing run root")
+
+    cleanup_module.safe_remove_run_root = exploding
+    try:
+        t = cleanup_run(run_id, schema, 0, "PASS", run_root=run_root)
+        check("T5_cleanup_fail", t.cleanup_result == "CLEANUP_FAIL", t.cleanup_result)
+        check("T5_verification_error_recorded", t.verification_error is not None)
+    finally:
+        cleanup_module.safe_remove_run_root = real_safe_remove
+        _teardown_schema(schema)
+        if run_root.exists():
+            import shutil
+            shutil.rmtree(run_root, ignore_errors=True)
+    check("T5_real_teardown_absent", not schema_exists(schema))
+
+
+def t5b_legacy_barrier_verification_error_no_longer_gates():
+    """M1.2.3 section 14: even a verification ERROR on the legacy diagnostic must
+    not fail the run -- distinct from t5's run_root-based failure, which still
+    correctly fails.
+    """
+    schema = new_schema("wave3")
     _mysql(f"CREATE DATABASE `{schema}`")
     real_barriers_present = cleanup_module.barriers_present
 
@@ -162,13 +226,11 @@ def t5_barrier_verification_raises():
 
     cleanup_module.barriers_present = exploding
     try:
-        t = cleanup_module.cleanup_run("T5", schema, 0, "PASS", candidate_barriers=[Path("irrelevant")])
+        t = cleanup_module.cleanup_run("T5b", schema, 0, "PASS", candidate_barriers=[Path("irrelevant")])
     finally:
         cleanup_module.barriers_present = real_barriers_present
-    check("T5_cleanup_fail", t.cleanup_result == "CLEANUP_FAIL", t.cleanup_result)
-    check("T5_verification_error_recorded", t.verification_error is not None)
+    check("T5b_pass_despite_diagnostic_error", t.cleanup_result == "PASS", t.cleanup_result)
     _teardown_schema(schema)
-    check("T5_real_teardown_absent", not schema_exists(schema))
 
 
 def t6_sessions_remain_after_deadline():
@@ -358,8 +420,10 @@ def main():
     t1_database_exists_verification_error()
     t2_drop_error_and_verification_error()
     t3_database_absent_successful_verification()
-    t4_barrier_persists()
-    t5_barrier_verification_raises()
+    t4_run_root_persists()
+    t4b_legacy_barrier_diff_no_longer_gates()
+    t5_run_root_removal_raises()
+    t5b_legacy_barrier_verification_error_no_longer_gates()
     t6_sessions_remain_after_deadline()
     t7_session_check_raises()
     t8_total_cleanup_exceeds_sla_despite_drop_inside_sla()
