@@ -1,0 +1,80 @@
+{
+  "s5_drop_and_verification_both_fail": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "state_before_rescue_data": "RESCUE_FAILED",
+    "verification_error_set": true,
+    "cleanup_verified_at_is_none": true,
+    "schema_genuinely_present_during_fault": true,
+    "schema_absent_after_real_teardown": true
+  },
+  "s6_real_filenotfound_operational_error": {
+    "raised": true,
+    "exception_str": "schema_exists(mepa_wave4_test_m121_54364658a2eb059e005b4524): could not invoke mysql client: [WinError 2] O sistema n\u00e3o conseguiu localizar o ficheiro especificado",
+    "schema_absent_after_real_teardown": true
+  },
+  "s6_real_timeout_reachable": {
+    "timeout_raised": true,
+    "elapsed": 0.55
+  },
+  "s8_barrier_residual_intentional": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "files_removed_at_is_none_before_rescue_swept_it": true,
+    "final_barriers_state": "PRESENT",
+    "rescue_used": true,
+    "barrier_absent_after_real_teardown": true
+  },
+  "s9_barrier_verification_itself_errors": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "verification_error_set": true,
+    "files_removed_at_is_none": true
+  },
+  "s10_parallel_barrier_isolation": {
+    "a_cleanup_result": "CLEANUP_FAIL",
+    "b_cleanup_result": "CLEANUP_FAIL",
+    "a_schema_absent": true,
+    "b_schema_absent": true,
+    "a_barrier_absent": true,
+    "b_barrier_absent": true
+  },
+  "s11_real_residual_session_past_deadline": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "connections_zero_at_is_none": true,
+    "final_connections_state": "PRESENT",
+    "blocking_sessions_seen_nonempty": true
+  },
+  "s12_session_query_itself_errors": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "connections_zero_at_is_none": true,
+    "verification_error_set": true
+  },
+  "s13_metadata_lock_without_processlist_db": {
+    "processlist_db_filtered_empty": true,
+    "referencing_sessions_found_it": true,
+    "seen_count": 1
+  },
+  "s15_sla_exceeded_independent_mechanism": {
+    "cleanup_result": "CLEANUP_FAIL",
+    "sla_exceeded": true,
+    "database_actually_absent_anyway": true
+  },
+  "s16_timestamps_never_precede_confirmation": {
+    "database_dropped_at_never_set_when_never_confirmed": true
+  },
+  "s18_rescue_never_launders_via_real_sla_exhaustion": {
+    "primary_cleanup_result": "CLEANUP_FAIL",
+    "rescue_used": true,
+    "final_state": "RESCUE_VERIFIED",
+    "result_never_pass": true,
+    "schema_absent_via_rescue": true
+  },
+  "s19_hard_guard": {
+    "laravel": "DENIED",
+    "mysql": "DENIED",
+    "information_schema": "DENIED",
+    "performance_schema": "DENIED",
+    "sys": "DENIED",
+    "mepa_wave4_test_m121_aaaaaaaaaaaaaaaaaaaaaaaa": "ALLOWED (BAD)",
+    "arbitrary_name": "DENIED",
+    "laravel_still_present_after_all_attempts": true
+  }
+}

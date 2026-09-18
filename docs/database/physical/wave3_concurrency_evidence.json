@@ -24,7 +24,7 @@
         "shared_actor_and_token": true,
         "fresh_claims": true,
         "lock_table": "event_sessions",
-        "run_id": "c50f25d494a798de460f364ba7034ffa"
+        "run_id": "fa4f0422719bc561212302554bd94d90"
     },
     "same_person_2": {
         "workers": 2,

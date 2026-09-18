@@ -1,0 +1,29 @@
+{
+  "drop_issuance": {
+    "scenario": "drop_issuance_oserror",
+    "crashed": true,
+    "exception_type": "OSError",
+    "exception_str": "simulated: mysql.exe unavailable during DROP issuance",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 46, in probe_drop_issuance_oserror\n    telemetry = cleanup.cleanup_run(\"audit122_drop_oserror\", schema, 0, \"PASS\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 468, in cleanup_run\n    dropped = drop_database_verified(schema, telemetry, out_dir=out_dir, deadline=cleanup_deadline)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 354, in drop_database_verified\n    _mysql(f\"DROP DATABASE IF EXISTS `{schema}`\", timeout=remaining)\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 40, in injected\n    raise OSError(\"simulated: mysql.exe unavailable during DROP issuance\")\nOSError: simulated: mysql.exe unavailable during DROP issuance\n",
+    "schema_orphaned_before_manual_teardown": true,
+    "schema_absent_after_manual_teardown": true
+  },
+  "kill": {
+    "scenario": "kill_oserror",
+    "crashed": true,
+    "exception_type": "OSError",
+    "exception_str": "simulated: mysql.exe unavailable during KILL",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 89, in probe_kill_oserror\n    telemetry = cleanup.cleanup_run(\"audit122_kill_oserror\", schema, 0, \"PASS\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 465, in cleanup_run\n    drain_connections(schema, telemetry, cleanup_deadline)\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 319, in drain_connections\n    kill_orphan_sessions(schema, sessions)\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 255, in kill_orphan_sessions\n    r = _mysql(f\"KILL {int(s['id'])}\", timeout=10)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 81, in injected\n    raise OSError(\"simulated: mysql.exe unavailable during KILL\")\nOSError: simulated: mysql.exe unavailable during KILL\n",
+    "schema_orphaned_before_manual_teardown": true,
+    "schema_absent_after_manual_teardown": true
+  },
+  "diagnostics_snapshot": {
+    "scenario": "diagnostics_snapshot_oserror",
+    "crashed": true,
+    "exception_type": "OSError",
+    "exception_str": "simulated: mysql.exe unavailable during diagnostics_snapshot",
+    "traceback": "Traceback (most recent call last):\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 139, in probe_diagnostics_snapshot_oserror\n    telemetry = cleanup.cleanup_run(\"audit122_diag_oserror\", schema, 0, \"PASS\", out_dir=OUT)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 468, in cleanup_run\n    dropped = drop_database_verified(schema, telemetry, out_dir=out_dir, deadline=cleanup_deadline)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 365, in drop_database_verified\n    snap = diagnostics_snapshot(schema)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\wave4-m121\\cleanup.py\", line 229, in diagnostics_snapshot\n    out[\"processlist\"] = _mysql(\n                         ^^^^^^^\n  File \"C:\\wamp64\\www\\mepa-crm\\scripts\\audit-wave4-m122r\\probe_unhandled_exceptions.py\", line 132, in injected\n    raise OSError(\"simulated: mysql.exe unavailable during diagnostics_snapshot\")\nOSError: simulated: mysql.exe unavailable during diagnostics_snapshot\n",
+    "schema_orphaned_before_manual_teardown": false,
+    "schema_absent_after_manual_teardown": true
+  }
+}

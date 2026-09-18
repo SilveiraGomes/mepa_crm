@@ -1,0 +1,34 @@
+{
+  "audit": "P0.3.4-M1.2.2-R",
+  "scope_check": {
+    "git_show_top_level_dirs": ["docs/database", "docs/reviews", "scripts/audit-wave4-m121r", "scripts/audit-wave4-m12r", "scripts/wave4-m121"],
+    "production_php_changed": 0,
+    "migrations_changed": 0,
+    "schema_changed": 0,
+    "WaveFourWorkerHarness_php_changed": 0,
+    "methodology_note": "M1.2.1 harness files were never committed separately before M1.2.2 modified them further; both landed in one commit (41d39dd), so a literal M1.2.2-only git diff is not possible. Verified instead by fresh code reading against the M1.2.1 doc's documented pre-M1.2.2 state, plus the fact that the UNION of both change-sets still touches zero production/migration/schema/WaveFourWorkerHarness.php files."
+  },
+  "new_findings": {
+    "M122R-01": {
+      "severity": "MEDIUM",
+      "title": "Non-returncode OSError at three _mysql()-adjacent call sites crashes cleanup_run() uncaught instead of degrading to CLEANUP_FAIL",
+      "sites": ["drop_database_verified() DROP-issuance line", "kill_orphan_sessions() KILL line", "diagnostics_snapshot() (invoked whenever out_dir is passed, i.e. every real qualification run)"],
+      "evidence": "unhandled_exceptions_probe.json",
+      "consequence": "Batch-aborting crash; for DROP-issuance and KILL specifically, the schema is left orphaned with zero rescue attempt because the crash occurs before the except VerificationError block that triggers rescue_cleanup()."
+    },
+    "M122R-02": {
+      "severity": "MEDIUM",
+      "title": "Barrier candidate correlation is timing-based, not identity-based; rescue_cleanup() removes a surviving candidate unconditionally",
+      "evidence": "core_findings_probe.json (s10), plus real qualification data: 3/20 and 3/20 (two independent full-battery runs) parallel runs observed non-empty candidate_barriers, both times self-resolved within one poll cycle with 0 rescue triggered",
+      "consequence": "In principle (not observed in 40 real parallel-run samples across two independent batteries), a much slower sibling's still-active barrier could be seen as a surviving candidate at a run's own rescue phase, which would shutil.rmtree it -- rescue has no ownership check beyond 'is this path still there'.",
+      "already_disclosed_by_executor": true
+    }
+  },
+  "findings_status": {
+    "H1": "PARTIALLY_RESOLVED",
+    "H2": "PARTIALLY_RESOLVED",
+    "M1": "RESOLVED",
+    "M2": "RESOLVED",
+    "W4R-M12R-01": "RESOLVED"
+  }
+}
