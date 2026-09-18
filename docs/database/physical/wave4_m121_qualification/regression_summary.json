@@ -1,0 +1,24 @@
+{
+  "stage": "regression",
+  "connections_before": 1,
+  "progress_boundary": {
+    "group": "progress_boundary",
+    "total": 1,
+    "domain_pass": 1,
+    "cleanup_pass": 1
+  },
+  "full_regression": {
+    "group": "full_regression",
+    "total": 21,
+    "domain_pass": 21,
+    "cleanup_pass": 21
+  },
+  "connections_after": 1,
+  "global_state": {
+    "orphan_schemas_m121": [],
+    "barrier_dirs": [],
+    "php_processes_raw": [
+      "INFO: No tasks are running which match the specified criteria."
+    ]
+  }
+}

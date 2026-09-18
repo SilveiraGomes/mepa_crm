@@ -1,0 +1,20 @@
+[
+  {
+    "run": 1,
+    "exit": 0,
+    "output": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n...                                                                 3 / 3 (100%)\n\nTime: 00:02.706, Memory: 8.00 MB\n\nOK (3 tests, 16 assertions)\n",
+    "stderr": ""
+  },
+  {
+    "run": 2,
+    "exit": 0,
+    "output": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n...                                                                 3 / 3 (100%)\n\nTime: 00:02.668, Memory: 8.00 MB\n\nOK (3 tests, 16 assertions)\n",
+    "stderr": ""
+  },
+  {
+    "run": 3,
+    "exit": 0,
+    "output": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n...                                                                 3 / 3 (100%)\n\nTime: 00:02.728, Memory: 8.00 MB\n\nOK (3 tests, 16 assertions)\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "isolated": 50,
+  "parallel": 20,
+  "loaded_processes": 20,
+  "distinct_schemas": 90,
+  "new_barriers": []
+}

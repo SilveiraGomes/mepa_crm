@@ -1,0 +1,24 @@
+{
+  "stage": "gate10",
+  "connections_before": 1,
+  "smoke": {
+    "group": "smoke",
+    "total": 5,
+    "domain_pass": 5,
+    "cleanup_pass": 5
+  },
+  "isolated": {
+    "group": "isolated",
+    "total": 10,
+    "domain_pass": 10,
+    "cleanup_pass": 10
+  },
+  "connections_after": 1,
+  "global_state": {
+    "orphan_schemas_m121": [],
+    "barrier_dirs": [],
+    "php_processes_raw": [
+      "INFO: No tasks are running which match the specified criteria."
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "groups": {
+    "smoke": {
+      "runs": 5,
+      "domain_pass": 5,
+      "cleanup_pass": 5
+    },
+    "isolated": {
+      "runs": 50,
+      "domain_pass": 50,
+      "cleanup_pass": 49
+    },
+    "parallel": {
+      "runs": 20,
+      "domain_pass": 20,
+      "cleanup_pass": 18
+    },
+    "loaded": {
+      "runs": 20,
+      "domain_pass": 20,
+      "cleanup_pass": 19
+    },
+    "progress": {
+      "runs": 1,
+      "domain_pass": 1,
+      "cleanup_pass": 0
+    },
+    "scope": {
+      "runs": 1,
+      "domain_pass": 1,
+      "cleanup_pass": 1
+    },
+    "full": {
+      "runs": 21,
+      "domain_pass": 21,
+      "cleanup_pass": 21
+    }
+  },
+  "total_runs": 118,
+  "unique_run_ids": 118,
+  "unique_schemas": 118,
+  "collisions": 0
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "full",
+  "connections_before": 1,
+  "isolated": {
+    "group": "isolated",
+    "total": 50,
+    "domain_pass": 50,
+    "cleanup_pass": 50
+  },
+  "parallel": {
+    "group": "parallel",
+    "total": 20,
+    "domain_pass": 20,
+    "cleanup_pass": 20
+  },
+  "loaded": {
+    "group": "loaded",
+    "total": 20,
+    "domain_pass": 20,
+    "cleanup_pass": 20
+  },
+  "connections_after": 1,
+  "global_state": {
+    "orphan_schemas_m121": [],
+    "barrier_dirs": [],
+    "php_processes_raw": [
+      "INFO: No tasks are running which match the specified criteria."
+    ]
+  }
+}

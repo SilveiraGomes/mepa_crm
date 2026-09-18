@@ -1,0 +1,35 @@
+{
+  "guards": {
+    "laravel": "ABORT HARD: refusing to operate on protected schema 'laravel'",
+    "mysql": "ABORT HARD: refusing to operate on protected schema 'mysql'",
+    "information_schema": "ABORT HARD: refusing to operate on protected schema 'information_schema'",
+    "performance_schema": "ABORT HARD: refusing to operate on protected schema 'performance_schema'",
+    "sys": "ABORT HARD: refusing to operate on protected schema 'sys'",
+    "arbitrary": "ABORT HARD: schema 'arbitrary' does not match the required synthetic prefix"
+  },
+  "probes": {
+    "false_absence": {
+      "cleanup_result": "PASS",
+      "state": "DONE",
+      "schema_still_exists": true,
+      "drop_attempts": 1
+    },
+    "barrier_survives": {
+      "cleanup_result": "PASS",
+      "state": "DONE",
+      "files_removed_at": "2026-09-18T04:19:30.615826+00:00",
+      "barrier_still_exists": true,
+      "schema_still_exists": false
+    },
+    "sla_overrun": {
+      "cleanup_result": "PASS",
+      "configured_budget_ms": 10,
+      "actual_cleanup_duration_ms": 546,
+      "schema_still_exists": false
+    },
+    "false_drain": {
+      "connections_zero_at_recorded": true,
+      "sessions_after_kill_recorded": true
+    }
+  }
+}

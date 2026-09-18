@@ -1,0 +1,35 @@
+{
+  "target": "mepa_m12r_restore_87bcd0ea28f7",
+  "dump": "backups\\schema\\laravel_schema_wamp_20260917_180403.sql",
+  "dump_bytes": 183093,
+  "business_inserts": 0,
+  "counts": {
+    "tables": 127,
+    "columns": 1090,
+    "constraints": 579,
+    "checks": 81,
+    "keys": 541,
+    "references": 255,
+    "indexes": 579,
+    "migrations": 130
+  },
+  "drift": {},
+  "validators": {
+    "validate-wave4-schema.cjs": {
+      "exit": 0,
+      "stdout": "{\n  \"mode\": \"INFORMATION_SCHEMA\",\n  \"engine\": \"8.4.7\",\n  \"status\": \"STRICT_PARITY_PASS\",\n  \"scope\": \"Complete W1/W2/M1.1/W3/W4 catalogue parity plus explicit durable transfer history and guard\",\n  \"tables\": 123,\n  \"columns\": 1068,\n  \"foreign_keys\": 255,\n  \"checks\": 81,\n  \"unique\": 115,\n  \"public_id\": 32,\n  \"cascade\": 0,\n  \"unexpected_drift\": 0,\n  \"errors\": []\n}\n",
+      "stderr": ""
+    },
+    "validate-wave4-contracts.cjs": {
+      "exit": 0,
+      "stdout": "{ status: 'APPROVED_CONTRACTS_UNCHANGED', files: 135, drift: 0 }\n",
+      "stderr": ""
+    },
+    "validate-database-docs.cjs": {
+      "exit": 0,
+      "stdout": "{\n  \"tables\": 199,\n  \"columns\": 1752,\n  \"fks\": 439,\n  \"master_relations\": 439,\n  \"local_links\": \"checked\",\n  \"identifier_strategy\": \"ACCEPTED\",\n  \"public_id_entities\": 54,\n  \"errors\": []\n}\n",
+      "stderr": ""
+    }
+  },
+  "status": "PASS"
+}

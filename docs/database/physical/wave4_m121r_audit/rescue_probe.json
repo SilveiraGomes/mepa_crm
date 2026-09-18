@@ -1,0 +1,7 @@
+{
+  "domain_result": "PASS",
+  "cleanup_result": "CLEANUP_FAIL",
+  "rescue_used": true,
+  "final_state": "RESCUE_VERIFIED",
+  "schema_absent": true
+}

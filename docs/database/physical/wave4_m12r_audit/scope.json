@@ -1,0 +1,17 @@
+[
+  {
+    "label": "discipleship_scope",
+    "run_id": "684a948752e429757e5a6310",
+    "schema": "mepa_wave4_test_m12r_684a948752e429757e5a6310",
+    "started_utc": "2026-09-17T22:50:28.623887+00:00",
+    "suite": "WaveFourDiscipleshipScopeTest",
+    "filter": null,
+    "pid": 21796,
+    "exit": 0,
+    "log": "docs\\database\\physical\\wave4_m12r_audit\\discipleship_scope_684a948752e429757e5a6310.log",
+    "junit": "docs\\database\\physical\\wave4_m12r_audit\\discipleship_scope_684a948752e429757e5a6310.xml",
+    "ended_utc": "2026-09-17T22:51:16.521503+00:00",
+    "seconds": 47.91,
+    "cleanup": "PASS"
+  }
+]

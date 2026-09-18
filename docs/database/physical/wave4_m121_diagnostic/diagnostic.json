@@ -1,0 +1,232 @@
+[
+  {
+    "label": "diag_00_0",
+    "run_id": "79443fc58c36adac390e15ac",
+    "schema": "mepa_wave3_test_m121diag_79443fc58c36adac390e15ac",
+    "started_utc": "2026-09-17T23:29:34.979876+00:00",
+    "exit": 0,
+    "test_seconds": 7.91,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.625,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.72,
+    "cleanup_result": "PASS",
+    "total_seconds": 11.88
+  },
+  {
+    "label": "diag_00_1",
+    "run_id": "39968510577043d8f70daf43",
+    "schema": "mepa_wave3_test_m121diag_39968510577043d8f70daf43",
+    "started_utc": "2026-09-17T23:29:34.979876+00:00",
+    "exit": 0,
+    "test_seconds": 7.95,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.796,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.91,
+    "cleanup_result": "PASS",
+    "total_seconds": 12.09
+  },
+  {
+    "label": "diag_01_0",
+    "run_id": "5759b6a4e6c7cc5ab522dd7f",
+    "schema": "mepa_wave3_test_m121diag_5759b6a4e6c7cc5ab522dd7f",
+    "started_utc": "2026-09-17T23:29:47.071768+00:00",
+    "exit": 0,
+    "test_seconds": 9.73,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.656,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.75,
+    "cleanup_result": "PASS",
+    "total_seconds": 13.84
+  },
+  {
+    "label": "diag_01_1",
+    "run_id": "46b3c0014d5fd32f0017d8fb",
+    "schema": "mepa_wave3_test_m121diag_46b3c0014d5fd32f0017d8fb",
+    "started_utc": "2026-09-17T23:29:47.072741+00:00",
+    "exit": 0,
+    "test_seconds": 9.83,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.61,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.72,
+    "cleanup_result": "PASS",
+    "total_seconds": 13.91
+  },
+  {
+    "label": "diag_02_0",
+    "run_id": "5fc80c2dc818373d223a331c",
+    "schema": "mepa_wave3_test_m121diag_5fc80c2dc818373d223a331c",
+    "started_utc": "2026-09-17T23:30:00.973121+00:00",
+    "exit": 0,
+    "test_seconds": 9.76,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 4.11,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 4.28,
+    "cleanup_result": "PASS",
+    "total_seconds": 14.36
+  },
+  {
+    "label": "diag_02_1",
+    "run_id": "e8413ae96755441e2ff30ffe",
+    "schema": "mepa_wave3_test_m121diag_e8413ae96755441e2ff30ffe",
+    "started_utc": "2026-09-17T23:30:00.974637+00:00",
+    "exit": 0,
+    "test_seconds": 9.7,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 4.266,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 4.42,
+    "cleanup_result": "PASS",
+    "total_seconds": 14.45
+  },
+  {
+    "label": "diag_03_0",
+    "run_id": "54904ebccc69f51d62069721",
+    "schema": "mepa_wave3_test_m121diag_54904ebccc69f51d62069721",
+    "started_utc": "2026-09-17T23:30:15.427577+00:00",
+    "exit": 0,
+    "test_seconds": 9.25,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 6.156,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 6.39,
+    "cleanup_result": "PASS",
+    "total_seconds": 16.0
+  },
+  {
+    "label": "diag_03_1",
+    "run_id": "f4de901561369bd727350c7b",
+    "schema": "mepa_wave3_test_m121diag_f4de901561369bd727350c7b",
+    "started_utc": "2026-09-17T23:30:15.428693+00:00",
+    "exit": 0,
+    "test_seconds": 9.3,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 6.265,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 6.5,
+    "cleanup_result": "PASS",
+    "total_seconds": 16.24
+  },
+  {
+    "label": "diag_04_0",
+    "run_id": "ad947ab3ed665ee66442da90",
+    "schema": "mepa_wave3_test_m121diag_ad947ab3ed665ee66442da90",
+    "started_utc": "2026-09-17T23:30:31.678128+00:00",
+    "exit": 0,
+    "test_seconds": 13.5,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.719,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.81,
+    "cleanup_result": "PASS",
+    "total_seconds": 17.77
+  },
+  {
+    "label": "diag_04_1",
+    "run_id": "f91a6be7756e239721c6af59",
+    "schema": "mepa_wave3_test_m121diag_f91a6be7756e239721c6af59",
+    "started_utc": "2026-09-17T23:30:31.679732+00:00",
+    "exit": 0,
+    "test_seconds": 13.36,
+    "immediate_post_exit_snapshot": "",
+    "immediate_session_count": 0,
+    "immediate_sessions_raw": [],
+    "drop_attempts": [
+      {
+        "n": 1,
+        "elapsed": 3.734,
+        "returncode": 0,
+        "stderr": "",
+        "remaining_sessions_after": 0
+      }
+    ],
+    "cleanup_seconds": 3.86,
+    "cleanup_result": "PASS",
+    "total_seconds": 17.7
+  }
+]

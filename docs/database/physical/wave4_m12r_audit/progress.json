@@ -1,0 +1,17 @@
+[
+  {
+    "label": "progress_boundary",
+    "run_id": "56b6568ae952f723dacc484f",
+    "schema": "mepa_wave4_test_m12r_56b6568ae952f723dacc484f",
+    "started_utc": "2026-09-17T22:48:18.314513+00:00",
+    "suite": "WaveFourProgressCommitBoundaryTest",
+    "filter": null,
+    "pid": 38040,
+    "exit": 0,
+    "log": "docs\\database\\physical\\wave4_m12r_audit\\progress_boundary_56b6568ae952f723dacc484f.log",
+    "junit": "docs\\database\\physical\\wave4_m12r_audit\\progress_boundary_56b6568ae952f723dacc484f.xml",
+    "ended_utc": "2026-09-17T22:49:37.047788+00:00",
+    "seconds": 78.73,
+    "cleanup": "FAIL: TimeoutExpired(['C:\\\\wamp64\\\\bin\\\\mysql\\\\mysql8.4.7\\\\bin\\\\mysql.exe', '--user=root', '--host=127.0.0.1', '--port=3306', '--execute=DROP DATABASE `mepa_wave4_test_m12r_56b6568ae952f723dacc484f`'], 45)"
+  }
+]

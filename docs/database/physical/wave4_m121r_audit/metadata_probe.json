@@ -1,0 +1,32 @@
+{
+  "referencing_sessions": [
+    {
+      "id": 31912,
+      "user": "root",
+      "host": "localhost:54685",
+      "command": "Query",
+      "time": "0",
+      "state": "User sleep"
+    }
+  ],
+  "processlist_db": "",
+  "metadata_locks": "GRANTED\tTABLE\tt",
+  "client_returncode": 1,
+  "cleanup_result": "PASS",
+  "blocking_sessions_seen": [
+    {
+      "at": "2026-09-18T04:09:00.127239+00:00",
+      "sessions": [
+        {
+          "id": 31912,
+          "user": "root",
+          "host": "localhost:54685",
+          "command": "Query",
+          "time": "1",
+          "state": "User sleep"
+        }
+      ]
+    }
+  ],
+  "schema_absent": true
+}
