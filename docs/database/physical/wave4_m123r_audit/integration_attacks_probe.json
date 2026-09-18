@@ -1,0 +1,22 @@
+{
+  "s18_cross_run_database_attack_via_cleanup_run": {
+    "denied": true,
+    "message": "ABORT HARD: schema 'mepa_wave4_test_m121_38ce0b17b986e83d7479fd1f' belongs to run '38ce0b17b986e83d7479fd1f', not the expected run 'a85a227b7c4cefe2543f9d80'",
+    "b_database_untouched": true
+  },
+  "s19_cross_run_file_attack_via_cleanup_run": {
+    "PROBE_CRASHED": true,
+    "type": "RuntimeError",
+    "msg": "ABORT HARD: refusing to remove C:\\Users\\silve\\AppData\\Local\\Temp\\wave4-m121\\3773bbb02bc11db8348f0582 -- ownership verification failed"
+  },
+  "s9_unexpected_exception_boundary": {
+    "raised": true,
+    "schema_gone_after_bug": false,
+    "root_gone_after_bug": false
+  },
+  "s26_owner_marker_corrupted_binary_garbage": {
+    "PROBE_CRASHED": true,
+    "type": "UnicodeDecodeError",
+    "msg": "'utf-8' codec can't decode byte 0xff in position 0: invalid start byte"
+  }
+}

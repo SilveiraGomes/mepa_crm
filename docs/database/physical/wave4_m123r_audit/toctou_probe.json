@@ -1,0 +1,6 @@
+{
+  "safe_remove_run_root_raised": "CleanupInfrastructureError: safe_remove_run_root(C:\\Users\\silve\\AppData\\Local\\Temp\\wave4-m121\\cffd53a7ae923860c5cd126e): Cannot call rmtree on a symbolic link",
+  "victim_sentinel_survived": true,
+  "victim_dir_survived": true,
+  "hijack_path_is_now": "still_symlink"
+}

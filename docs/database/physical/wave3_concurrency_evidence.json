@@ -1,4 +1,27 @@
 {
+    "same_person_different_sessions": {
+        "independent_session_completed_before_release": true,
+        "shared_actor_and_token": true,
+        "fresh_claims": true,
+        "lock_table": "event_sessions",
+        "run_id": "a92966cc734308ea46c3b0bbe0c77da5"
+    },
+    "same_person_2": {
+        "workers": 2,
+        "checked_in": 1,
+        "already_checked_in": 1,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
+    "same_person_10": {
+        "workers": 10,
+        "checked_in": 1,
+        "already_checked_in": 9,
+        "raw_sql_errors": 0,
+        "logical_checkins": 1,
+        "attendance": 1
+    },
     "same_person_30": {
         "workers": 30,
         "checked_in": 1,
@@ -18,28 +41,5 @@
     "granular": {
         "independent_worker_completed_before_release": true,
         "blocked_worker_waited": true
-    },
-    "same_person_different_sessions": {
-        "independent_session_completed_before_release": true,
-        "shared_actor_and_token": true,
-        "fresh_claims": true,
-        "lock_table": "event_sessions",
-        "run_id": "5d2ed1aba72fb5ebcc858bafbb4711e0"
-    },
-    "same_person_2": {
-        "workers": 2,
-        "checked_in": 1,
-        "already_checked_in": 1,
-        "raw_sql_errors": 0,
-        "logical_checkins": 1,
-        "attendance": 1
-    },
-    "same_person_10": {
-        "workers": 10,
-        "checked_in": 1,
-        "already_checked_in": 9,
-        "raw_sql_errors": 0,
-        "logical_checkins": 1,
-        "attendance": 1
     }
 }

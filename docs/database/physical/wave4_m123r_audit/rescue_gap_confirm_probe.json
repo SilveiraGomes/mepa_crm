@@ -1,0 +1,14 @@
+{
+  "gap1_rescue_crashes_on_first_step": {
+    "raised": true,
+    "schema_still_present_immediately_after": true,
+    "root_still_present_immediately_after": true
+  },
+  "gap2_ownership_mismatch_futile_retry_timing": {
+    "raised": true,
+    "elapsed_seconds": 91.4,
+    "rescue_timeout_budget": 90,
+    "b_root_untouched": true,
+    "b_database_untouched": true
+  }
+}

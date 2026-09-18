@@ -1,0 +1,42 @@
+{
+  "audit": "P0.3.4-M1.2.3-R",
+  "commit_audited": "93ccfc4",
+  "parent": "c9a9df4",
+  "scope_check": {
+    "diff_name_status_top_level_dirs": ["docs/database", "docs/reviews", "scripts/wave4-m121"],
+    "production_php_changed": 0,
+    "migrations_changed": 0,
+    "schema_changed": 0,
+    "WaveFourWorkerHarness_php_changed": 0
+  },
+  "findings_status": {
+    "H1": "RESOLVED",
+    "H2": "RESOLVED",
+    "M1": "RESOLVED",
+    "M2": "RESOLVED",
+    "W4R-M12R-01": "RESOLVED",
+    "M122R-01": "RESOLVED",
+    "M122R-02": "RESOLVED"
+  },
+  "new_findings": {
+    "M123R-01": {
+      "severity": "MEDIUM",
+      "title": "rescue_cleanup()'s own internal steps are not uniformly defensive against unexpected exceptions",
+      "evidence": "rescue_gap_confirm_probe.json, integration_attacks_probe.json",
+      "reproduction": "A NovelBug-type exception raised by referencing_sessions() crashes rescue_cleanup() on its own first loop step; confirmed schema AND run_root both still present immediately after cleanup_run() raises, before any manual teardown -- zero cleanup attempted despite the DROP DATABASE step not depending on the broken step. Same root pattern independently confirmed via a corrupted (non-UTF8) owner marker: _read_owner_marker()'s `except OSError` does not catch UnicodeDecodeError (a ValueError subclass).",
+      "consequence": "Exception still correctly surfaces (no false PASS, no cross-run damage) but 'resources cleaned up when possible' (the module's own section-5 promise) is violated -- a confirmed, reproducible resource leak in this narrow but real scenario."
+    },
+    "M123R-02": {
+      "severity": "LOW",
+      "title": "Ownership mismatch causes futile full-budget rescue retry instead of immediate stop",
+      "evidence": "rescue_gap_confirm_probe.json (elapsed_seconds: 91.4, rescue_timeout_budget: 90)",
+      "consequence": "No safety violation (other run's resources verified untouched throughout) -- but a structurally-undecidable-by-retry condition (caller passed mismatched run_root) is retried for the full RESCUE_TIMEOUT_SECONDS budget before correctly re-raising, wasting ~90s per occurrence."
+    },
+    "TOCTOU_window_INFO": {
+      "severity": "INFO",
+      "title": "TOCTOU window exists between verify_ownership() and shutil.rmtree() in principle, not exploitable on this platform",
+      "evidence": "toctou_probe.json, toctou_junction_probe.json",
+      "detail": "Deterministic worst-case-timing hijack tested with both a symlink and a Windows junction (mklink /J) replacing the run root at the exact instant after ownership was confirmed. Both blocked completely by Python stdlib's shutil._rmtree_islink() (checks both S_ISLNK and IO_REPARSE_TAG_MOUNT_POINT since Python 3.8+) -- victim directories survived fully intact in both tests. Not a finding; documented per the audit's own guidance not to require redesign for a non-realistically-exploitable local-harness risk."
+    }
+  }
+}
