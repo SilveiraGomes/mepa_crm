@@ -1,0 +1,15 @@
+{
+  "suite": "PooledChildCheckinBoundaryTest::::test_generic_service_direct_call_reproduces_original_bypass_scenario_and_is_now_denied$",
+  "label": "child_safety_generic_path_rejection",
+  "pool_database": "mepa_wave4_test_pool_02",
+  "workers": null,
+  "duration_ms": 37952,
+  "exit_code": 0,
+  "product": "PASS",
+  "evidence": "PASS",
+  "infrastructure": "PASS",
+  "notes": "",
+  "tests": 1,
+  "failures": 0,
+  "errors": 0
+}

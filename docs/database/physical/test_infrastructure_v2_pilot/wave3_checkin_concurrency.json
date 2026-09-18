@@ -1,0 +1,15 @@
+{
+  "suite": "PooledWaveThreeCheckinConcurrencyTest::::test_same_person_session_token_converges( with data set .*)?$",
+  "label": "wave3_checkin_concurrency",
+  "pool_database": "mepa_wave3_test_pool_01",
+  "workers": "workers 2/10/30, all three data sets in one PHPUnit invocation",
+  "duration_ms": 118875,
+  "exit_code": 0,
+  "product": "PASS",
+  "evidence": "PASS",
+  "infrastructure": "PASS",
+  "notes": "",
+  "tests": 6,
+  "failures": 0,
+  "errors": 0
+}

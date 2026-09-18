@@ -1,0 +1,115 @@
+{
+  "session_id": "81145eff65dc",
+  "port": 3307,
+  "results": [
+    {
+      "suite": "PooledTemporalAuthorizationTest::::test_authorization_expiring_during_lock_wait_is_denied_with_post_lock_clock$",
+      "label": "checkout_temporal_expiry",
+      "pool_database": "mepa_wave4_test_pool_01",
+      "workers": null,
+      "duration_ms": 13375,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "PooledChildCheckinBoundaryTest::::test_generic_service_direct_call_reproduces_original_bypass_scenario_and_is_now_denied$",
+      "label": "child_safety_generic_path_rejection",
+      "pool_database": "mepa_wave4_test_pool_02",
+      "workers": null,
+      "duration_ms": 37952,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "PooledProgressCommitBoundaryTest::::test_progress_session_expires_during_success_audit_fk_wait_and_rolls_back$",
+      "label": "progress_commit_boundary",
+      "pool_database": "mepa_wave4_test_pool_01",
+      "workers": null,
+      "duration_ms": 70985,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "PooledCommitAuthorizationTest::::test_step_configure_expires_during_success_audit_fk_wait$",
+      "label": "step_commit_authorization",
+      "pool_database": "mepa_wave4_test_pool_01",
+      "workers": null,
+      "duration_ms": 99625,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "PooledCommitAuthorizationTest::::test_track_configure_expires_during_success_audit_fk_wait$",
+      "label": "track_commit_authorization",
+      "pool_database": "mepa_wave4_test_pool_01",
+      "workers": null,
+      "duration_ms": 98389,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "suite": "PooledWaveThreeCheckinConcurrencyTest::::test_same_person_session_token_converges( with data set .*)?$",
+      "label": "wave3_checkin_concurrency",
+      "pool_database": "mepa_wave3_test_pool_01",
+      "workers": "workers 2/10/30, all three data sets in one PHPUnit invocation",
+      "duration_ms": 118875,
+      "exit_code": 0,
+      "product": "PASS",
+      "evidence": "PASS",
+      "infrastructure": "PASS",
+      "notes": "",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "pool_created": [
+    "mepa_wave4_test_pool_01",
+    "mepa_wave4_test_pool_02",
+    "mepa_wave3_test_pool_01"
+  ],
+  "pool_migrated": {
+    "mepa_wave4_test_pool_01": 127,
+    "mepa_wave4_test_pool_02": 127,
+    "mepa_wave3_test_pool_01": 110
+  },
+  "mysql_instance_stop": {
+    "mysqld_stopped": true,
+    "datadir_removed": true,
+    "infrastructure_result": "PASS",
+    "notes": ""
+  },
+  "pilot_product_result": "PASS",
+  "pilot_evidence_result": "PASS",
+  "pilot_infrastructure_result": "PASS"
+}

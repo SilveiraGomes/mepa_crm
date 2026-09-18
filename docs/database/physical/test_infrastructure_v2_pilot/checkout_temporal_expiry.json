@@ -1,0 +1,15 @@
+{
+  "suite": "PooledTemporalAuthorizationTest::::test_authorization_expiring_during_lock_wait_is_denied_with_post_lock_clock$",
+  "label": "checkout_temporal_expiry",
+  "pool_database": "mepa_wave4_test_pool_01",
+  "workers": null,
+  "duration_ms": 13375,
+  "exit_code": 0,
+  "product": "PASS",
+  "evidence": "PASS",
+  "infrastructure": "PASS",
+  "notes": "",
+  "tests": 1,
+  "failures": 0,
+  "errors": 0
+}

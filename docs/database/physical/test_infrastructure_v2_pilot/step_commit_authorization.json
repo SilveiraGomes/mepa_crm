@@ -1,0 +1,15 @@
+{
+  "suite": "PooledCommitAuthorizationTest::::test_step_configure_expires_during_success_audit_fk_wait$",
+  "label": "step_commit_authorization",
+  "pool_database": "mepa_wave4_test_pool_01",
+  "workers": null,
+  "duration_ms": 99625,
+  "exit_code": 0,
+  "product": "PASS",
+  "evidence": "PASS",
+  "infrastructure": "PASS",
+  "notes": "",
+  "tests": 1,
+  "failures": 0,
+  "errors": 0
+}

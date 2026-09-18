@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\DatabaseV2\PooledCommitAuthorizationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledCommitAuthorizationTest.php" tests="1" assertions="8" errors="0" warnings="0" failures="0" skipped="0" time="61.818541">
+    <testcase name="test_track_configure_expires_during_success_audit_fk_wait" class="Tests\DatabaseV2\PooledCommitAuthorizationTest" classname="Tests.DatabaseV2.PooledCommitAuthorizationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledCommitAuthorizationTest.php" line="121" assertions="8" time="61.818541"/>
+  </testsuite>
+</testsuites>

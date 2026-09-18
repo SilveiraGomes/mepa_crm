@@ -1,0 +1,15 @@
+{
+  "suite": "PooledProgressCommitBoundaryTest::::test_progress_session_expires_during_success_audit_fk_wait_and_rolls_back$",
+  "label": "progress_commit_boundary",
+  "pool_database": "mepa_wave4_test_pool_01",
+  "workers": null,
+  "duration_ms": 70985,
+  "exit_code": 0,
+  "product": "PASS",
+  "evidence": "PASS",
+  "infrastructure": "PASS",
+  "notes": "",
+  "tests": 1,
+  "failures": 0,
+  "errors": 0
+}

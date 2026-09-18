@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest.php" tests="3" assertions="144" errors="0" warnings="0" failures="0" skipped="0" time="12.333394">
+    <testsuite name="Tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest::test_same_person_session_token_converges" tests="3" assertions="144" errors="0" warnings="0" failures="0" skipped="0" time="12.333394">
+      <testcase name="test_same_person_session_token_converges with data set #0" class="Tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest" classname="Tests.DatabaseV2.PooledWaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest.php" line="58" assertions="12" time="1.674325"/>
+      <testcase name="test_same_person_session_token_converges with data set #1" class="Tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest" classname="Tests.DatabaseV2.PooledWaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest.php" line="58" assertions="36" time="3.350203"/>
+      <testcase name="test_same_person_session_token_converges with data set #2" class="Tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest" classname="Tests.DatabaseV2.PooledWaveThreeCheckinConcurrencyTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\PooledWaveThreeCheckinConcurrencyTest.php" line="58" assertions="96" time="7.308865"/>
+    </testsuite>
+  </testsuite>
+</testsuites>
