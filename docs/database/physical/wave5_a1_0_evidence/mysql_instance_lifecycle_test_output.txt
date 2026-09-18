@@ -1,0 +1,53 @@
+compile OK
+--- t1_same_invocation_stop ---
+PASS  T1: instance alive after start
+PASS  T1: stop() same-invocation returns SUCCESS
+PASS  T1: stop() confirms instance_stopped_confirmed
+PASS  T1: independent re-check -- port no longer answers
+--- t2_separate_invocation_stop ---
+PASS  T2: instance alive after start (process A)
+PASS  T2: process B has no in-memory process handle
+PASS  T2: cross-process stop() returns SUCCESS
+PASS  T2: cross-process stop() confirms instance_stopped_confirmed
+PASS  T2: cross-process stop() verified ownership via mysqld.pid
+PASS  T2: cross-process stop() actually sent a shutdown
+PASS  T2: independent re-check -- port no longer answers
+--- t3_stop_when_already_stopped ---
+PASS  T3 setup: first stop succeeds
+PASS  T3: stop() on an already-stopped instance returns ALREADY_STOPPED
+PASS  T3: idempotent stop still confirms stopped
+--- t4_pid_file_present_but_stale ---
+PASS  T4: stale/nonexistent PID -> ownership_verified is False
+PASS  T4: instance still stopped via graceful protocol path
+PASS  T4: no fallback kill was needed/used
+PASS  T4: independent re-check -- port no longer answers
+--- t5_pid_exists_but_wrong_process ---
+PASS  T5: PID belongs to a real but non-mysqld process -> ownership_verified is False
+PASS  T5: no fallback kill was attempted against the unrelated live process
+PASS  T5: this test process is still alive after stop()
+PASS  T5: instance still stopped via graceful protocol path
+--- t6_port_belongs_to_different_instance ---
+PASS  T6: PID resolves to a real mysqld, but for a different port -> ownership_verified is False
+PASS  T6: no fallback kill was attempted
+PASS  T6: instance A (wrongly targeted) is unaffected
+PASS  T6: instance B (the actual port owner) received the graceful shutdown
+--- t7_graceful_shutdown_path ---
+PASS  T7: graceful_shutdown_sent is True on the normal path
+PASS  T7: fallback_kill_used is False on the normal (graceful) path
+PASS  T7: status is SUCCESS
+--- t8_shutdown_failure_is_reported_not_hidden ---
+PASS  T8: unconfirmable stop returns STOP_FAILED, not SUCCESS
+PASS  T8: instance_stopped_confirmed is False
+PASS  T8: no fallback kill without verified ownership
+--- t9_never_touches_app_database_port ---
+PASS  T9: constructing a MysqlInstance on port 3306 raises ValueError
+PASS  T9: the error names the app database port
+--- t10_double_stop_is_idempotent_and_factual ---
+PASS  T10: first stop SUCCESS
+PASS  T10: second stop ALREADY_STOPPED (not a repeated false SUCCESS claim)
+PASS  T10: third stop still ALREADY_STOPPED, no error
+PASS  T10: all three calls agree the instance is stopped
+
+38 passed, 0 failed
+
+[exited with code 0]

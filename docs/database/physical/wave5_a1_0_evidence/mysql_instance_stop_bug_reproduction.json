@@ -1,0 +1,8 @@
+{
+  "reproduction": "T2 (init-start then a separate CLI invocation of stop)",
+  "process_a_init_start_result": {"status": "STARTED", "datadir": "C:\Users\silve\AppData\Local\Temp\mepa-test-mysql\2edda6bdbc1a\data", "port": 3307},
+  "pre_stop_verification": {"netstat_3307": "LISTENING", "mysqladmin_ping": "mysqld is alive"},
+  "process_b_separate_cli_stop_result": {"mysqld_stopped": true, "datadir_removed": false, "infrastructure_result": "WARN"},
+  "post_stop_independent_verification": {"netstat_3307": "LISTENING", "mysqladmin_ping": "mysqld is alive"},
+  "conclusion": "stop reported mysqld_stopped=true (false success) while mysqld was, independently confirmed, still running and accepting connections on 3307. No mysqladmin shutdown was ever sent by the separate-process stop invocation."
+}

@@ -1,10 +1,10 @@
 {
   "status": "APPROVED_CONTRACTS_UNCHANGED",
   "comparison": "Git LF-normalized text; only exact FIN-PAYROLL-01 tracking blocks are excluded from approved business-rule comparison",
-  "files": 135,
+  "files": 160,
   "drift": 0,
   "tracking_extensions": [],
-  "new_wave5_migration_files_untracked_at_baseline": 25,
+  "new_wave5_migration_files_untracked_at_baseline": 0,
   "results": [
     {
       "file": "apps/api/database/migrations/2014_10_12_000000_create_users_table.php",
@@ -1174,6 +1174,231 @@
       "git_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
       "working_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
       "approved_comparison_lf_sha256": "e00483bbcbdb374c5729d51850b2810ea822c891049a0e4a986286a5664d03be",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000001_wave5_create_academic_units.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "2130ced549cac3b5707b1c49e0cfd3fd8ba680e21ba1faa14113d7650e71b026",
+      "working_lf_sha256": "2130ced549cac3b5707b1c49e0cfd3fd8ba680e21ba1faa14113d7650e71b026",
+      "approved_comparison_lf_sha256": "2130ced549cac3b5707b1c49e0cfd3fd8ba680e21ba1faa14113d7650e71b026",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000002_wave5_create_programs.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "10304eacf5b832d09549fba8b511c0b75643c6725d52c4b7ec4b4d520e5ec06a",
+      "working_lf_sha256": "10304eacf5b832d09549fba8b511c0b75643c6725d52c4b7ec4b4d520e5ec06a",
+      "approved_comparison_lf_sha256": "10304eacf5b832d09549fba8b511c0b75643c6725d52c4b7ec4b4d520e5ec06a",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000003_wave5_create_curricula.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "9ddd08bbcb9e9065487aa7735aca3871c678a77cd076aca38dfa4c7bcbdcb264",
+      "working_lf_sha256": "9ddd08bbcb9e9065487aa7735aca3871c678a77cd076aca38dfa4c7bcbdcb264",
+      "approved_comparison_lf_sha256": "9ddd08bbcb9e9065487aa7735aca3871c678a77cd076aca38dfa4c7bcbdcb264",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000004_wave5_create_curriculum_courses.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "1aaf536df819413ae006db11beb8bd8acdd290acb084ee737e6dd2821f50d207",
+      "working_lf_sha256": "1aaf536df819413ae006db11beb8bd8acdd290acb084ee737e6dd2821f50d207",
+      "approved_comparison_lf_sha256": "1aaf536df819413ae006db11beb8bd8acdd290acb084ee737e6dd2821f50d207",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000005_wave5_create_course_versions.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "bab514c2c5ffe12c312ffa03c1ec3769e5824080f8843d5d3db05f8abaac09ee",
+      "working_lf_sha256": "bab514c2c5ffe12c312ffa03c1ec3769e5824080f8843d5d3db05f8abaac09ee",
+      "approved_comparison_lf_sha256": "bab514c2c5ffe12c312ffa03c1ec3769e5824080f8843d5d3db05f8abaac09ee",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000006_wave5_create_course_prerequisites.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "0b09f2506f15f2a5b6039af42b3fb806cb4031c8246a2e3cdbef376be603bfec",
+      "working_lf_sha256": "0b09f2506f15f2a5b6039af42b3fb806cb4031c8246a2e3cdbef376be603bfec",
+      "approved_comparison_lf_sha256": "0b09f2506f15f2a5b6039af42b3fb806cb4031c8246a2e3cdbef376be603bfec",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000007_wave5_create_course_modules.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "e4c9992ba304c276f356e405f7237394d786456e29cb376e2690bab89ca3e8da",
+      "working_lf_sha256": "e4c9992ba304c276f356e405f7237394d786456e29cb376e2690bab89ca3e8da",
+      "approved_comparison_lf_sha256": "e4c9992ba304c276f356e405f7237394d786456e29cb376e2690bab89ca3e8da",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000008_wave5_create_lessons.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "1ecf8628f1503ab9da0590ba89fb3e429546c59d57a9aec6190a1b3a0bf4349e",
+      "working_lf_sha256": "1ecf8628f1503ab9da0590ba89fb3e429546c59d57a9aec6190a1b3a0bf4349e",
+      "approved_comparison_lf_sha256": "1ecf8628f1503ab9da0590ba89fb3e429546c59d57a9aec6190a1b3a0bf4349e",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000009_wave5_create_resources.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "8ab77bbd7b98c668e76e88ef4cbd023b59098a6f135fae71a580ce3b81e899fd",
+      "working_lf_sha256": "8ab77bbd7b98c668e76e88ef4cbd023b59098a6f135fae71a580ce3b81e899fd",
+      "approved_comparison_lf_sha256": "8ab77bbd7b98c668e76e88ef4cbd023b59098a6f135fae71a580ce3b81e899fd",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000010_wave5_create_lesson_resources.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "1c1db7a2320b0c83a88690ba0afdd430a4a7cff5459b385c72ba7ed4a7a65af1",
+      "working_lf_sha256": "1c1db7a2320b0c83a88690ba0afdd430a4a7cff5459b385c72ba7ed4a7a65af1",
+      "approved_comparison_lf_sha256": "1c1db7a2320b0c83a88690ba0afdd430a4a7cff5459b385c72ba7ed4a7a65af1",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000011_wave5_create_cohorts.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "d963b7fff5488be4085c93d1b5ce9d74da280288138a1bbe962c920924208d47",
+      "working_lf_sha256": "d963b7fff5488be4085c93d1b5ce9d74da280288138a1bbe962c920924208d47",
+      "approved_comparison_lf_sha256": "d963b7fff5488be4085c93d1b5ce9d74da280288138a1bbe962c920924208d47",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000012_wave5_create_classes.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "a9234a585f1212a73e84ef6dad8f4b2077f8f5d32f0562e3a3a1708f65f41ace",
+      "working_lf_sha256": "a9234a585f1212a73e84ef6dad8f4b2077f8f5d32f0562e3a3a1708f65f41ace",
+      "approved_comparison_lf_sha256": "a9234a585f1212a73e84ef6dad8f4b2077f8f5d32f0562e3a3a1708f65f41ace",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000013_wave5_create_instructors.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "054b98e128f36dd6f16c89e51f175c8e115900d238c2d0cbd311e7956fc88d7c",
+      "working_lf_sha256": "054b98e128f36dd6f16c89e51f175c8e115900d238c2d0cbd311e7956fc88d7c",
+      "approved_comparison_lf_sha256": "054b98e128f36dd6f16c89e51f175c8e115900d238c2d0cbd311e7956fc88d7c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000014_wave5_create_class_instructors.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "d2c881e45970e2d54c09e77f4f6f53523ce54c19b817fb259e1367db5ba1ecda",
+      "working_lf_sha256": "d2c881e45970e2d54c09e77f4f6f53523ce54c19b817fb259e1367db5ba1ecda",
+      "approved_comparison_lf_sha256": "d2c881e45970e2d54c09e77f4f6f53523ce54c19b817fb259e1367db5ba1ecda",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000015_wave5_create_class_sessions.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "cfca0fec5adb93f1a713034d53070e0c1bb8c602054c4cd2bfaae8763595077c",
+      "working_lf_sha256": "cfca0fec5adb93f1a713034d53070e0c1bb8c602054c4cd2bfaae8763595077c",
+      "approved_comparison_lf_sha256": "cfca0fec5adb93f1a713034d53070e0c1bb8c602054c4cd2bfaae8763595077c",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000016_wave5_create_enrollments.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "ec3094bc291eb56e281e4bd22e7cf09f184d5eab1cbb48e1a5271735990f7f6d",
+      "working_lf_sha256": "ec3094bc291eb56e281e4bd22e7cf09f184d5eab1cbb48e1a5271735990f7f6d",
+      "approved_comparison_lf_sha256": "ec3094bc291eb56e281e4bd22e7cf09f184d5eab1cbb48e1a5271735990f7f6d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000017_wave5_create_academic_attendance.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "a891917a26a8820ada0746a61db35f25624519836e126c8f7cd9dc7e4b207a24",
+      "working_lf_sha256": "a891917a26a8820ada0746a61db35f25624519836e126c8f7cd9dc7e4b207a24",
+      "approved_comparison_lf_sha256": "a891917a26a8820ada0746a61db35f25624519836e126c8f7cd9dc7e4b207a24",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000018_wave5_create_assessments.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "c4e203cf33713be0a363ae87a2718ff08d1039d8ae5809c14a7da1768547cfb5",
+      "working_lf_sha256": "c4e203cf33713be0a363ae87a2718ff08d1039d8ae5809c14a7da1768547cfb5",
+      "approved_comparison_lf_sha256": "c4e203cf33713be0a363ae87a2718ff08d1039d8ae5809c14a7da1768547cfb5",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000019_wave5_create_assessment_attempts.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "61e387f6c3eda11ab4e1b4247f6f8eaf19fbdbeaef3f15fb948c246e52b5ed4d",
+      "working_lf_sha256": "61e387f6c3eda11ab4e1b4247f6f8eaf19fbdbeaef3f15fb948c246e52b5ed4d",
+      "approved_comparison_lf_sha256": "61e387f6c3eda11ab4e1b4247f6f8eaf19fbdbeaef3f15fb948c246e52b5ed4d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000020_wave5_create_grades.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "393c1bc71377b221560abfb21d1545fcee56875a55544496adfc46c67e665369",
+      "working_lf_sha256": "393c1bc71377b221560abfb21d1545fcee56875a55544496adfc46c67e665369",
+      "approved_comparison_lf_sha256": "393c1bc71377b221560abfb21d1545fcee56875a55544496adfc46c67e665369",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000021_wave5_create_progress.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "ae4bcc54c7f65bf56176d97c33a5542bce1467ebb5d1f22c76610ba54eef442b",
+      "working_lf_sha256": "ae4bcc54c7f65bf56176d97c33a5542bce1467ebb5d1f22c76610ba54eef442b",
+      "approved_comparison_lf_sha256": "ae4bcc54c7f65bf56176d97c33a5542bce1467ebb5d1f22c76610ba54eef442b",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000022_wave5_create_resource_progress.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "8b6d49bc814963f53a2489c313f19caae4368ba31807d4fcdd6d45c8cc0d89f1",
+      "working_lf_sha256": "8b6d49bc814963f53a2489c313f19caae4368ba31807d4fcdd6d45c8cc0d89f1",
+      "approved_comparison_lf_sha256": "8b6d49bc814963f53a2489c313f19caae4368ba31807d4fcdd6d45c8cc0d89f1",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000023_wave5_create_certificates.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "87582e7ea91a68d731dba37b36c43a0fac3669a7f63e1b7514d6a1071758fa7d",
+      "working_lf_sha256": "87582e7ea91a68d731dba37b36c43a0fac3669a7f63e1b7514d6a1071758fa7d",
+      "approved_comparison_lf_sha256": "87582e7ea91a68d731dba37b36c43a0fac3669a7f63e1b7514d6a1071758fa7d",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000024_wave5_create_transcripts.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "4ed65ec65490c08e8ff9a37cac28b9f80708f7149f1dd90263c00ba59b86d443",
+      "working_lf_sha256": "4ed65ec65490c08e8ff9a37cac28b9f80708f7149f1dd90263c00ba59b86d443",
+      "approved_comparison_lf_sha256": "4ed65ec65490c08e8ff9a37cac28b9f80708f7149f1dd90263c00ba59b86d443",
+      "raw_checkout_matches_git_blob": true
+    },
+    {
+      "file": "apps/api/database/migrations/2026_09_18_000025_wave5_create_transcript_lines.php",
+      "unchanged": true,
+      "tracking_extension": null,
+      "git_lf_sha256": "4247f8187b1409300ad7a284920d781755e90b66d43b14398a4223be62f6190c",
+      "working_lf_sha256": "4247f8187b1409300ad7a284920d781755e90b66d43b14398a4223be62f6190c",
+      "approved_comparison_lf_sha256": "4247f8187b1409300ad7a284920d781755e90b66d43b14398a4223be62f6190c",
       "raw_checkout_matches_git_blob": true
     },
     {
