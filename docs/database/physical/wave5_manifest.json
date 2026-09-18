@@ -29,7 +29,8 @@
       "dependency": [],
       "decision": "CONFIRMED_SHARED_CATALOG",
       "notes": "Tabela ja fisica desde Wave 4, criada deliberadamente como dependencia partilhada (mesmo padrao usado para adiantar audit_logs em Wave 3). Reutilizada por discipleship_steps.course_id (Wave 4) E por curriculum_courses/course_prerequisites/course_versions (Wave 5). Nao criar tabela paralela.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICAL_NO_CHANGE"
     },
     {
       "planned_table": "academic_units",
@@ -43,7 +44,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "Tabela plana, sem parent_id (nao hierarquica). Modela o nivel de 'instituicao'; um polo com identidade propria (ex.: 'IBT Huambo') modela-se como linha adicional em academic_units (convencao operacional registada em P0.3.5-A0.1), sem alteracao de schema.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "programs",
@@ -57,7 +59,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "public_id porque exposto em portal/API academica.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "curricula",
@@ -71,7 +74,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(program_id,version); published_at nullable marca o congelamento. Base do teste critico C8.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "curriculum_courses",
@@ -86,7 +90,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(curriculum_id,course_id) e UNIQUE(curriculum_id,sequence).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "course_versions",
@@ -100,7 +105,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(course_id,version). completion_policy_metadata (JSON) permite parametrizar conclusao sem D-09 estar resolvida para a estrutura, apenas para os valores.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "course_prerequisites",
@@ -114,7 +120,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(course_id,required_course_id). Deteccao de ciclos e responsabilidade de servico, nao de CHECK (SQL nao expressa aciclicidade de grafo).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "course_modules",
@@ -128,7 +135,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(course_version_id,sequence).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "lessons",
@@ -142,7 +150,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(module_id,sequence).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "resources",
@@ -156,7 +165,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "file_id nullable (video externo nao usa files; material privado usa). Reuso directo do dominio Files, sem storage binario proprio (Seccao 27 da missao).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "lesson_resources",
@@ -171,7 +181,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(lesson_id,resource_id) e UNIQUE(lesson_id,sequence).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "cohorts",
@@ -186,7 +197,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(code) e UNIQUE(public_id).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "classes",
@@ -203,7 +215,8 @@
       ],
       "decision": "RESOLVED_P0.3.5-A0.1 — unit_id REJECTED (redundant), location_id ACCEPTED (default class location; event_locations takes precedence per session). See ADR-0015 Decision A.",
       "notes": "RESOLVED em P0.3.5-A0.1 (ADR-0015 Decisao A, ACCEPTED). classes.unit_id REJECTED (redundante via academic_units.unit_id). classes.location_id ACCEPTED (nullable, FK physical_locations, RESTRICT/RESTRICT) como local por defeito da turma; class_sessions.event_session_id -> event_locations prevalece por sessao quando presente.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "instructors",
@@ -217,7 +230,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(person_id) — um perfil de instrutor por Pessoa. Confirma reuso de Person (Seccao 16 da missao).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "class_instructors",
@@ -233,7 +247,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "starts_at/ends_at semiabertos (ADR-0008). Base recomendada para verificacao de scope granular por turma (Seccao 8.2/35 da missao), em vez de estender scopes.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "enrollments",
@@ -249,7 +264,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(person_id,class_id). SEM FK para memberships/member_number — confirma non-member support (teste critico C1). approved_by nullable (FK users).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "class_sessions",
@@ -265,7 +281,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "event_session_id nullable — liga opcionalmente a infraestrutura generica de eventos (Opcao B da Seccao 21 da missao, ja escolhida no catalogo).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "academic_attendance",
@@ -281,7 +298,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(enrollment_id,class_session_id) — idempotente por desenho (teste critico, ver relatorio Seccao 10).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "assessments",
@@ -296,7 +314,8 @@
       ],
       "decision": "READY_STRUCTURAL — schema not blocked; seed VALUES (max_score/pass_score/max_attempts/weight) remain gated by D-09 reference-data decision (institutional, pending).",
       "notes": "Schema aprovado no catalogo (max_score/pass_score/max_attempts/weight como DECIMAL configuravel). Os VALORES concretos destes campos (politica de aprovacao/pesos/limites) dependem de D-09 (BLOCKED). Estrutura nao bloqueada; seed de valores institucionais bloqueado.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "assessment_attempts",
@@ -311,7 +330,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(assessment_id,enrollment_id,attempt_number). attempt_number deve ser atribuido em transacao com lock no servico (Seccao 10 do relatorio).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "grades",
@@ -326,7 +346,8 @@
       ],
       "decision": "READY_STRUCTURAL — schema not blocked; homologation CRITERIA remain gated by D-09 reference-data decision (institutional, pending).",
       "notes": "Schema aprovado (UNIQUE(attempt_id,version), nunca overwrite). Escala de nota e criterio de homologacao dependem de D-09 (BLOCKED).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "progress",
@@ -341,7 +362,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(enrollment_id,lesson_id). source_version regista a politica usada no calculo (auditabilidade do derivado).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "resource_progress",
@@ -356,7 +378,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(enrollment_id,resource_id).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "certificates",
@@ -372,7 +395,8 @@
       ],
       "decision": "READY_STRUCTURAL — schema not blocked; issuance ELIGIBILITY criteria remain gated by D-09 reference-data decision (institutional, pending).",
       "notes": "Schema aprovado (token_hash BINARY(32), nunca public_id como token — ADR-0009/0012). Criterio de conclusao valida para emissao depende de D-09 (BLOCKED).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "transcripts",
@@ -389,7 +413,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(person_id,curriculum_id,version).",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     },
     {
       "planned_table": "transcript_lines",
@@ -405,7 +430,8 @@
       ],
       "decision": "APPROVED_IN_CATALOG",
       "notes": "UNIQUE(transcript_id,enrollment_id). certificate_id nullable.",
-      "ready_for_migration": true
+      "ready_for_migration": true,
+      "physical_status": "PHYSICALLY_CREATED"
     }
   ],
   "open_decisions_this_task": [
@@ -438,5 +464,21 @@
     "FIN-PAYROLL-01": "TRACKED, sem implementacao, sem remuneracao de instrutores nesta Wave",
     "D-06_D-08_D-11": "Precisely classified in P0.3.5-A0.1 (docs/reviews/P0.3.5_A0_1_academy_decision_gate.md Section 6): none block Wave 5 base DDL. D-06 blocks only future purge/retention features (none in current 25 tables); D-08 blocks only production execution against unqualified hosting (project-wide); D-11 blocks only the final closed status enum/composite context FKs, not VARCHAR(64) status columns without CHECK.",
     "D-02_D-03_D-04_D-05_D-07_D-10_D-12": "BLOCKED, preserved without alteration; not specific to Academia; do not block Wave 5."
+  },
+  "physical_implementation": {
+    "phase": "P0.3.5-A1",
+    "status": "PHYSICALLY_IMPLEMENTED",
+    "migration_execution_manifest": "docs/database/physical/wave5_migrations_manifest.json",
+    "implementation_report": "docs/reviews/P0.3.5_A1_wave5_physical_implementation.md",
+    "tables_created": 25,
+    "tables_forward_only_no_change": [
+      "courses"
+    ],
+    "evidence": {
+      "lifecycle": "docs/database/physical/wave5_lifecycle_evidence.json",
+      "schema_validation": "docs/database/physical/wave5_schema_validation.json",
+      "contracts_validation": "docs/database/physical/wave5_approved_contracts_validation.json",
+      "physical_test_suite": "apps/api/tests/Database/WaveFivePhysicalTest.php"
+    }
   }
 }

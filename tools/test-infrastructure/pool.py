@@ -18,6 +18,10 @@ PHP_BIN = r"C:\wamp64\bin\php\php8.1.33\php.exe"
 POOL = {
     "wave4": ["mepa_wave4_test_pool_01", "mepa_wave4_test_pool_02"],
     "wave3": ["mepa_wave3_test_pool_01"],
+    # P0.3.5-A1: additive, mirrors the wave3/wave4 pilot pool exactly. Uses
+    # migrate_pool_db.php's `wave5` target (WaveFiveCase, its own schema-name
+    # guard) -- does not touch the wave3/wave4 pool entries or WaveFourCase.php.
+    "wave5": ["mepa_wave5_test_pool_01"],
 }
 
 

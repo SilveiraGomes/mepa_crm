@@ -1,0 +1,12 @@
+{
+    "fresh": "PASS",
+    "upgrade": "PASS",
+    "empty_rollback": "PASS",
+    "remigrate": "PASS",
+    "durable_rollback": "BLOCKED_WITHOUT_LOSS_PASS",
+    "wave4_data_preserved_across_wave5_upgrade": true,
+    "all_wave5_tables_populated": 25,
+    "migration_rows_preserved": true,
+    "baseline_tables": 127,
+    "baseline_sha256": "192fa68546e02aa854a9b829fd628c4e30c60feaa34cc983c529764a52fcac94"
+}
