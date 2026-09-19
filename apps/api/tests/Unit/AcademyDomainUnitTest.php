@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Domain\Academy\AcademyDecision;
 use App\Domain\Academy\AcademyError;
 use App\Domain\Academy\AcademyInput;
 use App\Domain\Academy\AcademyOperation;
@@ -78,9 +79,9 @@ final class AcademyDomainUnitTest extends TestCase
 
     public function test_only_approved_transitions_pass_pending_is_explicit_and_unknown_is_invalid(): void
     {
-        $machine = new AcademyStateMachine($this->createMock(Connection::class), $this->policy([['A', 'B'], ['B', 'C']], [['B', 'X']]));
+        $machine = new AcademyStateMachine($this->createMock(Connection::class), $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE], ['B', 'C', AcademyPolicy::EFFECT_COMPLETION]], [['B', 'X']]));
         $machine->assertTransition('enrollments', 'A', 'B');
-        $machine->assertTransition('enrollments', 'B', 'C');
+        $machine->assertTransition('enrollments', 'B', 'C', AcademyPolicy::EFFECT_COMPLETION);
         self::assertSame(AcademyReason::STATE_POLICY_PENDING, $this->reason(fn () => $machine->assertTransition('enrollments', 'B', 'X')));
         self::assertSame(AcademyReason::INVALID_TRANSITION, $this->reason(fn () => $machine->assertTransition('enrollments', 'A', 'C')), 'Transitivity is not assumed');
         self::assertSame(AcademyReason::INVALID_TRANSITION, $this->reason(fn () => $machine->assertTransition('enrollments', 'B', 'A')), 'Direction matters');
@@ -90,9 +91,60 @@ final class AcademyDomainUnitTest extends TestCase
 
     public function test_a_transition_listed_both_ways_is_approved_first_never_silently_pending(): void
     {
-        $machine = new AcademyStateMachine($this->createMock(Connection::class), $this->policy([['A', 'B']], [['A', 'B']]));
+        $machine = new AcademyStateMachine($this->createMock(Connection::class), $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE]], [['A', 'B']]));
         $machine->assertTransition('enrollments', 'A', 'B');
-        self::assertSame(AcademyPolicy::APPROVED, $this->policy([['A', 'B']], [['A', 'B']])->transition('enrollments', 'A', 'B'));
+        self::assertSame(AcademyPolicy::APPROVED, $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE]], [['A', 'B']])->transition('enrollments', 'A', 'B'));
+    }
+
+    // ---- transition effect (A2R-01): the policy declares what a transition does; nothing is inferred ----
+
+    public function test_an_approved_transition_must_declare_exactly_one_recognised_effect(): void
+    {
+        $undeclared = $this->policy([['A', 'B']]);
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $undeclared->effect('enrollments', 'A', 'B')), 'no effect declared is never read as "no effect"');
+        $unknown = $this->policy([['A', 'B', 'SOMETHING_ELSE']]);
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $unknown->effect('enrollments', 'A', 'B')));
+        $conflicting = $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE], ['A', 'B', AcademyPolicy::EFFECT_COMPLETION]]);
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $conflicting->effect('enrollments', 'A', 'B')));
+        $none = $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE]]);
+        self::assertSame(AcademyPolicy::EFFECT_NONE, $none->effect('enrollments', 'A', 'B'));
+    }
+
+    public function test_the_completion_effect_and_the_completed_role_set_of_the_policy_must_agree(): void
+    {
+        // 'C' is the policy's own completed set: entering it without declaring COMPLETION is ambiguous, and vice versa.
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $this->policy([['B', 'C', AcademyPolicy::EFFECT_NONE]])->effect('enrollments', 'B', 'C')));
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $this->policy([['A', 'B', AcademyPolicy::EFFECT_COMPLETION]])->effect('enrollments', 'A', 'B')));
+        self::assertSame(AcademyPolicy::EFFECT_COMPLETION, $this->policy([['B', 'C', AcademyPolicy::EFFECT_COMPLETION]])->effect('enrollments', 'B', 'C'));
+        // Without a configured completed set nothing can be a completion.
+        $noSet = new AcademyPolicy('V', ['enrollments' => ['initial' => 'A']], ['approved' => ['enrollments' => [['B', 'C', AcademyPolicy::EFFECT_COMPLETION]]], 'pending' => []]);
+        self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $this->reason(fn () => $noSet->effect('enrollments', 'B', 'C')));
+    }
+
+    public function test_a_caller_that_did_not_run_the_guard_of_an_effect_cannot_execute_that_transition(): void
+    {
+        $machine = new AcademyStateMachine($this->createMock(Connection::class), $this->policy([['A', 'B', AcademyPolicy::EFFECT_NONE], ['B', 'C', AcademyPolicy::EFFECT_COMPLETION]]));
+        $error = null;
+        try {
+            $machine->assertTransition('enrollments', 'B', 'C');   // a generic caller: enforced effect defaults to NONE
+        } catch (AcademyError $e) {
+            $error = $e;
+        }
+        self::assertSame(AcademyReason::INVALID_TRANSITION, $error?->reason);
+        self::assertSame('effect_guard_not_enforced', $error?->context['reason']);
+        self::assertSame(AcademyReason::INVALID_TRANSITION, $this->reason(fn () => $machine->assertTransition('enrollments', 'A', 'B', AcademyPolicy::EFFECT_COMPLETION)), 'claiming a guard that the policy does not attach is not accepted either');
+        self::assertSame(AcademyPolicy::EFFECT_COMPLETION, $machine->approvedEffect('enrollments', 'B', 'C'));
+    }
+
+    public function test_extra_authority_attached_to_a_decision_is_kept_for_the_final_check(): void
+    {
+        $now = new \DateTimeImmutable('2026-01-01');
+        $primary = new AcademyDecision(AcademyDecision::DIRECT, 'ACADEMY_ENROLL', 1, 2, $now, null, null, 'enrollment.transition');
+        self::assertSame([], $primary->attached());
+        $extra = new AcademyDecision(AcademyDecision::DIRECT, 'ACADEMY_ASSESS', 1, 2, $now, null, null, 'enrollment.complete');
+        $primary->attach(AcademyOperation::get('enrollment.complete'), $extra);
+        self::assertSame('enrollment.complete', $primary->attached()[0][0]->key);
+        self::assertSame($extra, $primary->attached()[0][1]);
     }
 
     // ---- permission matrix (ADR-0015 Decision B, mission sections 9-12) -----------------------

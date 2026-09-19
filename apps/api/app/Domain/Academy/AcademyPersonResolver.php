@@ -17,20 +17,34 @@ final class AcademyPersonResolver
     {
     }
 
-    public function resolve(int|string $reference): int
+    private const ULID = '/^[0-9A-HJKMNP-TV-Z]{26}$/';
+
+    // Non-throwing lookup used while an operation derives its authorization target: an unknown or
+    // malformed reference simply yields null, and resolve() reports it only AFTER the caller has been
+    // authorized, so the existence of a Person is never revealed to an unauthorized caller.
+    public function find(int|string $reference): ?int
     {
-        if (is_int($reference) && $reference > 0) {
-            return $reference;
+        if (is_int($reference)) {
+            return $reference > 0 ? $reference : null;
         }
-        if (is_string($reference) && ctype_digit($reference) && $reference !== '' && (int) $reference > 0) {
+        if (ctype_digit($reference) && (int) $reference > 0) {
             return (int) $reference;
         }
-        if (is_string($reference) && preg_match('/^[0-9A-HJKMNP-TV-Z]{26}$/', $reference) === 1) {
+        if (preg_match(self::ULID, $reference) === 1) {
             $id = $this->db->table('people')->where('public_id', $reference)->value('id');
-            if ($id === null) {
-                throw new AcademyError(AcademyReason::TARGET_NOT_FOUND, ['entity' => 'people']);
-            }
-            return (int) $id;
+            return $id === null ? null : (int) $id;
+        }
+        return null;
+    }
+
+    public function resolve(int|string $reference): int
+    {
+        $id = $this->find($reference);
+        if ($id !== null) {
+            return $id;
+        }
+        if (is_string($reference) && preg_match(self::ULID, $reference) === 1) {
+            throw new AcademyError(AcademyReason::TARGET_NOT_FOUND, ['entity' => 'people']);
         }
         throw new AcademyError(AcademyReason::INVALID_PERSON_REFERENCE);
     }

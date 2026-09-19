@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+require_once 'C:/wamp64/www/mepa-crm/apps/api/tests/DatabaseV2/Support/PooledWaveFiveCase.php';
+
+use App\Domain\Academy\AcademyError;
+use App\Domain\Academy\InstructorAssignmentService;
+use Tests\DatabaseV2\Support\PooledWaveFiveCase;
+
+/** A2R-03 (second reference): InstructorAssignmentService::assign stores source_document_id without checking its owner unit. */
+final class SourceDocumentProbeTest extends PooledWaveFiveCase
+{
+    public function test_source_document_owned_by_another_unit_is_accepted_by_assign(): void
+    {
+        $w = $this->world();
+        $manager = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $type = $this->row('legal_document_types');
+        $foreign = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $this->world()['unit']]);
+        $person = $this->row('people');
+        $out = null;
+        try {
+            $ok = (new InstructorAssignmentService($this->rt()))->assign($manager['user'], $manager['session'], $w['class'], $person, null, null, 'nomeação', $foreign);
+            $out = 'ACCEPTED assignment_id=' . $ok['assignment_id'] . ' source_document_id=' . $this->db()->table('class_instructors')->where('id', $ok['assignment_id'])->value('source_document_id') . ' (document owned by unit ' . $this->db()->table('legal_documents')->where('id', $foreign)->value('owner_unit_id') . ', class unit ' . $w['unit'] . ')';
+        } catch (AcademyError $e) {
+            $out = 'DENIED ' . $e->reason;
+        }
+        fwrite(STDERR, "\n[R3.4 source_document_id] manager@A assigning with a legal document owned by unit B => {$out}\n");
+        self::assertStringStartsWith('DENIED', $out, 'A2R-03 CONFIRMED for source_document_id: a legal document of another unit is linked without any ownership check');
+    }
+}

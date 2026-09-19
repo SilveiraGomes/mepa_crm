@@ -56,7 +56,10 @@ final class EnrollmentService
     }
 
     // approve / activate / withdraw / cancel / reject: any status change goes through the state
-    // machine, so only transitions the policy has APPROVED can execute.
+    // machine, so only transitions the policy has APPROVED can execute. The policy also declares what
+    // a transition DOES: one that produces a completion (EFFECT_COMPLETION) runs the same
+    // CompletionEligibilityGuard as CompletionService (completion authority + criteria) before the
+    // status changes; an undeclared effect is POLICY_NOT_CONFIGURED. ACADEMY_ENROLL alone never completes.
     public function transition(int $actor, int $session, int $enrollmentId, string $toState, ?string $reason = null, ?int $expectedLockVersion = null, ?array $claimed = null): array
     {
         return $this->rt->write(
@@ -66,11 +69,17 @@ final class EnrollmentService
             fn () => $this->rt->scope->forEnrollment($enrollmentId, 'update'),
             function (AcademyDecision $decision, AcademyTarget $target) use ($enrollmentId, $toState, $reason, $expectedLockVersion) {
                 $enrollment = $target->rows['enrollment'];
+                $effect = $this->rt->machine->approvedEffect('enrollments', (string) $enrollment->status, $toState);
+                $criteria = $effect === AcademyPolicy::EFFECT_COMPLETION ? $this->rt->completion->assertEligible($decision, $target) : null;
                 $approval = $this->rt->policy->inOptionalSet('enrollments', 'approval_targets', $toState);
                 $cover = $approval ? $this->rt->safety->lock((int) $enrollment->person_id) : null;
                 $extra = $approval ? ['approved_by' => $decision->actor] : [];
-                $moved = $this->rt->machine->move('enrollments', 'enrollments', $enrollmentId, $toState, $expectedLockVersion, $extra);
-                $this->rt->audit($decision, $target, 'enrollment.transitioned', 'enrollments', $enrollmentId, ['status' => $moved['from']], ['status' => $moved['to']], $reason);
+                $moved = $this->rt->machine->move('enrollments', 'enrollments', $enrollmentId, $toState, $expectedLockVersion, $extra, 'status', $effect);
+                if ($criteria !== null) {
+                    $this->rt->audit($decision, $target, 'enrollment.completed', 'enrollments', $enrollmentId, ['status' => $moved['from']], ['status' => $moved['to'], 'criteria' => array_column($criteria, 'type'), 'via' => 'enrollment.transition'], $reason);
+                } else {
+                    $this->rt->audit($decision, $target, 'enrollment.transitioned', 'enrollments', $enrollmentId, ['status' => $moved['from']], ['status' => $moved['to']], $reason);
+                }
                 $this->rt->safety->assertCover($cover, $this->rt->now());
                 return ['enrollment_id' => $enrollmentId, 'from' => $moved['from'], 'to' => $moved['to'], 'lock_version' => $moved['lock_version']];
             },

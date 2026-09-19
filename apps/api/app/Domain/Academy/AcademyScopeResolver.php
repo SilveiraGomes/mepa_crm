@@ -14,10 +14,13 @@ use Illuminate\Database\Connection;
 // FOR SHARE, null = plain read for read-only paths); ancestors are always share-locked inside a
 // transaction so they cannot change underneath the operation.
 //
-// Lock order is uniformly PARENT-FIRST: academic_unit -> class -> enrollment -> entity (attempt,
-// session, certificate, ...). Every service therefore acquires locks in the same direction, so two
-// operations on the same enrollment (a grade write and a new attempt, say) can never wait on each
-// other in a cycle. The ancestors are found with a plain peek, locked, and the root is then locked
+// Locks inside this resolver are taken PARENT-FIRST: academic_unit -> class -> enrollment -> entity
+// (attempt, session, certificate, ...). Operations that resolve their target through it and then
+// touch the same enrollment (a grade write and a new attempt, say) therefore lock in the same
+// direction. This is NOT a global lock order: services that also lock a Person row (enrollment
+// creation) or the safety cover lock people and enrollments in the opposite order, which InnoDB
+// resolves by deadlock detection and the runtime's retry (A2R-05, tracked, non-blocking).
+// The ancestors are found with a plain peek, locked, and the root is then locked
 // and re-verified against the peeked parent (a parent that moved in between is STORAGE_CONFLICT).
 final class AcademyScopeResolver
 {
@@ -119,6 +122,25 @@ final class AcademyScopeResolver
         $peek = $this->find('curricula', $id, null);
         $target = $this->forProgram((int) $peek->program_id, $this->ancestor($lock));
         $target->rows['curriculum'] = $lock === null ? $peek : $this->root('curricula', $id, 'program_id', (int) $target->rows['program']->id, $lock);
+        return $target;
+    }
+
+    // A transcript aggregates ONE Person's enrollments under a curriculum, and each of those records
+    // belongs to the unit of ITS OWN class -- not to the curriculum's unit (the schema does not tie a
+    // class's academic unit to its cohort's). Authority is therefore required over the curriculum's unit
+    // AND over the unit of every contributing enrollment; the aggregate is one document, so a missing
+    // unit denies the whole operation (no partial transcript). The contributing units are peeked WITHOUT
+    // a lock on purpose: share-locking the Person's enrollments before the Person row would invert the
+    // lock order of EnrollmentService::enroll. TranscriptService re-reads the lines under its own locks
+    // and refuses any line whose unit is not in this target (STORAGE_CONFLICT).
+    // A null $person (unknown or malformed reference) contributes no units; the caller reports it after authorization.
+    public function forTranscript(?int $person, int $curriculumId, ?string $lock = 'share'): AcademyTarget
+    {
+        $target = $this->forCurriculum($curriculumId, $lock);
+        $units = $person === null ? [] : $this->db->table('enrollments as e')->join('classes as c', 'c.id', '=', 'e.class_id')->join('cohorts as h', 'h.id', '=', 'c.cohort_id')
+            ->join('academic_units as au', 'au.id', '=', 'c.academic_unit_id')
+            ->where('e.person_id', $person)->where('h.curriculum_id', $curriculumId)->distinct()->pluck('au.unit_id')->all();
+        $target->unitIds = array_values(array_unique(array_map('intval', array_merge($target->unitIds, $units))));
         return $target;
     }
 

@@ -101,7 +101,7 @@ final class AcademyAccess
             $this->requireAssignment($user, $target, $t, $q);
         }
 
-        return new AcademyDecision($override ? AcademyDecision::ADMIN_OVERRIDE : AcademyDecision::DIRECT, $permission, $actor, $session, $now, $override ? $reason : null, $user->person_id === null ? null : (int) $user->person_id);
+        return new AcademyDecision($override ? AcademyDecision::ADMIN_OVERRIDE : AcademyDecision::DIRECT, $permission, $actor, $session, $now, $override ? $reason : null, $user->person_id === null ? null : (int) $user->person_id, $op->key);
     }
 
     private function covers(object $scope, int $unit, callable $q): bool

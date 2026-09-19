@@ -1,0 +1,46 @@
+import os
+import pathlib
+import re
+import subprocess
+
+ROOT = pathlib.Path('C:/wamp64/www/mepa-crm')
+API = ROOT / 'apps/api'
+D = API / 'app/Domain/Academy'
+PHP = 'C:/wamp64/bin/php/php8.1.33/php.exe'
+env = dict(os.environ, WAVE5_DSN='mysql:host=127.0.0.1;port=33083;dbname=mepa_wave5_test_e19545a6_pool_01', WAVE5_USER='root', WAVE5_PASSWORD='', WAVE5_ALLOW_SYNTHETIC='1', XDEBUG_MODE='off')
+
+
+def once(text, old, new):
+    assert text.count(old) == 1, old[:70]
+    return text.replace(old, new, 1)
+
+
+MUT = [
+    ('T1 EnrollmentService::transition skips the completion guard', D / 'EnrollmentService.php',
+     lambda t: once(t, "$criteria = $effect === AcademyPolicy::EFFECT_COMPLETION ? $this->rt->completion->assertEligible($decision, $target) : null;", "$criteria = $effect === AcademyPolicy::EFFECT_COMPLETION ? [] : null;")),
+    ('T2 completion authority is not attached (guard authorizes nobody)', D / 'CompletionEligibilityGuard.php',
+     lambda t: once(t, "        $this->authorize($decision, $target);\n", "")),
+    ('T3 final re-check of attached authority removed', D / 'AcademyRuntime.php',
+     lambda t: once(t, "                foreach ($decision->attached() as [$attachedOp, $attachedDecision]) {\n                    $this->access->authorize($attachedOp, $actor, $session, $resolved, null, true, $attachedDecision);\n                }\n", "")),
+    ('T4 transcript target ignores the units of the lines', D / 'AcademyScopeResolver.php',
+     lambda t: once(t, "$target->unitIds = array_values(array_unique(array_map('intval', array_merge($target->unitIds, $units))));\n", "")),
+    ('T5 certificate file ownership not checked', D / 'AcademyResourceGuard.php',
+     lambda t: once(t, "        $this->assertOwnedByTarget($target, (int) $file->owner_unit_id, 'files');\n", "")),
+    ('T6 source document ownership not checked', D / 'AcademyResourceGuard.php',
+     lambda t: once(t, "        $this->assertOwnedByTarget($target, (int) $document->owner_unit_id, 'legal_documents');\n", "")),
+    ('T7 policy effect cross-check removed', D / 'AcademyPolicy.php',
+     lambda t: once(t, "            if ($lands !== ($declared[0] === $effect)) {", "            if (false) {")),
+]
+
+for name, path, mutate in MUT:
+    original = path.read_bytes()
+    try:
+        path.write_bytes(mutate(original.decode('utf-8')).encode('utf-8'))
+        run = subprocess.run([PHP, 'vendor/phpunit/phpunit/phpunit', 'tests/DatabaseV2/AcademyRemediationTest.php', '--no-configuration', '--bootstrap', 'vendor/autoload.php'], cwd=API, env=env, capture_output=True, text=True)
+        out = run.stdout + run.stderr
+        failing = sorted(set(re.findall(r'\d+\) Tests\\DatabaseV2\\AcademyRemediationTest::(\w+)', out)))
+        print(f"{name}: exit={run.returncode} failing tests={len(failing)}")
+        for f in failing:
+            print('     -', f)
+    finally:
+        path.write_bytes(original)

@@ -9,8 +9,10 @@ use Illuminate\Support\Str;
 // ACADEMY_CERTIFY is deliberately not ACADEMY_ASSESS and needs no class assignment (institutional
 // homologation); it is scoped to the enrollment's academic unit. Issuance requires, in order: a valid
 // completion policy for the class's course version (POLICY_NOT_CONFIGURED), a completed enrollment
-// (ENROLLMENT_NOT_COMPLETED), no active certificate already (CERTIFICATE_ALREADY_EXISTS) and an
-// AVAILABLE file. The enrollment row is locked exclusively, which serializes issuance per enrollment;
+// (ENROLLMENT_NOT_COMPLETED), no active certificate already (CERTIFICATE_ALREADY_EXISTS) and a file
+// the target may use: AcademyResourceGuard requires it to be owned by the enrollment's own unit (a file
+// of another unit is OUT_OF_SCOPE whatever its classification) and AVAILABLE. The enrollment row is
+// locked exclusively, which serializes issuance per enrollment;
 // "at most one non-revoked certificate per enrollment" is an aggregate invariant the schema cannot
 // express (only UNIQUE(enrollment_id, version)), so this lock is what makes a duplicate-issue race
 // converge. Revocation sets revoked_at and never deletes; a re-issue after revocation is a new version.
@@ -39,7 +41,7 @@ final class CertificateService
                         throw new AcademyError(AcademyReason::CERTIFICATE_ALREADY_EXISTS, ['certificate_id' => (int) $certificate->id]);
                     }
                 }
-                $this->assertFile($fileId);
+                $this->rt->resources->file($target, $fileId);
                 $version = $existing->isEmpty() ? 1 : (int) $existing->first()->version + 1;
                 $token = 'c_' . rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
                 $publicId = (string) Str::ulid();
@@ -87,14 +89,5 @@ final class CertificateService
             $overrideReason,
             $claimed
         );
-    }
-
-    // files.status is closed by the Wave 1 CHECK ck_files_status (QUARANTINED, AVAILABLE, TOMBSTONE, PURGED).
-    private function assertFile(int $fileId): void
-    {
-        $file = $this->rt->db->table('files')->where('id', $fileId)->sharedLock()->first();
-        if (!$file || $file->status !== 'AVAILABLE' || $file->deleted_at !== null || $file->purged_at !== null) {
-            throw new AcademyError(AcademyReason::FILE_NOT_AVAILABLE, ['file_id' => $fileId]);
-        }
     }
 }

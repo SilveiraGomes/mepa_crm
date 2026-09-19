@@ -1,5 +1,5 @@
 'use strict';
-// P0.3.5-A2 static validator for the Academy application layer.
+// P0.3.5-A2 / A2.1 static validator for the Academy application layer.
 //
 // Content-based, not an existence check: it parses the PHP sources (comments stripped, line numbers
 // preserved) and cross-checks them against docs/database/physical/wave5_application_contracts.json:
@@ -64,6 +64,38 @@ const methodBody = (file, name) => {
   const ends = [next, priv].filter(x => x >= 0);
   return code[file].slice(m.index, ends.length ? Math.min(...ends) : code[file].length);
 };
+// name -> source text of every method of a class file (4-space indented declarations, any visibility).
+const methodIndex = file => {
+  const src = code[file];
+  const decl = [...src.matchAll(/\n    (?:public |private |protected )?(?:static )?function (\w+)\(/g)];
+  const map = {};
+  decl.forEach((m, i) => { map[m[1]] = src.slice(m.index, i + 1 < decl.length ? decl[i + 1].index : src.length); });
+  return map;
+};
+// The code an operation can EXECUTE: its own method with every same-class helper it calls inlined at the
+// call site (transitively). A call moved into a method the operation never calls is therefore not seen, and
+// the inlined order is the execution order, which is what "early" and "late" are judged on.
+const reachableCode = (file, name, seen = []) => {
+  const methods = methodIndex(file);
+  if (!methods[name] || seen.includes(name)) return '';
+  return methods[name].replace(/\$this->(\w+)\(/g, (call, helper) => methods[helper] ? `${call}/*>${helper}*/${reachableCode(file, helper, [...seen, name])}/*<${helper}*/` : call);
+};
+// Child-safety call sites in already-inlined code, as offsets (execution order).
+const domainWrite = /->insertGetId\(|->insert\(|->update\(|machine->move\(|\$this->rt->audit\(/g;
+const safetyFlow = text => {
+  const at = re => [...text.matchAll(re)].map(m => m.index);
+  return {
+    locks: at(/\bsafety->lock\(/g),
+    asserts: at(/\bsafety->assertCover\(/g),
+    writes: at(domainWrite),
+    lockKept: /=\s*(?:\$\w+\s*\?\s*)?\$this->rt->safety->lock\(/.test(text),   // `$cover = ...` / `$covers[] = ...` / `$cover = $cond ? ... : null`
+    assertsNull: /\bsafety->assertCover\(\s*null\b/.test(text),
+  };
+};
+// Approved floor: operations that can put a minor into a class or an attendance record. Dropping the child-safety
+// integration of one of them from the contract is not enough to pass: it needs an explicit, independently reviewed
+// change of THIS validator as well (A2R-04 / mutation M4).
+const safetyFloor = { 'enrollment.create': true, 'enrollment.transition': true, 'attendance.record': true };
 
 // ---- contract + matrix --------------------------------------------------------------------
 const contract = JSON.parse(read(contractFile));
@@ -124,7 +156,14 @@ for (const svc of contract.services) {
       check(`op.no_audit.${id}`, !auditsViaBody && o.audit_actions.length === 0, `${id}: an operation without a required audit must not claim audit actions`);
     }
     if (isWrite) check(`op.no_direct_tx.${id}`, !/->transaction\(|beginTransaction|->commit\(/.test(body), `${id}: transaction handling belongs to AcademyRuntime::write only`);
-    if (o.child_safety) check(`op.child_safety.${id}`, /safety->lock\(/.test(code[file]) && /safety->assertCover/.test(code[file]) && /assertCovers|assertCover\(/.test(body + code[file]), `${id}: minor safety (lock early + assert late) missing`);
+    // Child safety is judged per OPERATION, on the code that operation can execute (never on the file).
+    check(`op.child_safety.flags.${id}`, typeof o.child_safety_required === 'boolean' && typeof o.commit_time_child_safety_required === 'boolean' && (!o.commit_time_child_safety_required || o.child_safety_required), `${id}: the contract must declare child_safety_required and commit_time_child_safety_required (booleans; commit-time implies the early lock)`);
+    if (safetyFloor[o.operation]) check(`op.child_safety.floor.${id}`, o.child_safety_required === true && o.commit_time_child_safety_required === true, `${id}: the approved child-safety integration of ${o.operation} cannot be removed from the contract`);
+    const flow = safetyFlow(reachableCode(file, o.method));
+    check(`op.child_safety.lock_declared.${id}`, (flow.locks.length > 0) === (o.child_safety_required === true), `${id}: contract child_safety_required=${o.child_safety_required} but the code the operation executes ${flow.locks.length ? 'takes' : 'does not take'} the safety cover lock`);
+    check(`op.child_safety.commit_declared.${id}`, (flow.asserts.length > 0) === (o.commit_time_child_safety_required === true), `${id}: contract commit_time_child_safety_required=${o.commit_time_child_safety_required} but the code the operation executes ${flow.asserts.length ? 'asserts' : 'does not assert'} the safety cover`);
+    if (o.child_safety_required) check(`op.child_safety.lock_early.${id}`, flow.locks.length > 0 && flow.lockKept && flow.writes.length > 0 && flow.locks[0] < flow.writes[0], `${id}: the safety cover must be locked (and its result kept) BEFORE the first write`);
+    if (o.commit_time_child_safety_required) check(`op.child_safety.commit_late.${id}`, flow.asserts.length > 0 && !flow.assertsNull && flow.writes.length > 0 && flow.asserts[flow.asserts.length - 1] > flow.writes[flow.writes.length - 1], `${id}: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start`);
     for (const e of o.errors) check(`op.error_known.${id}.${e}`, reasonConsts.has(e), `${id}: error ${e} is not an AcademyReason constant`);
     const ownReasons = new Set([...code[file].matchAll(/AcademyReason::([A-Z_]+)/g)].map(x => x[1]));
     const anyReasons = new Set(files.flatMap(f => [...code[f].matchAll(/AcademyReason::([A-Z_]+)/g)].map(x => x[1])));
@@ -218,9 +257,26 @@ check('audit.same_transaction', /\$work\(\$decision, \$resolved\)/.test(runtime)
 // 9. child safety ------------------------------------------------------------------------------------------------------
 check('safety.canonical_gate', /ChildParticipationSafetyGate/.test(code[`${domainDir}/AcademyChildSafety.php`]) && /lockParticipationCover/.test(code[`${domainDir}/AcademyChildSafety.php`]) && /assertParticipationCover/.test(code[`${domainDir}/AcademyChildSafety.php`]), 'child safety must delegate to ChildParticipationSafetyGate');
 check('safety.no_parallel_logic', findAll(/['"](guardian_authorizations|person_consents|child_profiles|child_custody_visits)['"]/).length === 0 && !files.some(f => /ChildSafetyService/.test(f)), 'Academy code must not read Wave 4 safety tables directly nor define a parallel safety service');
-for (const s of ['EnrollmentService', 'AcademicAttendanceService']) check(`safety.integrated.${s}`, /safety->lock\(/.test(code[`${domainDir}/${s}.php`]) && /safety->assertCover/.test(code[`${domainDir}/${s}.php`]), `${s} must lock the cover early and assert it late`);
+// Integration is proven per operation (section 3, op.child_safety.*), not per file.
+check('safety.floor_declared', Object.keys(safetyFloor).every(k => contract.services.some(s => s.operations.some(o => o.operation === k))), 'the pinned child-safety floor names an operation that is not in the contract');
 const gate = read('apps/api/app/Domain/WaveFour/ChildParticipationSafetyGate.php');
 check('safety.gate_fail_closed', /public function assertParticipationCover/.test(gate) && /throw new DomainError\(\$consented \? 'GUARDIAN_AUTHORIZATION_INVALID' : 'CONSENT_REQUIRED'\)/.test(gate), 'the gate extension must end in a denial unless a valid consent + guardian authorization is found');
+
+// 9b. A2.1: one completion rule, transition effects, resource references, transcript scope -------------------------------
+const svcFile = n => `${domainDir}/${n}.php`;
+const runs = (n, m) => reachableCode(svcFile(n), m);
+const guardFile = svcFile('CompletionEligibilityGuard');
+check('completion.guard_exists', files.includes(guardFile) && /public function assertEligible\(/.test(code[guardFile]) && /'enrollment\.complete'/.test(code[guardFile]) && /->attach\(/.test(code[guardFile]), 'CompletionEligibilityGuard must exist, own the completion authority (enrollment.complete) and attach it to the decision');
+check('completion.single_rule', findAll(/evaluateCompletion\(/).every(h => h.file.endsWith('CompletionEligibilityGuard.php') || h.file.endsWith('AcademicPolicyResolver.php')), 'the completion criteria may be evaluated only by CompletionEligibilityGuard (one rule, not a copy per service)');
+for (const [n, m] of [['CompletionService', 'complete'], ['EnrollmentService', 'transition']]) check(`completion.guard_used.${n}.${m}`, /completion->assertEligible\(/.test(runs(n, m)), `${n}::${m} must run CompletionEligibilityGuard::assertEligible`);
+check('completion.effect_read_by_transition', /machine->approvedEffect\(/.test(runs('EnrollmentService', 'transition')) && /AcademyPolicy::EFFECT_COMPLETION/.test(runs('EnrollmentService', 'transition')), 'EnrollmentService::transition must read the effect the policy declares and run the completion guard for it');
+check('completion.machine_enforces_effect', /\$declared !== \$enforced/.test(code[svcFile('AcademyStateMachine')]) && /function effect\(/.test(code[svcFile('AcademyPolicy')]) && /EFFECT_TARGETS/.test(code[svcFile('AcademyPolicy')]), 'the state machine must refuse a transition whose declared effect the caller did not enforce, and the policy must cross-check effects against its role sets');
+check('completion.final_recheck', /foreach \(\$decision->attached\(\) as/.test(write) && /authorize\(\$attachedOp, \$actor, \$session, \$resolved, null, true, \$attachedDecision\)/.test(write), 'AcademyRuntime::write must re-verify, with the final locking check, every authority attached to the decision');
+check('resource.guard_used', /resources->file\(/.test(runs('CertificateService', 'issue')) && /resources->file\(/.test(runs('TranscriptService', 'issue')) && /resources->legalDocument\(/.test(runs('InstructorAssignmentService', 'assign')), 'certificate/transcript files and instructor source documents must go through AcademyResourceGuard');
+check('resource.no_direct_lookup', findAll(/table\('(files|legal_documents)'\)/).every(h => h.file.endsWith('AcademyResourceGuard.php')), 'files / legal_documents may be read only by AcademyResourceGuard (a referenced resource is never trusted by id)');
+check('resource.ownership_rule', /in_array\(\$ownerUnit, \$target->unitIds, true\)/.test(code[svcFile('AcademyResourceGuard')]) && /owner_department_id !== null/.test(code[svcFile('AcademyResourceGuard')]), 'the guard must require ownership by one of the target units and refuse department-owned files');
+check('transcript.scope_includes_lines', /scope->forTranscript\(/.test(runs('TranscriptService', 'compile')) && /scope->forTranscript\(/.test(runs('TranscriptService', 'issue')) && !/scope->forCurriculum\(/.test(code[svcFile('TranscriptService')]), 'transcript operations must derive their target with forTranscript (curriculum unit + every contributing enrollment unit)');
+check('transcript.lines_rechecked', /in_array\(\(int\) \$e->unit_id, \$target->unitIds, true\)/.test(code[svcFile('TranscriptService')]), 'transcript lines must be re-checked against the authorized units under the operation locks');
 
 // 10. no swallowed exceptions (fail closed) --------------------------------------------------------------------------
 const swallowed = [];
@@ -248,8 +304,8 @@ check('fin_payroll.absent', findAll(/salary|payroll|allowance|pension|\bINSS\b|r
 check('d06.absent', findAll(/retention|legal_hold|\bpurge\b|data_subject|gdpr/i).length === 0, 'D-06 is out of scope: no purge/retention/legal-hold logic');
 
 // 12. tests exist for the mission matrix ------------------------------------------------------------------------------------------
-const testFiles = ['AuthorizationTest', 'EnrollmentTest', 'OperationsTest', 'AssessmentCertificationTest', 'ConcurrencyTest'].map(n => read(`apps/api/tests/DatabaseV2/Academy${n}.php`)).concat(read('apps/api/tests/Unit/AcademyDomainUnitTest.php')).join('\n');
-const markers = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'a9', 'a10', 'e1', 'e2', 'e3', 'e4'];
+const testFiles = ['AuthorizationTest', 'EnrollmentTest', 'OperationsTest', 'AssessmentCertificationTest', 'ConcurrencyTest', 'RemediationTest'].map(n => read(`apps/api/tests/DatabaseV2/Academy${n}.php`)).concat(read('apps/api/tests/Unit/AcademyDomainUnitTest.php')).join('\n');
+const markers = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'a9', 'a10', 'e1', 'e2', 'e3', 'e4', 'r1_1', 'r1_2', 'r1_3', 'r1_4', 'r1_5', 'r1_6', 'r1_7', 'r1_8', 'r2_1', 'r2_2', 'r2_3', 'r2_4', 'r2_5', 'r2_6', 'r3_1', 'r3_2', 'r3_3', 'r3_4', 'r3_5', 'r3_6', 'r3_7'];
 for (const m of markers) check(`tests.marker.${m}`, new RegExp(`function test_(\\w*_)?${m}_`).test(testFiles), `no test named for ${m.toUpperCase()}`);
 check('tests.uses_v2_pool', /PooledWaveFiveCase/.test(testFiles) && !/DROP DATABASE|CREATE DATABASE/i.test(testFiles), 'tests must use the pooled Test Infrastructure V2 base and never CREATE/DROP DATABASE');
 

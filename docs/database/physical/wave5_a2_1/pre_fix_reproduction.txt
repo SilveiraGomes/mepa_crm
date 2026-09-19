@@ -1,0 +1,63 @@
+P0.3.5-A2.1 -- reproduction of the audited defects BEFORE the fix
+Code state: commit ed29dfa (= audited implementation 7cbc299 + the A2-R audit evidence; no code differences). V2 instance STARTED_VERIFIED, session e19545a6.
+Each probe asserts the SAFE behaviour: the failure IS the confirmation of the finding.
+
+=================== A2R-01 (H1) -- ENROLL-only clerk completes an enrollment whose criteria are unmet ===================
+[H1] ENROLL-only clerk transition LIVE->DONE with unmet completion criteria => ACCEPTED; status now AUD_E_DONE
+[H1] certificate issue afterwards => ISSUED v1; transcript status => AUD_E_DONE
+F                                                                   1 / 1 (100%)
+There was 1 failure:
+1) Audit\BypassProbeTest::test_h1_enroll_permission_can_complete_an_enrollment_bypassing_completion_policy_and_assess_authority
+H1 CONFIRMED: completion reached through the generic transition without criteria/authority
+Failed asserting that two strings are not identical.
+C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\audit\BypassProbeTest.php:55
+
+=================== A2R-02 (S1) and A2R-03 (S2) -- transcript cross-unit read / certificate with a foreign-unit R-CONFIDENCIAL file ===================
+[S2] certifier@A issuing with file owned by unit B => ACCEPTED certificate_id=1
+F
+[S1] GRADES_VIEW@A compiling transcript => 1 line(s); class_code of line 0 belongs to unit 4 (actor scope = unit 3, class unit = 4); score visible: 88.0000
+F                                                                  2 / 2 (100%)
+There were 2 failures:
+1) Audit\AuthorizationProbeTest::test_s2_certificate_file_from_another_unit_is_accepted
+S2 CONFIRMED: certificate bound to a file owned by another unit (no ownership/scope check on file_id)
+Failed asserting that Array &0 (
+    'certificate_id' => 1
+    'public_id' => '01M2XRF15T8T2C3FKBYG26DHA6'
+    'version' => 1
+    'token' => 'c_1KAEHgTUemz2lVE_YbfjquEKdKEnoEKmw6Q092bVoRs'
+) is of type "string".
+C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\audit\AuthorizationProbeTest.php:275
+2) Audit\AuthorizationProbeTest::test_s1_transcript_compile_reads_enrollments_of_classes_outside_the_authorized_unit
+S1 CONFIRMED: transcript exposes enrollment/grades of a class in a unit the actor has no authority over
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+-Array &0 ()
++Array &0 (
++    0 => Array &1 (
++        'enrollment_id' => 2
++        'enrollment_public_id' => '01M2XRF1FPEMV166NQXE3V5GE1'
++        'class_code' => 'SYNTHETIC_01M2XRF1F1NRN1D23YQ91TNRXK'
++        'status' => 'AUD_E_LIVE'
++        'grades' => Array &2 (
++            0 => Array &3 (
++                'assessment_id' => 1
+
+=================== A2R-03 (source_document_id) -- instructor assignment with a legal document of another unit ===================
+[R3.4 source_document_id] manager@A assigning with a legal document owned by unit B => ACCEPTED assignment_id=1 source_document_id=1 (document owned by unit 2, class unit 1)
+F                                                                   1 / 1 (100%)
+There was 1 failure:
+1) Audit\SourceDocumentProbeTest::test_source_document_owned_by_another_unit_is_accepted_by_assign
+A2R-03 CONFIRMED for source_document_id: a legal document of another unit is linked without any ownership check
+Failed asserting that 'ACCEPTED assignment_id=1 source_document_id=1 (document owned by unit 2, class unit 1)' starts with "DENIED".
+C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\audit\SourceDocumentProbeTest.php:31
+
+=================== A2R-04 -- the validator as audited gives a FALSE PASS (temporary worktree of ed29dfa; files restored) ===================
+[validator as audited @ ed29dfa] M1  remove the enroll safety lock: exit=0 -> FALSE PASS
+[validator as audited @ ed29dfa] M1b remove the enroll commit-time assertion: exit=0 -> FALSE PASS
+[validator as audited @ ed29dfa] M2  remove the attendance initial lock: exit=1 -> detected
+[validator as audited @ ed29dfa] M3  remove the assertion inside attendance assertCovers(): exit=1 -> detected
+[validator as audited @ ed29dfa] M3b drop only the assertCovers() call of record(): exit=0 -> FALSE PASS
+[validator as audited @ ed29dfa] M4  remove the safety requirement from the CONTRACT of enrollment.create: exit=0 -> FALSE PASS
+[validator as audited @ ed29dfa] M5  move the enroll safety calls into a private method nothing calls: exit=0 -> FALSE PASS

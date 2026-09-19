@@ -1,0 +1,28 @@
+T1 EnrollmentService::transition skips the completion guard: exit=1 failing tests=5
+     - test_r1_2_and_r1_3_the_generic_transition_is_refused_and_persists_nothing
+     - test_r1_4_and_r1_5_no_certificate_and_no_false_completion_on_the_transcript_after_a_refused_bypass
+     - test_r1_8_enroll_alone_never_grants_completion_or_certification
+     - test_r1_completion_authority_attached_to_the_generic_transition_is_rechecked_at_commit
+     - test_r1_missing_completion_policy_is_policy_not_configured_through_the_generic_path_too
+T2 completion authority is not attached (guard authorizes nobody): exit=1 failing tests=4
+     - test_r1_2_and_r1_3_the_generic_transition_is_refused_and_persists_nothing
+     - test_r1_4_and_r1_5_no_certificate_and_no_false_completion_on_the_transcript_after_a_refused_bypass
+     - test_r1_8_enroll_alone_never_grants_completion_or_certification
+     - test_r1_completion_authority_attached_to_the_generic_transition_is_rechecked_at_commit
+T3 final re-check of attached authority removed: exit=1 failing tests=1
+     - test_r1_completion_authority_attached_to_the_generic_transition_is_rechecked_at_commit
+T4 transcript target ignores the units of the lines: exit=2 failing tests=5
+     - test_r2_2_grades_view_in_unit_a_does_not_read_the_grade_of_unit_b
+     - test_r2_3_a_claimed_unit_never_changes_the_real_target
+     - test_r2_4_the_aggregate_transcript_needs_authority_over_every_contributing_unit_and_is_never_partial
+     - test_r2_5_a_superior_scope_with_descendants_is_authorized_and_admin_is_never_a_read_bypass
+     - test_r2_6_membership_never_changes_the_academic_scope
+T5 certificate file ownership not checked: exit=1 failing tests=4
+     - test_r3_2_and_r3_3_a_file_of_another_unit_is_refused_whatever_its_classification
+     - test_r3_5_claiming_unit_a_in_the_payload_does_not_make_a_unit_b_file_usable
+     - test_r3_7_no_shared_resource_exception_exists_an_ancestor_units_file_is_refused_as_well
+     - test_r3_the_official_transcript_file_is_checked_like_the_certificate_file
+T6 source document ownership not checked: exit=1 failing tests=1
+     - test_r3_4_a_source_document_of_another_unit_is_refused_and_nothing_is_created
+T7 policy effect cross-check removed: exit=1 failing tests=1
+     - test_r1_the_transition_effect_is_declared_by_the_policy_and_an_ambiguous_declaration_fails_closed

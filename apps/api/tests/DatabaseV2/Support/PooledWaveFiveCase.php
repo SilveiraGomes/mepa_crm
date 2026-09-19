@@ -28,6 +28,9 @@ use Tests\Database\Support\WaveFiveCase;
  */
 abstract class PooledWaveFiveCase extends WaveFiveCase
 {
+    protected const NONE = AcademyPolicy::EFFECT_NONE;
+    protected const COMPLETION = AcademyPolicy::EFFECT_COMPLETION;
+
     public static function setUpBeforeClass(): void
     {
         self::$root = dirname(__DIR__, 5);
@@ -97,15 +100,16 @@ abstract class PooledWaveFiveCase extends WaveFiveCase
                 'curricula' => ['initial' => 'S_CUR_DRAFT', 'sets' => ['published' => ['S_CUR_PUBLISHED']]],
             ],
             'transitions' => [
+                // [from, to, effect]: every approved transition DECLARES its business effect (NONE is explicit).
                 'approved' => [
-                    'enrollments' => [['S_ENR_PENDING', 'S_ENR_ACTIVE'], ['S_ENR_ACTIVE', 'S_ENR_COMPLETED'], ['S_ENR_ACTIVE', 'S_ENR_WITHDRAWN']],
-                    'class_instructors' => [['S_CI_ACTIVE', 'S_CI_ENDED']],
-                    'class_sessions' => [['S_SES_PLANNED', 'S_SES_HELD']],
-                    'assessment_attempts' => [['S_TRY_STARTED', 'S_TRY_SUBMITTED']],
-                    'progress' => [['S_PRG_OPEN', 'S_PRG_DONE']],
-                    'resource_progress' => [['S_RPG_OPEN', 'S_RPG_DONE']],
-                    'certificates' => [['S_CRT_ISSUED', 'S_CRT_REVOKED']],
-                    'curricula' => [['S_CUR_DRAFT', 'S_CUR_PUBLISHED']],
+                    'enrollments' => [['S_ENR_PENDING', 'S_ENR_ACTIVE', self::NONE], ['S_ENR_ACTIVE', 'S_ENR_COMPLETED', self::COMPLETION], ['S_ENR_ACTIVE', 'S_ENR_WITHDRAWN', self::NONE]],
+                    'class_instructors' => [['S_CI_ACTIVE', 'S_CI_ENDED', self::NONE]],
+                    'class_sessions' => [['S_SES_PLANNED', 'S_SES_HELD', self::NONE]],
+                    'assessment_attempts' => [['S_TRY_STARTED', 'S_TRY_SUBMITTED', self::NONE]],
+                    'progress' => [['S_PRG_OPEN', 'S_PRG_DONE', self::NONE]],
+                    'resource_progress' => [['S_RPG_OPEN', 'S_RPG_DONE', self::NONE]],
+                    'certificates' => [['S_CRT_ISSUED', 'S_CRT_REVOKED', self::NONE]],
+                    'curricula' => [['S_CUR_DRAFT', 'S_CUR_PUBLISHED', self::NONE]],
                 ],
                 'pending' => [
                     'grades' => [['S_GRD_DRAFT', 'S_GRD_FINAL']],

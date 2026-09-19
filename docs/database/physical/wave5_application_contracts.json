@@ -24,8 +24,10 @@
     "final_authorization": "AcademyRuntime::write re-verifies, with FOR SHARE reads and a fresh decisive clock, exactly the grounds of the provisional decision as the last statement before commit; it can never switch from DIRECT to ADMIN_OVERRIDE",
     "client_context": "class_id / academic_unit_id / unit_id may be claimed by the caller but are only compared with the database-derived target after authorization (CONTEXT_MISMATCH); they never grant authority",
     "person_resolution": "people.id or people.public_id (ULID) only; member numbers are rejected (INVALID_PERSON_REFERENCE); no membership dependency",
-    "child_safety": "ChildParticipationSafetyGate (Wave 4) through AcademyChildSafety: lockParticipationCover() early, assertParticipationCover() late; fail closed",
-    "pagination": "list operations cap the page size at 100"
+    "child_safety": "ChildParticipationSafetyGate (Wave 4) through AcademyChildSafety: lockParticipationCover() early (child_safety_required), assertParticipationCover() late, after the last write and audit (commit_time_child_safety_required); fail closed. The validator compares both flags with the call sites reachable from each operation's method",
+    "pagination": "list operations cap the page size at 100",
+    "lock_order": "AcademyScopeResolver locks parent-first (academic_unit -> class -> enrollment -> entity). This is NOT a global lock order: EnrollmentService::enroll locks people before enrollments while the safety cover of attendance/transition locks enrollments before people, which InnoDB resolves by deadlock detection and the runtime's retry x5 (A2R-05, LOW, tracked, non-blocking)",
+    "transition_effect": "Every APPROVED transition declares its business effect as the third element of its entry: [from, to, effect] with effect NONE | COMPLETION. NONE is an explicit declaration, never a default; an undeclared, unknown, duplicated-with-conflict effect, or one that contradicts the policy's own 'completed' role set, is POLICY_NOT_CONFIGURED. AcademyStateMachine executes a transition only for a caller that enforced its effect"
   },
   "permissions": [
     {
@@ -300,7 +302,6 @@
           "audit_actions": [
             "enrollment.created"
           ],
-          "child_safety": true,
           "policy_dependency": "D-11: initial state + classes.enrollable set from AcademyPolicy",
           "concurrency": "exclusive lock on the people row serializes every enrollment of that Person; UNIQUE(person_id,class_id) is the backstop and its 1062 maps to ALREADY_ENROLLED",
           "idempotency": "natural (logical key = UNIQUE(person_id,class_id)); no idempotency-key infrastructure",
@@ -325,7 +326,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": true,
+          "commit_time_child_safety_required": true,
+          "child_safety_condition": "always (any Person may be a minor)"
         },
         {
           "service": "EnrollmentService",
@@ -334,13 +338,15 @@
           "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
           "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
           "audit_actions": [
+            "enrollment.completed",
             "enrollment.transitioned"
           ],
-          "child_safety": true,
-          "policy_dependency": "D-11: only APPROVED transitions execute; the approval_targets role sets approved_by",
+          "policy_dependency": "D-11: approved transition + its declared effect (NONE | COMPLETION; undeclared or contradictory = POLICY_NOT_CONFIGURED); D-09 only when the effect is COMPLETION (course_versions.completion_policy_metadata)",
           "concurrency": "enrollment row FOR UPDATE + lock_version optimistic check",
           "idempotency": "re-sending the same target state is INVALID_TRANSITION (a no-op is not a transition)",
           "errors": [
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "COMPLETION_CRITERIA_NOT_MET",
             "CONSENT_REQUIRED",
             "CONTEXT_MISMATCH",
             "GUARDIAN_AUTHORIZATION_INVALID",
@@ -353,13 +359,17 @@
             "STORAGE_CONFLICT",
             "TARGET_NOT_FOUND"
           ],
-          "note": "child-safety cover is required only when the target state is configured as an approval target",
+          "note": "ACADEMY_ENROLL alone can never produce a completion: the generic transition cannot reach the outcome of enrollment.complete without that operation's guard",
           "required_permission": "ACADEMY_ENROLL",
           "institutional_scope_required": true,
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": true,
+          "commit_time_child_safety_required": true,
+          "child_safety_condition": "only when the target state is in the policy's 'approval_targets' set",
+          "completion_guard": "A transition the policy declares with the COMPLETION effect runs CompletionEligibilityGuard (context, completion authority ACADEMY_ASSESS + class assignment attached to the decision and re-verified at commit, valid D-09 policy, every criterion met) before the status changes; audited as enrollment.completed (after_metadata.via = enrollment.transition)"
         },
         {
           "service": "EnrollmentService",
@@ -368,7 +378,6 @@
           "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "none",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -385,7 +394,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -402,7 +413,6 @@
           "audit_actions": [
             "class_instructor.assigned"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: class_instructors.initial/active, instructors.initial/active",
           "concurrency": "exclusive lock on the classes row (aggregate anchor; the schema has no UNIQUE on class_instructors) then the people row; overlap check under lock",
           "idempotency": "natural: an overlapping active assignment converges on ALREADY_ASSIGNED",
@@ -417,6 +427,7 @@
             "OVERRIDE_NOT_ALLOWED",
             "PERSON_NOT_ELIGIBLE",
             "POLICY_NOT_CONFIGURED",
+            "REFERENCE_NOT_FOUND",
             "STORAGE_CONFLICT",
             "TARGET_NOT_FOUND"
           ],
@@ -426,7 +437,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false,
+          "resource_guard": "AcademyResourceGuard: the resource is read by id, must be owned by one of the units the target resolves to (already authorized and re-checked at commit), a foreign-unit resource is OUT_OF_SCOPE whatever its classification, a department-owned file is OUT_OF_SCOPE, and no shared/global exception exists; source_document_id (legal_documents) is optional and, when present, must satisfy the same ownership rule"
         },
         {
           "service": "InstructorAssignmentService",
@@ -437,7 +451,6 @@
           "audit_actions": [
             "class_instructor.removed"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: class_instructors 'ended' role + approved transition",
           "concurrency": "classes row FOR UPDATE then assignment row FOR UPDATE",
           "idempotency": "ending an ended assignment is INVALID_TRANSITION",
@@ -460,7 +473,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "InstructorAssignmentService",
@@ -469,7 +484,6 @@
           "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "D-11: class_instructors.active set",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -486,7 +500,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -503,7 +519,6 @@
           "audit_actions": [
             "class_session.scheduled"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: classes.teachable, class_sessions.initial",
           "concurrency": "class row share lock",
           "idempotency": "none (each call is a new session)",
@@ -526,7 +541,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "ClassSessionService",
@@ -537,7 +554,6 @@
           "audit_actions": [
             "class_session.transitioned"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: approved transitions only",
           "concurrency": "session row FOR UPDATE + lock_version",
           "idempotency": "a no-op is INVALID_TRANSITION",
@@ -561,7 +577,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "ClassSessionService",
@@ -570,7 +588,6 @@
           "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "none",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -587,7 +604,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -605,7 +624,6 @@
             "attendance.recorded",
             "attendance.updated"
           ],
-          "child_safety": true,
           "policy_dependency": "D-11: class_sessions.attendable, enrollments.operational, academic_attendance.recordable",
           "concurrency": "enrollment row FOR UPDATE, then the UNIQUE(enrollment_id,class_session_id) row FOR UPDATE",
           "idempotency": "natural: same status = UNCHANGED (no write, no audit); a different status = UPDATED with before/after audit",
@@ -632,7 +650,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": true,
+          "commit_time_child_safety_required": true,
+          "child_safety_condition": "always (the enrollment Person may be a minor)"
         },
         {
           "service": "AcademicAttendanceService",
@@ -644,9 +665,8 @@
             "attendance.recorded",
             "attendance.updated"
           ],
-          "child_safety": true,
           "policy_dependency": "D-11: same sets as record",
-          "concurrency": "entries processed in enrollment-id order (uniform lock order); all-or-nothing in one transaction",
+          "concurrency": "entries processed in enrollment-id order, so concurrent bulk requests lock enrollments in the same order; all-or-nothing in one transaction",
           "idempotency": "natural per entry; at most 200 entries per request",
           "errors": [
             "ADMIN_REASON_REQUIRED",
@@ -671,7 +691,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": true,
+          "commit_time_child_safety_required": true,
+          "child_safety_condition": "always, for every entry"
         },
         {
           "service": "AcademicAttendanceService",
@@ -680,7 +703,6 @@
           "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "none",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -697,7 +719,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -714,7 +738,6 @@
           "audit_actions": [
             "assessment.created"
           ],
-          "child_safety": false,
           "policy_dependency": "D-09: max_score/pass_score/max_attempts/weight are NOT NULL columns supplied by the caller; a missing value is POLICY_NOT_CONFIGURED; nothing is defaulted",
           "concurrency": "course version share lock",
           "idempotency": "none (each call creates a definition)",
@@ -734,7 +757,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "AssessmentService",
@@ -745,7 +770,6 @@
           "audit_actions": [
             "assessment.updated"
           ],
-          "child_safety": false,
           "policy_dependency": "D-09: values remain caller-supplied",
           "concurrency": "assessment row FOR UPDATE + lock_version",
           "idempotency": "strict allow-list of columns (mass assignment is rejected, not ignored)",
@@ -766,7 +790,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -783,7 +809,6 @@
           "audit_actions": [
             "attempt.recorded"
           ],
-          "child_safety": false,
           "policy_dependency": "D-09: max_attempts is NOT enforced (value not approved); D-11: assessments.open, enrollments.operational",
           "concurrency": "enrollment row FOR UPDATE anchors per-enrollment numbering; UNIQUE(assessment_id,enrollment_id,attempt_number) is the backstop (1062 -> ATTEMPT_ALREADY_EXISTS)",
           "idempotency": "natural when the caller passes the attempt number it intends to create",
@@ -809,7 +834,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "AssessmentAttemptService",
@@ -820,7 +847,6 @@
           "audit_actions": [
             "attempt.transitioned"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: approved transitions only; the 'submitted' role sets submitted_at",
           "concurrency": "attempt row FOR UPDATE + lock_version",
           "idempotency": "a no-op is INVALID_TRANSITION",
@@ -844,7 +870,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -861,7 +889,6 @@
           "audit_actions": [
             "grade.recorded"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: assessment_attempts.gradable, grades.initial; the only score bound is the assessment's own max_score",
           "concurrency": "attempt row FOR UPDATE; UNIQUE(attempt_id,version) backstop -> GRADE_ALREADY_RECORDED",
           "idempotency": "natural: a second first-record is GRADE_ALREADY_RECORDED",
@@ -885,7 +912,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "GradeService",
@@ -896,7 +925,6 @@
           "audit_actions": [
             "grade.revised"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: as record",
           "concurrency": "attempt row FOR UPDATE + the caller must present expectedVersion; a mismatch is STALE_WRITE and nothing is stored; UNIQUE(attempt_id,version) backstop -> STALE_WRITE",
           "idempotency": "append-only versions: a stored score is never updated",
@@ -922,7 +950,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "GradeService",
@@ -933,7 +963,6 @@
           "audit_actions": [
             "grade.finalized"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: the grades 'final' role; STATE_POLICY_PENDING until the owners approve the transition",
           "concurrency": "attempt row then grade row FOR UPDATE; expectedVersion must equal the latest",
           "idempotency": "n/a",
@@ -958,7 +987,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "GradeService",
@@ -967,7 +998,6 @@
           "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "none",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -984,7 +1014,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -999,7 +1031,6 @@
           "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
           "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "D-09/D-11: records the reported ratio only; progress.initial/completed roles; source_version = policy version",
           "concurrency": "enrollment row FOR UPDATE; UNIQUE(enrollment_id,lesson_id) upsert under lock",
           "idempotency": "natural upsert",
@@ -1024,7 +1055,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "ProgressService",
@@ -1033,7 +1066,6 @@
           "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
           "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "D-11: resource_progress.initial/verified roles",
           "concurrency": "enrollment row FOR UPDATE; UNIQUE(enrollment_id,resource_id) upsert under lock",
           "idempotency": "natural upsert",
@@ -1058,7 +1090,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -1075,8 +1109,7 @@
           "audit_actions": [
             "enrollment.completed"
           ],
-          "child_safety": false,
-          "policy_dependency": "D-09: course_versions.completion_policy_metadata JSON (criteria grammar only; every value is stored data); D-11: 'completed' role + approved transition",
+          "policy_dependency": "D-09: course_versions.completion_policy_metadata JSON (criteria grammar only; every value is stored data); D-11: 'completed' role + approved transition declaring the COMPLETION effect",
           "concurrency": "enrollment row FOR UPDATE + lock_version",
           "idempotency": "completing a completed enrollment is INVALID_TRANSITION",
           "errors": [
@@ -1100,7 +1133,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": true,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false,
+          "completion_guard": "CompletionEligibilityGuard::assertEligible (the same guard as the generic transition); the move is executed with the COMPLETION effect enforced"
         }
       ]
     },
@@ -1117,7 +1153,6 @@
           "audit_actions": [
             "certificate.issued"
           ],
-          "child_safety": false,
           "policy_dependency": "D-09: a valid completion policy is required; D-11: enrollments.completed, certificates.initial",
           "concurrency": "enrollment row FOR UPDATE serializes per enrollment; certificates rows FOR UPDATE; UNIQUE(enrollment_id,version) backstop -> CERTIFICATE_ALREADY_EXISTS",
           "idempotency": "natural: an active (non-revoked) certificate makes the second request CERTIFICATE_ALREADY_EXISTS",
@@ -1140,7 +1175,10 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false,
+          "resource_guard": "AcademyResourceGuard: the resource is read by id, must be owned by one of the units the target resolves to (already authorized and re-checked at commit), a foreign-unit resource is OUT_OF_SCOPE whatever its classification, a department-owned file is OUT_OF_SCOPE, and no shared/global exception exists; file_id then must be AVAILABLE (not deleted/purged)"
         },
         {
           "service": "CertificateService",
@@ -1151,7 +1189,6 @@
           "audit_actions": [
             "certificate.revoked"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: certificates 'revoked' role + approved transition",
           "concurrency": "enrollment row then certificate row FOR UPDATE",
           "idempotency": "revoking a revoked certificate is CERTIFICATE_ALREADY_REVOKED",
@@ -1176,7 +1213,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     },
@@ -1188,10 +1227,9 @@
           "service": "TranscriptService",
           "method": "compile",
           "operation": "transcript.compile",
-          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum) PLUS classes.academic_unit_id -> academic_units.unit_id of every enrollment of the Person in a cohort of that curriculum (forTranscript); authority is required over ALL of these units",
           "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
           "audit_actions": [],
-          "child_safety": false,
           "policy_dependency": "D-09: final_score is always null (POLICY_NOT_CONFIGURED); facts only",
           "concurrency": "read-only",
           "idempotency": "n/a",
@@ -1203,24 +1241,26 @@
             "STORAGE_CONFLICT",
             "TARGET_NOT_FOUND"
           ],
-          "note": "classes belong to a curriculum through cohorts.curriculum_id; result_status is the stored enrollment status verbatim",
+          "note": "classes belong to a curriculum through cohorts.curriculum_id; result_status is the stored enrollment status verbatim; each line is scoped by ITS OWN class's academic unit, not by the curriculum's",
           "required_permission": "ACADEMY_GRADES_VIEW",
           "institutional_scope_required": true,
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": false
+          "audit_required": false,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false,
+          "aggregate_scope_semantics": "DENY_WHOLE_OPERATION: one aggregate document, no partial-result contract; lacking authority over any contributing unit is OUT_OF_SCOPE (never a filtered transcript). Lines are re-read under the operation locks; a line outside the authorized units is STORAGE_CONFLICT"
         },
         {
           "service": "TranscriptService",
           "method": "issue",
           "operation": "transcript.issue",
-          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum) PLUS classes.academic_unit_id -> academic_units.unit_id of every enrollment of the Person in a cohort of that curriculum (forTranscript); authority is required over ALL of these units",
           "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
           "audit_actions": [
             "transcript.issued"
           ],
-          "child_safety": false,
           "policy_dependency": "D-09/D-11: blocked until transcripts.initial is configured; lines are factual (final_score NULL)",
           "concurrency": "people row FOR UPDATE + transcripts FOR UPDATE; UNIQUE(person_id,curriculum_id,version) backstop",
           "idempotency": "versioned (each issue is a new version)",
@@ -1243,7 +1283,11 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": true,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false,
+          "aggregate_scope_semantics": "DENY_WHOLE_OPERATION: one aggregate document, no partial-result contract; lacking authority over any contributing unit is OUT_OF_SCOPE (never a filtered transcript). Lines are re-read under the operation locks; a line outside the authorized units is STORAGE_CONFLICT",
+          "resource_guard": "AcademyResourceGuard: the resource is read by id, must be owned by one of the units the target resolves to (already authorized and re-checked at commit), a foreign-unit resource is OUT_OF_SCOPE whatever its classification, a department-owned file is OUT_OF_SCOPE, and no shared/global exception exists; file_id then must be AVAILABLE (not deleted/purged)"
         }
       ]
     },
@@ -1260,7 +1304,6 @@
           "audit_actions": [
             "curriculum.version_created"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: curricula.initial",
           "concurrency": "program row FOR UPDATE; UNIQUE(program_id,version) backstop",
           "idempotency": "each call is a new version",
@@ -1278,7 +1321,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "CurriculumService",
@@ -1289,7 +1334,6 @@
           "audit_actions": [
             "curriculum.published"
           ],
-          "child_safety": false,
           "policy_dependency": "D-11: curricula 'published' role + approved transition",
           "concurrency": "curriculum row FOR UPDATE + lock_version",
           "idempotency": "publishing twice is CURRICULUM_ALREADY_PUBLISHED",
@@ -1311,7 +1355,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         },
         {
           "service": "CurriculumService",
@@ -1322,7 +1368,6 @@
           "audit_actions": [
             "curriculum.course_added"
           ],
-          "child_safety": false,
           "policy_dependency": "none",
           "concurrency": "curriculum row FOR UPDATE",
           "idempotency": "UNIQUE(curriculum_id,course_id) and UNIQUE(curriculum_id,sequence) backstops",
@@ -1341,7 +1386,9 @@
           "scope_derived_from_database": true,
           "class_assignment_required": false,
           "admin_override": false,
-          "audit_required": true
+          "audit_required": true,
+          "child_safety_required": false,
+          "commit_time_child_safety_required": false
         }
       ]
     }
@@ -1358,7 +1405,8 @@
       "grades": "DRAFT -> HOMOLOGATED",
       "certificates": "ISSUED -> REVOKED",
       "warning": "Documentation only. Never read by code; the validator fails if any of these names appears as a string literal in app/Domain/Academy."
-    }
+    },
+    "effect_declaration": "STRUCTURE, not an institutional value: the approved catalog must declare the effect of each transition (NONE | COMPLETION) when D-11 approves it. config/academy.php still ships an EMPTY catalog"
   },
   "policy": {
     "d09": "PARTIALLY RESOLVED: structure available, institutional values OPEN. 0 hardcoded values. Completion policy = course_versions.completion_policy_metadata (JSON; the criteria grammar lives in AcademicPolicyResolver, every value is stored data). Assessment values are caller-supplied (NOT NULL columns) and are not used as enforcement (attempt limit) because a row cannot tell an approved value from a placeholder.",
@@ -1428,5 +1476,26 @@
     "STORAGE_CONFLICT",
     "TARGET_NOT_FOUND",
     "TRANSCRIPT_EMPTY"
-  ]
+  ],
+  "a2_1_remediation": {
+    "baseline": "7cbc299 (audited); audit evidence ed29dfa",
+    "schema_changes": 0,
+    "findings": {
+      "A2R-01": "CompletionEligibilityGuard (single rule) + transition effect declared by the policy + effect enforced by AcademyStateMachine",
+      "A2R-02": "AcademyScopeResolver::forTranscript: authority over the curriculum unit AND every contributing enrollment unit; denial of the whole aggregate (decision B)",
+      "A2R-03": "AcademyResourceGuard for certificates.file_id, transcripts.file_id and class_instructors.source_document_id",
+      "A2R-04": "validator: per-operation child-safety call-site checks (lock early, assert late) driven by child_safety_required / commit_time_child_safety_required, plus a pinned floor"
+    },
+    "open_non_blocking": [
+      "A2-DEV-01",
+      "F-03",
+      "F-06",
+      "F-07",
+      "A2R-05",
+      "A2R-06",
+      "A2R-07",
+      "A2R-08",
+      "A2R-09"
+    ]
+  }
 }

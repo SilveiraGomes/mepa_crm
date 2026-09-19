@@ -10,7 +10,10 @@
 //
 // Shape (per kind, e.g. 'enrollments'):
 //   'states'      => [kind => ['initial' => string, 'sets' => [role => [state, ...]]]]
-//   'transitions' => ['approved' => [kind => [[from, to], ...]], 'pending' => [kind => [[from, to], ...]]]
+//   'transitions' => ['approved' => [kind => [[from, to, effect], ...]], 'pending' => [kind => [[from, to], ...]]]
+//   effect = NONE | COMPLETION: every APPROVED transition declares what it does. NONE is an explicit
+//   declaration, never a default; an undeclared or contradictory effect (e.g. a transition into the
+//   'completed' set that does not declare COMPLETION) is POLICY_NOT_CONFIGURED. This is structure, not a value.
 return [
     'policy_version' => null,
     'states' => [],

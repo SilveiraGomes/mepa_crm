@@ -1,0 +1,162 @@
+{
+  "phase": "P0.3.5-A2.1",
+  "method": "incremental: deterministic AST re-extraction of the changed/new Academy files (they replace their prior contribution) + grounded document/concept nodes; no full rebuild",
+  "before_nodes": 4471,
+  "after_nodes": 4564,
+  "before_edges": 7437,
+  "after_edges": 7608,
+  "historical_nodes_lost": 1,
+  "historical_nodes_lost_sample": [
+    "apps_api_app_domain_academy_certificateservice_certificateservice_assertfile (legitimately removed method)"
+  ],
+  "dangling_edges": 0,
+  "shrink_guard": "PASS",
+  "force_used": false,
+  "shrink_rejection_probe": true,
+  "probe_scratch_bytes_unchanged": true,
+  "manifest_entries_before": 851,
+  "manifest_entries_after": 851,
+  "manifest_shrink_repaired": false,
+  "files_extracted": 20,
+  "new_document_nodes": 1,
+  "new_concept_nodes": 5,
+  "new_edges_authored": 26,
+  "academy_domain_nodes_in_graph": 199,
+  "new_academy_services_represented": {
+    "CompletionEligibilityGuard": true,
+    "AcademyResourceGuard": true
+  },
+  "health": {
+    "node_count": 4564,
+    "unverified_node_count": 0,
+    "raw_edge_count": 7608,
+    "non_object_edges": 0,
+    "missing_endpoint_edges": 0,
+    "dangling_endpoint_edges": 0,
+    "self_loop_edges": 0,
+    "valid_candidate_edges": 7608,
+    "exact_duplicate_edges": 0,
+    "directed_unique_endpoint_pairs": 7608,
+    "directed_same_endpoint_collapsed_edges": 0,
+    "undirected_unique_endpoint_pairs": 7608,
+    "undirected_same_endpoint_collapsed_edges": 0,
+    "same_endpoint_group_count": 0,
+    "relation_variant_groups": 0,
+    "source_file_variant_groups": 0,
+    "source_location_variant_groups": 0,
+    "context_variant_groups": 0,
+    "post_build_graph_type": "Graph",
+    "post_build_node_count": 4564,
+    "post_build_edge_count": 7608,
+    "post_build_error": "",
+    "examples": []
+  },
+  "queries": 10,
+  "queries_pass": true,
+  "query_coverage": [
+    {
+      "query": "CompletionEligibilityGuard",
+      "exit_code": 0,
+      "expected_source_fragment": "CompletionEligibilityGuard.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['CompletionEligibilityGuard'] | 37 nodes found\n\n[i] Complete answer over budget: all 37 nodes and 88 edges shown (~6182 tokens vs the requested ~1500-token budget). Edges are never dropped once every node fits, so this is"
+    },
+    {
+      "query": "AcademyResourceGuard",
+      "exit_code": 0,
+      "expected_source_fragment": "AcademyResourceGuard.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['AcademyResourceGuard'] | 29 nodes found\n\n[i] Complete answer over budget: all 29 nodes and 68 edges shown (~4562 tokens vs the requested ~1500-token budget). Edges are never dropped once every node fits, so this is alrea"
+    },
+    {
+      "query": "AcademyStateMachine",
+      "exit_code": 0,
+      "expected_source_fragment": "AcademyStateMachine.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['AcademyStateMachine'] | 64 nodes found\n\n[!] TRUNCATED: showing 34 of 64 nodes (~1500-token budget). The answer may be among the 30 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filt"
+    },
+    {
+      "query": "AcademyScopeResolver",
+      "exit_code": 0,
+      "expected_source_fragment": "AcademyScopeResolver.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['AcademyScopeResolver'] | 41 nodes found\n\n[!] TRUNCATED: showing 35 of 41 nodes (~1500-token budget). The answer may be among the 6 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filt"
+    },
+    {
+      "query": "TranscriptService",
+      "exit_code": 0,
+      "expected_source_fragment": "TranscriptService.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['TranscriptService'] | 51 nodes found\n\n[!] TRUNCATED: showing 28 of 51 nodes (~1500-token budget). The answer may be among the 23 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter"
+    },
+    {
+      "query": "EnrollmentService",
+      "exit_code": 0,
+      "expected_source_fragment": "EnrollmentService.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['EnrollmentService'] | 113 nodes found\n\n[!] TRUNCATED: showing 25 of 113 nodes (~1500-token budget). The answer may be among the 88 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filt"
+    },
+    {
+      "query": "CertificateService",
+      "exit_code": 0,
+      "expected_source_fragment": "CertificateService.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['CertificateService'] | 82 nodes found\n\n[!] TRUNCATED: showing 26 of 82 nodes (~1500-token budget). The answer may be among the 56 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filte"
+    },
+    {
+      "query": "AcademyPolicy",
+      "exit_code": 0,
+      "expected_source_fragment": "AcademyPolicy.php",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['AcademyPolicy', '.academyPolicy()'] | 122 nodes found\n\n[!] TRUNCATED: showing 34 of 122 nodes (~1500-token budget). The answer may be among the 88 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e"
+    },
+    {
+      "query": "a21 completion guard",
+      "exit_code": 0,
+      "expected_source_fragment": "P0.3.5_A2_1_remediation.md",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['CompletionEligibilityGuard', 'CompletionEligibilityGuard.php', 'CompletionEligibilityGuard single completion rule shared by CompletionService and generic enrollment transitions; completion authority attached and rechecke"
+    },
+    {
+      "query": "foreign unit confidential resource OUT_OF_SCOPE",
+      "exit_code": 0,
+      "expected_source_fragment": "P0.3.5_A2_1_remediation.md",
+      "expected_source_in_output": true,
+      "output_head": "Graph: graphify-out/graph.json (4564 nodes) | Traversal: BFS depth=2 | Start: ['AcademyResourceGuard: certificate file, transcript file and instructor source document must be owned by the target unit; foreign unit or confidential resource is OUT_OF_SCOPE (A2R-03)', 'scopes', 'resource_progress', 'Fo"
+    }
+  ],
+  "note": "graphify-out/ is gitignored by design; this file is the committed evidence of the update.",
+  "runs": [
+    {
+      "run": 1,
+      "before_nodes": 4471,
+      "after_nodes": 4563,
+      "before_edges": 7437,
+      "after_edges": 7606,
+      "historical_nodes_lost": 2,
+      "lost": [
+        "a2_validator (concept authored in A2 with the validator script as source_file; dropped when that script was re-extracted, re-asserted in run 2)",
+        "CertificateService::assertFile (method deleted in A2.1, replaced by AcademyResourceGuard::file)"
+      ],
+      "dangling_edges": 0,
+      "shrink_guard": "PASS",
+      "force_used": false,
+      "query_defect": "query \"a21 resource guard\" did not retrieve the concept node; replaced by a more specific query in run 2"
+    },
+    {
+      "run": 2,
+      "before_nodes": 4563,
+      "after_nodes": 4564,
+      "before_edges": 7606,
+      "after_edges": 7608,
+      "historical_nodes_lost": 0,
+      "dangling_edges": 0,
+      "shrink_guard": "PASS",
+      "force_used": false,
+      "shrink_rejection_probe": true,
+      "probe_scratch_bytes_unchanged": true,
+      "note": "idempotent second pass: re-asserts a2_validator, fixes the query set"
+    }
+  ],
+  "baseline_note": "before_* is the graph at the start of A2.1 (4471 nodes / 7437 edges, A2 evidence wave5_a2_graphify_validation.json); run 2 alone is 4563 -> 4564. Net vs baseline: +93 nodes, +171 edges, 1 node lost = the deleted method CertificateService::assertFile."
+}

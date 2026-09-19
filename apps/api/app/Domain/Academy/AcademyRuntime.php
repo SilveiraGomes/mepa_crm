@@ -21,7 +21,9 @@ use Illuminate\Database\QueryException;
 //   4. business writes + required audit (same transaction: a failed audit rolls everything back)
 //   5. FINAL authorization (FOR SHARE reads, decisive clock sampled after the locks) as the last
 //      statement before commit, so a scope/assignment/session that lapsed or was revoked while the
-//      operation waited on locks cannot commit.
+//      operation waited on locks cannot commit. Authority the work attached to the decision (a
+//      generic transition that produces a completion also needs the completion authority) is
+//      re-verified the same way.
 // Database errors are translated to domain errors after rollback; the original stays in getPrevious().
 final class AcademyRuntime
 {
@@ -34,23 +36,29 @@ final class AcademyRuntime
         public AcademyStateMachine $machine,
         public AcademicPolicyResolver $resolver,
         public AcademyChildSafety $safety,
-        public AcademyPersonResolver $people
+        public AcademyPersonResolver $people,
+        public CompletionEligibilityGuard $completion,
+        public AcademyResourceGuard $resources
     ) {
     }
 
     public static function make(Connection $db, AcademyPolicy $policy, EventPolicy $eventPolicy, DomainPolicy $childPolicy, ?AcademyAuditWriter $auditor = null): self
     {
         $gate = new ChildParticipationSafetyGate($db, $childPolicy, $eventPolicy);
+        $access = new AcademyAccess($db, $eventPolicy, $policy);
+        $resolver = new AcademicPolicyResolver($db, $policy);
         return new self(
             $db,
             $policy,
-            new AcademyAccess($db, $eventPolicy, $policy),
+            $access,
             $auditor ?? new DatabaseAcademyAudit($db),
             new AcademyScopeResolver($db),
             new AcademyStateMachine($db, $policy),
-            new AcademicPolicyResolver($db, $policy),
+            $resolver,
             new AcademyChildSafety($gate),
-            new AcademyPersonResolver($db, $gate)
+            new AcademyPersonResolver($db, $gate),
+            new CompletionEligibilityGuard($access, $resolver),
+            new AcademyResourceGuard($db)
         );
     }
 
@@ -74,6 +82,9 @@ final class AcademyRuntime
                 $this->assertClaimed($resolved, $claimed);
                 $result = $work($decision, $resolved);
                 $this->access->authorize($op, $actor, $session, $resolved, null, true, $decision);
+                foreach ($decision->attached() as [$attachedOp, $attachedDecision]) {
+                    $this->access->authorize($attachedOp, $actor, $session, $resolved, null, true, $attachedDecision);
+                }
                 return $result;
             }, 5);
         } catch (QueryException $e) {

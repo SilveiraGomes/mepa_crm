@@ -14,6 +14,18 @@ final class AcademyPolicy
     public const PENDING = 'PENDING';
     public const UNKNOWN = 'UNKNOWN';
 
+    // Business effect a transition carries. NONE is an explicit declaration ("this transition produces
+    // no effect that a specialized operation guards"), never a default: an approved transition that does
+    // not declare its effect cannot be executed by the generic engine (POLICY_NOT_CONFIGURED).
+    public const EFFECT_NONE = 'NONE';
+    public const EFFECT_COMPLETION = 'COMPLETION';
+    public const EFFECTS = [self::EFFECT_NONE, self::EFFECT_COMPLETION];
+
+    // Cross-check between an effect and the role set the policy itself lists for it: a transition into
+    // a state of that set MUST declare the effect, and a transition declaring the effect MUST land in
+    // that set. Both come from the server configuration; no state name is known to the code.
+    private const EFFECT_TARGETS = [self::EFFECT_COMPLETION => ['enrollments', 'completed']];
+
     public function __construct(private ?string $version, private array $states, private array $transitions)
     {
     }
@@ -81,5 +93,29 @@ final class AcademyPolicy
             }
         }
         return self::UNKNOWN;
+    }
+
+    // The effect an APPROVED transition declares. Third element of the approved entry: [from, to, effect].
+    // Anything but exactly one recognised declaration, or a declaration that contradicts the role sets
+    // (see EFFECT_TARGETS), is ambiguous and fails closed.
+    public function effect(string $kind, string $from, string $to): string
+    {
+        $declared = [];
+        foreach ($this->transitions['approved'][$kind] ?? [] as $entry) {
+            if (($entry[0] ?? null) === $from && ($entry[1] ?? null) === $to) {
+                $declared[] = $entry[2] ?? null;
+            }
+        }
+        $declared = array_values(array_unique($declared, SORT_REGULAR));
+        if (count($declared) !== 1 || !is_string($declared[0]) || !in_array($declared[0], self::EFFECTS, true)) {
+            throw new AcademyError(AcademyReason::POLICY_NOT_CONFIGURED, ['missing' => 'transitions.' . $kind . '.effect']);
+        }
+        foreach (self::EFFECT_TARGETS as $effect => [$effectKind, $role]) {
+            $lands = $kind === $effectKind && $this->inOptionalSet($effectKind, $role, $to);
+            if ($lands !== ($declared[0] === $effect)) {
+                throw new AcademyError(AcademyReason::POLICY_NOT_CONFIGURED, ['ambiguous' => 'transitions.' . $kind . '.effect', 'effect' => $effect]);
+            }
+        }
+        return $declared[0];
     }
 }

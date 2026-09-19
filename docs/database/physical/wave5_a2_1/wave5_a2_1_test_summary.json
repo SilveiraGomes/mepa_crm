@@ -1,0 +1,142 @@
+{
+  "phase": "P0.3.5-A2.1",
+  "baseline": "7cbc299",
+  "audit_evidence_commit": "ed29dfa",
+  "test_infrastructure": {
+    "instance": "STARTED_VERIFIED",
+    "port": 33083,
+    "session_id": "e19545a6...",
+    "mysql": "8.4.7",
+    "pools": "session-scoped (wave3 x1, wave4 x2, wave5 x1)",
+    "port_3306_touched": false,
+    "mariadb_touched": false,
+    "stop_result": "STOPPED_VERIFIED (recorded in the delivery report)"
+  },
+  "suites": {
+    "academy_AssessmentCertification": {
+      "status": "OK",
+      "tests": 16,
+      "assertions": 141
+    },
+    "academy_Authorization": {
+      "status": "OK",
+      "tests": 15,
+      "assertions": 52
+    },
+    "academy_Concurrency": {
+      "status": "OK",
+      "tests": 16,
+      "assertions": 681
+    },
+    "academy_Enrollment": {
+      "status": "OK",
+      "tests": 16,
+      "assertions": 65
+    },
+    "academy_Operations": {
+      "status": "OK",
+      "tests": 16,
+      "assertions": 83
+    },
+    "academy_Remediation": {
+      "status": "OK",
+      "tests": 23,
+      "assertions": 109
+    },
+    "unit": {
+      "status": "OK",
+      "tests": 15,
+      "assertions": 262
+    },
+    "w3_PooledWaveThreeCheckinConcurrencyTest": {
+      "status": "OK",
+      "tests": 3,
+      "assertions": 144
+    },
+    "w4_PooledChildCheckinBoundaryTest": {
+      "status": "OK",
+      "tests": 1,
+      "assertions": 4
+    },
+    "w4_PooledCommitAuthorizationTest": {
+      "status": "OK",
+      "tests": 2,
+      "assertions": 16
+    },
+    "w4_PooledProgressCommitBoundaryTest": {
+      "status": "OK",
+      "tests": 1,
+      "assertions": 9
+    },
+    "w4_PooledTemporalAuthorizationTest": {
+      "status": "OK",
+      "tests": 1,
+      "assertions": 9
+    }
+  },
+  "mission_matrix": {
+    "C1-C10": "PASS",
+    "A1-A10": "PASS",
+    "E1-E4": "PASS",
+    "note": "the 79 A2 database tests + 15 unit tests, unchanged expectations"
+  },
+  "remediation_tests": {
+    "R1.1-R1.8": "PASS",
+    "R2.1-R2.6": "PASS",
+    "R3.1-R3.7": "PASS",
+    "file": "apps/api/tests/DatabaseV2/AcademyRemediationTest.php",
+    "tests": 23
+  },
+  "remediation_test_sensitivity": {
+    "mutations": 7,
+    "all_detected": true,
+    "evidence": "wave5_a2_1/remediation_test_sensitivity.txt"
+  },
+  "validator_mutation_proofs": {
+    "result": "ALL_MUTATIONS_DETECTED_AND_RESTORED",
+    "mutations": [
+      {
+        "id": "M1",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M1b",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M2",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M3",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M3b",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M4",
+        "detected": true,
+        "restored": true
+      },
+      {
+        "id": "M5",
+        "detected": true,
+        "restored": true
+      }
+    ]
+  },
+  "validators": {
+    "application_contracts": "APPLICATION_CONTRACTS_PASS (1113 checks, 0 failed, 30 operations)",
+    "wave5_schema": "STRICT_PARITY_PASS",
+    "wave5_contracts": "APPROVED_CONTRACTS_UNCHANGED (160 files, drift 0)",
+    "database_docs": "0 errors"
+  },
+  "schema_or_migrations_changed": false
+}

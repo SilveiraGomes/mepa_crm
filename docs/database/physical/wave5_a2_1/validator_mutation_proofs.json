@@ -1,0 +1,131 @@
+{
+  "phase": "P0.3.5-A2.1",
+  "finding": "A2R-04",
+  "mutations": [
+    {
+      "id": "M1",
+      "description": "remove the child-safety lock from EnrollmentService::enroll (audit false PASS #1; transition still has one)",
+      "file": "apps/api/app/Domain/Academy/EnrollmentService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.lock_declared.EnrollmentService.enroll"
+      ],
+      "failed_checks": [
+        "op.child_safety.lock_declared.EnrollmentService.enroll",
+        "op.child_safety.lock_early.EnrollmentService.enroll"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M1b",
+      "description": "remove the commit-time assertion from EnrollmentService::enroll (transition still has one)",
+      "file": "apps/api/app/Domain/Academy/EnrollmentService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.commit_declared.EnrollmentService.enroll"
+      ],
+      "failed_checks": [
+        "op.child_safety.commit_declared.EnrollmentService.enroll",
+        "op.child_safety.commit_late.EnrollmentService.enroll"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M2",
+      "description": "remove the initial safety lock from attendance apply()",
+      "file": "apps/api/app/Domain/Academy/AcademicAttendanceService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.lock_declared.AcademicAttendanceService.record",
+        "op.child_safety.lock_declared.AcademicAttendanceService.recordBulk"
+      ],
+      "failed_checks": [
+        "op.child_safety.lock_declared.AcademicAttendanceService.record",
+        "op.child_safety.lock_early.AcademicAttendanceService.record",
+        "op.child_safety.lock_declared.AcademicAttendanceService.recordBulk",
+        "op.child_safety.lock_early.AcademicAttendanceService.recordBulk"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M3",
+      "description": "remove the late (commit-time) assertion from attendance (audit false PASS #2)",
+      "file": "apps/api/app/Domain/Academy/AcademicAttendanceService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.commit_declared.AcademicAttendanceService.record",
+        "op.child_safety.commit_declared.AcademicAttendanceService.recordBulk"
+      ],
+      "failed_checks": [
+        "op.child_safety.commit_declared.AcademicAttendanceService.record",
+        "op.child_safety.commit_late.AcademicAttendanceService.record",
+        "op.child_safety.commit_declared.AcademicAttendanceService.recordBulk",
+        "op.child_safety.commit_late.AcademicAttendanceService.recordBulk"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M3b",
+      "description": "drop only the assertCovers() call of record() (recordBulk keeps it)",
+      "file": "apps/api/app/Domain/Academy/AcademicAttendanceService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.commit_declared.AcademicAttendanceService.record"
+      ],
+      "failed_checks": [
+        "op.child_safety.commit_declared.AcademicAttendanceService.record",
+        "op.child_safety.commit_late.AcademicAttendanceService.record"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M4",
+      "description": "remove the child-safety requirement from the CONTRACT of enrollment.create",
+      "file": "docs/database/physical/wave5_application_contracts.json",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.floor.EnrollmentService.enroll",
+        "op.child_safety.lock_declared.EnrollmentService.enroll"
+      ],
+      "failed_checks": [
+        "op.child_safety.floor.EnrollmentService.enroll",
+        "op.child_safety.lock_declared.EnrollmentService.enroll",
+        "op.child_safety.commit_declared.EnrollmentService.enroll"
+      ],
+      "restored_byte_identical": true
+    },
+    {
+      "id": "M5",
+      "description": "move the safety calls of enroll into a private method nothing calls",
+      "file": "apps/api/app/Domain/Academy/EnrollmentService.php",
+      "validator_exit_code": 1,
+      "detected": true,
+      "expected_checks": [
+        "op.child_safety.lock_declared.EnrollmentService.enroll",
+        "op.child_safety.commit_declared.EnrollmentService.enroll"
+      ],
+      "failed_checks": [
+        "op.child_safety.lock_declared.EnrollmentService.enroll",
+        "op.child_safety.commit_declared.EnrollmentService.enroll",
+        "op.child_safety.lock_early.EnrollmentService.enroll",
+        "op.child_safety.commit_late.EnrollmentService.enroll"
+      ],
+      "restored_byte_identical": true
+    }
+  ],
+  "clean_tree": {
+    "exit_code": 0,
+    "failed_checks": []
+  },
+  "clean_tree_after": {
+    "exit_code": 0,
+    "failed_checks": []
+  },
+  "result": "ALL_MUTATIONS_DETECTED_AND_RESTORED"
+}

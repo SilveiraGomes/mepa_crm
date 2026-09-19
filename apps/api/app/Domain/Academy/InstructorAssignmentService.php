@@ -34,6 +34,9 @@ final class InstructorAssignmentService
                 if ($endsAt !== null && $endsAt <= $start) {
                     throw new AcademyError(AcademyReason::INVALID_INPUT, ['field' => 'period']);
                 }
+                if ($sourceDocumentId !== null) {
+                    $this->rt->resources->legalDocument($target, $sourceDocumentId);
+                }
                 $instructor = $this->rt->db->table('instructors')->where('person_id', $person)->lockForUpdate()->first();
                 $now = AcademyRuntime::ts($this->rt->now());
                 if (!$instructor) {

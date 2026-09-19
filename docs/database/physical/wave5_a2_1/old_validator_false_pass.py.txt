@@ -1,0 +1,48 @@
+import json
+import pathlib
+import subprocess
+import sys
+
+root = pathlib.Path(sys.argv[1])
+enroll = root / 'apps/api/app/Domain/Academy/EnrollmentService.php'
+attend = root / 'apps/api/app/Domain/Academy/AcademicAttendanceService.php'
+contract = root / 'docs/database/physical/wave5_application_contracts.json'
+APPLY = "                $result = $this->apply($decision, $target, $enrollmentId, $status, $expectedLockVersion, $covers);\n"
+LOCK_ENROLL = '                $cover = $this->rt->safety->lock($person);\n'
+ASSERT_ENROLL = "                $this->rt->safety->assertCover($cover, $this->rt->now());\n                return ['enrollment_id' => $id,"
+UNUSED = '\n    private function neverCalled(int $person, $cover): void\n    {\n        $this->rt->safety->lock($person);\n        $this->rt->safety->assertCover($cover, $this->rt->now());\n    }\n}\n'
+
+
+def move_to_unused(text):
+    text = text.replace(LOCK_ENROLL, '', 1).replace(ASSERT_ENROLL, "                return ['enrollment_id' => $id,", 1)
+    return text.rstrip()[:-1].rstrip() + '\n' + UNUSED
+
+
+def contract_flip(text):
+    data = json.loads(text)
+    for s in data['services']:
+        for o in s['operations']:
+            if o['operation'] == 'enrollment.create':
+                o['child_safety'] = False
+    return json.dumps(data, indent=2, ensure_ascii=False) + '\n'
+
+
+cases = [
+    ('M1  remove the enroll safety lock', enroll, lambda t: t.replace(LOCK_ENROLL, '', 1)),
+    ('M1b remove the enroll commit-time assertion', enroll, lambda t: t.replace(ASSERT_ENROLL, "                return ['enrollment_id' => $id,", 1)),
+    ('M2  remove the attendance initial lock', attend, lambda t: t.replace('        $covers[] = $this->rt->safety->lock((int) $enrollment->person_id);\n', '', 1)),
+    ('M3  remove the assertion inside attendance assertCovers()', attend, lambda t: t.replace('            $this->rt->safety->assertCover($cover, $at);\n', '', 1)),
+    ('M3b drop only the assertCovers() call of record()', attend, lambda t: t.replace(APPLY + '                $this->assertCovers($covers);\n', APPLY, 1)),
+    ('M4  remove the safety requirement from the CONTRACT of enrollment.create', contract, contract_flip),
+    ('M5  move the enroll safety calls into a private method nothing calls', enroll, move_to_unused),
+]
+for name, path, mutate in cases:
+    original = path.read_text(encoding='utf-8')
+    mutated = mutate(original)
+    assert mutated != original, name
+    try:
+        path.write_text(mutated, encoding='utf-8', newline='')
+        run = subprocess.run(['node', 'scripts/validate-wave5-application-contracts.cjs'], cwd=root, capture_output=True, text=True)
+        print(f"[validator as audited @ ed29dfa] {name}: exit={run.returncode} -> {'FALSE PASS' if run.returncode == 0 else 'detected'}")
+    finally:
+        path.write_text(original, encoding='utf-8', newline='')

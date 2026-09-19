@@ -1,12 +1,12 @@
 {
   "status": "APPLICATION_CONTRACTS_PASS",
   "validator": "scripts/validate-wave5-application-contracts.cjs",
-  "checks_total": 977,
+  "checks_total": 1113,
   "checks_failed": 0,
   "services": 12,
   "operations": 30,
   "permission_matrix_rows": 23,
-  "php_files_scanned": 29,
+  "php_files_scanned": 31,
   "d09_scan": {
     "patterns": [
       "named",
@@ -91,7 +91,7 @@
       },
       {
         "file": "apps/api/app/Domain/Academy/EnrollmentService.php",
-        "line": 83,
+        "line": 92,
         "pattern": "literal",
         "text": "public function listForClass(int $actor, int $session, int $classId, ?string $status = null, int $page = 1, int $perPage = 50, ?array $claimed = null): array",
         "reason": "default page size of a bounded listing (technical, not academic)"

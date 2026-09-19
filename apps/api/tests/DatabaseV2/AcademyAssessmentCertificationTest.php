@@ -190,7 +190,7 @@ final class AcademyAssessmentCertificationTest extends PooledWaveFiveCase
         self::assertSame(0, (int) $this->db()->table('audit_logs')->where('entity_type', 'grades')->where('action', 'grade.finalized')->count());
         // Once the owners approve the transition (test policy), the very same call executes.
         $approved = $this->rt($this->academyPolicy(function (array $c) {
-            $c['transitions']['approved']['grades'] = [['S_GRD_DRAFT', 'S_GRD_FINAL']];
+            $c['transitions']['approved']['grades'] = [['S_GRD_DRAFT', 'S_GRD_FINAL', self::NONE]];
             $c['transitions']['pending']['grades'] = [];
             return $c;
         }));

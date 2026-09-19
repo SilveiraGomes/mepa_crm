@@ -13,6 +13,14 @@ use Illuminate\Support\Str;
 // which is what keeps a student's history on the curriculum version they actually followed (C8).
 // compile() is read-only and always available; issue() persists the official document and is blocked
 // (POLICY_NOT_CONFIGURED) until the transcript state is configured by the domain owners.
+//
+// Read scope (A2R-02): every line is an enrollment whose scope is the unit of ITS OWN class. The
+// target of both operations is the curriculum's unit plus the unit of every contributing enrollment
+// (AcademyScopeResolver::forTranscript), and the actor needs authority over ALL of them. The
+// aggregate is one document, the contract defines no partial-result semantics, so lacking authority
+// over any contributing unit denies the whole operation (OUT_OF_SCOPE) instead of silently returning
+// a filtered transcript. facts() re-reads the lines under the operation's locks and refuses a line
+// whose unit was not part of the authorized target (an enrollment that appeared in between).
 final class TranscriptService
 {
     public function __construct(private AcademyRuntime $rt)
@@ -25,10 +33,10 @@ final class TranscriptService
             'transcript.compile',
             $actor,
             $session,
-            fn () => $this->rt->scope->forCurriculum($curriculumId, null),
+            fn () => $this->rt->scope->forTranscript($this->rt->people->find($personRef), $curriculumId, null),
             function (AcademyTarget $target) use ($personRef, $curriculumId) {
                 $person = $this->rt->people->resolve($personRef);
-                return ['person_id' => $person, 'curriculum_id' => $curriculumId, 'lines' => $this->facts($person, $curriculumId, false)];
+                return ['person_id' => $person, 'curriculum_id' => $curriculumId, 'lines' => $this->facts($person, $curriculumId, false, $target)];
             },
             $claimed
         );
@@ -40,17 +48,14 @@ final class TranscriptService
             'transcript.issue',
             $actor,
             $session,
-            fn () => $this->rt->scope->forCurriculum($curriculumId, 'share'),
+            fn () => $this->rt->scope->forTranscript($this->rt->people->find($personRef), $curriculumId, 'share'),
             function (AcademyDecision $decision, AcademyTarget $target) use ($personRef, $curriculumId, $fileId) {
                 $person = $this->rt->people->resolve($personRef);
                 $this->rt->db->table('people')->where('id', $person)->lockForUpdate()->first();
                 $this->rt->people->assertEligible($person);
                 $status = $this->rt->policy->initial('transcripts');
-                $file = $this->rt->db->table('files')->where('id', $fileId)->sharedLock()->first();
-                if (!$file || $file->status !== 'AVAILABLE' || $file->deleted_at !== null || $file->purged_at !== null) {
-                    throw new AcademyError(AcademyReason::FILE_NOT_AVAILABLE, ['file_id' => $fileId]);
-                }
-                $lines = $this->facts($person, $curriculumId, true);
+                $this->rt->resources->file($target, $fileId);
+                $lines = $this->facts($person, $curriculumId, true, $target);
                 if ($lines === []) {
                     throw new AcademyError(AcademyReason::TRANSCRIPT_EMPTY, ['curriculum_id' => $curriculumId]);
                 }
@@ -77,12 +82,18 @@ final class TranscriptService
         );
     }
 
-    private function facts(int $person, int $curriculumId, bool $lock): array
+    private function facts(int $person, int $curriculumId, bool $lock, AcademyTarget $target): array
     {
         $share = fn ($query) => $lock ? $query->sharedLock() : $query;
         $enrollments = $share($this->rt->db->table('enrollments as e')->join('classes as c', 'c.id', '=', 'e.class_id')->join('cohorts as h', 'h.id', '=', 'c.cohort_id')
+            ->join('academic_units as au', 'au.id', '=', 'c.academic_unit_id')
             ->where('e.person_id', $person)->where('h.curriculum_id', $curriculumId)->orderBy('e.id'))
-            ->get(['e.id as enrollment_id', 'e.public_id as enrollment_public_id', 'e.status', 'c.code as class_code']);
+            ->get(['e.id as enrollment_id', 'e.public_id as enrollment_public_id', 'e.status', 'c.code as class_code', 'au.unit_id as unit_id']);
+        foreach ($enrollments as $e) {
+            if (!in_array((int) $e->unit_id, $target->unitIds, true)) {
+                throw new AcademyError(AcademyReason::STORAGE_CONFLICT, ['reason' => 'scope_changed', 'entity' => 'enrollments']);
+            }
+        }
         if ($enrollments->isEmpty()) {
             return [];
         }
