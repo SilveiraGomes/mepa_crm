@@ -1,0 +1,252 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+// Independent auditor fixtures for P0.3.5-A2-R. Deliberately NOT built on the executor's
+// PooledWaveFiveCase: own truncate, own synthetic vocabulary (AUD_*), own actor/grant builders.
+// Only the A1-approved WaveFiveCase (catalog-driven row(), connect() guard) and production classes are reused.
+require_once 'C:/wamp64/www/mepa-crm/apps/api/tests/Database/Support/WaveFiveCase.php';
+
+use App\Domain\Academy\AcademyAuditWriter;
+use App\Domain\Academy\AcademyDecision;
+use App\Domain\Academy\AcademyError;
+use App\Domain\Academy\AcademyPolicy;
+use App\Domain\Academy\AcademyRuntime;
+use App\Domain\Academy\DatabaseAcademyAudit;
+use App\Domain\Events\EventPolicy;
+use App\Domain\WaveFour\ChildrenService;
+use App\Domain\WaveFour\DomainPolicy;
+use Illuminate\Database\Connection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Tests\Database\Support\WaveFiveCase;
+
+abstract class AuditCase extends WaveFiveCase
+{
+    public static function setUpBeforeClass(): void
+    {
+        self::$root = 'C:/wamp64/www/mepa-crm';
+        self::$capsule = self::connect();
+        $db = self::$capsule->getConnection();
+        DB::swap(self::$capsule->getDatabaseManager());
+        Schema::swap($db->getSchemaBuilder());
+        self::assertNotSame([], $db->select('SHOW TABLES'), 'pool must be pre-migrated');
+        $db->statement('SET FOREIGN_KEY_CHECKS = 0');
+        foreach ($db->select('SELECT TABLE_NAME AS t FROM information_schema.tables WHERE TABLE_SCHEMA = ? AND TABLE_NAME != ?', [$db->getDatabaseName(), 'migrations']) as $r) {
+            $db->statement('TRUNCATE TABLE `' . $r->t . '`');
+        }
+        $db->statement('SET FOREIGN_KEY_CHECKS = 1');
+        self::$catalog = json_decode(file_get_contents(self::$root . '/docs/database/model_catalog.json'), true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    // ---- auditor's own synthetic policy vocabulary (AUD_*) ----------------------------------
+    public static function cfg(): array
+    {
+        return [
+            'policy_version' => 'AUD_POLICY_V1',
+            'states' => [
+                'enrollments' => ['initial' => 'AUD_E_NEW', 'sets' => ['operational' => ['AUD_E_LIVE'], 'completed' => ['AUD_E_DONE'], 'approval_targets' => ['AUD_E_LIVE']]],
+                'classes' => ['initial' => 'AUD_C_NEW', 'sets' => ['enrollable' => ['AUD_C_OPEN'], 'teachable' => ['AUD_C_OPEN']]],
+                'class_instructors' => ['initial' => 'AUD_CI_ON', 'sets' => ['active' => ['AUD_CI_ON'], 'ended' => ['AUD_CI_OFF']]],
+                'instructors' => ['initial' => 'AUD_I_ON', 'sets' => ['active' => ['AUD_I_ON']]],
+                'class_sessions' => ['initial' => 'AUD_S_PLAN', 'sets' => ['attendable' => ['AUD_S_PLAN', 'AUD_S_HELD']]],
+                'academic_attendance' => ['sets' => ['recordable' => ['AUD_A_IN', 'AUD_A_OUT'], 'attended' => ['AUD_A_IN']]],
+                'assessments' => ['initial' => 'AUD_AS_OPEN', 'sets' => ['open' => ['AUD_AS_OPEN']]],
+                'assessment_attempts' => ['initial' => 'AUD_T_ON', 'sets' => ['gradable' => ['AUD_T_ON', 'AUD_T_SUB'], 'submitted' => ['AUD_T_SUB']]],
+                'grades' => ['initial' => 'AUD_G_DRAFT', 'sets' => ['final' => ['AUD_G_FINAL']]],
+                'progress' => ['initial' => 'AUD_P_OPEN', 'sets' => ['completed' => ['AUD_P_DONE']]],
+                'resource_progress' => ['initial' => 'AUD_R_OPEN', 'sets' => ['verified' => ['AUD_R_DONE']]],
+                'certificates' => ['initial' => 'AUD_X_ISSUED', 'sets' => ['revoked' => ['AUD_X_REVOKED']]],
+                'transcripts' => ['initial' => 'AUD_TR_ISSUED'],
+                'curricula' => ['initial' => 'AUD_CU_DRAFT', 'sets' => ['published' => ['AUD_CU_PUB']]],
+            ],
+            'transitions' => [
+                'approved' => [
+                    'enrollments' => [['AUD_E_NEW', 'AUD_E_LIVE'], ['AUD_E_LIVE', 'AUD_E_DONE']],
+                    'class_instructors' => [['AUD_CI_ON', 'AUD_CI_OFF']],
+                    'class_sessions' => [['AUD_S_PLAN', 'AUD_S_HELD']],
+                    'assessment_attempts' => [['AUD_T_ON', 'AUD_T_SUB']],
+                    'certificates' => [['AUD_X_ISSUED', 'AUD_X_REVOKED']],
+                    'curricula' => [['AUD_CU_DRAFT', 'AUD_CU_PUB']],
+                ],
+                'pending' => ['grades' => [['AUD_G_DRAFT', 'AUD_G_FINAL']]],
+            ],
+        ];
+    }
+
+    public static function eventPolicy(): EventPolicy
+    {
+        $s = [];
+        foreach (['users', 'auth_grants', 'devices', 'events', 'sessions', 'registrations', 'lists', 'templates', 'composition', 'ministerial', 'departments', 'memberships'] as $k) {
+            $s[$k] = ['SYNTHETIC_READY'];
+        }
+        $s['credentials'] = ['ISSUED'];
+        return new EventPolicy('SYNTHETIC_V1', $s, true, [PHP_INT_MAX]);
+    }
+
+    public static function childPolicy(): DomainPolicy
+    {
+        $v = [];
+        foreach (['child_profiles', 'guardian_authorizations', 'person_consents', 'child_emergency_contacts', 'child_custody_visits', 'outreach_campaigns', 'outreach_contacts', 'discipleship_tracks', 'discipleship_enrollments', 'discipleship_progress', 'age_band_rules', 'department_transition_recommendations'] as $k) {
+            $v[$k] = ['SYNTHETIC_READY'];
+        }
+        $v['custody_closed'] = ['SYNTHETIC_COLLECTED'];
+        $v['authorization_revoked'] = ['SYNTHETIC_REVOKED'];
+        $v['consent_revoked'] = ['SYNTHETIC_REVOKED'];
+        $v['followup_outcomes'] = ['SYNTHETIC_RESULT'];
+        $v['decision_types'] = ['SYNTHETIC_DECISION'];
+        $v['date_precisions'] = ['UNKNOWN', 'DAY'];
+        $v['consent_purposes'] = ['SYNTHETIC_PARTICIPATION'];
+        $v['authorization_kinds'] = ['SYNTHETIC_DELIVER', 'SYNTHETIC_PICKUP', 'SYNTHETIC_GUARDIAN'];
+        return new DomainPolicy('SYNTHETIC_V1', $v, ['SYNTHETIC_IN_PERSON'], 'SYNTHETIC_DELIVER', 'SYNTHETIC_PICKUP', 'SYNTHETIC_GUARDIAN', 'SYNTHETIC_PARTICIPATION');
+    }
+
+    public static function runtime(Connection $db, ?callable $tweak = null, ?AcademyAuditWriter $auditor = null): AcademyRuntime
+    {
+        $cfg = self::cfg();
+        if ($tweak) {
+            $cfg = $tweak($cfg);
+        }
+        return AcademyRuntime::make($db, AcademyPolicy::fromConfig($cfg), self::eventPolicy(), self::childPolicy(), $auditor);
+    }
+
+    protected function rt(?callable $tweak = null, ?AcademyAuditWriter $auditor = null): AcademyRuntime
+    {
+        return self::runtime($this->db(), $tweak, $auditor);
+    }
+
+    // ---- fixtures (auditor's own) ----------------------------------------------------------------
+    protected function t(string $mod = '+6 hours'): string
+    {
+        return $this->now()->modify($mod)->format('Y-m-d H:i:s.u');
+    }
+
+    protected function world(array $class = []): array
+    {
+        $unit = $this->row('organizational_units');
+        $au = $this->row('academic_units', ['unit_id' => $unit]);
+        $program = $this->row('programs', ['academic_unit_id' => $au]);
+        $curriculum = $this->row('curricula', ['program_id' => $program, 'version' => 1, 'status' => 'AUD_CU_DRAFT']);
+        $course = $this->row('courses');
+        $version = $this->row('course_versions', ['course_id' => $course, 'version' => 1]);
+        $cohort = $this->row('cohorts', ['academic_unit_id' => $au, 'curriculum_id' => $curriculum]);
+        $classId = $this->row('classes', $class + ['academic_unit_id' => $au, 'course_version_id' => $version, 'cohort_id' => $cohort, 'status' => 'AUD_C_OPEN']);
+        $module = $this->row('course_modules', ['course_version_id' => $version]);
+        $lesson = $this->row('lessons', ['module_id' => $module]);
+        $this->row('curriculum_courses', ['curriculum_id' => $curriculum, 'course_id' => $course]);
+        return ['unit' => $unit, 'au' => $au, 'program' => $program, 'curriculum' => $curriculum, 'course' => $course, 'version' => $version, 'cohort' => $cohort, 'class' => $classId, 'module' => $module, 'lesson' => $lesson];
+    }
+
+    // A user with a live session. Grants are added separately so tests can build multi-grant users.
+    protected function person(): array
+    {
+        $p = $this->row('people');
+        $u = $this->row('users', ['person_id' => $p]);
+        $s = $this->row('auth_sessions', ['user_id' => $u, 'expires_at' => $this->t()]);
+        return ['person' => $p, 'user' => $u, 'session' => $s, 'links' => []];
+    }
+
+    protected function grant(array &$u, int $unit, array $perms, bool $desc = false, string $dataType = 'ACADEMY', array $linkOv = [], array $roleOv = [], array $scopeOv = []): array
+    {
+        $role = $this->row('roles', $roleOv);
+        $scope = $this->row('scopes', $scopeOv + ['unit_id' => $unit, 'include_descendants' => $desc ? 1 : 0]);
+        foreach ($perms as $code) {
+            $pid = (int) $this->db()->table('permissions')->where('code', $code)->value('id');
+            if (!$pid) {
+                $pid = $this->row('permissions', ['code' => $code, 'action' => $code, 'data_type' => $dataType]);
+            }
+            $this->row('role_permissions', ['role_id' => $role, 'permission_id' => $pid]);
+        }
+        $link = $this->row('user_role_scopes', $linkOv + ['user_id' => $u['user'], 'role_id' => $role, 'scope_id' => $scope, 'granted_by' => $u['user'], 'ends_at' => null]);
+        $u['links'][] = ['role' => $role, 'scope' => $scope, 'link' => $link];
+        return end($u['links']);
+    }
+
+    protected function actor(int $unit, array $perms, bool $desc = false): array
+    {
+        $u = $this->person();
+        $this->grant($u, $unit, $perms, $desc);
+        return $u;
+    }
+
+    protected function teach(array $u, int $class, array $ov = []): int
+    {
+        $ins = (int) $this->db()->table('instructors')->where('person_id', $u['person'])->value('id') ?: $this->row('instructors', ['person_id' => $u['person'], 'status' => 'AUD_I_ON']);
+        return $this->row('class_instructors', $ov + ['class_id' => $class, 'instructor_id' => $ins, 'status' => 'AUD_CI_ON', 'starts_at' => $this->t('-1 hour'), 'ends_at' => null]);
+    }
+
+    protected function student(int $class, string $status = 'AUD_E_LIVE', ?int $person = null): array
+    {
+        $person ??= $this->row('people');
+        return ['person' => $person, 'id' => $this->row('enrollments', ['person_id' => $person, 'class_id' => $class, 'status' => $status])];
+    }
+
+    protected function assessment(int $version, array $v = []): int
+    {
+        return $this->row('assessments', $v + ['course_version_id' => $version, 'status' => 'AUD_AS_OPEN', 'max_score' => '100', 'pass_score' => '50', 'max_attempts' => 3, 'weight' => '1']);
+    }
+
+    protected function attempt(int $assessment, int $enrollment, int $n = 1, string $status = 'AUD_T_ON'): int
+    {
+        return $this->row('assessment_attempts', ['assessment_id' => $assessment, 'enrollment_id' => $enrollment, 'attempt_number' => $n, 'status' => $status]);
+    }
+
+    // teacher(ASSESS)+assignment, enrolled student, assessment, gradable attempt in ONE class
+    protected function gradeWorld(): array
+    {
+        $w = $this->world();
+        $teacher = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($teacher, $w['class']);
+        $st = $this->student($w['class']);
+        $as = $this->assessment($w['version']);
+        return $w + ['teacher' => $teacher, 'st' => $st, 'assessment' => $as, 'attempt' => $this->attempt($as, $st['id'])];
+    }
+
+    protected function child(int $unit): array
+    {
+        $staff = $this->actor($unit, ['CHILD_WRITE', 'CHILD_AUTHORIZATION_WRITE', 'CHILD_CONSENT_WRITE']);
+        // children permissions use data_type CHILDREN
+        $this->db()->table('permissions')->whereIn('code', ['CHILD_WRITE', 'CHILD_AUTHORIZATION_WRITE', 'CHILD_CONSENT_WRITE'])->update(['data_type' => 'CHILDREN']);
+        $child = $this->row('people');
+        $guardian = $this->row('people');
+        $svc = new ChildrenService($this->db(), self::childPolicy(), self::eventPolicy());
+        $svc->register($staff['user'], $staff['session'], $child, $unit);
+        $rel = $this->row('person_relationships', ['subject_person_id' => $child, 'related_person_id' => $guardian, 'ends_at' => null]);
+        $auth = $svc->authorizeGuardian($staff['user'], $staff['session'], $child, $guardian, 'SYNTHETIC_GUARDIAN', $this->now()->modify('-1 hour'), null, $rel);
+        $consent = $svc->consent($staff['user'], $staff['session'], $child, $guardian, $auth, 'SYNTHETIC_PARTICIPATION');
+        return ['staff' => $staff, 'child' => $child, 'guardian' => $guardian, 'auth' => $auth, 'consent' => $consent, 'svc' => $svc];
+    }
+
+    protected function deny(string $reason, callable $fn): AcademyError
+    {
+        try {
+            $fn();
+        } catch (AcademyError $e) {
+            self::assertSame($reason, $e->reason, 'expected ' . $reason . ' got ' . $e->reason);
+            return $e;
+        }
+        self::fail('expected ' . $reason . ' but the operation succeeded');
+    }
+
+    protected function rows(string $table, array $where): int
+    {
+        return (int) $this->db()->table($table)->where($where)->count();
+    }
+}
+
+final class FailingAudit implements AcademyAuditWriter
+{
+    public function __construct(private DatabaseAcademyAudit $inner, private bool $writeFirst)
+    {
+    }
+
+    public function record(AcademyDecision $decision, int $unitId, string $action, string $entityType, int $entityId, ?array $before, ?array $after, ?string $reason): void
+    {
+        if ($this->writeFirst) {
+            $this->inner->record($decision, $unitId, $action, $entityType, $entityId, $before, $after, $reason);
+        }
+        throw new \RuntimeException('AUDITOR-INJECTED audit failure');
+    }
+}

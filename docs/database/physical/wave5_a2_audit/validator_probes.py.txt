@@ -1,0 +1,71 @@
+"""Auditor's own negative probes against scripts/validate-wave5-application-contracts.cjs.
+Each probe injects ONE violation into the audited code (my own text, not the executor's), runs the validator,
+expects a non-zero exit with the matching check id, then restores the file. Repo is verified clean at the end."""
+import subprocess, pathlib, shutil
+
+root = pathlib.Path(r"C:\wamp64\www\mepa-crm")
+dom = root / "apps/api/app/Domain/Academy"
+bak = pathlib.Path(r"C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\audit\dom_bak")
+if bak.exists():
+    shutil.rmtree(bak)
+shutil.copytree(dom, bak)
+
+
+def restore():
+    for f in bak.glob("*.php"):
+        shutil.copy(f, dom / f.name)
+
+
+def validator():
+    p = subprocess.run(["node", "scripts/validate-wave5-application-contracts.cjs"], cwd=root, capture_output=True, text=True)
+    failed = [l.strip()[2:].split(":")[0] for l in p.stderr.splitlines() if l.strip().startswith("- ")]
+    return p.returncode, failed
+
+
+def probe(name, file, old, new, expect):
+    path = dom / file
+    src = path.read_text(encoding="utf-8")
+    assert old in src, f"anchor missing for {name}"
+    path.write_text(src.replace(old, new, 1), encoding="utf-8")
+    try:
+        rc, failed = validator()
+    finally:
+        restore()
+    ok = rc == 1 and any(f.startswith(expect) for f in failed)
+    print(f"{'CAUGHT' if ok else 'MISSED':<7}{name:<60} rc={rc} checks={[f for f in failed if f.startswith(expect)][:2] or failed[:2]}")
+    return ok
+
+
+r = []
+# 1. forbidden membership dependency (different shape than the executor's: a join in the scope resolver)
+r.append(probe("membership dependency via join in AcademyPersonResolver", "AcademyPersonResolver.php",
+               "$id = $this->db->table('people')->where('public_id', $reference)->value('id');",
+               "$id = $this->db->table('people as p')->join('memberships as m', 'm.person_id', '=', 'p.id')->where('p.public_id', $reference)->value('p.id');", "no_membership"))
+# 2. D-09 hardcode (a pass mark compared inline, and an attempts cap)
+r.append(probe("D-09 hardcode: attempts cap 3 in AssessmentAttemptService", "AssessmentAttemptService.php",
+               "$next = $last ? (int) $last->attempt_number + 1 : 1;",
+               "$next = $last ? (int) $last->attempt_number + 1 : 1; $attemptLimit = 3; if ($next > $attemptLimit) { throw new AcademyError(AcademyReason::INVALID_INPUT); }", "d09."))
+r.append(probe("D-09 hardcode: pass mark 10 in CompletionService", "CompletionService.php",
+               "$unmet = array_values(",
+               "$minimumGrade = 10; $unmet = array_values(", "d09."))
+# 3. missing required audit (grade finalize)
+r.append(probe("required audit removed from GradeService::finalize", "GradeService.php",
+               "$this->rt->audit($decision, $target, 'grade.finalized', 'grades', (int) $latest->id, ['status' => $moved['from']], ['status' => $moved['to'], 'version' => (int) $latest->version], $reason);", "", "op.audit."))
+# 4. missing child-safety integration (enrollment no longer locks/asserts the cover)
+r.append(probe("child-safety lock removed from EnrollmentService::enroll", "EnrollmentService.php",
+               "$cover = $this->rt->safety->lock($person);", "$cover = null;", "op.child_safety."))
+r.append(probe("late child-safety assertion removed from attendance", "AcademicAttendanceService.php",
+               "$this->assertCovers($covers);\n                return $result;", "return $result;", "op.child_safety."))
+# 5. improper class scope kind
+r.append(probe("class scope kind written to scopes", "AcademyScopeResolver.php",
+               "$class = $lock === null ? $peek : $this->root('classes', $id, 'academic_unit_id', (int) $unit->id, $lock);",
+               "$class = $lock === null ? $peek : $this->root('classes', $id, 'academic_unit_id', (int) $unit->id, $lock); $this->db->table('scopes')->insert(['scope_kind' => 'CLASS']);", "scope."))
+# extras: swallowed exception and closed status literal
+r.append(probe("swallowed DomainError (fail-open) in AcademyPersonResolver", "AcademyPersonResolver.php",
+               "} catch (DomainError) {\n            throw new AcademyError(AcademyReason::PERSON_NOT_ELIGIBLE);\n        }", "} catch (DomainError) {\n            return;\n        }", "failclosed."))
+r.append(probe("closed status literal 'ACTIVE' in ClassSessionService", "ClassSessionService.php",
+               "$status = $this->rt->policy->initial('class_sessions');", "$status = 'ACTIVE';", "d11."))
+
+rc, failed = validator()
+print("after restore:", "PASS" if rc == 0 else f"FAIL {failed}")
+print(f"{sum(r)}/{len(r)} injected violations caught")

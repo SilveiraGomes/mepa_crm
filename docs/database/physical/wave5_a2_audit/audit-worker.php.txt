@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+
+// Auditor's own concurrency worker (P0.3.5-A2-R). One PHP process = one MySQL connection.
+// Protocol of the (A1-approved) WaveFourWorkerHarness: job on STDIN -> ready -> wait go -> started -> op -> JSON -> done.
+require 'C:/wamp64/www/mepa-crm/apps/api/vendor/autoload.php';
+require __DIR__ . '/../AuditCase.php';
+
+use App\Domain\Academy\AcademicAttendanceService;
+use App\Domain\Academy\AcademyError;
+use App\Domain\Academy\AssessmentAttemptService;
+use App\Domain\Academy\CertificateService;
+use App\Domain\Academy\EnrollmentService;
+use App\Domain\Academy\GradeService;
+use App\Domain\Academy\InstructorAssignmentService;
+use App\Domain\WaveFour\DomainClock;
+use Audit\AuditCase;
+use Tests\Database\Support\WaveFiveCase;
+
+$job = json_decode(stream_get_contents(STDIN), true, 512, JSON_THROW_ON_ERROR);
+$path = static fn (string $s): string => $job['barrier'] . '/' . $job['run_id'] . '_' . $job['worker_id'] . '_' . $s;
+$signal = static fn (string $s) => file_put_contents($path($s), $s);
+$wait = static function (string $s) use ($path): void {
+    $deadline = microtime(true) + 60;
+    while (!file_exists($path($s))) {
+        clearstatcache(true, $path($s));
+        if (microtime(true) > $deadline) {
+            throw new RuntimeException('barrier timeout ' . $s);
+        }
+        usleep(10000);
+    }
+};
+try {
+    $db = WaveFiveCase::connect()->getConnection();
+    $db->statement('SET SESSION innodb_lock_wait_timeout=120');
+    $rt = AuditCase::runtime($db);
+    $a = $job['args'];
+    $signal('ready');
+    $wait('go');
+    $started = DomainClock::now($db)->format('Y-m-d H:i:s.u');
+    $signal('started');
+    try {
+        $data = match ($job['op']) {
+            'enroll' => (new EnrollmentService($rt))->enroll($a['actor'], $a['session'], $a['class'], $a['person']),
+            'assign' => (new InstructorAssignmentService($rt))->assign($a['actor'], $a['session'], $a['class'], $a['person']),
+            'issue' => (new CertificateService($rt))->issue($a['actor'], $a['session'], $a['enrollment'], $a['file']),
+            'record' => (new GradeService($rt))->record($a['actor'], $a['session'], $a['attempt'], $a['score']),
+            'revise' => (new GradeService($rt))->revise($a['actor'], $a['session'], $a['attempt'], $a['expected'], $a['score'], $a['reason']),
+            'attend' => (new AcademicAttendanceService($rt))->record($a['actor'], $a['session'], $a['class_session'], $a['enrollment'], $a['status']),
+            'attempt' => (new AssessmentAttemptService($rt))->start($a['actor'], $a['session'], $a['assessment'], $a['enrollment'], $a['number'] ?? null),
+        };
+        unset($data['token']);
+        $result = ['result' => 'OK', 'data' => $data];
+    } catch (AcademyError $e) {
+        $result = ['result' => $e->reason];
+    }
+    echo json_encode($result + ['started' => $started, 'tx' => $db->transactionLevel()], JSON_THROW_ON_ERROR), PHP_EOL;
+    $signal('done');
+} catch (Throwable $e) {
+    fwrite(STDERR, get_class($e) . ': ' . $e->getMessage() . PHP_EOL);
+    exit(3);
+}

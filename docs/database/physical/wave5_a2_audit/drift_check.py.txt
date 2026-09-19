@@ -1,0 +1,70 @@
+"""Independent contract-vs-implementation drift check (auditor's own script; does not reuse the executor's validator)."""
+import json, re, pathlib, sys
+
+root = pathlib.Path(r"C:\wamp64\www\mepa-crm")
+dom = root / "apps/api/app/Domain/Academy"
+contract = json.loads((root / "docs/database/physical/wave5_application_contracts.json").read_text(encoding="utf-8"))
+
+# 1. real public methods of every *Service.php (excluding constructors/private)
+real = {}
+for f in sorted(dom.glob("*Service.php")):
+    src = f.read_text(encoding="utf-8")
+    real[f.stem] = re.findall(r"public function (\w+)\(", src)
+    real[f.stem] = [m for m in real[f.stem] if m != "__construct"]
+real_ops = sum(len(v) for v in real.values())
+
+# 2. for each real public method: which rt->write/read operation key does the body use?
+def body(src, name):
+    m = re.search(r"public function %s\(" % name, src)
+    nxt = re.search(r"\n    (public|private) function ", src[m.end():])
+    return src[m.start(): m.end() + (nxt.start() if nxt else len(src))]
+
+impl = {}
+for svc, methods in real.items():
+    src = (dom / f"{svc}.php").read_text(encoding="utf-8")
+    for meth in methods:
+        b = body(src, meth)
+        key = re.search(r"\$this->rt->(write|read)\(\s*'([a-z.]+)'", b)
+        impl[(svc, meth)] = dict(kind=key.group(1) if key else None, op=key.group(2) if key else None,
+                                 audits=("rt->audit(" in b) or any(("$this->%s(" % h) in b for h in re.findall(r"private function (\w+)\(", src) if "rt->audit(" in src.split("private function %s(" % h)[-1].split("\n    p")[0]),
+                                 safety=("safety->" in src))
+
+# 3. matrix from PHP
+opsrc = (dom / "AcademyOperation.php").read_text(encoding="utf-8")
+consts = dict(re.findall(r"public const ([A-Z_]+) = '([A-Z_]+)';", opsrc))
+matrix = {k: dict(permission=consts[p], assignment=a == "true", override=o == "true", audit=u == "true")
+          for k, p, a, o, u in re.findall(r"'([a-z.]+)' => \[self::([A-Z_]+), (true|false), (true|false), (true|false)\]", opsrc)}
+
+problems = []
+contract_ops = {(s["name"], o["method"]): o for s in contract["services"] for o in s["operations"]}
+print("real public service methods:", real_ops, "| contract operations:", len(contract_ops), "| matrix rows:", len(matrix), "| service files:", len(real))
+for k in sorted(set(impl) - set(contract_ops)):
+    problems.append(f"UNDECLARED real method {k}")
+for k in sorted(set(contract_ops) - set(impl)):
+    problems.append(f"CONTRACT lists missing method {k}")
+for k, c in contract_ops.items():
+    i = impl.get(k)
+    if not i:
+        continue
+    if i["op"] != c["operation"]:
+        problems.append(f"{k}: code uses op {i['op']} but contract says {c['operation']}")
+    m = matrix.get(i["op"])
+    if not m:
+        problems.append(f"{k}: op {i['op']} not in PHP matrix"); continue
+    for a, b in (("required_permission", "permission"), ("class_assignment_required", "assignment"), ("admin_override", "override"), ("audit_required", "audit")):
+        if c[a] != m[b]:
+            problems.append(f"{k}: contract {a}={c[a]} != PHP matrix {m[b]}")
+    if c["transaction"].startswith("write") != (i["kind"] == "write"):
+        problems.append(f"{k}: transaction kind mismatch contract={c['transaction'][:5]} code={i['kind']}")
+    if bool(c["audit_actions"]) != i["audits"]:
+        problems.append(f"{k}: audit_actions listed={bool(c['audit_actions'])} but code audits={i['audits']}")
+print("drift problems:", len(problems))
+for p in problems:
+    print(" -", p)
+# 4. per-service table (auditor matrix)
+print()
+print(f"{'service.method':<48}{'op':<24}{'permission':<22}{'assign':<8}{'ovr':<6}{'tx':<7}{'audit':<6}{'child':<6}")
+for (svc, meth), i in sorted(impl.items()):
+    m = matrix.get(i["op"], {})
+    print(f"{svc + '.' + meth:<48}{i['op'] or '-':<24}{m.get('permission','-'):<22}{str(m.get('assignment')):<8}{str(m.get('override')):<6}{(i['kind'] or '-'):<7}{str(i['audits']):<6}{str(contract_ops[(svc, meth)]['child_safety']):<6}")
+sys.exit(1 if problems else 0)

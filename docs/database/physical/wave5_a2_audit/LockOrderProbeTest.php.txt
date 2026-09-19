@@ -1,0 +1,68 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+require_once __DIR__ . '/AuditCase.php';
+
+/**
+ * Item 38 evidence. Replays, with raw SQL on two real connections (mysqli, async), the EXACT lock statements the services issue:
+ *   EnrollmentService::enroll             : people(P) FOR UPDATE            -> enrollments(person=P,class=C) FOR UPDATE
+ *   AcademicAttendanceService::apply /
+ *   EnrollmentService::transition (minor) : enrollments(id) FOR UPDATE      -> people(P) FOR SHARE (gate)
+ * Expected if the inversion is real: InnoDB reports a deadlock (1213) on one side.
+ */
+final class LockOrderProbeTest extends AuditCase
+{
+    public function test_people_then_enrollments_versus_enrollments_then_people_deadlocks_in_innodb(): void
+    {
+        mysqli_report(MYSQLI_REPORT_OFF);
+        $w = $this->world();
+        $classLow = $this->row('classes', ['academic_unit_id' => $w['au'], 'course_version_id' => $w['version'], 'status' => 'AUD_C_OPEN']);
+        $classHigh = $this->row('classes', ['academic_unit_id' => $w['au'], 'course_version_id' => $w['version'], 'status' => 'AUD_C_OPEN']);
+        $person = $this->row('people');
+        $enrollment = $this->row('enrollments', ['person_id' => $person, 'class_id' => $classHigh, 'status' => 'AUD_E_LIVE']);   // the student already attends classHigh
+
+        $dsn = getenv('WAVE5_DSN');
+        preg_match('/host=([^;]+);port=(\d+);dbname=([^;]+)/', $dsn, $m);
+        $connect = function () use ($m) {
+            $c = new \mysqli($m[1], 'root', '', $m[3], (int) $m[2]);
+            $c->query('SET SESSION innodb_lock_wait_timeout = 20');
+            $c->query('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+            $c->begin_transaction();
+            return $c;
+        };
+        $attendance = $connect();   // AcademicAttendanceService::apply
+        $enroll = $connect();       // EnrollmentService::enroll (duplicate request for a class the student is already in)
+
+        // step 1 (both hold their FIRST lock)
+        $attendance->query("SELECT id FROM enrollments WHERE id = {$enrollment} FOR UPDATE");
+        $enroll->query("SELECT id FROM people WHERE id = {$person} FOR UPDATE");
+        // step 2: attendance now wants people(P) S (async => blocks on enroll); enroll then scans enrollments for (P, classLow)
+        $attendance->query("SELECT id FROM people WHERE id = {$person} FOR SHARE", MYSQLI_ASYNC);
+        usleep(300000);
+        $enrollError = null;
+        // the duplicate-enrollment path: EnrollmentService::enroll scans the EXISTING (person,class) row before throwing ALREADY_ENROLLED
+        $enrollResult = @$enroll->query("SELECT id FROM enrollments WHERE person_id = {$person} AND class_id = {$classHigh} FOR UPDATE");
+        if ($enrollResult === false) {
+            $enrollError = $enroll->errno;
+        }
+        $links = [$attendance];
+        $errors = $reject = [];
+        $attendanceError = null;
+        if ($enrollError === null) {
+            // enroll got its locks: the other side must have been chosen as the victim
+            $enroll->rollback();
+            $read = $errors = $reject = $links;
+            \mysqli::poll($read, $errors, $reject, 10);
+            $r = $attendance->reap_async_query();
+            $attendanceError = $r === false ? $attendance->errno : null;
+        } else {
+            $attendance->reap_async_query();   // proceeds once the victim rolled back
+        }
+        $attendance->rollback();
+        fwrite(STDERR, "\n[LOCK-ORDER] enroll-side errno=" . var_export($enrollError, true) . " attendance-side errno=" . var_export($attendanceError, true) . " (1213 = InnoDB deadlock)\n");
+        self::assertTrue($enrollError === 1213 || $attendanceError === 1213, 'inversion produces a real InnoDB deadlock');
+    }
+}

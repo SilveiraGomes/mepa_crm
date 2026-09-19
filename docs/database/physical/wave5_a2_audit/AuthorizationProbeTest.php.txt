@@ -1,0 +1,294 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+require_once __DIR__ . '/AuditCase.php';
+
+use App\Domain\Academy\AcademicAttendanceService;
+use App\Domain\Academy\AcademyReason;
+use App\Domain\Academy\AssessmentService;
+use App\Domain\Academy\CertificateService;
+use App\Domain\Academy\ClassSessionService;
+use App\Domain\Academy\EnrollmentService;
+use App\Domain\Academy\GradeService;
+use App\Domain\Academy\InstructorAssignmentService;
+use App\Domain\Academy\ProgressService;
+use App\Domain\Academy\TranscriptService;
+
+/** P0.3.5-A2-R independent authorization / scope / identity probes (sections 7-12, 41, 52). */
+final class AuthorizationProbeTest extends AuditCase
+{
+    private function rec(array $w, array $u, string $score = '70', ?string $override = null, ?array $claimed = null): array
+    {
+        return (new GradeService($this->rt()))->record($u['user'], $u['session'], $w['attempt'], $score, null, $override, $claimed);
+    }
+
+    // ---- section 8: role + scope must belong to the SAME grant ---------------------------------
+    public function test_p_role_scope_provenance_permission_of_role_a_never_combines_with_scope_of_role_b(): void
+    {
+        $w = $this->gradeWorld();                        // class in unit W
+        $other = $this->row('organizational_units');     // unrelated unit X
+        // One user, two grants: R1 has ACADEMY_ASSESS but its scope is unit X; R2's scope is the target unit W but R2 has no ASSESS.
+        $u = $this->person();
+        $this->grant($u, $other, ['ACADEMY_ASSESS']);
+        $this->grant($u, $w['unit'], ['ACADEMY_VIEW']);
+        $this->teach($u, $w['class']);                    // even with a valid class assignment
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $this->rec($w, $u));
+        self::assertSame(0, $this->rows('grades', ['attempt_id' => $w['attempt']]));
+
+        // Same shape, but the covering grant is dead (revoked) while another live grant holds the permission elsewhere.
+        $v = $this->person();
+        $this->grant($v, $other, ['ACADEMY_ASSESS']);
+        $this->grant($v, $w['unit'], ['ACADEMY_ASSESS'], false, 'ACADEMY', ['status' => 'AUD_REVOKED']);
+        $this->teach($v, $w['class']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $this->rec($w, $v));
+
+        // Covering grant expired.
+        $x = $this->person();
+        $this->grant($x, $other, ['ACADEMY_ASSESS']);
+        $this->grant($x, $w['unit'], ['ACADEMY_ASSESS'], false, 'ACADEMY', ['ends_at' => $this->t('-1 minute')]);
+        $this->teach($x, $w['class']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $this->rec($w, $x));
+
+        // Covering grant whose ROLE is inactive.
+        $y = $this->person();
+        $this->grant($y, $other, ['ACADEMY_ASSESS']);
+        $this->grant($y, $w['unit'], ['ACADEMY_ASSESS'], false, 'ACADEMY', [], ['is_active' => 0]);
+        $this->teach($y, $w['class']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $this->rec($w, $y));
+
+        // Control: one grant that has both permission and scope works.
+        $z = $this->person();
+        $this->grant($z, $w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($z, $w['class']);
+        self::assertSame(1, $this->rec($w, $z)['version']);
+    }
+
+    public function test_p_permission_row_convention_and_scope_kind_cannot_be_forged(): void
+    {
+        $w = $this->gradeWorld();
+        $t = $w['teacher'];
+        // The shared permission row is mutated and restored: a row shaped like the A0 proposal (action != code)
+        // or in another data_type domain must not authorize Academy.
+        $this->db()->table('permissions')->where('code', 'ACADEMY_ASSESS')->update(['action' => 'RECORD']);
+        try {
+            $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $this->rec($w, $t));
+        } finally {
+            $this->db()->table('permissions')->where('code', 'ACADEMY_ASSESS')->update(['action' => 'ACADEMY_ASSESS']);
+        }
+        $this->db()->table('permissions')->where('code', 'ACADEMY_ASSESS')->update(['data_type' => 'EVENTS']);
+        try {
+            $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $this->rec($w, $t));
+        } finally {
+            $this->db()->table('permissions')->where('code', 'ACADEMY_ASSESS')->update(['data_type' => 'ACADEMY']);
+        }
+        self::assertSame(0, $this->rows('grades', ['attempt_id' => $w['attempt']]));
+        // Department-scoped grants never authorize Academy.
+        $c = $this->person();
+        $dept = $this->row('department_instances', ['unit_id' => $w['unit']]);
+        $this->grant($c, $w['unit'], ['ACADEMY_ASSESS'], false, 'ACADEMY', [], [], ['scope_kind' => 'UNIT_DEPARTMENT', 'department_instance_id' => $dept]);
+        $this->teach($c, $w['class']);
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $this->rec($w, $c));
+        // control
+        self::assertSame(1, $this->rec($w, $t)['version']);
+    }
+
+    // ---- section 9: C3 --------------------------------------------------------------------------
+    public function test_c3_class_isolation_independent_no_reliance_on_caller_class(): void
+    {
+        $a = $this->gradeWorld();
+        $classB = $this->row('classes', ['academic_unit_id' => $a['au'], 'course_version_id' => $a['version'], 'status' => 'AUD_C_OPEN']);
+        $stB = $this->student($classB);
+        $attB = $this->attempt($a['assessment'], $stB['id']);
+        $svc = new GradeService($this->rt());
+        // Even claiming class A (the class the teacher IS assigned to) the real target is class B.
+        foreach ([null, ['class_id' => $a['class']], ['class_id' => $a['class'], 'academic_unit_id' => $a['au'], 'unit_id' => $a['unit']]] as $claimed) {
+            $this->deny(AcademyReason::CLASS_ASSIGNMENT_REQUIRED, fn () => $svc->record($a['teacher']['user'], $a['teacher']['session'], $attB, '90', null, null, $claimed));
+        }
+        self::assertSame(0, $this->rows('grades', ['attempt_id' => $attB]));
+        // The same teacher on her own class works.
+        self::assertSame(1, $svc->record($a['teacher']['user'], $a['teacher']['session'], $a['attempt'], '90')['version']);
+    }
+
+    // ---- section 41: C9 across services -----------------------------------------------------------
+    public function test_c9_caller_supplied_scope_independent_across_services(): void
+    {
+        $mine = $this->gradeWorld();
+        $theirs = $this->gradeWorld();
+        $claim = ['class_id' => $mine['class'], 'academic_unit_id' => $mine['au'], 'unit_id' => $mine['unit']];
+        $rt = $this->rt();
+        // grade
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new GradeService($rt))->record($mine['teacher']['user'], $mine['teacher']['session'], $theirs['attempt'], '1', null, null, $claim));
+        // enrollment (actor authorized in `mine`, target class in `theirs`)
+        $enr = $this->actor($mine['unit'], ['ACADEMY_ENROLL']);
+        $p = $this->row('people');
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new EnrollmentService($rt))->enroll($enr['user'], $enr['session'], $theirs['class'], $p, $claim));
+        // attendance
+        $att = $this->actor($mine['unit'], ['ACADEMY_ATTENDANCE']);
+        $this->teach($att, $mine['class']);
+        $sess = $this->row('class_sessions', ['class_id' => $theirs['class'], 'status' => 'AUD_S_PLAN']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new AcademicAttendanceService($rt))->record($att['user'], $att['session'], $sess, $theirs['st']['id'], 'AUD_A_IN', null, null, $claim));
+        // certificate
+        $cert = $this->actor($mine['unit'], ['ACADEMY_CERTIFY']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new CertificateService($rt))->issue($cert['user'], $cert['session'], $theirs['st']['id'], $this->row('files', ['owner_unit_id' => $theirs['unit'], 'status' => 'AVAILABLE']), null, null, $claim));
+        // read path
+        $view = $this->actor($mine['unit'], ['ACADEMY_VIEW']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new EnrollmentService($rt))->listForClass($view['user'], $view['session'], $theirs['class'], null, 1, 10, $claim));
+        // instructor assignment
+        $mgr = $this->actor($mine['unit'], ['ACADEMY_MANAGE']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => (new InstructorAssignmentService($rt))->assign($mgr['user'], $mgr['session'], $theirs['class'], $this->row('people'), null, null, null, null, null, $claim));
+        foreach (['grades' => ['attempt_id' => $theirs['attempt']], 'enrollments' => ['class_id' => $theirs['class'], 'person_id' => $p], 'academic_attendance' => ['class_session_id' => $sess], 'certificates' => ['enrollment_id' => $theirs['st']['id']]] as $t => $w) {
+            self::assertSame(0, $this->rows($t, $w), $t);
+        }
+    }
+
+    // ---- section 10: admin override ----------------------------------------------------------------
+    public function test_p_admin_override_is_not_a_universal_bypass(): void
+    {
+        $w = $this->gradeWorld();
+        $admin = $this->actor($w['unit'], ['ACADEMY_ADMIN']);
+        // (a) no explicit override => no authority
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $this->rec($w, $admin));
+        // (b) reason mandatory (null/blank handled: '' and whitespace)
+        foreach (['', "  \t"] as $blank) {
+            $this->deny(AcademyReason::ADMIN_REASON_REQUIRED, fn () => $this->rec($w, $admin, '70', $blank));
+        }
+        // (c) scope still required
+        $foreignAdmin = $this->actor($this->row('organizational_units'), ['ACADEMY_ADMIN']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $this->rec($w, $foreignAdmin, '70', 'motivo valido'));
+        // (e) business gates still apply under override
+        $sess = $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'AUD_S_CANCELLED']);
+        $this->deny(AcademyReason::SESSION_NOT_ATTENDABLE, fn () => (new AcademicAttendanceService($this->rt()))->record($admin['user'], $admin['session'], $sess, $w['st']['id'], 'AUD_A_IN', 'admin fix'));
+        self::assertSame(0, $this->rows('grades', ['attempt_id' => $w['attempt']]));
+        // (f) with reason + scope it works and leaves BOTH audit rows with the same correlation id and the reason
+        $r = $this->rec($w, $admin, '70', 'lançamento excepcional');
+        $rows = $this->db()->table('audit_logs')->where('entity_type', 'grades')->where('entity_id', $r['grade_id'])->orderBy('id')->get();
+        self::assertSame(['grade.recorded', 'ACADEMY_ADMIN_OVERRIDE'], $rows->pluck('action')->all());
+        self::assertSame(1, $rows->pluck('correlation_id')->unique()->count());
+        self::assertSame(['lançamento excepcional', 'lançamento excepcional'], $rows->pluck('reason')->all());
+        self::assertSame($admin['user'], (int) $rows[1]->actor_id);
+    }
+
+    public function test_p_override_flag_is_refused_on_operations_without_an_override_row(): void
+    {
+        $w = $this->gradeWorld();
+        $both = $this->actor($w['unit'], ['ACADEMY_ADMIN', 'ACADEMY_ENROLL', 'ACADEMY_MANAGE']);
+        $rt = $this->rt();
+        // enrollment.create has no override row: an explicit override request is refused even for a user who holds ADMIN + the permission.
+        foreach (['enrollment.create', 'enrollment.transition', 'structure.manage'] as $op) {
+            $this->deny(AcademyReason::OVERRIDE_NOT_ALLOWED, fn () => $rt->write($op, $both['user'], $both['session'], fn () => $rt->scope->forClass($w['class']), fn () => 1, 'reason present'));
+        }
+    }
+
+    public function test_p_admin_override_never_bypasses_child_safety(): void
+    {
+        $w = $this->gradeWorld();
+        $admin = $this->actor($w['unit'], ['ACADEMY_ADMIN']);
+        $sess = $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'AUD_S_PLAN']);
+        $svc = new AcademicAttendanceService($this->rt());
+        // minor with a child profile but NO consent
+        $staff = $this->actor($w['unit'], ['CHILD_WRITE']);
+        $this->db()->table('permissions')->where('code', 'CHILD_WRITE')->update(['data_type' => 'CHILDREN']);
+        $bare = $this->row('people');
+        (new \App\Domain\WaveFour\ChildrenService($this->db(), self::childPolicy(), self::eventPolicy()))->register($staff['user'], $staff['session'], $bare, $w['unit']);
+        $st = $this->student($w['class'], 'AUD_E_LIVE', $bare);
+        $this->deny(AcademyReason::CONSENT_REQUIRED, fn () => $svc->record($admin['user'], $admin['session'], $sess, $st['id'], 'AUD_A_IN', 'urgente'));
+        self::assertSame(0, $this->rows('academic_attendance', ['enrollment_id' => $st['id']]));
+        self::assertSame(0, $this->db()->table('audit_logs')->where('action', 'ACADEMY_ADMIN_OVERRIDE')->where('entity_type', 'academic_attendance')->count());
+        // revoked guardian authorization is denied under override too
+        $c = $this->child($w['unit']);
+        $c['svc']->revokeAuthorization($c['staff']['user'], $c['staff']['session'], $c['auth'], 'revogada');
+        $st2 = $this->student($w['class'], 'AUD_E_LIVE', $c['child']);
+        $this->deny(AcademyReason::GUARDIAN_AUTHORIZATION_INVALID, fn () => $svc->record($admin['user'], $admin['session'], $sess, $st2['id'], 'AUD_A_IN', 'urgente'));
+    }
+
+    // ---- section 11: A2-DEV-01 real impact ---------------------------------------------------------
+    public function test_p_a2_dev_01_teach_holder_cannot_assign_and_manage_cannot_teach(): void
+    {
+        $w = $this->world();
+        $other = $this->row('classes', ['academic_unit_id' => $w['au'], 'course_version_id' => $w['version'], 'status' => 'AUD_C_OPEN']);
+        $teacher = $this->actor($w['unit'], ['ACADEMY_TEACH', 'ACADEMY_ATTENDANCE', 'ACADEMY_ASSESS']);
+        $this->teach($teacher, $w['class']);
+        $svc = new InstructorAssignmentService($this->rt());
+        // a teacher (TEACH + assignment) cannot assign herself or anybody
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->assign($teacher['user'], $teacher['session'], $other, $teacher['person']));
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->assign($teacher['user'], $teacher['session'], $w['class'], $this->row('people')));
+        // a MANAGE holder alone can assign but has no pedagogical authority
+        $mgr = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $r = $svc->assign($mgr['user'], $mgr['session'], $other, $teacher['person']);
+        self::assertSame('ASSIGNED', $r['outcome']);
+        $sessions = new ClassSessionService($this->rt());
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $sessions->schedule($mgr['user'], $mgr['session'], $other, $this->now()->modify('+1 day'), $this->now()->modify('+1 day 1 hour')));
+        // the assigned teacher can now teach class `other` (TEACH + fresh assignment)
+        self::assertGreaterThan(0, $sessions->schedule($teacher['user'], $teacher['session'], $other, $this->now()->modify('+1 day'), $this->now()->modify('+1 day 1 hour'))['class_session_id']);
+    }
+
+    // ---- section 12: identity ------------------------------------------------------------------------
+    public function test_p_person_and_membership_essentials(): void
+    {
+        $w = $this->world();
+        $enr = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $mgr = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $svc = new EnrollmentService($this->rt());
+        $ext = $this->row('people');
+        self::assertSame(0, (int) $this->db()->table('memberships')->where('person_id', $ext)->count());
+        $r = $svc->enroll($enr['user'], $enr['session'], $w['class'], $ext);
+        self::assertSame('CREATED', $r['outcome']);
+        // external instructor
+        $inst = $this->row('people');
+        $ia = (new InstructorAssignmentService($this->rt()))->assign($mgr['user'], $mgr['session'], $w['class'], $inst);
+        self::assertSame('ASSIGNED', $ia['outcome']);
+        // reuse by public id, no new Person
+        $pub = (string) $this->db()->table('people')->where('id', $inst)->value('public_id');
+        $w2 = $this->world();
+        $enr2 = $this->actor($w2['unit'], ['ACADEMY_ENROLL']);
+        $people = (int) $this->db()->table('people')->count();
+        self::assertSame($inst, $svc->enroll($enr2['user'], $enr2['session'], $w2['class'], $pub)['person_id']);
+        self::assertSame($people, (int) $this->db()->table('people')->count(), 'no new Person created by Academy');
+        self::assertSame(0, (int) $this->db()->table('memberships')->count());
+        self::assertSame(0, (int) $this->db()->table('member_numbers')->count());
+        foreach (['MEPA2609000001', 'MEPA26090000010', '2609000001x', "  ", "12; DROP TABLE people"] as $bad) {
+            $this->deny(AcademyReason::INVALID_PERSON_REFERENCE, fn () => $svc->enroll($enr['user'], $enr['session'], $w['class'], $bad));
+        }
+        $this->deny(AcademyReason::INVALID_PERSON_REFERENCE, fn () => $svc->enroll($enr['user'], $enr['session'], $w['class'], -5));
+    }
+
+    // ---- section 52 / new-finding hunts: cross-scope OBJECT REFERENCES ------------------------------------
+    public function test_s2_certificate_file_from_another_unit_is_accepted(): void
+    {
+        $a = $this->world();   // unit A
+        $b = $this->world();   // unit B
+        $st = $this->student($a['class'], 'AUD_E_DONE');
+        $this->db()->table('course_versions')->where('id', $a['version'])->update(['completion_policy_metadata' => json_encode(['criteria' => [['type' => 'ADMINISTRATIVE_APPROVAL']]])]);
+        $certifier = $this->actor($a['unit'], ['ACADEMY_CERTIFY']);
+        // A file owned by unit B (a different, unrelated unit), classification left as created by the fixture.
+        $foreignFile = $this->row('files', ['owner_unit_id' => $b['unit'], 'status' => 'AVAILABLE', 'classification' => 'R-CONFIDENCIAL']);
+        $out = null;
+        try {
+            $out = (new CertificateService($this->rt()))->issue($certifier['user'], $certifier['session'], $st['id'], $foreignFile);
+        } catch (\App\Domain\Academy\AcademyError $e) {
+            $out = $e->reason;
+        }
+        fwrite(STDERR, "\n[S2] certifier@A issuing with file owned by unit B => " . (is_array($out) ? 'ACCEPTED certificate_id=' . $out['certificate_id'] : $out) . "\n");
+        self::assertIsString($out, 'S2 CONFIRMED: certificate bound to a file owned by another unit (no ownership/scope check on file_id)');
+    }
+
+    public function test_s1_transcript_compile_reads_enrollments_of_classes_outside_the_authorized_unit(): void
+    {
+        $a = $this->world();   // unit A: program + curriculum + cohort
+        $b = $this->world();   // unit B
+        // A class that belongs to unit B but points at the cohort of unit A's curriculum (schema allows: no composite FK).
+        $classB = $this->row('classes', ['academic_unit_id' => $b['au'], 'course_version_id' => $b['version'], 'cohort_id' => $a['cohort'], 'status' => 'AUD_C_OPEN']);
+        $person = $this->row('people');
+        $st = $this->student($classB, 'AUD_E_LIVE', $person);
+        $as = $this->assessment($b['version']);
+        $att = $this->attempt($as, $st['id']);
+        $this->row('grades', ['attempt_id' => $att, 'version' => 1, 'score' => '88', 'status' => 'AUD_G_DRAFT', 'graded_by' => $this->person()['user']]);
+        $viewerA = $this->actor($a['unit'], ['ACADEMY_GRADES_VIEW']);           // authority ONLY in unit A
+        $lines = (new TranscriptService($this->rt()))->compile($viewerA['user'], $viewerA['session'], $person, $a['curriculum'])['lines'];
+        fwrite(STDERR, "\n[S1] GRADES_VIEW@A compiling transcript => " . count($lines) . " line(s); class_code of line 0 belongs to unit " . (count($lines) ? $this->db()->table('academic_units')->where('id', $this->db()->table('classes')->where('code', $lines[0]['class_code'])->value('academic_unit_id'))->value('unit_id') : 'n/a') . " (actor scope = unit {$a['unit']}, class unit = {$b['unit']}); score visible: " . ($lines[0]['grades'][0]['score'] ?? 'none') . "\n");
+        self::assertSame([], $lines, 'S1 CONFIRMED: transcript exposes enrollment/grades of a class in a unit the actor has no authority over');
+    }
+}

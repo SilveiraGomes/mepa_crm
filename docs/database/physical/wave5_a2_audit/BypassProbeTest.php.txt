@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+require_once __DIR__ . '/AuditCase.php';
+
+use App\Domain\Academy\AcademyReason;
+use App\Domain\Academy\CertificateService;
+use App\Domain\Academy\CompletionService;
+use App\Domain\Academy\EnrollmentService;
+use App\Domain\Academy\TranscriptService;
+
+/** Hypothesis H1: the generic enrollment transition (ACADEMY_ENROLL) reaches the 'completed' state without the completion gate. */
+final class BypassProbeTest extends AuditCase
+{
+    public function test_h1_enroll_permission_can_complete_an_enrollment_bypassing_completion_policy_and_assess_authority(): void
+    {
+        $w = $this->world();
+        // Course version policy demands 90% attendance; the class has sessions but the student attended NONE.
+        $this->db()->table('course_versions')->where('id', $w['version'])->update(['completion_policy_metadata' => json_encode(['criteria' => [['type' => 'ATTENDANCE_MIN_RATIO', 'min_ratio' => '0.9000']]])]);
+        $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'AUD_S_HELD']);
+        $st = $this->student($w['class']);                                     // AUD_E_LIVE, zero attendance
+        $teacher = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($teacher, $w['class']);
+        // Control: the gated path refuses.
+        $this->deny(AcademyReason::COMPLETION_CRITERIA_NOT_MET, fn () => (new CompletionService($this->rt()))->complete($teacher['user'], $teacher['session'], $st['id']));
+        self::assertSame('AUD_E_LIVE', $this->db()->table('enrollments')->where('id', $st['id'])->value('status'));
+
+        // The bypass attempt: an actor holding ONLY ACADEMY_ENROLL (no ASSESS, no class assignment).
+        $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $outcome = 'DENIED';
+        try {
+            (new EnrollmentService($this->rt()))->transition($clerk['user'], $clerk['session'], $st['id'], 'AUD_E_DONE', 'marcar concluído');
+            $outcome = 'ACCEPTED';
+        } catch (\App\Domain\Academy\AcademyError $e) {
+            $outcome = $e->reason;
+        }
+        fwrite(STDERR, "\n[H1] ENROLL-only clerk transition LIVE->DONE with unmet completion criteria => {$outcome}; status now " . $this->db()->table('enrollments')->where('id', $st['id'])->value('status') . "\n");
+
+        // Downstream effect when the bypass works: official documents trust the status.
+        $cert = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $file = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE']);
+        $issued = null;
+        try {
+            $issued = (new CertificateService($this->rt()))->issue($cert['user'], $cert['session'], $st['id'], $file);
+        } catch (\App\Domain\Academy\AcademyError $e) {
+            $issued = $e->reason;
+        }
+        $viewer = $this->actor($w['unit'], ['ACADEMY_GRADES_VIEW']);
+        $line = (new TranscriptService($this->rt()))->compile($viewer['user'], $viewer['session'], $st['person'], $w['curriculum'])['lines'][0] ?? null;
+        fwrite(STDERR, '[H1] certificate issue afterwards => ' . (is_array($issued) ? 'ISSUED v' . $issued['version'] : $issued) . '; transcript status => ' . ($line['status'] ?? 'n/a') . "\n");
+
+        self::assertNotSame('ACCEPTED', $outcome, 'H1 CONFIRMED: completion reached through the generic transition without criteria/authority');
+    }
+}

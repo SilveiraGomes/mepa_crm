@@ -1,0 +1,478 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Audit;
+
+require_once __DIR__ . '/AuditCase.php';
+
+use App\Domain\Academy\AcademicAttendanceService;
+use App\Domain\Academy\AcademyError;
+use App\Domain\Academy\AcademyPolicy;
+use App\Domain\Academy\AcademyReason;
+use App\Domain\Academy\AssessmentAttemptService;
+use App\Domain\Academy\AssessmentService;
+use App\Domain\Academy\CertificateService;
+use App\Domain\Academy\ClassSessionService;
+use App\Domain\Academy\CompletionService;
+use App\Domain\Academy\DatabaseAcademyAudit;
+use App\Domain\Academy\EnrollmentService;
+use App\Domain\Academy\GradeService;
+use App\Domain\Academy\InstructorAssignmentService;
+use App\Domain\Academy\ProgressService;
+use App\Domain\Academy\TranscriptService;
+
+/** P0.3.5-A2-R independent functional probes (sections 15-35, 39, 40). */
+final class FunctionalProbeTest extends AuditCase
+{
+    private function failing(bool $writeFirst): FailingAudit
+    {
+        return new FailingAudit(new DatabaseAcademyAudit($this->db()), $writeFirst);
+    }
+
+    private function policyJson(int $version, ?array $p): void
+    {
+        $this->db()->table('course_versions')->where('id', $version)->update(['completion_policy_metadata' => $p === null ? null : json_encode($p)]);
+    }
+
+    // ---- 15: enrollment ---------------------------------------------------------------------------
+    public function test_p_enrollment_audit_content_transition_and_duplicate(): void
+    {
+        $w = $this->world();
+        $a = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $svc = new EnrollmentService($this->rt());
+        $person = $this->row('people');
+        $r = $svc->enroll($a['user'], $a['session'], $w['class'], $person);
+        $audit = $this->db()->table('audit_logs')->where('entity_type', 'enrollments')->where('entity_id', $r['enrollment_id'])->first();
+        self::assertSame([$a['user'], $w['unit'], $a['session'], 'WAVE5_DOMAIN', 'enrollment.created'], [(int) $audit->actor_id, (int) $audit->unit_id, (int) $audit->session_id, $audit->source, $audit->action]);
+        $this->deny(AcademyReason::ALREADY_ENROLLED, fn () => $svc->enroll($a['user'], $a['session'], $w['class'], $person));
+        self::assertSame(1, $this->rows('enrollments', ['person_id' => $person, 'class_id' => $w['class']]));
+        $svc->transition($a['user'], $a['session'], $r['enrollment_id'], 'AUD_E_LIVE');
+        self::assertSame($a['user'], (int) $this->db()->table('enrollments')->where('id', $r['enrollment_id'])->value('approved_by'));
+        $this->deny(AcademyReason::INVALID_TRANSITION, fn () => $svc->transition($a['user'], $a['session'], $r['enrollment_id'], 'AUD_E_FAKE'));
+    }
+
+    // ---- 34/35: audit atomicity, independent (own failing writer throwing a NON-domain exception) --------
+    public function test_p_c10_instructor_assignment_audit_failure_leaves_no_orphan(): void
+    {
+        $w = $this->world();
+        $m = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $fresh = $this->row('people');
+        $audits = (int) $this->db()->table('audit_logs')->count();
+        foreach ([false, true] as $writeFirst) {
+            $svc = new InstructorAssignmentService($this->rt(null, $this->failing($writeFirst)));
+            try {
+                $svc->assign($m['user'], $m['session'], $w['class'], $fresh);
+                self::fail('assign must fail when the required audit fails');
+            } catch (\RuntimeException $e) {
+                self::assertStringContainsString('AUDITOR-INJECTED', $e->getMessage());
+            }
+            self::assertSame(0, $this->rows('instructors', ['person_id' => $fresh]), 'orphan instructor profile (writeFirst=' . (int) $writeFirst . ')');
+            self::assertSame(0, $this->rows('class_instructors', ['class_id' => $w['class']]));
+            self::assertSame($audits, (int) $this->db()->table('audit_logs')->count(), 'misleading audit survived');
+            self::assertSame(0, $this->db()->transactionLevel(), 'no dangling transaction');
+        }
+        self::assertSame('ASSIGNED', (new InstructorAssignmentService($this->rt()))->assign($m['user'], $m['session'], $w['class'], $fresh)['outcome']);
+    }
+
+    public function test_p_audit_failure_rolls_back_every_write_operation_class(): void
+    {
+        $g = $this->gradeWorld();
+        $t = $g['teacher'];
+        $bad = fn () => $this->rt(null, $this->failing(true));
+        $expect = function (callable $fn) {
+            try {
+                $fn();
+                self::fail('expected the injected audit failure');
+            } catch (\RuntimeException) {
+                self::assertTrue(true);
+            }
+        };
+        // grade.record then grade.revise
+        $expect(fn () => (new GradeService($bad()))->record($t['user'], $t['session'], $g['attempt'], '50'));
+        self::assertSame(0, $this->rows('grades', ['attempt_id' => $g['attempt']]));
+        (new GradeService($this->rt()))->record($t['user'], $t['session'], $g['attempt'], '50');
+        $expect(fn () => (new GradeService($bad()))->revise($t['user'], $t['session'], $g['attempt'], 1, '60', 'motivo'));
+        self::assertSame(1, $this->rows('grades', ['attempt_id' => $g['attempt']]), 'revision rolled back');
+        // enrollment.create / transition
+        $e = $this->actor($g['unit'], ['ACADEMY_ENROLL']);
+        $p = $this->row('people');
+        $expect(fn () => (new EnrollmentService($bad()))->enroll($e['user'], $e['session'], $g['class'], $p));
+        self::assertSame(0, $this->rows('enrollments', ['person_id' => $p]));
+        $pending = $this->student($g['class'], 'AUD_E_NEW');
+        $expect(fn () => (new EnrollmentService($bad()))->transition($e['user'], $e['session'], $pending['id'], 'AUD_E_LIVE'));
+        self::assertSame('AUD_E_NEW', $this->db()->table('enrollments')->where('id', $pending['id'])->value('status'));
+        self::assertNull($this->db()->table('enrollments')->where('id', $pending['id'])->value('approved_by'));
+        // attendance
+        $att = $this->actor($g['unit'], ['ACADEMY_ATTENDANCE']);
+        $this->teach($att, $g['class']);
+        $sess = $this->row('class_sessions', ['class_id' => $g['class'], 'status' => 'AUD_S_PLAN']);
+        $expect(fn () => (new AcademicAttendanceService($bad()))->record($att['user'], $att['session'], $sess, $g['st']['id'], 'AUD_A_IN'));
+        self::assertSame(0, $this->rows('academic_attendance', ['class_session_id' => $sess]));
+        // certificate.issue + revoke
+        $this->policyJson($g['version'], ['criteria' => [['type' => 'ADMINISTRATIVE_APPROVAL']]]);
+        $done = $this->student($g['class'], 'AUD_E_DONE');
+        $c = $this->actor($g['unit'], ['ACADEMY_CERTIFY']);
+        $file = $this->row('files', ['owner_unit_id' => $g['unit'], 'status' => 'AVAILABLE']);
+        $expect(fn () => (new CertificateService($bad()))->issue($c['user'], $c['session'], $done['id'], $file));
+        self::assertSame(0, $this->rows('certificates', ['enrollment_id' => $done['id']]));
+        $ok = (new CertificateService($this->rt()))->issue($c['user'], $c['session'], $done['id'], $file);
+        $expect(fn () => (new CertificateService($bad()))->revoke($c['user'], $c['session'], $ok['certificate_id'], 'motivo'));
+        self::assertNull($this->db()->table('certificates')->where('id', $ok['certificate_id'])->value('revoked_at'), 'revocation rolled back');
+    }
+
+    // ---- 25/26: grades -------------------------------------------------------------------------------
+    public function test_p_grade_stale_read_update_and_revision_audit_content(): void
+    {
+        $g = $this->gradeWorld();
+        $a = $g['teacher'];
+        $b = $this->actor($g['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($b, $g['class']);
+        $svc = new GradeService($this->rt());
+        $svc->record($a['user'], $a['session'], $g['attempt'], '40');
+        $readByA = (int) $this->db()->table('grades')->where('attempt_id', $g['attempt'])->max('version');
+        $rev = $svc->revise($b['user'], $b['session'], $g['attempt'], $readByA, '75', 'B corrige a prova');
+        $e = $this->deny(AcademyReason::STALE_WRITE, fn () => $svc->revise($a['user'], $a['session'], $g['attempt'], $readByA, '10', 'A com versão antiga'));
+        self::assertSame(2, $e->context['latest_version']);
+        self::assertSame(['40.0000', '75.0000'], $this->db()->table('grades')->where('attempt_id', $g['attempt'])->orderBy('version')->pluck('score')->map(fn ($s) => (string) $s)->all());
+        $au = $this->db()->table('audit_logs')->where('entity_type', 'grades')->where('entity_id', $rev['grade_id'])->first();
+        $before = json_decode($au->before_metadata, true);
+        $after = json_decode($au->after_metadata, true);
+        self::assertSame([$b['user'], $g['unit'], $b['session'], 'grade.revised', 'B corrige a prova'], [(int) $au->actor_id, (int) $au->unit_id, (int) $au->session_id, $au->action, $au->reason]);
+        self::assertEquals(['version' => 1, 'score' => '40.0000', 'status' => 'AUD_G_DRAFT'], $before);
+        self::assertSame(2, $after['version']);
+        self::assertEquals(75.0, (float) $after['score']);
+        $delta = abs(strtotime($au->occurred_at) - strtotime($this->db()->selectOne('SELECT UTC_TIMESTAMP(6) t')->t));
+        self::assertLessThan(30, $delta, 'occurred_at is the DB clock');
+    }
+
+    // ---- 27: GRADES_VIEW least privilege ---------------------------------------------------------------
+    public function test_p_grades_view_separation_and_no_indirect_grade_leak(): void
+    {
+        $g = $this->gradeWorld();
+        $t = $g['teacher'];
+        $svc = new GradeService($this->rt());
+        $rec = $svc->record($t['user'], $t['session'], $g['attempt'], '61.5');
+        // ASSESS-only and VIEW-only cannot read; GRADES_VIEW-only can read but cannot write
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->history($t['user'], $t['session'], $g['attempt']));
+        $viewOnly = $this->actor($g['unit'], ['ACADEMY_VIEW']);
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->history($viewOnly['user'], $viewOnly['session'], $g['attempt']));
+        $gv = $this->actor($g['unit'], ['ACADEMY_GRADES_VIEW']);
+        self::assertCount(1, $svc->history($gv['user'], $gv['session'], $g['attempt']));
+        $this->teach($gv, $g['class']);
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->record($gv['user'], $gv['session'], $g['attempt'], '10'));
+        // a legitimately pedagogical write flow still works without GRADES_VIEW (record/revise/finalize need no read)
+        $rv = $svc->revise($t['user'], $t['session'], $g['attempt'], 1, '70', 'ajuste');
+        self::assertSame(2, $rv['version']);
+        // indirect leaks: no score in results/contexts of operations available to non-viewers
+        $leaks = [];
+        foreach ([$rec, $rv] as $out) {
+            if (array_key_exists('score', $out)) {
+                $leaks[] = 'result';
+            }
+        }
+        $e = $this->deny(AcademyReason::STALE_WRITE, fn () => $svc->revise($t['user'], $t['session'], $g['attempt'], 1, '80', 'x'));
+        if (array_key_exists('score', $e->context)) {
+            $leaks[] = 'stale context';
+        }
+        $e2 = $this->deny(AcademyReason::STATE_POLICY_PENDING, fn () => $svc->finalize($t['user'], $t['session'], $g['attempt'], 2));
+        if (array_key_exists('score', $e2->context)) {
+            $leaks[] = 'pending context';
+        }
+        self::assertSame([], $leaks);
+        // wrong-scope viewer
+        $foreign = $this->actor($this->row('organizational_units'), ['ACADEMY_GRADES_VIEW']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $svc->history($foreign['user'], $foreign['session'], $g['attempt']));
+    }
+
+    // ---- 21-23: F-03 / D-09 / policy resolver ---------------------------------------------------------------
+    public function test_p_f03_no_physical_default_and_values_never_drive_completion_or_certificate(): void
+    {
+        // (1) no physical DEFAULT on the four columns
+        $defaults = $this->db()->select("SELECT COLUMN_NAME c, COLUMN_DEFAULT d, IS_NULLABLE n FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'assessments' AND column_name IN ('max_score','pass_score','max_attempts','weight')");
+        self::assertCount(4, $defaults);
+        foreach ($defaults as $d) {
+            self::assertNull($d->d, $d->c . ' has a physical default');
+            self::assertSame('NO', $d->n);
+        }
+        // (2) service refuses to create without all four (never fills them)
+        $w = $this->world();
+        $m = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $svc = new AssessmentService($this->rt());
+        foreach ([[null, '5', 1, '1'], ['10', null, 1, '1'], ['10', '5', null, '1'], ['10', '5', 1, null]] as [$mx, $ps, $ma, $wt]) {
+            $this->deny(AcademyReason::POLICY_NOT_CONFIGURED, fn () => $svc->create($m['user'], $m['session'], $w['version'], null, 'P', $mx, $ps, $ma, $wt));
+        }
+        self::assertSame(0, $this->rows('assessments', ['course_version_id' => $w['version']]));
+        // (3)/(4) the NOT NULL values never decide completion or certification: extreme pass_score/max_attempts/weight, same outcome
+        $t = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($t, $w['class']);
+        $st = $this->student($w['class']);
+        $as = $this->assessment($w['version'], ['max_score' => '100', 'pass_score' => '99', 'max_attempts' => 1, 'weight' => '0.0001']);
+        $att = $this->attempt($as, $st['id']);
+        $this->row('grades', ['attempt_id' => $att, 'version' => 1, 'score' => '60', 'status' => 'AUD_G_FINAL', 'graded_by' => $t['user']]);
+        $this->policyJson($w['version'], ['criteria' => [['type' => 'ASSESSMENT_MIN_SCORE', 'assessment_id' => $as, 'min_score' => '60', 'attempt_selection' => 'LATEST']]]);
+        $done = (new CompletionService($this->rt()))->complete($t['user'], $t['session'], $st['id']);
+        self::assertSame('AUD_E_DONE', $done['to'], 'policy min_score (60) decides, not assessments.pass_score (99)');
+        // ...and the mirror image: pass_score 1 must not rescue a grade below the POLICY minimum
+        $st2 = $this->student($w['class']);
+        $att2 = $this->attempt($as, $st2['id']);
+        $this->db()->table('assessments')->where('id', $as)->update(['pass_score' => '1']);
+        $this->row('grades', ['attempt_id' => $att2, 'version' => 1, 'score' => '59.9999', 'status' => 'AUD_G_FINAL', 'graded_by' => $t['user']]);
+        $this->deny(AcademyReason::COMPLETION_CRITERIA_NOT_MET, fn () => (new CompletionService($this->rt()))->complete($t['user'], $t['session'], $st2['id']));
+        // certificate never consults pass_score: policy present + completed enrollment => issued regardless of any grade
+        $this->policyJson($w['version'], ['criteria' => [['type' => 'ADMINISTRATIVE_APPROVAL']]]);
+        $c = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $file = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE']);
+        self::assertSame(1, (new CertificateService($this->rt()))->issue($c['user'], $c['session'], $st['id'], $file)['version']);
+        // attempt limit not enforced (max_attempts = 1, three attempts)
+        $svcA = new AssessmentAttemptService($this->rt());
+        $st3 = $this->student($w['class']);
+        $ns = [];
+        for ($i = 0; $i < 3; $i++) {
+            $ns[] = $svcA->start($t['user'], $t['session'], $as, $st3['id'])['attempt_number'];
+        }
+        self::assertSame([1, 2, 3], $ns);
+        // observation: max_score IS used as the upper bound of a stored score
+        $st4 = $this->student($w['class']);
+        $att4 = $this->attempt($this->assessment($w['version'], ['max_score' => '1', 'pass_score' => '1']), $st4['id']);
+        $this->deny(AcademyReason::INVALID_INPUT, fn () => (new GradeService($this->rt()))->record($t['user'], $t['session'], $att4, '5'));
+    }
+
+    public function test_p_policy_missing_never_defaults_hidden_pass_or_fail(): void
+    {
+        $w = $this->world();
+        $t = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($t, $w['class']);
+        $st = $this->student($w['class']);
+        foreach ([null, [], ['criteria' => []], ['criteria' => [['type' => 'PASS_MARK', 'value' => 10]]], ['criteria' => [['type' => 'ATTENDANCE_MIN_RATIO', 'min_ratio' => '7']]], ['criteria' => [['type' => 'ASSESSMENT_MIN_SCORE', 'assessment_id' => 999999, 'min_score' => '10', 'attempt_selection' => 'LATEST']]]] as $p) {
+            $this->policyJson($w['version'], $p);
+            $this->deny(AcademyReason::POLICY_NOT_CONFIGURED, fn () => (new CompletionService($this->rt()))->complete($t['user'], $t['session'], $st['id']));
+        }
+        self::assertSame('AUD_E_LIVE', $this->db()->table('enrollments')->where('id', $st['id'])->value('status'), 'no implicit pass/fail');
+        // production config: everything state-related fails closed
+        $prod = $this->rt(fn () => require 'C:/wamp64/www/mepa-crm/apps/api/config/academy.php');
+        $e = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $this->deny(AcademyReason::POLICY_NOT_CONFIGURED, fn () => (new EnrollmentService($prod))->enroll($e['user'], $e['session'], $w['class'], $this->row('people')));
+        // transcripts.issue without transcripts state
+        $noTr = $this->rt(function (array $c) {
+            unset($c['states']['transcripts']);
+            return $c;
+        });
+        $c = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $this->deny(AcademyReason::POLICY_NOT_CONFIGURED, fn () => (new TranscriptService($noTr))->issue($c['user'], $c['session'], $st['person'], $w['curriculum'], $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE'])));
+    }
+
+    // ---- 28: D-11 --------------------------------------------------------------------------------------------
+    public function test_p_d11_pending_and_no_invented_transition(): void
+    {
+        $g = $this->gradeWorld();
+        $t = $g['teacher'];
+        $svc = new GradeService($this->rt());
+        $svc->record($t['user'], $t['session'], $g['attempt'], '70');
+        $this->deny(AcademyReason::STATE_POLICY_PENDING, fn () => $svc->finalize($t['user'], $t['session'], $g['attempt'], 1));
+        self::assertSame('AUD_G_DRAFT', $this->db()->table('grades')->where('attempt_id', $g['attempt'])->value('status'));
+        $e = $this->actor($g['unit'], ['ACADEMY_ENROLL']);
+        $en = new EnrollmentService($this->rt());
+        foreach (['AUD_E_LIVE_X', 'AUD_E_DONE', '', 'DONE'] as $to) {
+            $st = $this->student($g['class'], 'AUD_E_NEW');
+            try {
+                $en->transition($e['user'], $e['session'], $st['id'], $to);
+                self::fail("transition NEW->{$to} must not run");
+            } catch (AcademyError $x) {
+                self::assertContains($x->reason, [AcademyReason::INVALID_TRANSITION, AcademyReason::STATE_POLICY_PENDING]);
+            }
+        }
+    }
+
+    // ---- 18/19: sessions, location, attendance ------------------------------------------------------------------
+    public function test_p_sessions_location_precedence_and_no_caller_location(): void
+    {
+        $default = $this->row('physical_locations');
+        $special = $this->row('physical_locations');
+        $w = $this->world(['location_id' => $default]);
+        $t = $this->actor($w['unit'], ['ACADEMY_TEACH', 'ACADEMY_VIEW']);
+        $this->teach($t, $w['class']);
+        $svc = new ClassSessionService($this->rt());
+        foreach ((new \ReflectionClass($svc))->getMethods(\ReflectionMethod::IS_PUBLIC) as $m) {
+            foreach ($m->getParameters() as $p) {
+                self::assertDoesNotMatchRegularExpression('/location/i', $p->getName(), 'caller must not be able to supply a location');
+            }
+        }
+        $ev = $this->row('events', ['owner_unit_id' => $w['unit']]);
+        $es = $this->row('event_sessions', ['event_id' => $ev]);
+        $foreignEs = $this->row('event_sessions', ['event_id' => $this->row('events', ['owner_unit_id' => $this->row('organizational_units')])]);
+        $start = $this->now()->modify('+1 day');
+        $plain = $svc->schedule($t['user'], $t['session'], $w['class'], $start, $start->modify('+1 hour'))['class_session_id'];
+        $linked = $svc->schedule($t['user'], $t['session'], $w['class'], $start, $start->modify('+1 hour'), null, $es)['class_session_id'];
+        $this->deny(AcademyReason::CONTEXT_MISMATCH, fn () => $svc->schedule($t['user'], $t['session'], $w['class'], $start, $start->modify('+1 hour'), null, $foreignEs));
+        self::assertSame('CLASS_DEFAULT', $svc->effectiveLocation($t['user'], $t['session'], $linked)['source']);
+        $this->row('event_locations', ['event_id' => $ev, 'location_id' => $special, 'is_primary' => 1]);
+        self::assertSame(['location_id' => $special, 'source' => 'EVENT_SESSION'], $svc->effectiveLocation($t['user'], $t['session'], $linked));
+        self::assertSame(['location_id' => $default, 'source' => 'CLASS_DEFAULT'], $svc->effectiveLocation($t['user'], $t['session'], $plain));
+        self::assertSame($default, (int) $this->db()->table('classes')->where('id', $w['class'])->value('location_id'), 'class default never rewritten');
+    }
+
+    public function test_p_attendance_uses_academic_table_bulk_atomic_and_child_safety(): void
+    {
+        $w = $this->world();
+        $t = $this->actor($w['unit'], ['ACADEMY_ATTENDANCE']);
+        $this->teach($t, $w['class']);
+        $sess = $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'AUD_S_PLAN']);
+        $s1 = $this->student($w['class']);
+        $s2 = $this->student($w['class']);
+        $svc = new AcademicAttendanceService($this->rt());
+        // atomic bulk: second entry invalid -> first not stored either
+        $this->deny(AcademyReason::ATTENDANCE_STATUS_INVALID, fn () => $svc->recordBulk($t['user'], $t['session'], $sess, [$s1['id'] => 'AUD_A_IN', $s2['id'] => 'AUD_A_BOGUS']));
+        self::assertSame(0, $this->rows('academic_attendance', ['class_session_id' => $sess]));
+        // enrollment of ANOTHER class in the same bulk aborts everything
+        $other = $this->world();
+        $foreign = $this->student($other['class']);
+        $this->deny(AcademyReason::CONTEXT_MISMATCH, fn () => $svc->recordBulk($t['user'], $t['session'], $sess, [$s1['id'] => 'AUD_A_IN', $foreign['id'] => 'AUD_A_IN']));
+        self::assertSame(0, $this->rows('academic_attendance', ['class_session_id' => $sess]));
+        self::assertSame(['CREATED', 'CREATED'], array_column($svc->recordBulk($t['user'], $t['session'], $sess, [$s1['id'] => 'AUD_A_IN', $s2['id'] => 'AUD_A_OUT']), 'outcome'));
+        self::assertSame(0, (int) $this->db()->table('event_attendance')->count(), 'event attendance untouched');
+        // no class assignment -> denied
+        $nobody = $this->actor($w['unit'], ['ACADEMY_ATTENDANCE']);
+        $this->deny(AcademyReason::CLASS_ASSIGNMENT_REQUIRED, fn () => $svc->record($nobody['user'], $nobody['session'], $sess, $s1['id'], 'AUD_A_IN'));
+        // child safety: missing, revoked, expired, withdrawn consent, valid
+        $miss = $this->row('people');
+        $staff = $this->actor($w['unit'], ['CHILD_WRITE']);
+        $this->db()->table('permissions')->where('code', 'CHILD_WRITE')->update(['data_type' => 'CHILDREN']);
+        (new \App\Domain\WaveFour\ChildrenService($this->db(), self::childPolicy(), self::eventPolicy()))->register($staff['user'], $staff['session'], $miss, $w['unit']);
+        $sm = $this->student($w['class'], 'AUD_E_LIVE', $miss);
+        $this->deny(AcademyReason::CONSENT_REQUIRED, fn () => $svc->record($t['user'], $t['session'], $sess, $sm['id'], 'AUD_A_IN'));
+        $rev = $this->child($w['unit']);
+        $rev['svc']->revokeAuthorization($rev['staff']['user'], $rev['staff']['session'], $rev['auth'], 'x');
+        $sr = $this->student($w['class'], 'AUD_E_LIVE', $rev['child']);
+        $this->deny(AcademyReason::GUARDIAN_AUTHORIZATION_INVALID, fn () => $svc->record($t['user'], $t['session'], $sess, $sr['id'], 'AUD_A_IN'));
+        $exp = $this->child($w['unit']);
+        $this->db()->table('guardian_authorizations')->where('id', $exp['auth'])->update(['ends_at' => $this->t('-1 minute')]);
+        $se = $this->student($w['class'], 'AUD_E_LIVE', $exp['child']);
+        $this->deny(AcademyReason::GUARDIAN_AUTHORIZATION_INVALID, fn () => $svc->record($t['user'], $t['session'], $sess, $se['id'], 'AUD_A_IN'));
+        $wd = $this->child($w['unit']);
+        $wd['svc']->revokeConsent($wd['staff']['user'], $wd['staff']['session'], $wd['consent']);
+        $sw = $this->student($w['class'], 'AUD_E_LIVE', $wd['child']);
+        $this->deny(AcademyReason::CONSENT_REQUIRED, fn () => $svc->record($t['user'], $t['session'], $sess, $sw['id'], 'AUD_A_IN'));
+        $ok = $this->child($w['unit']);
+        $so = $this->student($w['class'], 'AUD_E_LIVE', $ok['child']);
+        self::assertSame('CREATED', $svc->record($t['user'], $t['session'], $sess, $so['id'], 'AUD_A_IN')['outcome']);
+        // enrollment of a minor: same gate
+        $enr = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $bare = $this->row('people');
+        (new \App\Domain\WaveFour\ChildrenService($this->db(), self::childPolicy(), self::eventPolicy()))->register($staff['user'], $staff['session'], $bare, $w['unit']);
+        $this->deny(AcademyReason::CONSENT_REQUIRED, fn () => (new EnrollmentService($this->rt()))->enroll($enr['user'], $enr['session'], $w['class'], $bare));
+        self::assertSame(0, $this->rows('enrollments', ['person_id' => $bare]));
+    }
+
+    // ---- 29: progress --------------------------------------------------------------------------------------------------
+    public function test_p_progress_scope_from_chain_not_payload(): void
+    {
+        $a = $this->world();
+        $b = $this->world();
+        $t = $this->actor($a['unit'], ['ACADEMY_TEACH']);
+        $this->teach($t, $a['class']);
+        $stB = $this->student($b['class']);
+        $svc = new ProgressService($this->rt());
+        // enrollment of a class in another unit, claiming our own class/unit
+        $claim = ['class_id' => $a['class'], 'academic_unit_id' => $a['au'], 'unit_id' => $a['unit']];
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $svc->recordLesson($t['user'], $t['session'], $stB['id'], $b['lesson'], '0.5', null, null, $claim));
+        $stA = $this->student($a['class']);
+        $this->deny(AcademyReason::CONTEXT_MISMATCH, fn () => $svc->recordLesson($t['user'], $t['session'], $stA['id'], $b['lesson'], '0.5'));
+        $res = $this->row('resources');
+        $this->row('lesson_resources', ['lesson_id' => $b['lesson'], 'resource_id' => $res]);
+        $this->deny(AcademyReason::CONTEXT_MISMATCH, fn () => $svc->recordResource($t['user'], $t['session'], $stA['id'], $res, 10));
+        self::assertSame(0, $this->rows('progress', ['enrollment_id' => $stA['id']]) + $this->rows('progress', ['enrollment_id' => $stB['id']]));
+    }
+
+    // ---- 31/33: certificates + transcripts ---------------------------------------------------------------------------------
+    public function test_p_certificate_prerequisites_and_revoke_semantics(): void
+    {
+        $w = $this->world();
+        $assess = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->teach($assess, $w['class']);
+        $cert = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $done = $this->student($w['class'], 'AUD_E_DONE');
+        $file = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE']);
+        $svc = new CertificateService($this->rt());
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->issue($assess['user'], $assess['session'], $done['id'], $file));
+        $this->deny(AcademyReason::POLICY_NOT_CONFIGURED, fn () => $svc->issue($cert['user'], $cert['session'], $done['id'], $file));
+        $this->policyJson($w['version'], ['criteria' => [['type' => 'ADMINISTRATIVE_APPROVAL']]]);
+        $live = $this->student($w['class']);
+        $this->deny(AcademyReason::ENROLLMENT_NOT_COMPLETED, fn () => $svc->issue($cert['user'], $cert['session'], $live['id'], $file));
+        $outsider = $this->actor($this->row('organizational_units'), ['ACADEMY_CERTIFY']);
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $svc->issue($outsider['user'], $outsider['session'], $done['id'], $file));
+        $quarantined = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'QUARANTINED']);
+        $this->deny(AcademyReason::FILE_NOT_AVAILABLE, fn () => $svc->issue($cert['user'], $cert['session'], $done['id'], $quarantined));
+        $r = $svc->issue($cert['user'], $cert['session'], $done['id'], $file, 'ok');
+        $this->deny(AcademyReason::CERTIFICATE_ALREADY_EXISTS, fn () => $svc->issue($cert['user'], $cert['session'], $done['id'], $file));
+        $row = $this->db()->table('certificates')->where('id', $r['certificate_id'])->first();
+        self::assertSame(hash('sha256', $r['token'], true), $row->token_hash);
+        self::assertStringNotContainsString($r['token'], (string) $this->db()->table('audit_logs')->where('entity_type', 'certificates')->where('entity_id', $r['certificate_id'])->value('after_metadata'));
+        // revoke: reason, actor, ASSESS cannot, no DELETE
+        $this->deny(AcademyReason::NOT_AUTHORIZED, fn () => $svc->revoke($assess['user'], $assess['session'], $r['certificate_id'], 'motivo'));
+        $this->deny(AcademyReason::REASON_REQUIRED, fn () => $svc->revoke($cert['user'], $cert['session'], $r['certificate_id'], ' '));
+        $svc->revoke($cert['user'], $cert['session'], $r['certificate_id'], 'emitido por engano');
+        $after = $this->db()->table('certificates')->where('id', $r['certificate_id'])->first();
+        self::assertNotNull($after);
+        self::assertNotNull($after->revoked_at);
+        $ra = $this->db()->table('audit_logs')->where('entity_id', $r['certificate_id'])->where('action', 'certificate.revoked')->first();
+        self::assertSame([$cert['user'], 'emitido por engano'], [(int) $ra->actor_id, $ra->reason]);
+        self::assertSame(0, (int) $this->db()->selectOne("SELECT COUNT(*) c FROM information_schema.triggers WHERE trigger_schema = DATABASE()")->c);
+    }
+
+    public function test_p_transcript_never_invents_approval(): void
+    {
+        $w = $this->world();
+        $v = $this->actor($w['unit'], ['ACADEMY_GRADES_VIEW']);
+        $person = $this->row('people');
+        $st = $this->student($w['class'], 'AUD_E_LIVE', $person);
+        $as = $this->assessment($w['version']);
+        $att = $this->attempt($as, $st['id']);
+        $this->row('grades', ['attempt_id' => $att, 'version' => 1, 'score' => '99', 'status' => 'AUD_G_FINAL', 'graded_by' => $v['user']]);
+        $lines = (new TranscriptService($this->rt()))->compile($v['user'], $v['session'], $person, $w['curriculum'])['lines'];
+        self::assertCount(1, $lines);
+        self::assertNull($lines[0]['final_score']);
+        self::assertSame('AUD_E_LIVE', $lines[0]['status']);
+        self::assertArrayNotHasKey('approved', $lines[0]);
+        self::assertArrayNotHasKey('passed', $lines[0]);
+        $c = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $file = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE']);
+        $issued = (new TranscriptService($this->rt()))->issue($c['user'], $c['session'], $person, $w['curriculum'], $file);
+        $stored = $this->db()->table('transcript_lines')->where('transcript_id', $issued['transcript_id'])->first();
+        self::assertNull($stored->final_score);
+        self::assertSame('AUD_E_LIVE', $stored->result_status);
+    }
+
+    // ---- 39/40: error contract, F-06 ------------------------------------------------------------------------------------------
+    public function test_p_error_contract_no_raw_db_and_f06_error_distinction(): void
+    {
+        $required = ['NOT_AUTHORIZED', 'OUT_OF_SCOPE', 'CLASS_ASSIGNMENT_REQUIRED', 'ALREADY_ENROLLED', 'STALE_WRITE', 'POLICY_NOT_CONFIGURED', 'STATE_POLICY_PENDING', 'CONSENT_REQUIRED', 'CERTIFICATE_ALREADY_EXISTS', 'TARGET_NOT_FOUND'];
+        foreach ($required as $r) {
+            self::assertSame($r, constant(AcademyReason::class . '::' . $r));
+        }
+        $w = $this->world();
+        $m = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        // FK violation (nonexistent legal document) surfaces as a domain error, never a raw QueryException/SQL text
+        try {
+            (new InstructorAssignmentService($this->rt()))->assign($m['user'], $m['session'], $w['class'], $this->row('people'), null, null, null, 987654321);
+            self::fail('expected a domain error');
+        } catch (AcademyError $e) {
+            self::assertSame(AcademyReason::REFERENCE_NOT_FOUND, $e->reason);
+            self::assertStringNotContainsString('SQLSTATE', $e->getMessage() . json_encode($e->context));
+            self::assertNotNull($e->getPrevious());
+        }
+        // F-06: the two errors exist and are distinct today (mapping is an A3 concern)
+        $view = $this->actor($w['unit'], ['ACADEMY_VIEW']);
+        $enr = new EnrollmentService($this->rt());
+        $this->deny(AcademyReason::TARGET_NOT_FOUND, fn () => $enr->listForClass($view['user'], $view['session'], 999999999));
+        $other = $this->world();
+        $this->deny(AcademyReason::OUT_OF_SCOPE, fn () => $enr->listForClass($view['user'], $view['session'], $other['class']));
+        // mass assignment
+        $as = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
+        $svc = new AssessmentService($this->rt());
+        $id = $svc->create($as['user'], $as['session'], $w['version'], null, 'P', '10', '5', 1, '1')['assessment_id'];
+        foreach (['status', 'course_version_id', 'public_id', 'id', 'lock_version', 'created_at'] as $f) {
+            $this->deny(AcademyReason::INVALID_INPUT, fn () => $svc->update($as['user'], $as['session'], $id, [$f => 'x'], 0));
+        }
+    }
+}
