@@ -1,0 +1,103 @@
+{
+  "instance_used": {
+    "note": "Genuinely verified MySQL 8.4.7, port 33071 (3307 unusable -- see A1R_test_infra_port_collision_evidence.json)",
+    "version_confirmed": "8.4.7",
+    "app_db_3306_laravel_table_count_before": 127,
+    "app_db_3306_laravel_table_count_after": 127
+  },
+  "fresh_install_via_pool_py": {
+    "mepa_wave5_test_pool_01": { "migrations_ran": 155, "tables": 152 },
+    "mepa_wave4_test_pool_01": { "migrations_ran": 130, "tables": 127 },
+    "mepa_wave3_test_pool_01": { "migrations_ran": 113, "tables": 110 }
+  },
+  "information_schema_recomputed_wave5_physical_counts": {
+    "total_physical_tables": 152,
+    "framework_tables": 4,
+    "business_tables": 148,
+    "non_innodb_tables": 0,
+    "wave5_columns": 215,
+    "wave5_foreign_keys": 52,
+    "wave5_checks": 21,
+    "wave5_unique_constraints": 32,
+    "wave5_public_id_columns": 8,
+    "wave5_cascade_fks": 0,
+    "matches_documented_claims": true
+  },
+  "d01_compliance_checks": {
+    "pk_columns_not_bigint_unsigned_autoincrement_id": 0,
+    "fk_columns_not_bigint_unsigned": 0,
+    "public_id_columns_not_char26_ascii_ascii_bin_not_null": 0,
+    "public_id_columns_missing_unique_index": 0,
+    "wave5_columns_named_member_number_or_membership": 0
+  },
+  "classes_and_class_sessions_live_check": {
+    "classes_has_unit_id": false,
+    "classes_academic_unit_id_nullable": false,
+    "classes_location_id_nullable": true,
+    "classes_location_id_fk_target": "physical_locations",
+    "classes_location_id_delete_rule": "RESTRICT",
+    "classes_location_id_update_rule": "RESTRICT",
+    "class_sessions_event_session_id_nullable": true
+  },
+  "scope_structure_live_check": {
+    "scopes_scope_kind_check_clause": "(`scope_kind` in (_utf8mb4'UNIT',_utf8mb4'UNIT_DEPARTMENT'))",
+    "user_role_scopes_columns": ["id","user_id","role_id","scope_id","granted_by","status","starts_at","ends_at","reason","source_document_id","created_at","lock_version"],
+    "academy_permission_seeds_count": 0
+  },
+  "courses_no_change_check": {
+    "columns": ["id","public_id","code","name","eligibility_policy_version","status","created_at","lock_version"],
+    "matches_wave4_baseline": true
+  },
+  "wavefivePhysicalTest_real_run": {
+    "command": "WAVE5_DSN=mysql:host=127.0.0.1;port=33071;dbname=mepa_wave5_test_phpunit_audit WAVE5_USER=root WAVE5_PASSWORD= WAVE5_ALLOW_SYNTHETIC=1 php vendor/phpunit/phpunit/phpunit tests/Database/WaveFivePhysicalTest.php",
+    "result": "OK (7 tests, 2272 assertions)",
+    "matches_documented_claim": true,
+    "note": "This independently reproduces fresh/upgrade/empty-rollback/remigrate/durable-rollback-guard/FK-UNIQUE-CHECK-enforcement/person-reuse/classes-location/scope-structure/D-09-D-11-no-freeze/courses-no-change on a verified-correct MySQL 8.4.7 instance -- separate from and not relying on the original A1 evidence."
+  },
+  "independent_sample_probes_beyond_committed_suite": {
+    "orphan_fk_assessments_course_version_id": "REJECTED 1452",
+    "fk_restrict_on_delete_people_referenced_by_instructors": "REJECTED 1451, parent row survived",
+    "check_curricula_version_zero": "REJECTED 3819",
+    "check_course_prerequisites_reflexive": "REJECTED 3819"
+  },
+  "real_concurrency_tests": {
+    "test_1_instructors_person_id": {
+      "method": "Two separate OS processes (mysql.exe), each START TRANSACTION; INSERT same person_id; SELECT SLEEP(1.5); COMMIT;, launched concurrently",
+      "connection_a_result": "COMMIT succeeded",
+      "connection_b_result": "ERROR 1062 Duplicate entry '1' for key 'instructors.uq_instructors_person_id'",
+      "final_row_count_for_person_id_1": 1,
+      "partial_corruption": false
+    },
+    "test_2_enrollments_person_id_class_id": {
+      "method": "Same two-process pattern against enrollments(person_id=2, class_id=1) -- mirrors critical test C4",
+      "connection_a_result": "COMMIT succeeded",
+      "connection_b_result": "ERROR 1062 Duplicate entry '2-1' for key 'enrollments.uq_enrollments_person_id_class_id'",
+      "final_row_count": 1,
+      "partial_corruption": false
+    }
+  },
+  "instance_stop_verification": {
+    "tool_reported": "SUCCESS, instance_stopped_confirmed=true",
+    "independent_verification": "mysqladmin ping on 33071 failed (10061), no LISTENING socket, datadir removed",
+    "app_db_3306_laravel_unaffected": true
+  },
+  "validators_live_run": {
+    "validate-wave5-schema.cjs": { "status": "STRICT_PARITY_PASS", "unexpected_drift": 0 },
+    "validate-wave5-contracts.cjs": { "status": "APPROVED_CONTRACTS_UNCHANGED", "drift": 0 },
+    "validate-database-docs.cjs": { "errors": 0 }
+  },
+  "graphify_independent_check": {
+    "manifest_entries": 799,
+    "graph_nodes": 4077,
+    "graph_links": 6234,
+    "built_at_commit": "abcb762",
+    "dangling_links_by_broken_id_reference": 0,
+    "wave5_plus_courses_table_nodes_found": "26/26"
+  },
+  "model_catalog_json_documentation_drift_found": {
+    "table": "classes",
+    "missing_column": "location_id",
+    "detail": "model_catalog.json's classes entry (10 columns) predates ADR-0015 Decision A and does not list location_id, its index, or its FK -- correctly omits the REJECTED unit_id but is stale for the ACCEPTED location_id. validate-wave5-schema.cjs papers over this with a hardcoded per-column exception (scripts/validate-wave5-schema.cjs:101-102) rather than the catalog being updated.",
+    "physical_schema_itself": "correct, matches wave5_manifest.json (design authority) and ADR-0015"
+  }
+}

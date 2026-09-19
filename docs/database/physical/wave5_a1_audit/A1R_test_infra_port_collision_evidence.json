@@ -1,0 +1,29 @@
+{
+  "finding_id": "A1R-01",
+  "title": "mysql_instance.py start()/init-start reports false STARTED when port 3307 is occupied by an unrelated, pre-existing WAMP MariaDB service",
+  "reproduction_steps": [
+    "python tools/test-infrastructure/mysql_instance.py init-start --port 3307 --datadir <fresh empty dir>",
+    "Tool returned: {\"status\": \"STARTED\", \"datadir\": \"...\", \"port\": 3307}",
+    "Independent check: mysql.exe -h127.0.0.1 -P3307 -uroot -e 'SELECT VERSION(), @@datadir, @@port' returned '11.4.9-MariaDB' / 'c:\\\\wamp64\\\\bin\\\\mariadb\\\\mariadb11.4.9\\\\data\\\\' / 3307 -- NOT MySQL 8.4.7",
+    "Root cause found in the tool's own mysqld.err for that init-start attempt: the real 8.4.7 process logged 'Can't start server: Bind on TCP/IP port' and 'Do you already have another mysqld server running on port: 3307 ?', then aborted and shut down cleanly at 09:29:57Z -- yet the tool's stdout still reported STARTED, because start() only polls `mysqladmin ping` on the target host:port, which succeeds against ANY MySQL-protocol server already listening there, not specifically the process it just spawned",
+    "Confirmed via Get-CimInstance Win32_Service: 'wampmariadb64' (MariaDB 11.4.9, C:\\wamp64\\bin\\mariadb\\mariadb11.4.9\\bin\\mysqld.exe) is a genuine, independently-running WAMP Windows service bound to port 3307, State=Running",
+    "MariaDB's own error log (KILSYSTEM-SG.err) shows a single 'Starting MariaDB ... as process 16416' entry at 2026-09-17 13:55:03 with no subsequent shutdown entries -- i.e. running continuously since BEFORE all three Wave5 commits (7f9a7dd/abcb762/edf0d41, all dated 2026-09-18)",
+    "Decisive corroboration: mepa_wave3_test_pool_01, mepa_wave4_test_pool_01, mepa_wave4_test_pool_02 (the exact synthetic pool database names tools/test-infrastructure/pool.py creates) already existed on this MariaDB service before this audit touched port 3307 at all -- these can only have been created by an earlier `pool.py create-and-migrate --port 3307` run whose migrate_pool_db.php subprocess connected to whatever was actually listening on 3307 at that time, which -- given the continuous MariaDB uptime since 2026-09-17 -- was almost certainly this same shared, non-disposable service, not a genuinely isolated per-session MySQL 8.4.7 instance"
+  ],
+  "discriminating_test": {
+    "purpose": "Determine whether a PHPUnit run hitting this collision could still produce the documented clean result",
+    "probe": "CREATE TABLE t (id INT, v INT, CONSTRAINT ck_v CHECK (v >= 1)); INSERT INTO t (id,v) VALUES (1,0); -- against the MariaDB service on 3307",
+    "result": "ERROR 4025 (23000): CONSTRAINT `ck_v` failed -- MariaDB's CHECK-violation error code, NOT MySQL's 3819",
+    "significance": "apps/api/tests/Database/WaveFivePhysicalTest.php:165-207 hardcodes `self::assertSame(3819, ...)` for all 6 CHECK-violation cases. Had the claimed 'OK (7 tests, 2272 assertions)' PHPUnit run actually executed against this MariaDB service, that assertion would have failed loudly (4025 != 3819), which is inconsistent with a clean pass. This does not prove the original A1 run avoided the collision (this audit cannot time-travel to confirm), but it does prove the harness provides no way to distinguish a trustworthy MySQL 8.4.7 run from this failure mode without an independent VERSION()/error-code cross-check, which nothing in the automated pipeline (pool.py, migrate_pool_db.php, WaveFiveCase.php, the validators) performs."
+  },
+  "adr_0014_five_criteria_assessment": {
+    "a_cannot_alter_product_behavior": "TRUE -- does not change schema/DDL",
+    "b_cannot_produce_false_PASS": "FALSE -- demonstrated: init-start itself returns a false STARTED status; by extension anything built on 'STARTED means a genuine dedicated MySQL 8.4.7 instance is ready' inherits that false-positive risk",
+    "c_cannot_hide_a_real_failure": "FALSE -- demonstrated: the real mysqld 8.4.7 bind failure was completely hidden behind {\"status\":\"STARTED\"}",
+    "d_cannot_damage_another_runs_resources": "FALSE -- demonstrated: mepa_wave3_test_pool_01/mepa_wave4_test_pool_01/02 persist on a shared, always-on service rather than a disposable per-session instance, meaning separate 'isolated' test sessions on this machine are not actually isolated from each other",
+    "e_cannot_invalidate_critical_evidence": "NOT RULED OUT -- cannot be proven false given available evidence; the collision was standing throughout the entire Wave5 implementation window",
+    "conclusion": "Does NOT qualify for TEST_INFRA_DEBT (fails b, c, d as demonstrated, not merely theoretical). Classified as EVIDENCE per ADR-0014."
+  },
+  "workaround_used_for_this_audit": "Re-ran all live tests against port 33071 (confirmed free) instead of 3307. Independently verified VERSION()=8.4.7 before trusting the instance. All fresh/upgrade/rollback/remigrate/FK/UNIQUE/CHECK/concurrency evidence in this audit's own report was gathered against this verified-correct instance, not the colliding MariaDB service.",
+  "recommended_remediation": "mysql_instance.py's start()/init-start must verify, after mysqladmin ping succeeds, that the responding server is (a) the specific process it just spawned (PID/datadir match, same technique stop() now uses per P0.3.5-A1.0) and (b) reports the expected MySQL 8.4.7 version string -- failing closed (STARTED -> BIND_FAILED or similar) rather than trusting a bare ping. This is the mirror-image of the stop() false-success bug already found and fixed in P0.3.5-A1.0; that fix did not cover start()."
+}
