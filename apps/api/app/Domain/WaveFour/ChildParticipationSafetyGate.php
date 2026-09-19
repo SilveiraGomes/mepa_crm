@@ -51,6 +51,46 @@ final class ChildParticipationSafetyGate
             throw new DomainError('PICKUP_NOT_AUTHORIZED');
         }
     }
+    // P0.3.5-A2 (additive; no existing method changed): participation cover for non-event flows such
+    // as Academy enrollment and attendance. Same split admit() uses: rows are locked early, predicates
+    // are evaluated late against one decisive clock. Returns null when the Person has no child profile
+    // (the gate does not apply); otherwise every later assertParticipationCover() failure is a deny.
+    public function lockParticipationCover(int $person): ?array
+    {
+        // The people share lock fences concurrent child registration (register() takes it exclusively).
+        $this->db->table('people')->where('id', $person)->sharedLock()->first();
+        if (!$this->db->table('child_profiles')->where('person_id', $person)->lockForUpdate()->first()) {
+            return null;
+        }
+        $child = $this->child($person);
+        $consents = $this->db->table('person_consents')->where('subject_person_id', $person)->where('purpose', $this->policy->participationPurpose)->where('policy_version', $this->policy->version)->lockForUpdate()->get();
+        $authorizations = $this->db->table('guardian_authorizations')->where('child_person_id', $person)->where('authorization_kind', $this->policy->guardianKind)->sharedLock()->get();
+        return ['child' => $child, 'consents' => $consents, 'authorizations' => $authorizations];
+    }
+    public function assertParticipationCover(array $cover, DateTimeImmutable $at): void
+    {
+        $t = $at->format('Y-m-d H:i:s.u');
+        $child = (int) $cover['child']->person_id;
+        $consented = false;
+        foreach ($cover['consents'] as $c) {
+            if ($c->revoked_at !== null || $c->status !== $this->policy->state('person_consents') || $c->granted_at > $t) {
+                continue;
+            }
+            $consented = true;
+            foreach ($cover['authorizations'] as $a) {
+                if ((int) $a->guardian_person_id !== (int) $c->given_by_person_id) {
+                    continue;
+                }
+                try {
+                    $this->validateAuthorization($a, $child, (int) $a->guardian_person_id, $this->policy->guardianKind, $at);
+                    return;
+                } catch (DomainError) {
+                    continue;
+                }
+            }
+        }
+        throw new DomainError($consented ? 'GUARDIAN_AUTHORIZATION_INVALID' : 'CONSENT_REQUIRED');
+    }
     public function admit(int $actor, int $auth, int $event, int $session, int $child, int $deliveredBy, int $authorization, string $method, bool $confirmed, callable $eventScan): array
     {
         $access = new DomainAccess($this->db, $this->events);

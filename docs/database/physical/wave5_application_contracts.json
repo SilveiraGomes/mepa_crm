@@ -1,0 +1,1432 @@
+{
+  "phase": "P0.3.5-A2",
+  "title": "Academy application layer contracts (services, authorization, scope, safety, business rules)",
+  "maintenance_note": "Hand-maintained contract. scripts/validate-wave5-application-contracts.cjs cross-checks every row against app/Domain/Academy (permission matrix, service methods, audit and transaction calls).",
+  "baseline": {
+    "design": "7f9a7dd",
+    "physical_schema": "abcb762",
+    "evidence_hygiene": "edf0d41",
+    "evidence_remediation": "21f4175",
+    "a1_independent_reaudit": "APPROVED (2a313af)"
+  },
+  "schema_changes": 0,
+  "conventions": {
+    "namespace": "App\\Domain\\Academy",
+    "error_type": "App\\Domain\\Academy\\AcademyError (reason = AcademyReason constant, context = ids only)",
+    "clock": "App\\Domain\\WaveFour\\DomainClock (SELECT UTC_TIMESTAMP(6)), sampled after every lock wait",
+    "audit": {
+      "table": "audit_logs",
+      "source": "WAVE5_DOMAIN",
+      "transactional": "record() runs inside the business transaction: a failed audit rolls back the business write; a failed business write leaves no audit row",
+      "override": "an ADMIN_OVERRIDE decision writes the operation row (after_metadata.authority = ADMIN_OVERRIDE) plus a dedicated ACADEMY_ADMIN_OVERRIDE row sharing the correlation id; the reason is mandatory"
+    },
+    "authorization_chain": "actor -> permission (role_permissions, data_type ACADEMY, action = code) -> institutional scope (user_role_scopes/scopes; the role and the scope of ONE grant are evaluated jointly; include_descendants honoured) -> [active class_instructors assignment of the actor's own Person when required] -> operation",
+    "final_authorization": "AcademyRuntime::write re-verifies, with FOR SHARE reads and a fresh decisive clock, exactly the grounds of the provisional decision as the last statement before commit; it can never switch from DIRECT to ADMIN_OVERRIDE",
+    "client_context": "class_id / academic_unit_id / unit_id may be claimed by the caller but are only compared with the database-derived target after authorization (CONTEXT_MISMATCH); they never grant authority",
+    "person_resolution": "people.id or people.public_id (ULID) only; member numbers are rejected (INVALID_PERSON_REFERENCE); no membership dependency",
+    "child_safety": "ChildParticipationSafetyGate (Wave 4) through AcademyChildSafety: lockParticipationCover() early, assertParticipationCover() late; fail closed",
+    "pagination": "list operations cap the page size at 100"
+  },
+  "permissions": [
+    {
+      "code": "ACADEMY_VIEW",
+      "a0_proposal": {
+        "action": "VIEW",
+        "data_type": "ACADEMIC_RECORD"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_VIEW",
+        "action": "ACADEMY_VIEW",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_MANAGE",
+      "a0_proposal": {
+        "action": "MANAGE",
+        "data_type": "ACADEMIC_CATALOG"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_MANAGE",
+        "action": "ACADEMY_MANAGE",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_ENROLL",
+      "a0_proposal": {
+        "action": "CREATE",
+        "data_type": "ENROLLMENT"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_ENROLL",
+        "action": "ACADEMY_ENROLL",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_TEACH",
+      "a0_proposal": {
+        "action": "MANAGE",
+        "data_type": "CLASS_INSTRUCTION"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_TEACH",
+        "action": "ACADEMY_TEACH",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_ATTENDANCE",
+      "a0_proposal": {
+        "action": "RECORD",
+        "data_type": "ATTENDANCE"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_ATTENDANCE",
+        "action": "ACADEMY_ATTENDANCE",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_ASSESS",
+      "a0_proposal": {
+        "action": "RECORD",
+        "data_type": "GRADE"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_ASSESS",
+        "action": "ACADEMY_ASSESS",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_GRADES_VIEW",
+      "a0_proposal": {
+        "action": "VIEW",
+        "data_type": "GRADE"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_GRADES_VIEW",
+        "action": "ACADEMY_GRADES_VIEW",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_CERTIFY",
+      "a0_proposal": {
+        "action": "ISSUE",
+        "data_type": "CERTIFICATE"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_CERTIFY",
+        "action": "ACADEMY_CERTIFY",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    },
+    {
+      "code": "ACADEMY_ADMIN",
+      "a0_proposal": {
+        "action": "MANAGE",
+        "data_type": "ACADEMY_CONFIG"
+      },
+      "enforced_row": {
+        "code": "ACADEMY_ADMIN",
+        "action": "ACADEMY_ADMIN",
+        "data_type": "ACADEMY"
+      },
+      "mapping_note": "Wave 3/4 DomainAccess/EventAccess require permissions.action = permissions.code and match the domain in data_type; the A0 proposal is therefore mapped to action = code, data_type = ACADEMY. No permission was renamed; seeds exist only in tests (0 REFERENCE seeds)."
+    }
+  ],
+  "permission_matrix": {
+    "structure.manage": {
+      "permission": "ACADEMY_MANAGE",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": true
+    },
+    "enrollment.view": {
+      "permission": "ACADEMY_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "enrollment.create": {
+      "permission": "ACADEMY_ENROLL",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": true
+    },
+    "enrollment.transition": {
+      "permission": "ACADEMY_ENROLL",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": true
+    },
+    "instructor.assign": {
+      "permission": "ACADEMY_MANAGE",
+      "class_assignment": false,
+      "admin_override": true,
+      "audit": true
+    },
+    "instructor.end": {
+      "permission": "ACADEMY_MANAGE",
+      "class_assignment": false,
+      "admin_override": true,
+      "audit": true
+    },
+    "instructor.view": {
+      "permission": "ACADEMY_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "session.manage": {
+      "permission": "ACADEMY_TEACH",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "session.view": {
+      "permission": "ACADEMY_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "attendance.record": {
+      "permission": "ACADEMY_ATTENDANCE",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "attendance.view": {
+      "permission": "ACADEMY_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "attempt.record": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "attempt.transition": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "grade.record": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "grade.revise": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "grade.finalize": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "grade.view": {
+      "permission": "ACADEMY_GRADES_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "progress.record": {
+      "permission": "ACADEMY_TEACH",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": false
+    },
+    "enrollment.complete": {
+      "permission": "ACADEMY_ASSESS",
+      "class_assignment": true,
+      "admin_override": true,
+      "audit": true
+    },
+    "certificate.issue": {
+      "permission": "ACADEMY_CERTIFY",
+      "class_assignment": false,
+      "admin_override": true,
+      "audit": true
+    },
+    "certificate.revoke": {
+      "permission": "ACADEMY_CERTIFY",
+      "class_assignment": false,
+      "admin_override": true,
+      "audit": true
+    },
+    "transcript.compile": {
+      "permission": "ACADEMY_GRADES_VIEW",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "transcript.issue": {
+      "permission": "ACADEMY_CERTIFY",
+      "class_assignment": false,
+      "admin_override": true,
+      "audit": true
+    }
+  },
+  "services": [
+    {
+      "name": "EnrollmentService",
+      "file": "apps/api/app/Domain/Academy/EnrollmentService.php",
+      "operations": [
+        {
+          "service": "EnrollmentService",
+          "method": "enroll",
+          "operation": "enrollment.create",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "enrollment.created"
+          ],
+          "child_safety": true,
+          "policy_dependency": "D-11: initial state + classes.enrollable set from AcademyPolicy",
+          "concurrency": "exclusive lock on the people row serializes every enrollment of that Person; UNIQUE(person_id,class_id) is the backstop and its 1062 maps to ALREADY_ENROLLED",
+          "idempotency": "natural (logical key = UNIQUE(person_id,class_id)); no idempotency-key infrastructure",
+          "errors": [
+            "ALREADY_ENROLLED",
+            "CHILD_NOT_ELIGIBLE",
+            "CLASS_NOT_ENROLLABLE",
+            "CONSENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "GUARDIAN_AUTHORIZATION_INVALID",
+            "INVALID_PERSON_REFERENCE",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "PERSON_NOT_ELIGIBLE",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_ENROLL",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        },
+        {
+          "service": "EnrollmentService",
+          "method": "transition",
+          "operation": "enrollment.transition",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "enrollment.transitioned"
+          ],
+          "child_safety": true,
+          "policy_dependency": "D-11: only APPROVED transitions execute; the approval_targets role sets approved_by",
+          "concurrency": "enrollment row FOR UPDATE + lock_version optimistic check",
+          "idempotency": "re-sending the same target state is INVALID_TRANSITION (a no-op is not a transition)",
+          "errors": [
+            "CONSENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "GUARDIAN_AUTHORIZATION_INVALID",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "child-safety cover is required only when the target state is configured as an approval target",
+          "required_permission": "ACADEMY_ENROLL",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        },
+        {
+          "service": "EnrollmentService",
+          "method": "listForClass",
+          "operation": "enrollment.view",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "none",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "bounded: page size capped, optional status filter, no PII columns",
+          "required_permission": "ACADEMY_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "InstructorAssignmentService",
+      "file": "apps/api/app/Domain/Academy/InstructorAssignmentService.php",
+      "operations": [
+        {
+          "service": "InstructorAssignmentService",
+          "method": "assign",
+          "operation": "instructor.assign",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "class_instructor.assigned"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: class_instructors.initial/active, instructors.initial/active",
+          "concurrency": "exclusive lock on the classes row (aggregate anchor; the schema has no UNIQUE on class_instructors) then the people row; overlap check under lock",
+          "idempotency": "natural: an overlapping active assignment converges on ALREADY_ASSIGNED",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ALREADY_ASSIGNED",
+            "CONTEXT_MISMATCH",
+            "INSTRUCTOR_NOT_ACTIVE",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "PERSON_NOT_ELIGIBLE",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "admin override allowed (ACADEMY_ADMIN, reason required, audited); a teacher cannot self-assign",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "InstructorAssignmentService",
+          "method": "end",
+          "operation": "instructor.end",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "class_instructor.removed"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: class_instructors 'ended' role + approved transition",
+          "concurrency": "classes row FOR UPDATE then assignment row FOR UPDATE",
+          "idempotency": "ending an ended assignment is INVALID_TRANSITION",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "the row is closed (ends_at, status), never deleted",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "InstructorAssignmentService",
+          "method": "activeAssignments",
+          "operation": "instructor.view",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "D-11: class_instructors.active set",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "bounded (limit 200)",
+          "required_permission": "ACADEMY_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "ClassSessionService",
+      "file": "apps/api/app/Domain/Academy/ClassSessionService.php",
+      "operations": [
+        {
+          "service": "ClassSessionService",
+          "method": "schedule",
+          "operation": "session.manage",
+          "scope_source": "classes.academic_unit_id -> academic_units.unit_id (AcademyScopeResolver::forClass)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "class_session.scheduled"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: classes.teachable, class_sessions.initial",
+          "concurrency": "class row share lock",
+          "idempotency": "none (each call is a new session)",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CLASS_NOT_TEACHABLE",
+            "CONTEXT_MISMATCH",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "event_session_id is nullable; when set, the event owner unit must equal the class academic unit's organizational unit; the lesson must belong to the class's course version",
+          "required_permission": "ACADEMY_TEACH",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "ClassSessionService",
+          "method": "transition",
+          "operation": "session.manage",
+          "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "class_session.transitioned"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: approved transitions only",
+          "concurrency": "session row FOR UPDATE + lock_version",
+          "idempotency": "a no-op is INVALID_TRANSITION",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_TEACH",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "ClassSessionService",
+          "method": "effectiveLocation",
+          "operation": "session.view",
+          "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "none",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "AcademicSessionLocationResolver::effectiveAcademicSessionLocation: explicit event location prevails, else classes.location_id; never copied onto sessions",
+          "required_permission": "ACADEMY_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "AcademicAttendanceService",
+      "file": "apps/api/app/Domain/Academy/AcademicAttendanceService.php",
+      "operations": [
+        {
+          "service": "AcademicAttendanceService",
+          "method": "record",
+          "operation": "attendance.record",
+          "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "attendance.recorded",
+            "attendance.updated"
+          ],
+          "child_safety": true,
+          "policy_dependency": "D-11: class_sessions.attendable, enrollments.operational, academic_attendance.recordable",
+          "concurrency": "enrollment row FOR UPDATE, then the UNIQUE(enrollment_id,class_session_id) row FOR UPDATE",
+          "idempotency": "natural: same status = UNCHANGED (no write, no audit); a different status = UPDATED with before/after audit",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ATTENDANCE_STATUS_INVALID",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONSENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_ACTIVE",
+            "GUARDIAN_AUTHORIZATION_INVALID",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "SESSION_NOT_ATTENDABLE",
+            "STALE_WRITE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "minor: consent + guardian cover locked early and re-evaluated late at the decisive clock; academic attendance never writes event_attendance",
+          "required_permission": "ACADEMY_ATTENDANCE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "AcademicAttendanceService",
+          "method": "recordBulk",
+          "operation": "attendance.record",
+          "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "attendance.recorded",
+            "attendance.updated"
+          ],
+          "child_safety": true,
+          "policy_dependency": "D-11: same sets as record",
+          "concurrency": "entries processed in enrollment-id order (uniform lock order); all-or-nothing in one transaction",
+          "idempotency": "natural per entry; at most 200 entries per request",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ATTENDANCE_STATUS_INVALID",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONSENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_ACTIVE",
+            "GUARDIAN_AUTHORIZATION_INVALID",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "SESSION_NOT_ATTENDABLE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_ATTENDANCE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "AcademicAttendanceService",
+          "method": "listForSession",
+          "operation": "attendance.view",
+          "scope_source": "class_sessions.class_id -> classes -> academic_units.unit_id (forSession)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "none",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "bounded pagination",
+          "required_permission": "ACADEMY_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "AssessmentService",
+      "file": "apps/api/app/Domain/Academy/AssessmentService.php",
+      "operations": [
+        {
+          "service": "AssessmentService",
+          "method": "create",
+          "operation": "structure.manage",
+          "scope_source": "every organizational unit of the classes taught from the course version AND of the programs whose curricula list its course; ALL must be covered, none = SCOPE_UNRESOLVED (forCourseVersion/forAssessment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "assessment.created"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09: max_score/pass_score/max_attempts/weight are NOT NULL columns supplied by the caller; a missing value is POLICY_NOT_CONFIGURED; nothing is defaulted",
+          "concurrency": "course version share lock",
+          "idempotency": "none (each call creates a definition)",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "POLICY_NOT_CONFIGURED",
+            "SCOPE_UNRESOLVED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "only schema-declared technical invariants are validated (decimal shape, pass_score <= max_score, max_attempts >= 1)",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        },
+        {
+          "service": "AssessmentService",
+          "method": "update",
+          "operation": "structure.manage",
+          "scope_source": "every organizational unit of the classes taught from the course version AND of the programs whose curricula list its course; ALL must be covered, none = SCOPE_UNRESOLVED (forCourseVersion/forAssessment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "assessment.updated"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09: values remain caller-supplied",
+          "concurrency": "assessment row FOR UPDATE + lock_version",
+          "idempotency": "strict allow-list of columns (mass assignment is rejected, not ignored)",
+          "errors": [
+            "ASSESSMENT_IN_USE",
+            "CONTEXT_MISMATCH",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "SCOPE_UNRESOLVED",
+            "STALE_WRITE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "scoring fields are frozen once attempts exist",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        }
+      ]
+    },
+    {
+      "name": "AssessmentAttemptService",
+      "file": "apps/api/app/Domain/Academy/AssessmentAttemptService.php",
+      "operations": [
+        {
+          "service": "AssessmentAttemptService",
+          "method": "start",
+          "operation": "attempt.record",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "attempt.recorded"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09: max_attempts is NOT enforced (value not approved); D-11: assessments.open, enrollments.operational",
+          "concurrency": "enrollment row FOR UPDATE anchors per-enrollment numbering; UNIQUE(assessment_id,enrollment_id,attempt_number) is the backstop (1062 -> ATTEMPT_ALREADY_EXISTS)",
+          "idempotency": "natural when the caller passes the attempt number it intends to create",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ASSESSMENT_NOT_OPEN",
+            "ATTEMPT_ALREADY_EXISTS",
+            "ATTEMPT_NUMBER_CONFLICT",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_ACTIVE",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "attempt number = last + 1, assigned by the service in the same transaction as the insert",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "AssessmentAttemptService",
+          "method": "transition",
+          "operation": "attempt.transition",
+          "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "attempt.transitioned"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: approved transitions only; the 'submitted' role sets submitted_at",
+          "concurrency": "attempt row FOR UPDATE + lock_version",
+          "idempotency": "a no-op is INVALID_TRANSITION",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        }
+      ]
+    },
+    {
+      "name": "GradeService",
+      "file": "apps/api/app/Domain/Academy/GradeService.php",
+      "operations": [
+        {
+          "service": "GradeService",
+          "method": "record",
+          "operation": "grade.record",
+          "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "grade.recorded"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: assessment_attempts.gradable, grades.initial; the only score bound is the assessment's own max_score",
+          "concurrency": "attempt row FOR UPDATE; UNIQUE(attempt_id,version) backstop -> GRADE_ALREADY_RECORDED",
+          "idempotency": "natural: a second first-record is GRADE_ALREADY_RECORDED",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ATTEMPT_NOT_GRADABLE",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "GRADE_ALREADY_RECORDED",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "version 1 only",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "GradeService",
+          "method": "revise",
+          "operation": "grade.revise",
+          "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "grade.revised"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: as record",
+          "concurrency": "attempt row FOR UPDATE + the caller must present expectedVersion; a mismatch is STALE_WRITE and nothing is stored; UNIQUE(attempt_id,version) backstop -> STALE_WRITE",
+          "idempotency": "append-only versions: a stored score is never updated",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "ATTEMPT_NOT_GRADABLE",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "GRADE_NOT_FOUND",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "REASON_REQUIRED",
+            "STALE_WRITE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "reason is mandatory; audit carries actor, before (version/score/status) and after",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "GradeService",
+          "method": "finalize",
+          "operation": "grade.finalize",
+          "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "grade.finalized"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: the grades 'final' role; STATE_POLICY_PENDING until the owners approve the transition",
+          "concurrency": "attempt row then grade row FOR UPDATE; expectedVersion must equal the latest",
+          "idempotency": "n/a",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "GRADE_NOT_FOUND",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "isolated: never blocks the rest of the layer",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "GradeService",
+          "method": "history",
+          "operation": "grade.view",
+          "scope_source": "assessment_attempts.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forAttempt)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "none",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "ACADEMY_GRADES_VIEW in institutional scope; ACADEMY_ASSESS alone cannot read",
+          "required_permission": "ACADEMY_GRADES_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "ProgressService",
+      "file": "apps/api/app/Domain/Academy/ProgressService.php",
+      "operations": [
+        {
+          "service": "ProgressService",
+          "method": "recordLesson",
+          "operation": "progress.record",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "D-09/D-11: records the reported ratio only; progress.initial/completed roles; source_version = policy version",
+          "concurrency": "enrollment row FOR UPDATE; UNIQUE(enrollment_id,lesson_id) upsert under lock",
+          "idempotency": "natural upsert",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_ACTIVE",
+            "INVALID_INPUT",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "cache, not a diploma: never decides completion; the lesson must belong to the enrollment's course version",
+          "required_permission": "ACADEMY_TEACH",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": false
+        },
+        {
+          "service": "ProgressService",
+          "method": "recordResource",
+          "operation": "progress.record",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "D-11: resource_progress.initial/verified roles",
+          "concurrency": "enrollment row FOR UPDATE; UNIQUE(enrollment_id,resource_id) upsert under lock",
+          "idempotency": "natural upsert",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_ACTIVE",
+            "INVALID_INPUT",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "the resource must belong to a lesson of the enrollment's course version",
+          "required_permission": "ACADEMY_TEACH",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": false
+        }
+      ]
+    },
+    {
+      "name": "CompletionService",
+      "file": "apps/api/app/Domain/Academy/CompletionService.php",
+      "operations": [
+        {
+          "service": "CompletionService",
+          "method": "complete",
+          "operation": "enrollment.complete",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "enrollment.completed"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09: course_versions.completion_policy_metadata JSON (criteria grammar only; every value is stored data); D-11: 'completed' role + approved transition",
+          "concurrency": "enrollment row FOR UPDATE + lock_version",
+          "idempotency": "completing a completed enrollment is INVALID_TRANSITION",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CLASS_ASSIGNMENT_REQUIRED",
+            "COMPLETION_CRITERIA_NOT_MET",
+            "CONTEXT_MISMATCH",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "no automatic completion; a recorded grade alone never completes; a grade only counts once it is in the configured 'final' set",
+          "required_permission": "ACADEMY_ASSESS",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": true,
+          "admin_override": true,
+          "audit_required": true
+        }
+      ]
+    },
+    {
+      "name": "CertificateService",
+      "file": "apps/api/app/Domain/Academy/CertificateService.php",
+      "operations": [
+        {
+          "service": "CertificateService",
+          "method": "issue",
+          "operation": "certificate.issue",
+          "scope_source": "enrollments.class_id -> classes.academic_unit_id -> academic_units.unit_id (forEnrollment)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "certificate.issued"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09: a valid completion policy is required; D-11: enrollments.completed, certificates.initial",
+          "concurrency": "enrollment row FOR UPDATE serializes per enrollment; certificates rows FOR UPDATE; UNIQUE(enrollment_id,version) backstop -> CERTIFICATE_ALREADY_EXISTS",
+          "idempotency": "natural: an active (non-revoked) certificate makes the second request CERTIFICATE_ALREADY_EXISTS",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CERTIFICATE_ALREADY_EXISTS",
+            "CONTEXT_MISMATCH",
+            "ENROLLMENT_NOT_COMPLETED",
+            "FILE_NOT_AVAILABLE",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "ACADEMY_CERTIFY only (ACADEMY_ASSESS never issues); the token is returned once, only its SHA-256 is stored and it is never audited",
+          "required_permission": "ACADEMY_CERTIFY",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": true,
+          "audit_required": true
+        },
+        {
+          "service": "CertificateService",
+          "method": "revoke",
+          "operation": "certificate.revoke",
+          "scope_source": "certificates.enrollment_id -> enrollments -> classes -> academic_units.unit_id (forCertificate)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "certificate.revoked"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: certificates 'revoked' role + approved transition",
+          "concurrency": "enrollment row then certificate row FOR UPDATE",
+          "idempotency": "revoking a revoked certificate is CERTIFICATE_ALREADY_REVOKED",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CERTIFICATE_ALREADY_REVOKED",
+            "CONTEXT_MISMATCH",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "POLICY_NOT_CONFIGURED",
+            "REASON_REQUIRED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "sets revoked_at and never deletes; a re-issue is a new version",
+          "required_permission": "ACADEMY_CERTIFY",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": true,
+          "audit_required": true
+        }
+      ]
+    },
+    {
+      "name": "TranscriptService",
+      "file": "apps/api/app/Domain/Academy/TranscriptService.php",
+      "operations": [
+        {
+          "service": "TranscriptService",
+          "method": "compile",
+          "operation": "transcript.compile",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "transaction": "read (AcademyRuntime::read: single authorization decision, no transaction, no lock held)",
+          "audit_actions": [],
+          "child_safety": false,
+          "policy_dependency": "D-09: final_score is always null (POLICY_NOT_CONFIGURED); facts only",
+          "concurrency": "read-only",
+          "idempotency": "n/a",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "INVALID_PERSON_REFERENCE",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "classes belong to a curriculum through cohorts.curriculum_id; result_status is the stored enrollment status verbatim",
+          "required_permission": "ACADEMY_GRADES_VIEW",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": false
+        },
+        {
+          "service": "TranscriptService",
+          "method": "issue",
+          "operation": "transcript.issue",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "transcript.issued"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-09/D-11: blocked until transcripts.initial is configured; lines are factual (final_score NULL)",
+          "concurrency": "people row FOR UPDATE + transcripts FOR UPDATE; UNIQUE(person_id,curriculum_id,version) backstop",
+          "idempotency": "versioned (each issue is a new version)",
+          "errors": [
+            "ADMIN_REASON_REQUIRED",
+            "CONTEXT_MISMATCH",
+            "FILE_NOT_AVAILABLE",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "OVERRIDE_NOT_ALLOWED",
+            "PERSON_NOT_ELIGIBLE",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND",
+            "TRANSCRIPT_EMPTY"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_CERTIFY",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": true,
+          "audit_required": true
+        }
+      ]
+    },
+    {
+      "name": "CurriculumService",
+      "file": "apps/api/app/Domain/Academy/CurriculumService.php",
+      "operations": [
+        {
+          "service": "CurriculumService",
+          "method": "createVersion",
+          "operation": "structure.manage",
+          "scope_source": "programs.academic_unit_id -> academic_units.unit_id (forProgram)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "curriculum.version_created"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: curricula.initial",
+          "concurrency": "program row FOR UPDATE; UNIQUE(program_id,version) backstop",
+          "idempotency": "each call is a new version",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "POLICY_NOT_CONFIGURED",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        },
+        {
+          "service": "CurriculumService",
+          "method": "publish",
+          "operation": "structure.manage",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "curriculum.published"
+          ],
+          "child_safety": false,
+          "policy_dependency": "D-11: curricula 'published' role + approved transition",
+          "concurrency": "curriculum row FOR UPDATE + lock_version",
+          "idempotency": "publishing twice is CURRICULUM_ALREADY_PUBLISHED",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "CURRICULUM_ALREADY_PUBLISHED",
+            "INVALID_TRANSITION",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "POLICY_NOT_CONFIGURED",
+            "STALE_WRITE",
+            "STATE_POLICY_PENDING",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "a published curriculum is frozen (C8)",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        },
+        {
+          "service": "CurriculumService",
+          "method": "addCourse",
+          "operation": "structure.manage",
+          "scope_source": "curricula.program_id -> programs.academic_unit_id -> academic_units.unit_id (forCurriculum)",
+          "transaction": "write (AcademyRuntime::write: one DB transaction, deadlock retry x5, provisional then FINAL authorization before commit)",
+          "audit_actions": [
+            "curriculum.course_added"
+          ],
+          "child_safety": false,
+          "policy_dependency": "none",
+          "concurrency": "curriculum row FOR UPDATE",
+          "idempotency": "UNIQUE(curriculum_id,course_id) and UNIQUE(curriculum_id,sequence) backstops",
+          "errors": [
+            "CONTEXT_MISMATCH",
+            "CURRICULUM_PUBLISHED_IMMUTABLE",
+            "INVALID_INPUT",
+            "NOT_AUTHORIZED",
+            "OUT_OF_SCOPE",
+            "STORAGE_CONFLICT",
+            "TARGET_NOT_FOUND"
+          ],
+          "note": "",
+          "required_permission": "ACADEMY_MANAGE",
+          "institutional_scope_required": true,
+          "scope_derived_from_database": true,
+          "class_assignment_required": false,
+          "admin_override": false,
+          "audit_required": true
+        }
+      ]
+    }
+  ],
+  "state_catalog": {
+    "status": "D-11 OPEN",
+    "approved": {},
+    "approved_note": "No entity state or transition is institutionally approved. config/academy.php ships an empty catalog; every state-dependent operation fails closed (POLICY_NOT_CONFIGURED / STATE_POLICY_PENDING / INVALID_TRANSITION). Tests inject SYNTHETIC_* vocabularies exactly like the Wave 4 tests.",
+    "proposed_not_executable": {
+      "source": "docs/reviews/P0.3.5_A0_academy_design.md section 12 (PROPOSALS pending D-11)",
+      "enrollments": "PENDING -> APPROVED -> ACTIVE -> COMPLETED; PENDING -> REJECTED; ACTIVE -> SUSPENDED -> ACTIVE|WITHDRAWN; ACTIVE -> WITHDRAWN; ACTIVE -> FAILED",
+      "classes": "DRAFT -> PUBLISHED -> IN_PROGRESS -> CLOSED; PUBLISHED -> CANCELLED",
+      "assessment_attempts": "STARTED -> SUBMITTED -> GRADED; STARTED -> EXPIRED",
+      "grades": "DRAFT -> HOMOLOGATED",
+      "certificates": "ISSUED -> REVOKED",
+      "warning": "Documentation only. Never read by code; the validator fails if any of these names appears as a string literal in app/Domain/Academy."
+    }
+  },
+  "policy": {
+    "d09": "PARTIALLY RESOLVED: structure available, institutional values OPEN. 0 hardcoded values. Completion policy = course_versions.completion_policy_metadata (JSON; the criteria grammar lives in AcademicPolicyResolver, every value is stored data). Assessment values are caller-supplied (NOT NULL columns) and are not used as enforcement (attempt limit) because a row cannot tell an approved value from a placeholder.",
+    "resolver": "App\\Domain\\Academy\\AcademicPolicyResolver"
+  },
+  "structural_conflicts": [],
+  "deviations_from_design": [
+    {
+      "id": "A2-DEV-01",
+      "topic": "ACADEMY_TEACH semantics",
+      "adr0015_matrix": "TEACH creates/removes class_instructors and needs no class assignment",
+      "a2_mission": "sections 12 and 22: assigning needs ACADEMY_MANAGE (or an explicit admin override); TEACH is pedagogical and requires an active class assignment",
+      "applied": "A2 mission (later, more specific; it prevents a teacher from self-assigning). Recommend an ADR-0015 addendum.",
+      "severity": "LOW",
+      "category": "PRODUCT (documentation)"
+    },
+    {
+      "id": "A2-DEV-02",
+      "topic": "Permission row convention",
+      "detail": "A0 section 8.1 proposed action/data_type values differ from the convention DomainAccess/EventAccess enforce (action = code)",
+      "applied": "action = code, data_type = ACADEMY; documented in permissions[].mapping_note",
+      "severity": "INFO",
+      "category": "PRODUCT (documentation)"
+    }
+  ],
+  "errors": [
+    "ADMIN_REASON_REQUIRED",
+    "ALREADY_ASSIGNED",
+    "ALREADY_ENROLLED",
+    "ASSESSMENT_IN_USE",
+    "ASSESSMENT_NOT_OPEN",
+    "ATTEMPT_ALREADY_EXISTS",
+    "ATTEMPT_NOT_GRADABLE",
+    "ATTEMPT_NUMBER_CONFLICT",
+    "ATTENDANCE_STATUS_INVALID",
+    "CERTIFICATE_ALREADY_EXISTS",
+    "CERTIFICATE_ALREADY_REVOKED",
+    "CHILD_NOT_ELIGIBLE",
+    "CLASS_ASSIGNMENT_REQUIRED",
+    "CLASS_NOT_ENROLLABLE",
+    "CLASS_NOT_TEACHABLE",
+    "COMPLETION_CRITERIA_NOT_MET",
+    "CONSENT_REQUIRED",
+    "CONTEXT_MISMATCH",
+    "CURRICULUM_ALREADY_PUBLISHED",
+    "CURRICULUM_PUBLISHED_IMMUTABLE",
+    "ENROLLMENT_NOT_ACTIVE",
+    "ENROLLMENT_NOT_COMPLETED",
+    "FILE_NOT_AVAILABLE",
+    "GRADE_ALREADY_RECORDED",
+    "GRADE_NOT_FOUND",
+    "GUARDIAN_AUTHORIZATION_INVALID",
+    "INSTRUCTOR_NOT_ACTIVE",
+    "INVALID_INPUT",
+    "INVALID_PERSON_REFERENCE",
+    "INVALID_TRANSITION",
+    "NOT_AUTHORIZED",
+    "OUT_OF_SCOPE",
+    "OVERRIDE_NOT_ALLOWED",
+    "PERSON_NOT_ELIGIBLE",
+    "POLICY_NOT_CONFIGURED",
+    "REASON_REQUIRED",
+    "SCOPE_UNRESOLVED",
+    "SESSION_NOT_ATTENDABLE",
+    "STALE_WRITE",
+    "STATE_POLICY_PENDING",
+    "STORAGE_CONFLICT",
+    "TARGET_NOT_FOUND",
+    "TRANSCRIPT_EMPTY"
+  ]
+}

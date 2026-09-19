@@ -1,0 +1,326 @@
+{
+  "phase": "P0.3.5-A2",
+  "adr_0014_result": {
+    "product": "PASS",
+    "evidence": "PASS",
+    "infrastructure": "PASS"
+  },
+  "evidence_basis": "EVIDENCE = PASS because the key safeguards were removed one at a time (mutation) and the corresponding tests failed; the static validator was likewise proven against 11 injected violations. INFRASTRUCTURE = PASS: attested start and stop of the dedicated instance, pools created only after attestation.",
+  "suites": [
+    {
+      "suite": "AcademyDomainUnitTest",
+      "kind": "UNIT",
+      "tests": 11,
+      "assertions": 247,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 0.07,
+      "test_cases": [
+        "test_the_shipped_production_config_approves_nothing_so_everything_fails_closed",
+        "test_an_empty_or_blank_configuration_entry_is_never_read_as_allow_all",
+        "test_roles_resolve_to_configured_names_only",
+        "test_only_approved_transitions_pass_pending_is_explicit_and_unknown_is_invalid",
+        "test_a_transition_listed_both_ways_is_approved_first_never_silently_pending",
+        "test_every_operation_uses_a_known_permission_and_admin_is_never_a_direct_permission",
+        "test_pedagogical_operations_require_class_assignment_and_certification_is_distinct_from_assessment",
+        "test_every_state_changing_or_sensitive_write_requires_an_audit_record",
+        "test_technical_input_validation_is_shape_only",
+        "test_error_contract_is_deterministic_and_carries_ids_not_data",
+        "test_database_errors_translate_to_domain_errors_and_keep_the_original"
+      ]
+    },
+    {
+      "suite": "AcademyAuthorizationTest",
+      "kind": "INTEGRATION",
+      "tests": 15,
+      "assertions": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 5.08,
+      "test_cases": [
+        "test_no_permission_denies",
+        "test_permission_with_wrong_institutional_scope_denies",
+        "test_correct_scope_without_class_assignment_denies",
+        "test_permission_scope_and_assignment_allow_and_audit",
+        "test_c3_teacher_of_class_a_cannot_grade_class_b_even_with_assess_permission",
+        "test_a3_admin_override_is_explicit_scoped_reasoned_and_audited",
+        "test_admin_override_still_requires_institutional_scope",
+        "test_admin_override_is_refused_where_the_matrix_has_none",
+        "test_revoked_or_expired_scope_denies",
+        "test_revoked_session_or_archived_user_denies",
+        "test_revoked_assignment_denies",
+        "test_a2_assess_is_not_certify_and_certify_needs_no_class_assignment",
+        "test_c9_caller_supplied_scope_is_not_authority",
+        "test_unit_level_scope_with_descendants_covers_a_descendant_unit",
+        "test_shared_course_version_needs_authority_over_every_unit_and_unresolved_scope_denies"
+      ]
+    },
+    {
+      "suite": "AcademyEnrollmentTest",
+      "kind": "INTEGRATION",
+      "tests": 16,
+      "assertions": 65,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 6.73,
+      "test_cases": [
+        "test_c1_external_student_without_membership_enrolls",
+        "test_c2_existing_person_is_reused_by_id_or_public_id_and_never_duplicated",
+        "test_member_number_is_never_an_academic_identifier",
+        "test_c4_sequential_duplicate_enrollment_converges_on_already_enrolled_with_one_row",
+        "test_database_unique_violation_is_translated_never_leaked",
+        "test_enrollment_authorization_is_derived_from_the_persisted_class",
+        "test_enrollment_is_refused_unless_the_class_state_is_configured_enrollable",
+        "test_ineligible_person_cannot_be_enrolled",
+        "test_only_approved_transitions_execute_and_pending_or_unknown_ones_are_denied",
+        "test_a10_with_no_approved_transitions_nothing_executes",
+        "test_stale_transition_is_rejected_by_lock_version",
+        "test_adult_or_non_child_normal_flow_passes_without_any_child_records",
+        "test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+        "test_minor_with_valid_consent_and_guardian_authorization_is_enrolled",
+        "test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment",
+        "test_listing_is_scoped_filtered_and_paginated"
+      ]
+    },
+    {
+      "suite": "AcademyOperationsTest",
+      "kind": "INTEGRATION",
+      "tests": 16,
+      "assertions": 83,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 6.84,
+      "test_cases": [
+        "test_a1_external_instructor_without_membership_is_assigned_and_can_teach",
+        "test_a5_duplicate_assignment_converges_and_periods_are_checked",
+        "test_a_teacher_cannot_self_assign_but_an_explicit_audited_admin_override_can",
+        "test_ending_an_assignment_keeps_the_row_and_revokes_class_authority",
+        "test_inactive_instructor_profile_cannot_be_assigned",
+        "test_session_scheduling_guards_and_initial_state_from_policy",
+        "test_event_session_link_must_belong_to_the_same_organizational_unit",
+        "test_effective_location_prefers_explicit_event_location_over_class_default_without_copying",
+        "test_attendance_is_naturally_idempotent_and_updates_are_audited_with_before_after",
+        "test_attendance_requires_permission_scope_and_the_class_assignment",
+        "test_attendance_context_and_lifecycle_guards",
+        "test_bulk_attendance_is_atomic",
+        "test_minor_attendance_needs_a_live_cover_and_history_never_substitutes_for_it",
+        "test_admin_override_never_bypasses_the_minor_safety_cover",
+        "test_progress_is_derived_from_the_real_chain_and_records_facts_only",
+        "test_resource_progress_follows_lesson_resources_of_the_same_course_version"
+      ]
+    },
+    {
+      "suite": "AcademyAssessmentCertificationTest",
+      "kind": "INTEGRATION",
+      "tests": 16,
+      "assertions": 141,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 8.2,
+      "test_cases": [
+        "test_assessment_definition_is_policy_neutral_every_value_comes_from_the_caller",
+        "test_assessment_update_uses_an_allow_list_optimistic_locking_and_protects_used_definitions",
+        "test_attempts_are_numbered_under_lock_and_the_attempt_limit_is_not_enforced_d09",
+        "test_attempt_context_lifecycle_and_class_isolation",
+        "test_grade_versions_are_append_only_with_reason_history_and_audit",
+        "test_c5_stale_writer_is_rejected_and_history_and_audit_are_preserved",
+        "test_finalization_is_state_policy_pending_until_the_transition_is_approved",
+        "test_a9_missing_or_malformed_policy_never_defaults_and_never_completes",
+        "test_completion_needs_every_criterion_a_recorded_grade_is_not_enough",
+        "test_c6_certificate_is_never_issued_without_valid_completion_and_policy",
+        "test_certificate_issue_duplicate_revoke_and_reissue_lifecycle",
+        "test_certificate_revocation_is_state_policy_pending_when_the_transition_is_not_approved",
+        "test_transcript_states_facts_only_and_issue_is_blocked_without_policy",
+        "test_c8_a_new_curriculum_version_never_rewrites_a_students_history",
+        "test_c10_multi_write_operation_leaves_no_partial_state_when_its_required_audit_fails",
+        "test_required_audit_failure_rolls_back_enrollment_grade_and_certificate_writes"
+      ]
+    },
+    {
+      "suite": "AcademyConcurrencyTest",
+      "kind": "CONCURRENCY",
+      "tests": 16,
+      "assertions": 679,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 29.2,
+      "test_cases": [
+        "test_c4_e1_duplicate_enrollment_race_yields_one_row_and_deterministic_losers with data set #0",
+        "test_c4_e1_duplicate_enrollment_race_yields_one_row_and_deterministic_losers with data set #1",
+        "test_e1_racing_enrollments_of_different_people_all_succeed",
+        "test_a5_duplicate_instructor_assignment_race_converges_to_one_assignment",
+        "test_the_same_person_assigned_to_two_classes_at_once_creates_one_instructor_profile",
+        "test_e3_a6_duplicate_certificate_issuance_race_yields_one_active_certificate",
+        "test_e2_concurrent_first_grade_record_stores_one_version",
+        "test_e2_concurrent_revisions_from_the_same_version_accept_exactly_one with data set #0",
+        "test_e2_concurrent_revisions_from_the_same_version_accept_exactly_one with data set #1",
+        "test_e2_read_then_stale_save_across_two_processes",
+        "test_concurrent_attendance_records_are_naturally_idempotent",
+        "test_e4_control_without_revocation_the_held_operation_commits",
+        "test_a8_instructor_assignment_revoked_before_commit_blocks_the_operation",
+        "test_a7_institutional_scope_revoked_before_commit_blocks_the_operation",
+        "test_e4_revoked_auth_session_before_commit_blocks_the_operation",
+        "test_a4_minor_guardian_authorization_that_lapses_before_commit_denies_the_attendance"
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 90,
+    "assertions": 1267,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "concurrency_repeats": {
+    "extra_runs": 4,
+    "note": "3 repeats on the first session, 1 on the final session",
+    "results": [
+      "OK (16 tests)",
+      "OK (16 tests)",
+      "OK (16 tests)",
+      "OK (16 tests)"
+    ]
+  },
+  "test_infrastructure_v2": {
+    "sessions": [
+      {
+        "role": "development, Wave 3/4 regression and mutation runs",
+        "instance": {
+          "status": "STARTED_VERIFIED",
+          "port": 33058,
+          "version": "8.4.7",
+          "version_comment": "MySQL Community Server - GPL",
+          "server_uuid": "38d4cc58-b42e-11f1-985c-842afd0b4147",
+          "session_id": "073fcaa9571e",
+          "port_selection": "auto"
+        },
+        "pools": {
+          "mepa_wave3_test_073fcaa9_pool_01": 110,
+          "mepa_wave4_test_073fcaa9_pool_01": 127,
+          "mepa_wave4_test_073fcaa9_pool_02": 127,
+          "mepa_wave5_test_073fcaa9_pool_01": 152
+        },
+        "stop": {
+          "status": "STOPPED_VERIFIED",
+          "attestation_verified": true,
+          "ownership_verified": true,
+          "graceful_shutdown_sent": true,
+          "fallback_kill_used": false,
+          "datadir_removed": true,
+          "pid": 8712,
+          "pid_terminated": true,
+          "port_unreachable_after": true
+        }
+      },
+      {
+        "role": "FINAL evidence run of the 90 A2 tests (the totals below)",
+        "instance": {
+          "status": "STARTED_VERIFIED",
+          "port": 33065,
+          "version": "8.4.7",
+          "version_comment": "MySQL Community Server - GPL",
+          "server_uuid": "89ab029d-b446-11f1-9862-842afd0b4147",
+          "session_id": "0a077c11920a",
+          "port_selection": "auto"
+        },
+        "pools": {
+          "mepa_wave3_test_0a077c11_pool_01": 110,
+          "mepa_wave4_test_0a077c11_pool_01": 127,
+          "mepa_wave4_test_0a077c11_pool_02": 127,
+          "mepa_wave5_test_0a077c11_pool_01": 152
+        },
+        "stop": {
+          "status": "STOPPED_VERIFIED",
+          "attestation_verified": true,
+          "ownership_verified": true,
+          "graceful_shutdown_sent": true,
+          "fallback_kill_used": false,
+          "datadir_removed": true,
+          "pid": 32592,
+          "pid_terminated": true,
+          "port_unreachable_after": true
+        }
+      }
+    ],
+    "stop_invocation": "each stop was a separate CLI process (cross-process stop hardened by A1.1)",
+    "foreign_servers": "never used: every DSN pointed at an auto-port attested instance; 127.0.0.1:3306 (laravel) and the WAMP MariaDB were never connected to by A2 tooling",
+    "database_strategy": "session-scoped pool + TRUNCATE per class; 0 CREATE/DROP DATABASE per run"
+  },
+  "wave3_wave4_regression": {
+    "note": "additive change to ChildParticipationSafetyGate (2 new public methods) re-verified with the P0-TI.1 pilot suites against attested pools",
+    "suites": [
+      {
+        "suite": "PooledChildCheckinBoundaryTest",
+        "result": "OK (1 test, 4 assertions)"
+      },
+      {
+        "suite": "PooledCommitAuthorizationTest",
+        "result": "OK (2 tests, 16 assertions)"
+      },
+      {
+        "suite": "PooledProgressCommitBoundaryTest",
+        "result": "OK (1 test, 9 assertions)"
+      },
+      {
+        "suite": "PooledTemporalAuthorizationTest",
+        "result": "OK (1 test, 9 assertions)"
+      },
+      {
+        "suite": "PooledWaveThreeCheckinConcurrencyTest",
+        "result": "OK (3 tests, 144 assertions)"
+      }
+    ]
+  },
+  "mutation_evidence_tests": [
+    {
+      "mutation": "final authorization removed from AcademyRuntime::write",
+      "failed": [
+        "test_a8_instructor_assignment_revoked_before_commit_blocks_the_operation",
+        "test_a7_institutional_scope_revoked_before_commit_blocks_the_operation",
+        "test_e4_revoked_auth_session_before_commit_blocks_the_operation"
+      ]
+    },
+    {
+      "mutation": "class-assignment requirement disabled in AcademyAccess",
+      "failed": [
+        "test_c3_teacher_of_class_a_cannot_grade_class_b_even_with_assess_permission",
+        "test_correct_scope_without_class_assignment_denies",
+        "test_revoked_assignment_denies"
+      ]
+    },
+    {
+      "mutation": "expectedVersion check removed from GradeService::revise",
+      "failed": [
+        "test_c5_stale_writer_is_rejected_and_history_and_audit_are_preserved",
+        "test_e2_read_then_stale_save_across_two_processes"
+      ]
+    },
+    {
+      "mutation": "late child-safety assertion removed from attendance",
+      "failed": [
+        "test_a4_minor_guardian_authorization_that_lapses_before_commit_denies_the_attendance",
+        "test_minor_attendance_needs_a_live_cover_and_history_never_substitutes_for_it"
+      ]
+    },
+    {
+      "mutation": "admin override skips the minor safety cover in attendance",
+      "failed": [
+        "test_admin_override_never_bypasses_the_minor_safety_cover"
+      ]
+    }
+  ],
+  "validators": {
+    "wave5_application_contracts": "APPLICATION_CONTRACTS_PASS (977 checks, 30 operations)",
+    "wave5_schema": "STRICT_PARITY_PASS, unexpected_drift 0",
+    "wave5_contracts": "APPROVED_CONTRACTS_UNCHANGED, 160 files, drift 0",
+    "database_docs": "0 errors",
+    "wave4_contracts": "APPROVED_CONTRACTS_UNCHANGED, drift 0",
+    "application_validator_mutation_test": "11/11 injected violations caught (first run 9/11: two validator gaps found and fixed, then re-run)"
+  }
+}
