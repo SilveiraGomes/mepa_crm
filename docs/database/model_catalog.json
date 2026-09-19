@@ -19410,6 +19410,27 @@
           "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
         },
         {
+          "name": "location_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "physical_locations",
+          "description": "Local fisico por defeito da turma; ADR-0015 Decisao A (ACCEPTED) -- class_sessions.event_session_id, quando presente, prevalece por sessao sobre este valor por defeito",
+          "example": "123",
+          "sensitivity": "Restrito",
+          "unique": [],
+          "index": [
+            "ix_classes_location_id"
+          ],
+          "target": "physical_locations.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.",
+          "decision": "P0.3.5-A0.1 / ADR-0015 Decisao A -- ACCEPTED (classes.unit_id, proposta em conjunto, foi REJECTED e nao existe)"
+        },
+        {
           "name": "code",
           "type": "VARCHAR(64)",
           "nullable": false,
@@ -19492,6 +19513,9 @@
         ],
         [
           "course_version_id"
+        ],
+        [
+          "location_id"
         ]
       ],
       "temporal": false,

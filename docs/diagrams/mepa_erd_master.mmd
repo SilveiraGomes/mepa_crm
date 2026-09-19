@@ -1342,6 +1342,7 @@ erDiagram
     cohorts |o--o{ classes : "cohort_id"
     academic_units ||--o{ classes : "academic_unit_id"
     course_versions ||--o{ classes : "course_version_id"
+    physical_locations |o--o{ classes : "location_id"
     people ||--o| instructors : "person_id"
     classes ||--o{ class_instructors : "class_id"
     instructors ||--o{ class_instructors : "instructor_id"

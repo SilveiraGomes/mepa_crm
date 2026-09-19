@@ -6,6 +6,16 @@ separate CLI process than the one that called `start()` used to report
 `mysqld_stopped: true` without ever sending a shutdown). See
 docs/reviews/P0.3.5_A1_0_pre_audit_evidence_hygiene.md for the narrative.
 
+P0.3.5-A1.1 renamed `stop()`'s success status from `SUCCESS` to
+`STOPPED_VERIFIED` (and inserted a server-attestation gate before any
+shutdown is sent) as part of fixing the mirror-image bug in `start()` --
+see test_mysql_instance_attestation.py (I1-I12) for that suite. T1-T10
+below are updated only for the status rename and for T6, whose scenario
+("stop is pointed at the wrong port via confused identity info") now
+resolves to the strictly safer FOREIGN_SERVER outcome instead of the old
+behavior of still sending a real shutdown to whatever answered the
+confused port.
+
 Runs against real, disposable, dedicated mysqld instances -- never the app's
 own 127.0.0.1:3306/laravel server, and never a mocked database (same
 no-mocked-database convention as scripts/wave4-m121/test_cleanup*.py: only
@@ -67,7 +77,7 @@ def t1_same_invocation_stop():
         inst.start()
         check("T1: instance alive after start", inst._ping())
         result = inst.stop()
-        check("T1: stop() same-invocation returns SUCCESS", result["status"] == "SUCCESS", result)
+        check("T1: stop() same-invocation returns STOPPED_VERIFIED", result["status"] == "STOPPED_VERIFIED", result)
         check("T1: stop() confirms instance_stopped_confirmed", result["instance_stopped_confirmed"] is True, result)
         check("T1: independent re-check -- port no longer answers", not inst._ping())
     finally:
@@ -87,7 +97,7 @@ def t2_separate_invocation_stop():
         inst_b = MysqlInstance(inst_a.datadir, PORT_A)  # process B: no self.process handle at all
         check("T2: process B has no in-memory process handle", inst_b.process is None)
         result = inst_b.stop()
-        check("T2: cross-process stop() returns SUCCESS", result["status"] == "SUCCESS", result)
+        check("T2: cross-process stop() returns STOPPED_VERIFIED", result["status"] == "STOPPED_VERIFIED", result)
         check("T2: cross-process stop() confirms instance_stopped_confirmed", result["instance_stopped_confirmed"] is True, result)
         check("T2: cross-process stop() verified ownership via mysqld.pid", result["ownership_verified"] is True, result)
         check("T2: cross-process stop() actually sent a shutdown", result["graceful_shutdown_sent"] is True, result)
@@ -102,7 +112,7 @@ def t3_stop_when_already_stopped():
         inst.initialize()
         inst.start()
         first = inst.stop()
-        check("T3 setup: first stop succeeds", first["status"] == "SUCCESS", first)
+        check("T3 setup: first stop succeeds", first["status"] == "STOPPED_VERIFIED", first)
         second = inst.stop()
         check("T3: stop() on an already-stopped instance returns ALREADY_STOPPED", second["status"] == "ALREADY_STOPPED", second)
         check("T3: idempotent stop still confirms stopped", second["instance_stopped_confirmed"] is True, second)
@@ -127,7 +137,7 @@ def t4_pid_file_present_but_stale():
         stopper = MysqlInstance(inst.datadir, PORT_A)
         result = stopper.stop()
         check("T4: stale/nonexistent PID -> ownership_verified is False", result["ownership_verified"] is False, result)
-        check("T4: instance still stopped via graceful protocol path", result["status"] == "SUCCESS", result)
+        check("T4: instance still stopped via graceful protocol path", result["status"] == "STOPPED_VERIFIED", result)
         check("T4: no fallback kill was needed/used", result["fallback_kill_used"] is False, result)
         check("T4: independent re-check -- port no longer answers", not inst._ping())
     finally:
@@ -151,16 +161,24 @@ def t5_pid_exists_but_wrong_process():
         check("T5: PID belongs to a real but non-mysqld process -> ownership_verified is False", result["ownership_verified"] is False, result)
         check("T5: no fallback kill was attempted against the unrelated live process", result["fallback_kill_used"] is False, result)
         check("T5: this test process is still alive after stop()", __import__("os").kill(this_test_pid, 0) is None)
-        check("T5: instance still stopped via graceful protocol path", result["status"] == "SUCCESS", result)
+        check("T5: instance still stopped via graceful protocol path", result["status"] == "STOPPED_VERIFIED", result)
     finally:
         _teardown(inst)
 
 
 def t6_port_belongs_to_different_instance():
     """The port answers, but the identity information available (another
-    instance's own datadir/pid-file) describes a DIFFERENT instance on a
-    DIFFERENT port -- the realistic shape of 'this port belongs to an
-    unrelated instance'. Ownership must be rejected on the port mismatch."""
+    instance's own datadir/session.json) describes a DIFFERENT instance on a
+    DIFFERENT port -- the realistic shape of 'this stop call is confused
+    about which instance it is targeting'. P0.3.5-A1.1: server attestation
+    now rejects this outright (session.json's recorded port does not match
+    what the live server at the confused port reports back), and NO
+    shutdown is sent to anyone -- neither the wrongly-targeted instance A
+    nor the actually-answering instance B. This is a deliberate hardening
+    over the pre-A1.1 behavior (which still sent a real shutdown to
+    whatever answered the confused port, reasoning that mysqladmin shutdown
+    is 'safe by protocol' -- exactly the kind of weak, non-identity-based
+    reasoning this remediation eliminates)."""
     inst_a = _new_instance(PORT_A)
     inst_b = _new_instance(PORT_B)
     try:
@@ -170,18 +188,16 @@ def t6_port_belongs_to_different_instance():
         inst_b.start()
 
         # Ask to stop "port B" using identity info that actually belongs to
-        # instance A's datadir (A's mysqld.pid names A's own PID, which runs
-        # with --port=PORT_A, not PORT_B).
+        # instance A's datadir (A's session.json records port=PORT_A, not
+        # PORT_B).
         confused = MysqlInstance(inst_a.datadir, PORT_B)
         result = confused.stop()
-        check("T6: PID resolves to a real mysqld, but for a different port -> ownership_verified is False", result["ownership_verified"] is False, result)
+        check("T6: confused stop() is rejected as FOREIGN_SERVER (recorded port does not match live port)", result["status"] == "FOREIGN_SERVER", result)
+        check("T6: attestation_verified is False", result["attestation_verified"] is False, result)
+        check("T6: no shutdown was sent at all", result["graceful_shutdown_sent"] is False, result)
         check("T6: no fallback kill was attempted", result["fallback_kill_used"] is False, result)
         check("T6: instance A (wrongly targeted) is unaffected", inst_a._ping())
-        # The graceful, protocol-level shutdown command in `confused.stop()` was
-        # addressed to PORT_B and so affects instance B, not A -- expected and
-        # safe (Section 6 explicitly allows mysqladmin shutdown regardless of
-        # verified ownership; only the OS-level kill is ownership-gated).
-        check("T6: instance B (the actual port owner) received the graceful shutdown", not inst_b._ping())
+        check("T6: instance B (the actual port owner) is also unaffected -- no shutdown sent to it either", inst_b._ping())
     finally:
         _teardown(inst_a)
         _teardown(inst_b)
@@ -195,7 +211,7 @@ def t7_graceful_shutdown_path():
         result = inst.stop()
         check("T7: graceful_shutdown_sent is True on the normal path", result["graceful_shutdown_sent"] is True, result)
         check("T7: fallback_kill_used is False on the normal (graceful) path", result["fallback_kill_used"] is False, result)
-        check("T7: status is SUCCESS", result["status"] == "SUCCESS", result)
+        check("T7: status is STOPPED_VERIFIED", result["status"] == "STOPPED_VERIFIED", result)
     finally:
         _teardown(inst)
 
@@ -243,7 +259,7 @@ def t10_double_stop_is_idempotent_and_factual():
         first = inst.stop()
         second = inst.stop()
         third = inst.stop()
-        check("T10: first stop SUCCESS", first["status"] == "SUCCESS", first)
+        check("T10: first stop STOPPED_VERIFIED", first["status"] == "STOPPED_VERIFIED", first)
         check("T10: second stop ALREADY_STOPPED (not a repeated false SUCCESS claim)", second["status"] == "ALREADY_STOPPED", second)
         check("T10: third stop still ALREADY_STOPPED, no error", third["status"] == "ALREADY_STOPPED", third)
         check("T10: all three calls agree the instance is stopped", all(r["instance_stopped_confirmed"] for r in (first, second, third)))

@@ -2764,6 +2764,7 @@ Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; `public_
 | cohort_id | BIGINT UNSIGNED | sim | NULL | não | cohorts.id | — | ix_classes_cohort_id | cohort id | 123 | Restrito |
 | academic_unit_id | BIGINT UNSIGNED | não | nenhum | não | academic_units.id | — | ix_classes_academic_unit_id | academic unit id | 123 | Restrito |
 | course_version_id | BIGINT UNSIGNED | não | nenhum | não | course_versions.id | — | ix_classes_course_version_id | course version id | 123 | Restrito |
+| location_id | BIGINT UNSIGNED | sim | NULL | não | physical_locations.id | — | ix_classes_location_id | Local fisico por defeito da turma; ADR-0015 Decisao A (ACCEPTED) -- class_sessions.event_session_id, quando presente, prevalece por sessao sobre este valor por defeito | 123 | Restrito |
 | code | VARCHAR(64) | não | nenhum | não | — | uq_classes_code | — | code | CAT_EXEMPLO | Restrito |
 | capacity | INT UNSIGNED | sim | NULL | não | — | — | — | capacity | 1 | Restrito |
 | status | VARCHAR(64) | não | nenhum | não | — | — | — | status | DRAFT | Restrito |

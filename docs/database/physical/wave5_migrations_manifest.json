@@ -2,7 +2,7 @@
   "phase": "P0.3.5-A1",
   "purpose": "Migration execution authority for Wave 5 (Academia) physical implementation. Distinct from docs/database/physical/wave5_manifest.json, which remains the design/decision authority (P0.3.5-A0/A0.1, commit 7f9a7dd) and is not modified by this file.",
   "design_manifest": "docs/database/physical/wave5_manifest.json",
-  "catalog_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+  "catalog_sha256": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
   "tables": [
     "academic_units",
     "programs",

@@ -1,4 +1,5 @@
-"""P0-TI.1 Test Infrastructure V2 pilot -- fixed database pool + migrate-once.
+"""P0-TI.1 Test Infrastructure V2 pilot -- session-scoped database pool +
+migrate-once.
 
 Creates the pool schemas (named to satisfy WaveFourCase/WaveThreeCase's
 existing, unmodified name-guard regex) against the dedicated MysqlInstance,
@@ -6,23 +7,66 @@ then migrates each exactly once via the new
 apps/api/tests/DatabaseV2/Support/migrate_pool_db.php CLI script -- the same
 migration manifests WaveFourCase/WaveThreeCase already use, so there is no
 drift between what V1 and V2 consider "the schema."
+
+P0.3.5-A1.1 (design sections 11-12): two changes made in response to the
+independent audit's A1R-01 finding, which showed a pre-existing WAMP
+MariaDB service already hosting `mepa_wave3_test_pool_01`/
+`mepa_wave4_test_pool_01`/`02` -- proof that static, global pool names give
+no protection against a session silently operating on the wrong server.
+
+1. Pool names now embed the attested session's own session_id (design
+   section 11) -- `mepa_wave{N}_test_<session_short>_pool_0X` -- so pools
+   created by one session can never be confused with pools left behind by
+   another session on a different (possibly foreign) server. The
+   `mepa_wave{N}_test_` prefix is preserved exactly (WaveFourCase/
+   WaveThreeCase/WaveFiveCase's own connect() guards require it); only the
+   session-scoped segment is new.
+2. Every entry point (create_pool/migrate_once/reset_database) now calls
+   `assert_server_attestation(port)` (design section 12) before issuing any
+   CREATE/migrate/TRUNCATE statement. That function (in mysql_instance.py)
+   loads the session this port's `init-start` registered and proves, via
+   the same SQL-level attestation start()/stop() use, that the server
+   actually answering this port right now is that exact session -- never
+   merely "something is listening". A mismatch raises ForeignServerError
+   and aborts before any statement is sent.
 """
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 MYSQL_CLIENT = r"C:\wamp64\bin\mysql\mysql8.4.7\bin\mysql.exe"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PHP_BIN = r"C:\wamp64\bin\php\php8.1.33\php.exe"
 
-POOL = {
-    "wave4": ["mepa_wave4_test_pool_01", "mepa_wave4_test_pool_02"],
-    "wave3": ["mepa_wave3_test_pool_01"],
-    # P0.3.5-A1: additive, mirrors the wave3/wave4 pilot pool exactly. Uses
-    # migrate_pool_db.php's `wave5` target (WaveFiveCase, its own schema-name
-    # guard) -- does not touch the wave3/wave4 pool entries or WaveFourCase.php.
-    "wave5": ["mepa_wave5_test_pool_01"],
-}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from mysql_instance import assert_server_attestation, ForeignServerError  # noqa: E402
+
+__all__ = ["create_pool", "migrate_once", "reset_database", "pool_names", "ForeignServerError"]
+
+
+def pool_names(session_short: str) -> dict[str, list[str]]:
+    """Session-scoped pool names (design section 11). `session_short` is the
+    first 8 hex characters of the attested session's session_id -- short
+    enough to keep names comfortably under MySQL's 64-char identifier
+    limit, long enough that two sessions colliding is not a practical
+    concern for disposable test instances."""
+    return {
+        "wave4": [f"mepa_wave4_test_{session_short}_pool_01", f"mepa_wave4_test_{session_short}_pool_02"],
+        "wave3": [f"mepa_wave3_test_{session_short}_pool_01"],
+        # P0.3.5-A1: additive, mirrors the wave3/wave4 pilot pool exactly. Uses
+        # migrate_pool_db.php's `wave5` target (WaveFiveCase, its own schema-name
+        # guard) -- does not touch the wave3/wave4 pool entries or WaveFourCase.php.
+        "wave5": [f"mepa_wave5_test_{session_short}_pool_01"],
+    }
+
+
+def _session_short(port: int) -> str:
+    """Attests the server on `port` and derives the short session segment
+    used to build this session's pool names. Raises ForeignServerError
+    (never proceeds) if attestation fails -- see module docstring."""
+    session = assert_server_attestation(port)
+    return session["session_id"][:8]
 
 
 def _mysql_client(port: int, statement: str) -> None:
@@ -35,8 +79,9 @@ def _mysql_client(port: int, statement: str) -> None:
 
 
 def create_pool(port: int) -> list[str]:
+    session_short = _session_short(port)  # attest FIRST -- no CREATE DATABASE before this succeeds
     created = []
-    for wave, names in POOL.items():
+    for wave, names in pool_names(session_short).items():
         for name in names:
             _mysql_client(port, f"CREATE DATABASE IF NOT EXISTS `{name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
             created.append(name)
@@ -44,8 +89,9 @@ def create_pool(port: int) -> list[str]:
 
 
 def migrate_once(port: int) -> dict:
+    session_short = _session_short(port)  # attest FIRST -- no migration before this succeeds
     results = {}
-    for wave, names in POOL.items():
+    for wave, names in pool_names(session_short).items():
         env_prefix = wave.upper()
         for name in names:
             env = {
@@ -72,6 +118,7 @@ def reset_database(port: int, name: str) -> None:
     here so the pool can also be reset between two independent PHPUnit
     process invocations without relying on that class ever running.
     """
+    assert_server_attestation(port)  # attest FIRST -- no TRUNCATE before this succeeds
     rows = subprocess.run(
         [MYSQL_CLIENT, "--user=root", "--host=127.0.0.1", f"--port={port}", "--batch", "--silent",
          f"--execute=SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA='{name}' AND TABLE_NAME != 'migrations'"],
@@ -92,6 +139,14 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, required=True)
     args = parser.parse_args()
 
-    created = create_pool(args.port)
-    migrated = migrate_once(args.port)
+    try:
+        created = create_pool(args.port)
+        migrated = migrate_once(args.port)
+    except ForeignServerError as exc:
+        # Design section 12/21: never a Python traceback for this case --
+        # a clear, structured refusal, and (by construction, since this
+        # raises before any _mysql_client call in create_pool/migrate_once)
+        # zero CREATE DATABASE / migration statements were ever sent.
+        print(json.dumps({"status": "ATTESTATION_FAILED", "notes": str(exc)}, indent=2))
+        raise SystemExit(1)
     print(json.dumps({"created": created, "migrated": migrated}, indent=2))

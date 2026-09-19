@@ -98,8 +98,9 @@ for (const file of migrManifest.migrations) {
   const catCols = new Set(cat.columns.map(c => c.name));
   const migCols = new Set(parsed.columns.map(c => c.name));
   for (const c of catCols) if (!migCols.has(c)) errors.push({ path: table, error: `catalog column '${c}' missing from migration` });
-  // classes.location_id is an approved ADR-0015 addition beyond the catalog snapshot; nothing else may diverge.
-  for (const c of migCols) if (!catCols.has(c) && !(table === 'classes' && c === 'location_id')) errors.push({ path: table, error: `migration column '${c}' not present in model_catalog.json (undeclared addition)` });
+  // P0.3.5-A1.1 (A1R-02): model_catalog.json now carries classes.location_id
+  // (ADR-0015 Decision A, ACCEPTED) directly -- no exception needed here.
+  for (const c of migCols) if (!catCols.has(c)) errors.push({ path: table, error: `migration column '${c}' not present in model_catalog.json (undeclared addition)` });
 
   const publicIdRequired = cat.identifiers && cat.identifiers.public_id_required;
   const hasPublicId = migCols.has('public_id');
