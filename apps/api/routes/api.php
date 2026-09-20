@@ -12,6 +12,10 @@ use App\Http\Controllers\Api\V1\Academy\InstructorController;
 use App\Http\Controllers\Api\V1\Academy\ProgressController;
 use App\Http\Controllers\Api\V1\Academy\SessionController;
 use App\Http\Controllers\Api\V1\Academy\TranscriptController;
+use App\Http\Controllers\Api\V1\Academy\CatalogQueryController;
+use App\Http\Controllers\Api\V1\Academy\ClassQueryController;
+use App\Http\Controllers\Api\V1\Academy\AssessmentQueryController;
+use App\Http\Controllers\Api\V1\Academy\DocumentQueryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +37,35 @@ Route::prefix('v1')->group(function (): void {
     });
 
     Route::prefix('academy')->middleware(['academy.auth', 'throttle:60,1'])->group(function (): void {
+        Route::get('academic-units', [CatalogQueryController::class, 'academicUnits']);
+        Route::get('academic-units/{academicUnit}', [CatalogQueryController::class, 'academicUnit'])->whereNumber('academicUnit');
+        Route::get('programs', [CatalogQueryController::class, 'programs']);
+        Route::get('programs/{program}', [CatalogQueryController::class, 'program']);
+        Route::get('curricula', [CatalogQueryController::class, 'curricula']);
+        Route::get('curricula/{curriculum}', [CatalogQueryController::class, 'curriculum'])->whereNumber('curriculum');
+        Route::get('courses', [CatalogQueryController::class, 'courses']);
+        Route::get('courses/{course}', [CatalogQueryController::class, 'course']);
+        Route::get('courses/{course}/versions', [CatalogQueryController::class, 'courseVersions']);
+        Route::get('course-versions/{courseVersion}', [CatalogQueryController::class, 'courseVersion'])->whereNumber('courseVersion');
+        Route::get('cohorts', [CatalogQueryController::class, 'cohorts']);
+        Route::get('cohorts/{cohort}', [CatalogQueryController::class, 'cohort']);
+        Route::get('classes', [ClassQueryController::class, 'index']);
+        Route::get('classes/{class}', [ClassQueryController::class, 'show']);
+        Route::get('classes/{class}/roster', [ClassQueryController::class, 'roster']);
+        Route::get('classes/{class}/people:search', [ClassQueryController::class, 'people'])->middleware('throttle:20,1');
+        Route::get('classes/{class}/enrollments/{enrollment}', [ClassQueryController::class, 'enrollment']);
+        Route::get('classes/{class}/sessions', [ClassQueryController::class, 'sessions']);
+        Route::get('classes/{class}/sessions/{classSession}', [ClassQueryController::class, 'showSession'])->whereNumber('classSession');
+        Route::get('enrollments/{enrollment}/progress', [ClassQueryController::class, 'progress']);
+        Route::get('classes/{class}/assessments', [AssessmentQueryController::class, 'index']);
+        Route::get('classes/{class}/assessments/{assessment}', [AssessmentQueryController::class, 'show']);
+        Route::get('classes/{class}/assessments/{assessment}/attempts', [AssessmentQueryController::class, 'attempts']);
+        Route::get('classes/{class}/attempts/{attempt}', [AssessmentQueryController::class, 'attempt'])->whereNumber('attempt');
+        Route::get('classes/{class}/certificates', [DocumentQueryController::class, 'certificates']);
+        Route::get('classes/{class}/certificates/{certificate}', [DocumentQueryController::class, 'certificate']);
+        Route::get('curricula/{curriculum}/people/{person}/transcripts', [DocumentQueryController::class, 'transcripts'])->whereNumber('curriculum');
+        Route::get('curricula/{curriculum}/people/{person}/transcripts/{transcript}', [DocumentQueryController::class, 'transcript'])->whereNumber('curriculum');
+
         Route::post('programs/{program}/curricula', [CurriculumController::class, 'store']);
         Route::post('curricula/{curriculum}/publish', [CurriculumController::class, 'publish'])->whereNumber('curriculum');
         Route::post('curricula/{curriculum}/courses', [CurriculumController::class, 'addCourse'])->whereNumber('curriculum');

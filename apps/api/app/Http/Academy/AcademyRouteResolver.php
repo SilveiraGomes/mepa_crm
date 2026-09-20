@@ -9,7 +9,7 @@ use Illuminate\Database\Connection;
 final class AcademyRouteResolver
 {
     private const PUBLIC = [
-        'programs', 'classes', 'enrollments', 'assessments', 'certificates', 'transcripts', 'people', 'resources',
+        'programs', 'courses', 'cohorts', 'classes', 'enrollments', 'assessments', 'certificates', 'transcripts', 'people', 'resources',
     ];
 
     public function __construct(private Connection $db)

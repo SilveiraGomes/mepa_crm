@@ -170,6 +170,33 @@ for (const svc of contract.services) {
     for (const e of o.errors) check(`op.error_used.${id}.${e}`, ownReasons.has(e) || anyReasons.has(e), `${id}: listed error ${e} is never produced by the layer`);
   }
 }
+let readOpCount = 0;
+for (const svc of contract.read_services || []) {
+  const file = `${domainDir}/${svc.name}.php`;
+  check(`read.file.${svc.name}`, files.includes(file), `${svc.name}.php missing`);
+  for (const o of svc.operations || []) {
+    readOpCount++;
+    const id = `${svc.name}.${o.method}`;
+    usedOps.add(o.operation);
+    const row = matrix[o.operation];
+    check(`read.matrix.${id}`, row && row.permission === o.permission && row.class_assignment === o.class_assignment_required && row.audit === false, `${id}: read permission/flags differ from AcademyOperation`);
+    check(`read.scope.${id}`, typeof o.scope_source === 'string' && o.scope_source.length > 10, `${id}: persisted scope provenance missing`);
+    check(`read.pagination.${id}`, typeof o.pagination === 'boolean', `${id}: pagination declaration missing`);
+    check(`read.projection.${id}`, typeof o.sensitive_projection === 'string' && o.sensitive_projection.length > 5, `${id}: sensitive projection missing`);
+    check(`read.child.${id}`, typeof o.child_safety_relevance === 'string', `${id}: child-safety relevance missing`);
+    check(`read.policy.${id}`, typeof o.policy_dependency === 'string', `${id}: policy dependency missing`);
+    check(`read.errors.${id}`, Array.isArray(o.domain_errors) && o.domain_errors.every(e => reasonConsts.has(e)), `${id}: unknown/missing domain errors`);
+    const body = methodBody(file, o.method);
+    check(`read.method.${id}`, body !== null, `${id}: public query method missing`);
+    if (body !== null) {
+      const boundary = body.includes(`$this->rt->read(`) || body.includes(`authorizedAcademicUnitIds(`);
+      check(`read.boundary.${id}`, boundary && body.includes(`'${o.operation}'`), `${id}: must authorize via runtime read or SQL-scoped collection authorization`);
+      check(`read.models.${id}`, !/::query\(|App\\Models|use\s+App\\Models/.test(body), `${id}: raw model construction/query is forbidden`);
+      if (o.pagination) check(`read.page.${id}`, body.includes('$this->page(') || body.includes('AcademyInput::page('), `${id}: paginated read must use the bounded page helper`);
+    }
+  }
+}
+check('read.count', readOpCount === 28, `expected 28 A3.1 read operations, found ${readOpCount}`);
 for (const k of Object.keys(matrix)) check(`matrix.used.${k}`, usedOps.has(k), `matrix row ${k} is used by no service operation`);
 check('op.count', opCount === contract.services.reduce((n, s) => n + s.operations.length, 0) && opCount >= 28, 'unexpected operation count');
 const missingReasons = files.flatMap(f => [...code[f].matchAll(/AcademyReason::([A-Z_]+)/g)].map(m => m[1])).filter(r => !reasonConsts.has(r));
@@ -206,6 +233,7 @@ const d09Allow = [
   ['AcademicPolicyResolver.php', ['named'], /min_score|min_ratio/, 'name of a policy-JSON key read from course_versions.completion_policy_metadata; the value is stored data'],
   ['AcademicPolicyResolver.php', ['literal'], /DECIMAL\(20,6\)/, 'SQL type width of the exact DECIMAL comparison'],
   ['AcademyInput.php', ['literal'], /min\(100, max\(1, \$perPage\)\)/, 'pagination cap (technical), not academic'],
+  ['QueryService.php', ['literal'], /AcademyInput::page/, 'default page size of a bounded read model (technical, not academic)'],
   ['EnrollmentService.php', ['literal'], /\$perPage = 50/, 'default page size of a bounded listing (technical, not academic)'],
   ['AcademicAttendanceService.php', ['literal'], /\$perPage = 100/, 'default page size of a bounded listing (technical, not academic)'],
   ['AssessmentAttemptService.php', ['attempts_literal'], /\$attemptNumber < 1/, 'schema CHECK ck_assessment_attempts_number (attempt_number >= 1): technical invariant, not an attempt limit'],
@@ -320,7 +348,9 @@ const report = {
   checks_total: checks.length,
   checks_failed: failures.length,
   services: contract.services.length,
-  operations: opCount,
+  operations: opCount + readOpCount,
+  command_operations: opCount,
+  read_operations: readOpCount,
   permission_matrix_rows: Object.keys(matrix).length,
   php_files_scanned: files.length,
   d09_scan: { patterns: d09Patterns.map(p => p.id), findings: d09Findings.length, reviewed_false_positives: d09Findings.filter(x => x.allowed).map(x => ({ file: x.file, line: x.line, pattern: x.pattern, text: x.text, reason: x.allowed })), unreviewed: d09Unreviewed.length },
@@ -328,5 +358,5 @@ const report = {
   failures,
 };
 fs.writeFileSync(rel('docs/database/physical/wave5_application_contracts_validation.json'), JSON.stringify(report, null, 2) + '\n');
-console.log({ status: report.status, checks: report.checks_total, failed: report.checks_failed, operations: opCount, d09_reviewed_false_positives: report.d09_scan.reviewed_false_positives.length });
+console.log({ status: report.status, checks: report.checks_total, failed: report.checks_failed, operations: opCount + readOpCount, command_operations: opCount, read_operations: readOpCount, d09_reviewed_false_positives: report.d09_scan.reviewed_false_positives.length });
 if (failures.length) { for (const f of failures) console.error(' - ' + f); process.exit(1); }

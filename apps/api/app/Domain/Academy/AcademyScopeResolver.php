@@ -125,6 +125,33 @@ final class AcademyScopeResolver
         return $target;
     }
 
+    public function forCohort(int $id, ?string $lock = 'share'): AcademyTarget
+    {
+        $peek = $this->find('cohorts', $id, null);
+        $unit = $this->find('academic_units', (int) $peek->academic_unit_id, $this->ancestor($lock));
+        $cohort = $lock === null ? $peek : $this->root('cohorts', $id, 'academic_unit_id', (int) $unit->id, $lock);
+        return new AcademyTarget([(int) $unit->unit_id], null, (int) $unit->id, ['cohort' => $cohort, 'academic_unit' => $unit]);
+    }
+
+    public function forCourse(int $id, ?string $lock = 'share'): AcademyTarget
+    {
+        $course = $this->find('courses', $id, $lock);
+        $viaClasses = $this->db->table('course_versions as cv')->join('classes as c', 'c.course_version_id', '=', 'cv.id')
+            ->join('academic_units as au', 'au.id', '=', 'c.academic_unit_id')->where('cv.course_id', $id)->distinct()->pluck('au.unit_id')->all();
+        $viaCurricula = $this->db->table('curriculum_courses as cc')->join('curricula as cu', 'cu.id', '=', 'cc.curriculum_id')
+            ->join('programs as p', 'p.id', '=', 'cu.program_id')->join('academic_units as au', 'au.id', '=', 'p.academic_unit_id')
+            ->where('cc.course_id', $id)->distinct()->pluck('au.unit_id')->all();
+        return new AcademyTarget(array_merge($viaClasses, $viaCurricula), null, null, ['course' => $course]);
+    }
+
+    public function forTranscriptRecord(int $id, ?string $lock = 'share'): AcademyTarget
+    {
+        $transcript = $this->find('transcripts', $id, $lock);
+        $target = $this->forTranscript((int) $transcript->person_id, (int) $transcript->curriculum_id, $this->ancestor($lock));
+        $target->rows['transcript'] = $transcript;
+        return $target;
+    }
+
     // A transcript aggregates ONE Person's enrollments under a curriculum, and each of those records
     // belongs to the unit of ITS OWN class -- not to the curriculum's unit (the schema does not tie a
     // class's academic unit to its cohort's). Authority is therefore required over the curriculum's unit

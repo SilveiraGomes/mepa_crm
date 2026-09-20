@@ -41,7 +41,34 @@ for (const endpoint of manifest.endpoints) {
   check(source.includes(endpoint.resource), `resource class missing from ${endpoint.controller}`);
   check(operationMatrix.includes(`self::${endpoint.permission.replace('ACADEMY_', '')}`), `permission not represented in operation matrix: ${endpoint.permission}`);
   check(endpoint.sensitive_fields instanceof Array, `sensitive_fields missing for ${endpoint.method} ${endpoint.uri}`);
+  if (endpoint.method === 'GET' && endpoint.service_operation.includes('QueryService::')) {
+    const servicePath = path.join(root, `apps/api/app/Domain/Academy/${service}.php`);
+    check(fs.existsSync(servicePath), `query service missing ${service}`);
+    const serviceSource = fs.existsSync(servicePath) ? fs.readFileSync(servicePath, 'utf8') : '';
+    check(new RegExp(`function\\s+${method}\\s*\\(`).test(serviceSource), `query method missing ${endpoint.service_operation}`);
+    check(typeof endpoint.scope === 'string' && endpoint.scope.length > 8, `scope provenance missing ${endpoint.method} ${endpoint.uri}`);
+    check(typeof endpoint.concealment === 'string', `concealment missing ${endpoint.method} ${endpoint.uri}`);
+    check(endpoint.filters instanceof Array && endpoint.sort instanceof Array, `filter/sort allowlist missing ${endpoint.method} ${endpoint.uri}`);
+    if (endpoint.pagination === true) check(endpoint.request === 'AcademyQueryRequest' && endpoint.resource === 'AcademyReadCollectionResource', `paginated read contract incomplete ${endpoint.uri}`);
+  }
 }
+
+const readEndpoints = manifest.endpoints.filter(e => e.method === 'GET' && e.service_operation.includes('QueryService::'));
+check(readEndpoints.length === 28, `expected 28 A3.1 read endpoints, found ${readEndpoints.length}`);
+const queryRequest = fs.readFileSync(path.join(root, 'apps/api/app/Http/Requests/Academy/AcademyQueryRequest.php'), 'utf8');
+check(queryRequest.includes("'max:100'") && queryRequest.includes('Rule::in'), 'read pagination and sort allowlists must be explicit');
+const readResourcePath = process.env.WAVE5_HTTP_READ_RESOURCE_PATH || path.join(root, 'apps/api/app/Http/Resources/Academy/AcademyReadResource.php');
+const readResource = fs.readFileSync(readResourcePath, 'utf8');
+check(readResource.includes('private const FIELDS') && !readResource.includes('Person::') && !readResource.includes('->toArray('), 'roster must use an explicit projection, never a raw Person model');
+const classDetail = readEndpoints.find(e => e.service_operation === 'ClassQueryService::detail');
+check(classDetail?.scope?.includes('persisted class'), 'class detail must declare persisted scope');
+const personSearch = readEndpoints.find(e => e.service_operation === 'ClassQueryService::searchPeopleForEnrollment');
+check(personSearch?.pagination === true && personSearch?.scope?.includes('existing academic relation'), 'Person search must be scoped and paginated');
+const enrollmentDetail = readEndpoints.find(e => e.service_operation === 'ClassQueryService::enrollment');
+check(enrollmentDetail?.concealment?.includes('404'), 'enrollment detail must be concealed');
+const classQueryPath = process.env.WAVE5_HTTP_CLASS_QUERY_PATH || path.join(root, 'apps/api/app/Domain/Academy/ClassQueryService.php');
+const classQuery = fs.readFileSync(classQueryPath, 'utf8');
+check((classQuery.match(/\$target->classId !== \$classId/g) || []).length >= 2 && classQuery.includes('AcademyReason::TARGET_NOT_FOUND'), 'nested enrollment/session parent-child equality must be enforced and concealed');
 
 const gradeHistory = manifest.endpoints.find(e => e.service_operation === 'GradeService::history');
 check(gradeHistory?.permission === 'ACADEMY_GRADES_VIEW', 'grade history must map to ACADEMY_GRADES_VIEW');

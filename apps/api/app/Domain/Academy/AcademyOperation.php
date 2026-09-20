@@ -28,6 +28,15 @@ final class AcademyOperation
 
     // key => [permission, class assignment required, admin override allowed, audit required]
     private const MATRIX = [
+        'catalog.view' => [self::VIEW, false, false, false],
+        'class.view' => [self::VIEW, false, false, false],
+        'assessment.view' => [self::VIEW, false, false, false],
+        'attempt.view' => [self::GRADES_VIEW, false, false, false],
+        'certificate.view' => [self::VIEW, false, false, false],
+        'transcript.view' => [self::GRADES_VIEW, false, false, false],
+        'progress.view' => [self::VIEW, false, false, false],
+        // Contextual candidate lookup is part of the enrollment workflow, not a general directory read.
+        'person.search' => [self::ENROLL, false, false, false],
         'structure.manage' => [self::MANAGE, false, false, true],
         'enrollment.view' => [self::VIEW, false, false, false],
         'enrollment.create' => [self::ENROLL, false, false, true],

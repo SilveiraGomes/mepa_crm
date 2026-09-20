@@ -1,6 +1,16 @@
 # Wave 5 Academy HTTP API
 
-Status: P0.3.5-A3 implementation inventory. Base URI: `/api/v1/academy`. Authentication uses the existing opaque `auth_sessions` bearer token. Contextual authorization and audit remain delegated to the approved A2 services.
+Status: P0.3.5-A3.1 read-model completion inventory. Base URI: `/api/v1/academy`. Authentication uses the existing opaque `auth_sessions` bearer token. Contextual authorization remains in the Academy application layer.
+
+## A3.1 read surface
+
+A3.1 adds 28 GET contracts (58 Academy routes total): list/detail for academic units, programs, curricula, courses and versions, cohorts and classes; explicit class roster and scoped Person search; enrollment/session/assessment/attempt/certificate/transcript reads; and enrollment progress. The executable inventory, including permission, scope provenance, concealment, filter and sort allowlists, is `wave5_academy_http_contracts.json`.
+
+Collections are restricted in SQL to authorized academic-unit IDs or to an already-authorized parent. Details return concealed 404 for absent, unauthorized, out-of-scope, or nested-parent mismatch targets. Default pagination is 50 and maximum 100.
+
+Person search is deliberately not a national directory: it returns only People with an existing academic relationship in the target class's academic unit. External/non-member enrollment remains supported by the existing opaque Person `public_id` command contract; creating/searching a new national Person is outside Academy CRUD.
+
+Modules, lessons and learning resources are not independent public CRUD roots. They are projected as a bounded content tree in course-version detail. Their write lifecycle remains intentionally outside this phase.
 
 ## Route inventory
 
@@ -37,9 +47,9 @@ Status: P0.3.5-A3 implementation inventory. Base URI: `/api/v1/academy`. Authent
 | POST | `/curricula/{curriculum}/people/{person}/transcript-preview` | `TranscriptController@preview` | `TranscriptService::compile` | ACADEMY_GRADES_VIEW | scoped 404/all-or-nothing | `ContextRequest` | `TranscriptResource` | no | no |
 | POST | `/curricula/{curriculum}/people/{person}/transcripts` | `TranscriptController@store` | `TranscriptService::issue` | ACADEMY_CERTIFY | scoped 404/all-or-nothing | `TranscriptIssueRequest` | `TranscriptResource` | no | service |
 
-## A3 application contract conflicts
+## A3.1 resolution of A3-PRODUCT-01
 
-The approved A2 layer has no read or mutation operations for HTTP list/detail/create coverage of academic units, programs, course versions, courses/modules, cohorts, classes, assessment detail/list, attempt detail/list, certificate detail/list, or issued transcript detail/list. A3 does not query those tables directly and does not add A2 services merely to facilitate HTTP. Each omitted operation is therefore `A3_APPLICATION_CONTRACT_CONFLICT` pending an approved application-layer extension. The roster service also lacks an authorised minimal Person projection; its HTTP representation omits internal `person_id` rather than leaking it.
+The missing read contracts are now explicit application services and HTTP contracts. No command behaviour, migration or schema object changed. The prior `A3_APPLICATION_CONTRACT_CONFLICT` list is empty; the final CRUD classification and performance evidence are in `docs/reviews/P0.3.5_A3_1_crud_read_completion.md`.
 
 ## Common contract
 
@@ -72,8 +82,8 @@ Unauthenticated requests return 401 `UNAUTHENTICATED` before target resolution. 
 
 ## Filters, sorting and search
 
-The currently approved A2 read operations expose only the `status` filter for class enrollments and bounded pagination for enrollments/session attendance. No arbitrary sort column or textual national search is accepted. Lists have deterministic service-owned ordering. Broader filters/search remain part of the conflicts above rather than being implemented as unscoped controller queries.
+A3.1 exposes endpoint-specific allowlists recorded in the HTTP manifest: scoped search for academic units, programs, courses, cohorts, classes, roster and assessments; factual status filters where stored; relationship filters using approved public IDs or numeric identifiers only where no `public_id` exists; and bounded date filters for sessions. Sort is limited to documented logical keys and translated to fixed SQL columns. No arbitrary sort/filter column or national Person search is accepted.
 
 ## A4 consumption notes
 
-The future PWA may build action visibility from the permission named in the route inventory. It must treat 404 as an opaque unavailable resource, use `lock_version` for versioned commands, confirm transition/revoke/finalize actions, display validation errors by field, and never infer absence versus lack of scope. Catalogue screens and person-bearing rosters remain blocked on the application-layer extensions listed above.
+The future PWA may build action visibility from the permission named in the route inventory. It must treat 404 as an opaque unavailable resource, use `lock_version` for versioned commands, confirm transition/revoke/finalize actions, display validation errors by field, and never infer absence versus lack of scope. Catalogue screens and person-bearing rosters can consume the A3.1 GET contracts. Person search remains intentionally contextual and is not a general identity directory.

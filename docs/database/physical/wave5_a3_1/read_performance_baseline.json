@@ -1,0 +1,32 @@
+{
+  "phase": "P0.3.5-A3.1",
+  "date": "2026-09-20",
+  "environment": {
+    "database": "MySQL 8.4.7",
+    "instance": "STARTED_VERIFIED / STOPPED_VERIFIED",
+    "port": 33029,
+    "pool_tables": 152
+  },
+  "method": "Same scoped query service, 1-row and 20-row datasets; Laravel query log; local smoke timings in milliseconds.",
+  "small": {
+    "academic_units": {"rows": 1, "queries": 7, "ms": 7.365},
+    "programs": {"rows": 1, "queries": 7, "ms": 7.129},
+    "courses": {"rows": 1, "queries": 7, "ms": 10.585},
+    "classes": {"rows": 1, "queries": 7, "ms": 9.036},
+    "class_roster": {"rows": 1, "queries": 11, "ms": 10.122},
+    "enrollments": {"rows": 1, "queries": 11, "ms": 9.201},
+    "assessments": {"rows": 1, "queries": 11, "ms": 9.875},
+    "certificates": {"rows": 1, "queries": 11, "ms": 8.996}
+  },
+  "large": {
+    "academic_units": {"rows": 1, "queries": 7, "ms": 11.384},
+    "programs": {"rows": 20, "queries": 7, "ms": 10.387},
+    "courses": {"rows": 20, "queries": 7, "ms": 15.979},
+    "classes": {"rows": 20, "queries": 7, "ms": 12.940},
+    "class_roster": {"rows": 20, "queries": 11, "ms": 16.319},
+    "enrollments": {"rows": 20, "queries": 11, "ms": 13.841},
+    "assessments": {"rows": 20, "queries": 11, "ms": 15.512},
+    "certificates": {"rows": 20, "queries": 11, "ms": 15.010}
+  },
+  "result": "PASS: query counts are constant as rows grow; no obvious N+1. Timings are observational local baselines, not SLAs."
+}

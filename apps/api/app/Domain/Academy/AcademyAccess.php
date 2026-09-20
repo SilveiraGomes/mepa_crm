@@ -104,6 +104,61 @@ final class AcademyAccess
         return new AcademyDecision($override ? AcademyDecision::ADMIN_OVERRIDE : AcademyDecision::DIRECT, $permission, $actor, $session, $now, $override ? $reason : null, $user->person_id === null ? null : (int) $user->person_id, $op->key);
     }
 
+    /**
+     * Resolve the academic-unit IDs visible to a collection query without loading
+     * candidate business rows first. Grant status and role+scope pairing use the
+     * same predicates as authorize(); descendants are expanded by one recursive SQL.
+     */
+    public function authorizedAcademicUnitIds(string $operation, int $actor, int $session): array
+    {
+        $op = AcademyOperation::get($operation);
+        $user = $this->db->table('users')->where('id', $actor)->first();
+        $auth = $this->db->table('auth_sessions')->where('id', $session)->first();
+        $now = DomainClock::now($this->db)->format('Y-m-d H:i:s.u');
+        if (!$user || $user->archived_at !== null || !$this->accessPolicy->permits('users', (string) $user->status)
+            || !$auth || (int) $auth->user_id !== $actor || $auth->revoked_at !== null || $auth->expires_at <= $now) {
+            throw new AcademyError(AcademyReason::NOT_AUTHORIZED, ['operation' => $op->key]);
+        }
+
+        $grants = $this->db->table('user_role_scopes as urs')
+            ->join('roles as r', 'r.id', '=', 'urs.role_id')
+            ->join('role_permissions as rp', 'rp.role_id', '=', 'r.id')
+            ->join('permissions as p', 'p.id', '=', 'rp.permission_id')
+            ->join('scopes as s', 's.id', '=', 'urs.scope_id')
+            ->where('urs.user_id', $actor)->where('r.is_active', 1)
+            ->where('p.code', $op->permission)->where('p.data_type', self::dataType())
+            ->whereColumn('p.action', 'p.code')->where('s.scope_kind', 'UNIT')
+            ->whereNull('s.department_instance_id')->whereNotNull('s.unit_id')
+            ->get(['urs.status', 'urs.starts_at', 'urs.ends_at', 's.unit_id', 's.include_descendants']);
+        $roots = [];
+        foreach ($grants as $grant) {
+            if ($this->accessPolicy->permits('auth_grants', (string) $grant->status)
+                && $grant->starts_at <= $now && ($grant->ends_at === null || $grant->ends_at > $now)) {
+                $roots[(int) $grant->unit_id] = max($roots[(int) $grant->unit_id] ?? 0, (int) $grant->include_descendants);
+            }
+        }
+        if ($roots === []) {
+            throw new AcademyError(AcademyReason::NOT_AUTHORIZED, ['operation' => $op->key]);
+        }
+
+        $seeds = [];
+        $bindings = [];
+        foreach ($roots as $unit => $expand) {
+            $seeds[] = 'SELECT ? AS id, ? AS expand';
+            $bindings[] = $unit;
+            $bindings[] = $expand;
+        }
+        $sql = 'WITH RECURSIVE covered AS (' . implode(' UNION ALL ', $seeds)
+            . ' UNION ALL SELECT ou.id, covered.expand FROM organizational_units ou JOIN covered ON ou.parent_id = covered.id WHERE covered.expand = 1)'
+            . ' SELECT DISTINCT au.id FROM academic_units au JOIN covered ON covered.id = au.unit_id ORDER BY au.id';
+        return array_map(static fn (object $row): int => (int) $row->id, $this->db->select($sql, $bindings));
+    }
+
+    private static function dataType(): string
+    {
+        return AcademyOperation::DATA_TYPE;
+    }
+
     private function covers(object $scope, int $unit, callable $q): bool
     {
         if ((int) $scope->unit_id === $unit) {
