@@ -1,0 +1,47 @@
+C0   exit=0 NOT_DETECTED restored=True changed=True  CONTROL: append a comment to EnrollmentService (semantically neutral)
+C1   exit=0 NOT_DETECTED restored=True changed=True  CONTROL: rename $cover -> $safetyCover inside enroll (neutral refactor)
+M1a  exit=1 DETECTED     restored=True changed=True  M1 enroll: early safety lock removed ($cover = null)
+        - op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take 
+        - op.child_safety.lock_early.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be locked (and its result kept) BEFORE the first write
+M1b  exit=1 DETECTED     restored=True changed=True  M1 enroll: whole child-safety integration removed (lock + assert)
+        - op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take 
+        - op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes 
+M1c  exit=1 DETECTED     restored=True changed=True  M1 transition: whole child-safety integration removed
+        - op.child_safety.lock_declared.EnrollmentService.transition: EnrollmentService.transition: contract child_safety_required=true but the code the operation executes does n
+        - op.child_safety.commit_declared.EnrollmentService.transition: EnrollmentService.transition: contract commit_time_child_safety_required=true but the code the operation e
+M2a  exit=1 DETECTED     restored=True changed=True  M2 attendance: initial safety lock removed from apply()
+        - op.child_safety.lock_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract child_safety_required=true but the code the operation execute
+        - op.child_safety.lock_early.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be locked (and its result kept) BEFORE the first wr
+M3a  exit=1 DETECTED     restored=True changed=True  M3 enroll: commit-time assertCover removed
+        - op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes 
+        - op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only
+M3b  exit=1 DETECTED     restored=True changed=True  M3 transition: commit-time assertCover removed
+        - op.child_safety.commit_declared.EnrollmentService.transition: EnrollmentService.transition: contract commit_time_child_safety_required=true but the code the operation e
+        - op.child_safety.commit_late.EnrollmentService.transition: EnrollmentService.transition: the safety cover must be asserted AFTER the last write and audit (commit time), 
+M3c  exit=1 DETECTED     restored=True changed=True  M3 attendance.record/recordBulk: commit-time assertCovers removed
+        - op.child_safety.commit_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract commit_time_child_safety_required=true but the code the ope
+        - op.child_safety.commit_late.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be asserted AFTER the last write and audit (commit
+M4a  exit=1 DETECTED     restored=True changed=True  M4 contract: enrollment.create flags flipped to false (code unchanged)
+        - op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract
+        - op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=false but the code the operation executes takes the saf
+M4b  exit=1 DETECTED     restored=True changed=True  M4 contract: enrollment.create child-safety flags deleted
+        - op.child_safety.flags.EnrollmentService.enroll: EnrollmentService.enroll: the contract must declare child_safety_required and commit_time_child_safety_required (boolean
+        - op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract
+M4c  exit=1 DETECTED     restored=True changed=True  M4 coordinated: enrollment.create integration removed from CODE and from CONTR
+        - op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract
+M4d  exit=1 DETECTED     restored=True changed=True  M4 coordinated: attendance.record integration removed from CODE and CONTRACT
+        - op.child_safety.floor.AcademicAttendanceService.record: AcademicAttendanceService.record: the approved child-safety integration of attendance.record cannot be removed f
+        - op.child_safety.floor.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: the approved child-safety integration of attendance.record cannot be r
+M5a  exit=1 DETECTED     restored=True changed=True  M5 enroll: lock+assert moved into a private helper that enroll never calls
+        - op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take 
+        - op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes 
+M5b  exit=1 DETECTED     restored=True changed=True  M5 attendance: apply() lock moved to a helper never called
+        - op.child_safety.lock_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract child_safety_required=true but the code the operation execute
+        - op.child_safety.lock_early.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be locked (and its result kept) BEFORE the first wr
+V1   exit=0 NOT_DETECTED restored=True changed=True  VARIANT enroll: assertCover wrapped in if (false) (dead code)
+V2   exit=0 NOT_DETECTED restored=True changed=True  VARIANT enroll: assertCover placed AFTER the return (unreachable)
+V3   exit=1 DETECTED     restored=True changed=True  VARIANT enroll: assertCover(null) (asserts nothing)
+        - op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only
+V4   exit=0 NOT_DETECTED restored=True changed=True  VARIANT enroll: assertCover in a closure that is never invoked
+V5   exit=0 NOT_DETECTED restored=True changed=True  VARIANT enroll: assertCover text only inside a string literal
+V6   exit=0 NOT_DETECTED restored=True changed=True  VARIANT enroll: assertCover guarded by a condition that is always false at run

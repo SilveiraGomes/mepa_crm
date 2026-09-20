@@ -1,0 +1,23 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Concurrency (Tests\DatabaseV2\AcademyConcurrency)
+ ✔ C4 e1 duplicate enrollment race yields one row and deterministic losers with data set #0
+ ✔ C4 e1 duplicate enrollment race yields one row and deterministic losers with data set #1
+ ✔ E1 racing enrollments of different people all succeed
+ ✔ A5 duplicate instructor assignment race converges to one assignment
+ ✔ The same person assigned to two classes at once creates one instructor profile
+ ✔ E3 a6 duplicate certificate issuance race yields one active certificate
+ ✔ E2 concurrent first grade record stores one version
+ ✔ E2 concurrent revisions from the same version accept exactly one with data set #0
+ ✔ E2 concurrent revisions from the same version accept exactly one with data set #1
+ ✔ E2 read then stale save across two processes
+ ✔ Concurrent attendance records are naturally idempotent
+ ✔ E4 control without revocation the held operation commits
+ ✔ A8 instructor assignment revoked before commit blocks the operation
+ ✔ A7 institutional scope revoked before commit blocks the operation
+ ✔ E4 revoked auth session before commit blocks the operation
+ ✔ A4 minor guardian authorization that lapses before commit denies the attendance
+
+Time: 00:33.988, Memory: 14.00 MB
+
+OK (16 tests, 632 assertions)

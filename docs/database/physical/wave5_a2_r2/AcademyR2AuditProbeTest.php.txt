@@ -1,0 +1,614 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\DatabaseV2;
+
+require_once __DIR__ . '/Support/PooledWaveFiveCase.php';
+
+use App\Domain\Academy\AcademicAttendanceService;
+use App\Domain\Academy\AcademyAuditWriter;
+use App\Domain\Academy\AcademyDecision;
+use App\Domain\Academy\AcademyError;
+use App\Domain\Academy\AcademyPolicy;
+use App\Domain\Academy\AcademyReason;
+use App\Domain\Academy\CertificateService;
+use App\Domain\Academy\CompletionService;
+use App\Domain\Academy\DatabaseAcademyAudit;
+use App\Domain\Academy\EnrollmentService;
+use App\Domain\Academy\InstructorAssignmentService;
+use App\Domain\Academy\TranscriptService;
+use Tests\DatabaseV2\Support\PooledWaveFiveCase;
+
+/**
+ * P0.3.5-A2-R2 re-audit probes. Written by the re-auditor's side of the process (NOT independent: same
+ * author lineage as 1de0dd8, declared in the report). It deliberately does not reuse the scenarios or the
+ * fixtures of AcademyRemediationTest: worlds, actors and criteria are built from the base helpers only.
+ * All state names / values are synthetic; nothing here is an institutional value.
+ */
+final class AcademyR2AuditProbeTest extends PooledWaveFiveCase
+{
+    // ---- fixtures -----------------------------------------------------------------------------
+
+    private function criteria(int $version, array $criteria): void
+    {
+        $this->db()->table('course_versions')->where('id', $version)->update(['completion_policy_metadata' => json_encode(['criteria' => $criteria])]);
+    }
+
+    /** class + one HELD session + criterion "attend every held session" that the ACTIVE student does not meet. */
+    private function unmet(): array
+    {
+        $w = $this->world();
+        $session = $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'S_SES_HELD']);
+        $this->criteria($w['version'], [['type' => 'ATTENDANCE_MIN_RATIO', 'min_ratio' => '1.0000']]);
+        $student = $this->enrollment($w['class']);
+        return $w + compact('session', 'student');
+    }
+
+    private function attend(array $w): void
+    {
+        $this->row('academic_attendance', ['enrollment_id' => $w['student']['id'], 'class_session_id' => $w['session'], 'status' => 'S_ATD_PRESENT', 'recorded_by' => $this->row('users')]);
+    }
+
+    private function status(int $enrollment): string
+    {
+        return (string) $this->db()->table('enrollments')->where('id', $enrollment)->value('status');
+    }
+
+    private function lockVersion(int $enrollment): int
+    {
+        return (int) $this->db()->table('enrollments')->where('id', $enrollment)->value('lock_version');
+    }
+
+    private function auditRows(string $entity, int $id, ?string $action = null): int
+    {
+        $q = $this->db()->table('audit_logs')->where('entity_type', $entity)->where('entity_id', $id);
+        if ($action !== null) {
+            $q->where('action', $action);
+        }
+        return (int) $q->count();
+    }
+
+    private function grant(array $actor, int $unit, array $permissions): void
+    {
+        $role = $this->row('roles');
+        $scope = $this->row('scopes', ['unit_id' => $unit, 'include_descendants' => 0]);
+        foreach ($permissions as $code) {
+            $permission = (int) $this->db()->table('permissions')->where('code', $code)->value('id')
+                ?: $this->row('permissions', ['code' => $code, 'action' => $code, 'data_type' => 'ACADEMY']);
+            $this->row('role_permissions', ['role_id' => $role, 'permission_id' => $permission]);
+        }
+        $this->row('user_role_scopes', ['user_id' => $actor['user'], 'role_id' => $role, 'scope_id' => $scope, 'granted_by' => $actor['user'], 'ends_at' => null]);
+    }
+
+    private function hooked(\Closure $after): AcademyAuditWriter
+    {
+        return new class($this->db(), $after) implements AcademyAuditWriter {
+            public function __construct(private $db, private \Closure $after)
+            {
+            }
+
+            public function record(AcademyDecision $decision, int $unitId, string $action, string $entityType, int $entityId, ?array $before, ?array $after, ?string $reason): void
+            {
+                (new DatabaseAcademyAudit($this->db))->record($decision, $unitId, $action, $entityType, $entityId, $before, $after, $reason);
+                ($this->after)($action);
+            }
+        };
+    }
+
+    private function failing(): AcademyAuditWriter
+    {
+        return new class implements AcademyAuditWriter {
+            public function record(AcademyDecision $decision, int $unitId, string $action, string $entityType, int $entityId, ?array $before, ?array $after, ?string $reason): void
+            {
+                throw new \RuntimeException('injected audit failure');
+            }
+        };
+    }
+
+    // ======================================================================================
+    // A2R-01
+    // ======================================================================================
+
+    public function test_01_original_exploit_enroll_only_actor_cannot_complete_by_any_route(): void
+    {
+        $w = $this->unmet();
+        $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $certifier = $this->actor($w['unit'], ['ACADEMY_CERTIFY']);
+        $viewer = $this->actor($w['unit'], ['ACADEMY_GRADES_VIEW']);
+        $file = $this->file($w['unit']);
+        $enrollments = new EnrollmentService($this->rt());
+        $before = $this->lockVersion($w['student']['id']);
+
+        // specialized route
+        $this->denied(AcademyReason::NOT_AUTHORIZED, fn () => (new CompletionService($this->rt()))->complete($clerk['user'], $clerk['session'], $w['student']['id']));
+        // generic route into the APPROVED transition declared COMPLETION
+        $this->denied(AcademyReason::NOT_AUTHORIZED, fn () => $enrollments->transition($clerk['user'], $clerk['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+        self::assertSame($before, $this->lockVersion($w['student']['id']));
+        self::assertSame(0, $this->auditRows('enrollments', $w['student']['id']), 'no audit (success or otherwise) may exist for the denied attempts');
+        // no lateral completion: certificate refused, no row; transcript reports the real state
+        $this->denied(AcademyReason::ENROLLMENT_NOT_COMPLETED, fn () => (new CertificateService($this->rt()))->issue($certifier['user'], $certifier['session'], $w['student']['id'], $file));
+        self::assertSame(0, (int) $this->db()->table('certificates')->where('enrollment_id', $w['student']['id'])->count());
+        $lines = (new TranscriptService($this->rt()))->compile($viewer['user'], $viewer['session'], $w['student']['person'], $w['curriculum'])['lines'];
+        self::assertCount(1, $lines);
+        self::assertSame('S_ENR_ACTIVE', $lines[0]['status']);
+        self::assertNotSame('S_ENR_COMPLETED', $lines[0]['status']);
+    }
+
+    public function test_02_authority_matrix_of_the_generic_completion(): void
+    {
+        $enrollments = fn () => new EnrollmentService($this->rt());
+
+        // a) ENROLL only, criteria SATISFIED -> still denied (authority, not criteria)
+        $w = $this->unmet();
+        $this->attend($w);
+        $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $this->denied(AcademyReason::NOT_AUTHORIZED, fn () => $enrollments()->transition($clerk['user'], $clerk['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+
+        // b) ASSESS only (+assignment), criteria satisfied -> denied (the generic transition needs ENROLL)
+        $w = $this->unmet();
+        $this->attend($w);
+        $assessor = $this->actor($w['unit'], ['ACADEMY_ASSESS']);
+        $this->assign($assessor, $w['class']);
+        $this->denied(AcademyReason::NOT_AUTHORIZED, fn () => $enrollments()->transition($assessor['user'], $assessor['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+
+        // c) ENROLL + ASSESS without class assignment, criteria satisfied -> denied
+        $w = $this->unmet();
+        $this->attend($w);
+        $both = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $this->denied(AcademyReason::CLASS_ASSIGNMENT_REQUIRED, fn () => $enrollments()->transition($both['user'], $both['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+
+        // c2) ENROLL + ASSESS + assignment that already ended -> denied
+        $w = $this->unmet();
+        $this->attend($w);
+        $ended = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $this->assign($ended, $w['class'], ['ends_at' => $this->later('-1 minute')]);
+        $this->denied(AcademyReason::CLASS_ASSIGNMENT_REQUIRED, fn () => $enrollments()->transition($ended['user'], $ended['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+
+        // d) ENROLL (unit A) + ASSESS only in ANOTHER unit + assignment -> ASSESS is out of scope
+        $w = $this->unmet();
+        $this->attend($w);
+        $other = $this->world();
+        $split = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $this->grant($split, $other['unit'], ['ACADEMY_ASSESS']);
+        $this->assign($split, $w['class']);
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $enrollments()->transition($split['user'], $split['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+
+        // e) everything correct but criteria NOT satisfied -> denied
+        $w = $this->unmet();
+        $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $this->assign($full, $w['class']);
+        $e = $this->denied(AcademyReason::COMPLETION_CRITERIA_NOT_MET, fn () => $enrollments()->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame(['ATTENDANCE_MIN_RATIO'], $e->context['unmet']);
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+        self::assertSame(0, $this->auditRows('enrollments', $w['student']['id']));
+
+        // f) everything correct + criteria satisfied -> ALLOW, audited as a completion
+        $this->attend($w);
+        $ok = $enrollments()->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED');
+        self::assertSame('S_ENR_COMPLETED', $ok['to']);
+        self::assertSame('S_ENR_COMPLETED', $this->status($w['student']['id']));
+        self::assertSame(1, $this->auditRows('enrollments', $w['student']['id'], 'enrollment.completed'));
+        self::assertSame(0, $this->auditRows('enrollments', $w['student']['id'], 'enrollment.transitioned'));
+    }
+
+    public function test_03_attached_completion_authority_is_reverified_at_commit(): void
+    {
+        $w = $this->unmet();
+        $this->attend($w);
+        $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $assignment = $this->assign($full, $w['class'])['assignment'];
+        // the class assignment (needed only by the ATTACHED completion authority) lapses after the work, before commit
+        $rt = $this->rt(null, $this->hooked(fn (string $action) => $this->db()->table('class_instructors')->where('id', $assignment)->update(['ends_at' => $this->later('-1 second')])));
+        $this->denied(AcademyReason::CLASS_ASSIGNMENT_REQUIRED, fn () => (new EnrollmentService($rt))->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']), 'the completion must not commit');
+        self::assertSame(0, $this->auditRows('enrollments', $w['student']['id']));
+    }
+
+    public function test_04_policy_effect_contract_fails_closed(): void
+    {
+        $tweaked = function (callable $tweak): array {
+            $w = $this->unmet();
+            $this->attend($w);
+            $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+            $this->assign($full, $w['class']);
+            return [$w, $full, new EnrollmentService($this->rt(self::academyPolicy($tweak)))];
+        };
+        $mutators = [
+            'missing effect on the completion entry' => function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED']]; return $c; },
+            'invalid effect literal' => function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED', 'FINISH']]; return $c; },
+            'null effect' => function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED', null]]; return $c; },
+            'NONE into the completed set' => function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED', self::NONE]]; return $c; },
+            'conflicting duplicate declarations' => function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED', self::NONE], ['S_ENR_ACTIVE', 'S_ENR_COMPLETED', self::COMPLETION]]; return $c; },
+            'completed role not configured while COMPLETION is declared' => function (array $c): array { unset($c['states']['enrollments']['sets']['completed']); return $c; },
+        ];
+        foreach ($mutators as $label => $mutator) {
+            [$w, $full, $svc] = $tweaked($mutator);
+            try {
+                $svc->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED');
+                self::fail("[$label] the transition must not execute");
+            } catch (AcademyError $e) {
+                self::assertSame(AcademyReason::POLICY_NOT_CONFIGURED, $e->reason, $label);
+            }
+            self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']), $label);
+        }
+        // COMPLETION declared on a transition that does NOT land in the completed set
+        [$w, $full, $svc] = $tweaked(function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_COMPLETED', self::COMPLETION], ['S_ENR_ACTIVE', 'S_ENR_WITHDRAWN', self::COMPLETION]]; return $c; });
+        $this->denied(AcademyReason::POLICY_NOT_CONFIGURED, fn () => $svc->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_WITHDRAWN'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+        // an approved NONE transition of the SAME policy is ALSO refused when its effect is undeclared (no default)
+        [$w, $full, $svc] = $tweaked(function (array $c): array { $c['transitions']['approved']['enrollments'] = [['S_ENR_ACTIVE', 'S_ENR_WITHDRAWN']]; return $c; });
+        $this->denied(AcademyReason::POLICY_NOT_CONFIGURED, fn () => $svc->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_WITHDRAWN'));
+    }
+
+    public function test_05_effect_none_never_completes_and_effect_completion_is_not_name_based(): void
+    {
+        // effect NONE: an ENROLL-only clerk performs it, and it is not a completion (no completion audit, no certificate)
+        $w = $this->unmet();
+        $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $r = (new EnrollmentService($this->rt()))->transition($clerk['user'], $clerk['session'], $w['student']['id'], 'S_ENR_WITHDRAWN');
+        self::assertSame('S_ENR_WITHDRAWN', $r['to']);
+        self::assertSame(0, $this->auditRows('enrollments', $w['student']['id'], 'enrollment.completed'));
+        self::assertSame(1, $this->auditRows('enrollments', $w['student']['id'], 'enrollment.transitioned'));
+
+        // a completely renamed vocabulary behaves identically: the code keys on the policy's semantic set, never on a name
+        $renamed = function (array $c): array {
+            $c['states']['enrollments'] = ['initial' => 'Q_NEW', 'sets' => ['operational' => ['Q_RUN'], 'completed' => ['Q_FIN'], 'approval_targets' => ['Q_RUN']]];
+            $c['transitions']['approved']['enrollments'] = [['Q_NEW', 'Q_RUN', self::NONE], ['Q_RUN', 'Q_FIN', self::COMPLETION]];
+            return $c;
+        };
+        $w = $this->world();
+        $session = $this->row('class_sessions', ['class_id' => $w['class'], 'status' => 'S_SES_HELD']);
+        $this->criteria($w['version'], [['type' => 'ATTENDANCE_MIN_RATIO', 'min_ratio' => '1.0000']]);
+        $student = $this->enrollment($w['class'], null, 'Q_RUN');
+        $svc = new EnrollmentService($this->rt(self::academyPolicy($renamed)));
+        $clerk2 = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $this->assign($full, $w['class']);
+        $this->denied(AcademyReason::NOT_AUTHORIZED, fn () => $svc->transition($clerk2['user'], $clerk2['session'], $student['id'], 'Q_FIN'));
+        $this->denied(AcademyReason::COMPLETION_CRITERIA_NOT_MET, fn () => $svc->transition($full['user'], $full['session'], $student['id'], 'Q_FIN'));
+        $this->row('academic_attendance', ['enrollment_id' => $student['id'], 'class_session_id' => $session, 'status' => 'S_ATD_PRESENT', 'recorded_by' => $this->row('users')]);
+        self::assertSame('Q_FIN', $svc->transition($full['user'], $full['session'], $student['id'], 'Q_FIN')['to']);
+
+        // PENDING / unknown transitions keep their own verdicts
+        $w = $this->unmet();
+        $clerk3 = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+        $this->denied(AcademyReason::STATE_POLICY_PENDING, fn () => (new EnrollmentService($this->rt()))->transition($clerk3['user'], $clerk3['session'], $w['student']['id'], 'S_ENR_FAILED'));
+        $this->denied(AcademyReason::INVALID_TRANSITION, fn () => (new EnrollmentService($this->rt()))->transition($clerk3['user'], $clerk3['session'], $w['student']['id'], 'S_ENR_UNKNOWN'));
+    }
+
+    public function test_06_state_machine_refuses_a_completion_effect_the_caller_did_not_enforce(): void
+    {
+        $machine = $this->rt()->machine;
+        try {
+            $machine->assertTransition('enrollments', 'S_ENR_ACTIVE', 'S_ENR_COMPLETED');
+            self::fail('a COMPLETION transition must not pass without the enforced effect');
+        } catch (AcademyError $e) {
+            self::assertSame(AcademyReason::INVALID_TRANSITION, $e->reason);
+            self::assertSame('effect_guard_not_enforced', $e->context['reason']);
+        }
+        $machine->assertTransition('enrollments', 'S_ENR_ACTIVE', 'S_ENR_COMPLETED', AcademyPolicy::EFFECT_COMPLETION);
+        $this->denied(AcademyReason::INVALID_TRANSITION, fn () => $machine->assertTransition('enrollments', 'S_ENR_ACTIVE', 'S_ENR_WITHDRAWN', AcademyPolicy::EFFECT_COMPLETION));
+        $machine->assertTransition('enrollments', 'S_ENR_ACTIVE', 'S_ENR_WITHDRAWN');
+        // move() itself (the persistence step) enforces the same rule
+        $w = $this->unmet();
+        $this->denied(AcademyReason::INVALID_TRANSITION, fn () => $machine->move('enrollments', 'enrollments', $w['student']['id'], 'S_ENR_COMPLETED'));
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+    }
+
+    public function test_07_both_completion_routes_share_one_rule_and_one_outcome(): void
+    {
+        $unmetErrors = [];
+        foreach (['service', 'generic'] as $route) {
+            $w = $this->unmet();
+            $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+            $this->assign($full, $w['class']);
+            $call = $route === 'service'
+                ? fn () => (new CompletionService($this->rt()))->complete($full['user'], $full['session'], $w['student']['id'])
+                : fn () => (new EnrollmentService($this->rt()))->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED');
+            $unmetErrors[$route] = $this->denied(AcademyReason::COMPLETION_CRITERIA_NOT_MET, $call)->context;
+            $this->attend($w);
+            $call();
+            self::assertSame('S_ENR_COMPLETED', $this->status($w['student']['id']), $route);
+            $audit = $this->db()->table('audit_logs')->where('entity_type', 'enrollments')->where('entity_id', $w['student']['id'])->where('action', 'enrollment.completed')->first();
+            self::assertNotNull($audit, $route);
+            $after = json_decode((string) $audit->after_metadata, true);
+            self::assertSame(['ATTENDANCE_MIN_RATIO'], $after['criteria'] ?? null, $route);
+        }
+        self::assertSame($unmetErrors['service'], $unmetErrors['generic']);
+    }
+
+    // ======================================================================================
+    // A2R-02
+    // ======================================================================================
+
+    /** One Person, one curriculum (unit A); class A1 in unit A and class B1 in unit B, both under that curriculum. */
+    private function mixed(): array
+    {
+        $a = $this->world();
+        $b = $this->world();
+        $classB = $this->row('classes', ['academic_unit_id' => $b['academicUnit'], 'course_version_id' => $b['version'], 'cohort_id' => $a['cohort'], 'status' => 'S_CLS_OPEN']);
+        $person = $this->row('people');
+        $enrA = $this->enrollment($a['class'], $person);
+        $enrB = $this->enrollment($classB, $person);
+        $solo = $this->row('people');
+        $soloEnr = $this->enrollment($a['class'], $solo);
+        foreach ([[$a, $enrA, '91.0000'], [$b, $enrB, '88.0000'], [$a, $soloEnr, '77.0000']] as [$world, $enr, $score]) {
+            $assessment = $this->assessment($world['version']);
+            $attempt = $this->attempt($assessment, $enr['id']);
+            $this->row('grades', ['attempt_id' => $attempt, 'version' => 1, 'score' => $score, 'status' => 'S_GRD_FINAL']);
+        }
+        return compact('a', 'b', 'classB', 'person', 'enrA', 'enrB', 'solo', 'soloEnr');
+    }
+
+    public function test_08_transcript_unit_a_only_person_reads_correctly(): void
+    {
+        $m = $this->mixed();
+        $viewerA = $this->actor($m['a']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $out = (new TranscriptService($this->rt()))->compile($viewerA['user'], $viewerA['session'], $m['solo'], $m['a']['curriculum']);
+        self::assertCount(1, $out['lines']);
+        self::assertSame($m['soloEnr']['id'], $out['lines'][0]['enrollment_id']);
+        self::assertSame('77.0000', $out['lines'][0]['grades'][0]['score']);
+    }
+
+    public function test_09_transcript_mixed_person_is_denied_as_a_whole_and_leaks_nothing_from_b(): void
+    {
+        $m = $this->mixed();
+        $viewerA = $this->actor($m['a']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $svc = new TranscriptService($this->rt());
+        $e = $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->compile($viewerA['user'], $viewerA['session'], $m['person'], $m['a']['curriculum']));
+        self::assertSame(['operation'], array_keys($e->context), 'the denial carries no ids of the foreign unit/enrollment');
+        self::assertStringNotContainsString((string) $m['b']['unit'], json_encode($e->context));
+        // referenced by public id as well
+        $public = (string) $this->db()->table('people')->where('id', $m['person'])->value('public_id');
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->compile($viewerA['user'], $viewerA['session'], $public, $m['a']['curriculum']));
+        // the actor authorised ONLY in B is not enough either (the curriculum's own unit is required)
+        $viewerB = $this->actor($m['b']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->compile($viewerB['user'], $viewerB['session'], $m['person'], $m['a']['curriculum']));
+        // authority over BOTH units (two independent grants) reads the full aggregate: both lines, both grades
+        $viewerAB = $this->actor($m['a']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $this->grant($viewerAB, $m['b']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $lines = $svc->compile($viewerAB['user'], $viewerAB['session'], $m['person'], $m['a']['curriculum'])['lines'];
+        self::assertCount(2, $lines);
+        self::assertEqualsCanonicalizing(['91.0000', '88.0000'], array_map(fn ($l) => $l['grades'][0]['score'], $lines));
+    }
+
+    public function test_10_transcript_caller_spoof_and_write_path_scope_from_the_database(): void
+    {
+        $m = $this->mixed();
+        $viewerA = $this->actor($m['a']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $svc = new TranscriptService($this->rt());
+        // claims unit A / class A / academic unit A, but the persisted contributors include unit B
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->compile($viewerA['user'], $viewerA['session'], $m['person'], $m['a']['curriculum'], ['unit_id' => $m['a']['unit'], 'academic_unit_id' => $m['a']['academicUnit'], 'class_id' => $m['a']['class']]));
+        // a write on the unit-B enrollment by an actor authorised in A only, claiming A
+        $clerkA = $this->actor($m['a']['unit'], ['ACADEMY_ENROLL']);
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => (new EnrollmentService($this->rt()))->transition($clerkA['user'], $clerkA['session'], $m['enrB']['id'], 'S_ENR_WITHDRAWN', null, null, ['unit_id' => $m['a']['unit'], 'academic_unit_id' => $m['a']['academicUnit'], 'class_id' => $m['a']['class']]));
+        self::assertSame('S_ENR_ACTIVE', $this->status($m['enrB']['id']));
+        // an honest claim about the wrong context, from an actor authorised there, is a CONTEXT_MISMATCH (claims only ever deny)
+        $clerkB = $this->actor($m['b']['unit'], ['ACADEMY_ENROLL']);
+        $this->denied(AcademyReason::CONTEXT_MISMATCH, fn () => (new EnrollmentService($this->rt()))->transition($clerkB['user'], $clerkB['session'], $m['enrB']['id'], 'S_ENR_WITHDRAWN', null, null, ['class_id' => $m['a']['class']]));
+    }
+
+    public function test_11_transcript_issue_is_all_or_nothing_too(): void
+    {
+        $m = $this->mixed();
+        $certA = $this->actor($m['a']['unit'], ['ACADEMY_CERTIFY']);
+        $file = $this->file($m['a']['unit']);
+        $svc = new TranscriptService($this->rt());
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->issue($certA['user'], $certA['session'], $m['person'], $m['a']['curriculum'], $file));
+        self::assertSame(0, (int) $this->db()->table('transcripts')->where('person_id', $m['person'])->count());
+        self::assertSame(0, (int) $this->db()->table('transcript_lines')->whereIn('enrollment_id', [$m['enrA']['id'], $m['enrB']['id']])->count());
+        // unit-A-only person: issued
+        $ok = $svc->issue($certA['user'], $certA['session'], $m['solo'], $m['a']['curriculum'], $file);
+        self::assertSame(1, $ok['lines']);
+    }
+
+    public function test_12_person_existence_is_not_revealed_before_authorization(): void
+    {
+        $m = $this->mixed();
+        $svc = new TranscriptService($this->rt());
+        $ghostUlid = (string) \Illuminate\Support\Str::ulid();
+        $outsider = $this->actor($this->world()['unit'], ['ACADEMY_GRADES_VIEW']);   // holds the permission, in an unrelated unit
+        $nobody = $this->actor($m['a']['unit'], ['ACADEMY_VIEW']);                    // lacks the permission
+        $public = (string) $this->db()->table('people')->where('id', $m['person'])->value('public_id');
+        foreach ([[$outsider, AcademyReason::OUT_OF_SCOPE], [$nobody, AcademyReason::NOT_AUTHORIZED]] as [$actor, $reason]) {
+            $seen = [];
+            foreach ([$public, $ghostUlid, 999999999, 'not-a-reference'] as $ref) {
+                $e = $this->denied($reason, fn () => $svc->compile($actor['user'], $actor['session'], $ref, $m['a']['curriculum']));
+                $seen[] = [$e->reason, $e->context];
+            }
+            self::assertCount(1, array_unique(array_map('serialize', $seen)), 'existing / unknown / malformed references must be indistinguishable for an unauthorized caller');
+        }
+        // an AUTHORISED caller does get the domain answer for an unknown reference
+        $viewerA = $this->actor($m['a']['unit'], ['ACADEMY_GRADES_VIEW']);
+        $this->denied(AcademyReason::TARGET_NOT_FOUND, fn () => $svc->compile($viewerA['user'], $viewerA['session'], $ghostUlid, $m['a']['curriculum']));
+    }
+
+    // ======================================================================================
+    // A2R-03
+    // ======================================================================================
+
+    private function certWorld(): array
+    {
+        $a = $this->world();
+        $b = $this->world();
+        $this->criteria($a['version'], [['type' => 'ATTENDANCE_MIN_RATIO', 'min_ratio' => '1.0000']]);
+        $certifier = $this->actor($a['unit'], ['ACADEMY_CERTIFY']);
+        return compact('a', 'b', 'certifier');
+    }
+
+    public function test_13_certificate_file_ownership(): void
+    {
+        $x = $this->certWorld();
+        $svc = new CertificateService($this->rt());
+        $issue = fn (array $enrollment, int $file, ?array $claimed = null) => fn () => $svc->issue($x['certifier']['user'], $x['certifier']['session'], $enrollment['id'], $file, null, null, $claimed);
+        $enr = $this->enrollment($x['a']['class'], null, 'S_ENR_COMPLETED');
+
+        $foreign = $this->file($x['b']['unit']);
+        $confidential = $this->row('files', ['owner_unit_id' => $x['b']['unit'], 'status' => 'AVAILABLE', 'classification' => 'R-CONFIDENCIAL']);
+        $unavailable = $this->row('files', ['owner_unit_id' => $x['b']['unit'], 'status' => 'QUARANTINED']);
+        foreach (['foreign' => $foreign, 'foreign R-CONFIDENCIAL' => $confidential, 'foreign unavailable' => $unavailable] as $label => $file) {
+            $this->denied(AcademyReason::OUT_OF_SCOPE, $issue($enr, $file));
+            self::assertSame(0, (int) $this->db()->table('certificates')->where('enrollment_id', $enr['id'])->count(), $label);
+        }
+        // payload spoof: the caller declares unit A / class A; the persisted owner of the file is B
+        $this->denied(AcademyReason::OUT_OF_SCOPE, $issue($enr, $confidential, ['unit_id' => $x['a']['unit'], 'academic_unit_id' => $x['a']['academicUnit'], 'class_id' => $x['a']['class']]));
+        self::assertSame(0, (int) $this->db()->table('certificates')->where('enrollment_id', $enr['id'])->count());
+        // an actor who ALSO holds CERTIFY in B still cannot use B's file for an A certificate (no shared/global exception is invented)
+        $both = $this->actor($x['a']['unit'], ['ACADEMY_CERTIFY']);
+        $this->grant($both, $x['b']['unit'], ['ACADEMY_CERTIFY']);
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->issue($both['user'], $both['session'], $enr['id'], $confidential));
+        // same unit: allowed (including a confidential file of the SAME unit: A2R-09, not interpreted)
+        $own = $this->file($x['a']['unit']);
+        $ok = $issue($enr, $own)();
+        self::assertSame(1, $ok['version']);
+        $enr2 = $this->enrollment($x['a']['class'], null, 'S_ENR_COMPLETED');
+        $ownConf = $this->row('files', ['owner_unit_id' => $x['a']['unit'], 'status' => 'AVAILABLE', 'classification' => 'R-CONFIDENCIAL']);
+        self::assertSame(1, $issue($enr2, $ownConf)()['version']);
+        self::assertSame($own, (int) $this->db()->table('certificates')->where('id', $ok['certificate_id'])->value('file_id'));
+    }
+
+    public function test_14_transcript_file_ownership(): void
+    {
+        $m = $this->mixed();
+        $cert = $this->actor($m['a']['unit'], ['ACADEMY_CERTIFY']);
+        $svc = new TranscriptService($this->rt());
+        $foreign = $this->row('files', ['owner_unit_id' => $m['b']['unit'], 'status' => 'AVAILABLE', 'classification' => 'R-CONFIDENCIAL']);
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->issue($cert['user'], $cert['session'], $m['solo'], $m['a']['curriculum'], $foreign));
+        self::assertSame(0, (int) $this->db()->table('transcripts')->where('person_id', $m['solo'])->count());
+    }
+
+    public function test_15_source_document_ownership(): void
+    {
+        $a = $this->world();
+        $b = $this->world();
+        $manager = $this->actor($a['unit'], ['ACADEMY_MANAGE']);
+        $svc = new InstructorAssignmentService($this->rt());
+        $docB = $this->row('legal_documents', ['owner_unit_id' => $b['unit']]);
+        $docA = $this->row('legal_documents', ['owner_unit_id' => $a['unit']]);
+        $person = $this->row('people');
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->assign($manager['user'], $manager['session'], $a['class'], $person, null, null, 'x', $docB));
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->assign($manager['user'], $manager['session'], $a['class'], $person, null, null, 'x', $docB, null, ['unit_id' => $a['unit'], 'academic_unit_id' => $a['academicUnit'], 'class_id' => $a['class']]));
+        self::assertSame(0, (int) $this->db()->table('class_instructors')->where('class_id', $a['class'])->count(), 'no relation may be written');
+        self::assertSame(0, (int) $this->db()->table('instructors')->where('person_id', $person)->count(), 'nor the instructor profile');
+        $ok = $svc->assign($manager['user'], $manager['session'], $a['class'], $person, null, null, 'x', $docA);
+        self::assertSame($docA, (int) $this->db()->table('class_instructors')->where('id', $ok['assignment_id'])->value('source_document_id'));
+    }
+
+    // ======================================================================================
+    // Child safety runtime probe
+    // ======================================================================================
+
+    // A second, independent connection to the same pool database (a concurrent writer).
+    private function second(): \Illuminate\Database\Connection
+    {
+        $c = self::connect()->getConnection();
+        $c->statement('SET SESSION innodb_lock_wait_timeout = 1');
+        return $c;
+    }
+
+    /** @return array{0: \ArrayObject, 1: \Closure} [$attempts, $hook]: on every audit write a concurrent connection tries to revoke the guardian authorization. */
+    private function concurrentRevoker(array $c): array
+    {
+        $attempts = new \ArrayObject();
+        $hook = function (string $action) use ($c, $attempts): void {
+            $second = $this->second();
+            try {
+                $second->table('guardian_authorizations')->where('id', $c['authorization'])->update(['status' => self::childPolicy()->state('authorization_revoked')]);
+                $attempts[] = 'REVOKED_WHILE_OPERATION_IN_FLIGHT';
+            } catch (\Illuminate\Database\QueryException $e) {
+                $attempts[] = (int) ($e->errorInfo[1] ?? 0) === 1205 ? 'BLOCKED_BY_LOCK' : 'OTHER_ERROR_' . ($e->errorInfo[1] ?? '?');
+            }
+        };
+        return [$attempts, $hook];
+    }
+
+    /** Per floor operation: [closure running it with a given runtime, closure telling whether it committed]. */
+    private function floorOperation(string $op, array $w, array $clerk, array $teacher, array $c): array
+    {
+        $extraClass = $this->row('classes', ['academic_unit_id' => $w['academicUnit'], 'course_version_id' => $w['version'], 'cohort_id' => $w['cohort'], 'status' => 'S_CLS_OPEN']);
+        if ($op === 'enrollment.create') {
+            return [fn ($rt) => (new EnrollmentService($rt))->enroll($clerk['user'], $clerk['session'], $extraClass, $c['child']), fn () => (int) $this->db()->table('enrollments')->where('person_id', $c['child'])->where('class_id', $extraClass)->count() === 1];
+        }
+        if ($op === 'enrollment.transition') {
+            $enr = $this->enrollment($extraClass, $c['child'], 'S_ENR_PENDING');
+            return [fn ($rt) => (new EnrollmentService($rt))->transition($clerk['user'], $clerk['session'], $enr['id'], 'S_ENR_ACTIVE'), fn () => $this->status($enr['id']) === 'S_ENR_ACTIVE'];
+        }
+        $this->assign($teacher, $extraClass);
+        $session = $this->row('class_sessions', ['class_id' => $extraClass, 'status' => 'S_SES_HELD']);
+        $enr = $this->enrollment($extraClass, $c['child'], 'S_ENR_ACTIVE');
+        return [fn ($rt) => (new AcademicAttendanceService($rt))->record($teacher['user'], $teacher['session'], $session, $enr['id'], 'S_ATD_PRESENT'), fn () => (int) $this->db()->table('academic_attendance')->where('enrollment_id', $enr['id'])->count() === 1];
+    }
+
+    public function test_16_child_safety_expiry_before_commit_blocks_every_floor_operation(): void
+    {
+        foreach (['enrollment.create', 'enrollment.transition', 'attendance.record'] as $op) {
+            $w = $this->world();
+            $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+            $teacher = $this->actor($w['unit'], ['ACADEMY_ATTENDANCE']);
+            $c = $this->child($w['unit']);
+            [$run, $committed] = $this->floorOperation($op, $w, $clerk, $teacher, $c);
+            // valid at the start, EXPIRES while the operation is in flight (the audit write is slow)
+            $this->db()->table('guardian_authorizations')->where('id', $c['authorization'])->update(['ends_at' => $this->later('+3 seconds')]);
+            try {
+                $run($this->rt(null, $this->hooked(function (string $action): void { usleep(4_500_000); })));
+                self::fail("[$op] an authorization that expired before commit must block the operation");
+            } catch (AcademyError $e) {
+                self::assertContains($e->reason, [AcademyReason::GUARDIAN_AUTHORIZATION_INVALID, AcademyReason::CHILD_SAFETY_DENIED, AcademyReason::CONSENT_REQUIRED], $op);
+            }
+            self::assertFalse($committed(), "[$op] nothing may be committed");
+        }
+    }
+
+    public function test_17_child_safety_revocation_cannot_interleave_and_control_denies_after_it(): void
+    {
+        foreach (['enrollment.create', 'enrollment.transition', 'attendance.record'] as $op) {
+            $w = $this->world();
+            $clerk = $this->actor($w['unit'], ['ACADEMY_ENROLL']);
+            $teacher = $this->actor($w['unit'], ['ACADEMY_ATTENDANCE']);
+            $c = $this->child($w['unit']);
+            [$run, $committed] = $this->floorOperation($op, $w, $clerk, $teacher, $c);
+            [$attempts, $hook] = $this->concurrentRevoker($c);
+            $run($this->rt(null, $this->hooked($hook)));
+            self::assertSame(['BLOCKED_BY_LOCK'], array_values(array_unique($attempts->getArrayCopy())), "[$op] a concurrent revocation must wait for the operation's cover locks, not slip in before commit");
+            self::assertTrue($committed(), "[$op] the cover was valid at the commit instant, so the operation commits");
+            // the revocation is applied afterwards and the SAME kind of operation is now refused
+            $c['children']->revokeAuthorization($c['staff']['user'], $c['staff']['session'], $c['authorization'], 'revoked after the operation');
+            [$run2, $committed2] = $this->floorOperation($op, $w, $clerk, $teacher, $c);
+            try {
+                $run2($this->rt());
+                self::fail("[$op] after the revocation the operation must be refused");
+            } catch (AcademyError $e) {
+                self::assertContains($e->reason, [AcademyReason::GUARDIAN_AUTHORIZATION_INVALID, AcademyReason::CHILD_SAFETY_DENIED, AcademyReason::CONSENT_REQUIRED], $op);
+            }
+            self::assertFalse($committed2(), $op);
+        }
+    }
+
+    // ======================================================================================
+    // Audit atomicity (one representative probe: the new generic COMPLETION path)
+    // ======================================================================================
+
+    public function test_18_audit_failure_rolls_the_generic_completion_back(): void
+    {
+        $w = $this->unmet();
+        $this->attend($w);
+        $full = $this->actor($w['unit'], ['ACADEMY_ENROLL', 'ACADEMY_ASSESS']);
+        $this->assign($full, $w['class']);
+        $auditsBefore = (int) $this->db()->table('audit_logs')->count();
+        try {
+            (new EnrollmentService($this->rt(null, $this->failing())))->transition($full['user'], $full['session'], $w['student']['id'], 'S_ENR_COMPLETED');
+            self::fail('a failing audit write must fail the operation');
+        } catch (\RuntimeException $e) {
+            self::assertSame('injected audit failure', $e->getMessage());
+        }
+        self::assertSame('S_ENR_ACTIVE', $this->status($w['student']['id']));
+        self::assertSame($auditsBefore, (int) $this->db()->table('audit_logs')->count());
+    }
+}

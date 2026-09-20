@@ -1,0 +1,22 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Authorization (Tests\DatabaseV2\AcademyAuthorization)
+ ✔ No permission denies
+ ✔ Permission with wrong institutional scope denies
+ ✔ Correct scope without class assignment denies
+ ✔ Permission scope and assignment allow and audit
+ ✔ C3 teacher of class a cannot grade class b even with assess permission
+ ✔ A3 admin override is explicit scoped reasoned and audited
+ ✔ Admin override still requires institutional scope
+ ✔ Admin override is refused where the matrix has none
+ ✔ Revoked or expired scope denies
+ ✔ Revoked session or archived user denies
+ ✔ Revoked assignment denies
+ ✔ A2 assess is not certify and certify needs no class assignment
+ ✔ C9 caller supplied scope is not authority
+ ✔ Unit level scope with descendants covers a descendant unit
+ ✔ Shared course version needs authority over every unit and unresolved scope denies
+
+Time: 00:11.099, Memory: 14.00 MB
+
+OK (15 tests, 52 assertions)

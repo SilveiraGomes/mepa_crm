@@ -1,0 +1,122 @@
+"""P0.3.5-A2-R2 re-audit: A2R-04 mutation campaign against scripts/validate-wave5-application-contracts.cjs.
+
+Own harness (does not reuse docs/database/physical/wave5_a2_1/validator_mutation_proofs.py). Each mutation is
+applied to the working tree, the validator is run, and the exact original BYTES are restored (sha256 verified).
+Controls (semantically neutral edits) must NOT fail the validator: they prove it is not "fail on any change".
+"""
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+
+ROOT = pathlib.Path('C:/wamp64/www/mepa-crm')
+DOM = ROOT / 'apps/api/app/Domain/Academy'
+ENR = DOM / 'EnrollmentService.php'
+ATT = DOM / 'AcademicAttendanceService.php'
+CON = ROOT / 'docs/database/physical/wave5_application_contracts.json'
+VAL = ROOT / 'scripts/validate-wave5-application-contracts.cjs'
+OUT = pathlib.Path(sys.argv[1])
+
+LOCK_E = "                $cover = $this->rt->safety->lock($person);\n"
+RET_E = "                return ['enrollment_id' => $id, 'public_id'"
+ASSERT_E = "                $this->rt->safety->assertCover($cover, $this->rt->now());\n" + RET_E
+LOCK_T = "                $cover = $approval ? $this->rt->safety->lock((int) $enrollment->person_id) : null;\n"
+ASSERT_T = "                $this->rt->safety->assertCover($cover, $this->rt->now());\n"
+LOCK_A = "        $covers[] = $this->rt->safety->lock((int) $enrollment->person_id);\n"
+ASSERT_A = "                $this->assertCovers($covers);\n"
+
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def once(t, old, new, n=1):
+    assert t.count(old) == n, f'expected {n} occurrence(s) of {old[:80]!r}, found {t.count(old)}'
+    return t.replace(old, new)
+
+
+def contract(fn):
+    def apply(t):
+        c = json.loads(t)
+        fn(c)
+        return json.dumps(c, indent=2, ensure_ascii=False) + '\n'
+    return apply
+
+
+def set_flags(op, lock, commit):
+    def f(c):
+        for s in c['services']:
+            for o in s['operations']:
+                if o['operation'] == op:
+                    if lock is None:
+                        o.pop('child_safety_required', None)
+                        o.pop('commit_time_child_safety_required', None)
+                    else:
+                        o['child_safety_required'] = lock
+                        o['commit_time_child_safety_required'] = commit
+    return f
+
+
+# (id, description, expected, [(file, transform)...])
+UNUSED_HELPER = "\n    private function unusedSafety(int $person): void\n    {\n        $cover = $this->rt->safety->lock($person);\n        $this->rt->safety->assertCover($cover, $this->rt->now());\n    }\n"
+
+M = [
+    ('C0', 'CONTROL: append a comment to EnrollmentService (semantically neutral)', 'PASS', [(ENR, lambda t: t.replace('\n}\n', '\n    // neutral comment\n}\n', 1) if t.rstrip().endswith('}') else t)]),
+    ('C1', 'CONTROL: rename $cover -> $safetyCover inside enroll (neutral refactor)', 'PASS', [(ENR, lambda t: once(once(once(t, LOCK_E, LOCK_E.replace('$cover', '$safetyCover')), ASSERT_E, ASSERT_E.replace('$cover', '$safetyCover')), "$this->rt->audit($decision, $target, 'enrollment.created'", "$this->rt->audit($decision, $target, 'enrollment.created'"))]),
+    ('M1a', 'M1 enroll: early safety lock removed ($cover = null)', 'FAIL', [(ENR, lambda t: once(t, LOCK_E, "                $cover = null;\n"))]),
+    ('M1b', 'M1 enroll: whole child-safety integration removed (lock + assert)', 'FAIL', [(ENR, lambda t: once(once(t, LOCK_E, "                $cover = null;\n"), ASSERT_E, RET_E))]),
+    ('M1c', 'M1 transition: whole child-safety integration removed', 'FAIL', [(ENR, lambda t: once(once(t, LOCK_T, "                $cover = null;\n"), ASSERT_T, "", 2 if t.count(ASSERT_T) == 2 else 1) if False else once(once(t, LOCK_T, "                $cover = null;\n"), "                $this->rt->safety->assertCover($cover, $this->rt->now());\n                return ['enrollment_id' => $enrollmentId, 'from'", "                return ['enrollment_id' => $enrollmentId, 'from'"))]),
+    ('M2a', 'M2 attendance: initial safety lock removed from apply()', 'FAIL', [(ATT, lambda t: once(t, LOCK_A, ''))]),
+    ('M3a', 'M3 enroll: commit-time assertCover removed', 'FAIL', [(ENR, lambda t: once(t, ASSERT_E, RET_E))]),
+    ('M3b', 'M3 transition: commit-time assertCover removed', 'FAIL', [(ENR, lambda t: once(t, "                $this->rt->safety->assertCover($cover, $this->rt->now());\n                return ['enrollment_id' => $enrollmentId, 'from'", "                return ['enrollment_id' => $enrollmentId, 'from'"))]),
+    ('M3c', 'M3 attendance.record/recordBulk: commit-time assertCovers removed', 'FAIL', [(ATT, lambda t: once(t, ASSERT_A, '', t.count(ASSERT_A)))]),
+    ('M4a', 'M4 contract: enrollment.create flags flipped to false (code unchanged)', 'FAIL', [(CON, contract(set_flags('enrollment.create', False, False)))]),
+    ('M4b', 'M4 contract: enrollment.create child-safety flags deleted', 'FAIL', [(CON, contract(set_flags('enrollment.create', None, None)))]),
+    ('M4c', 'M4 coordinated: enrollment.create integration removed from CODE and from CONTRACT (only the pinned floor can catch this)', 'FAIL', [(ENR, lambda t: once(once(t, LOCK_E, "                $cover = null;\n"), ASSERT_E, RET_E)), (CON, contract(set_flags('enrollment.create', False, False)))]),
+    ('M4d', 'M4 coordinated: attendance.record integration removed from CODE and CONTRACT', 'FAIL', [(ATT, lambda t: once(once(t, LOCK_A, ''), ASSERT_A, '', t.count(ASSERT_A))), (CON, contract(lambda c: [set_flags(op, False, False)(c) for op in ('attendance.record',)]))]),
+    ('M5a', 'M5 enroll: lock+assert moved into a private helper that enroll never calls', 'FAIL', [(ENR, lambda t: once(once(once(t, LOCK_E, "                $cover = null;\n"), ASSERT_E, RET_E), "\n    // approve / activate / withdraw / cancel / reject:", UNUSED_HELPER + "\n    // approve / activate / withdraw / cancel / reject:"))]),
+    ('M5b', 'M5 attendance: apply() lock moved to a helper never called', 'FAIL', [(ATT, lambda t: once(once(t, LOCK_A, ''), "\n    private function assertCovers(array $covers): void", "\n    private function unusedLock(array &$covers, object $enrollment): void\n    {\n        $covers[] = $this->rt->safety->lock((int) $enrollment->person_id);\n    }\n\n    private function assertCovers(array $covers): void"))]),
+    # ---- adversarial variants OUTSIDE the mission's M1-M5 wording (reported separately) ----
+    ('V1', 'VARIANT enroll: assertCover wrapped in if (false) (dead code)', 'FAIL?', [(ENR, lambda t: once(t, ASSERT_E, "                if (false) {\n                    $this->rt->safety->assertCover($cover, $this->rt->now());\n                }\n" + RET_E))]),
+    ('V2', 'VARIANT enroll: assertCover placed AFTER the return (unreachable)', 'FAIL?', [(ENR, lambda t: once(once(t, ASSERT_E, RET_E), "'outcome' => 'CREATED'];\n", "'outcome' => 'CREATED'];\n                $this->rt->safety->assertCover($cover, $this->rt->now());\n"))]),
+    ('V3', 'VARIANT enroll: assertCover(null) (asserts nothing)', 'FAIL?', [(ENR, lambda t: once(t, ASSERT_E, "                $this->rt->safety->assertCover(null, $this->rt->now());\n" + RET_E))]),
+    ('V4', 'VARIANT enroll: assertCover in a closure that is never invoked', 'FAIL?', [(ENR, lambda t: once(t, ASSERT_E, "                $neverCalled = fn () => $this->rt->safety->assertCover($cover, $this->rt->now());\n" + RET_E))]),
+    ('V5', 'VARIANT enroll: assertCover text only inside a string literal', 'FAIL?', [(ENR, lambda t: once(t, ASSERT_E, "                $note = '$this->rt->safety->assertCover($cover, $this->rt->now())';\n" + RET_E))]),
+    ('V6', 'VARIANT enroll: assertCover guarded by a condition that is always false at runtime (if ($person < 0))', 'FAIL?', [(ENR, lambda t: once(t, ASSERT_E, "                if ($person < 0) {\n                    $this->rt->safety->assertCover($cover, $this->rt->now());\n                }\n" + RET_E))]),
+]
+
+
+def run_validator():
+    r = subprocess.run(['node', str(VAL)], cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
+    text = (r.stdout or '') + (r.stderr or '')
+    fails = [l.strip() for l in text.splitlines() if 'op.child_safety' in l or 'safety.' in l and 'FAIL' in l.upper()]
+    status = next((l.strip() for l in text.splitlines() if 'status:' in l), '')
+    return r.returncode, status, fails[:4], text
+
+
+results = []
+for mid, desc, expected, edits in M:
+    originals = {p: p.read_bytes() for p, _ in edits}
+    before = {str(p.relative_to(ROOT)): hashlib.sha256(b).hexdigest() for p, b in originals.items()}
+    row = {'id': mid, 'description': desc, 'expected': expected, 'files': list(before)}
+    try:
+        for p, fn in edits:
+            mutated = fn(originals[p].decode('utf-8')).encode('utf-8')
+            row.setdefault('mutation_applied', True)
+            row['changed'] = row.get('changed', False) or mutated != originals[p]
+            p.write_bytes(mutated)
+        code, status, fails, text = run_validator()
+        row.update(exit_code=code, status=status, evidence=fails)
+    finally:
+        for p, b in originals.items():
+            p.write_bytes(b)
+    after = {str(p.relative_to(ROOT)): sha(p) for p, _ in edits}
+    row['restored_byte_identical'] = before == after
+    row['result'] = 'DETECTED' if row.get('exit_code') != 0 else 'NOT_DETECTED'
+    results.append(row)
+    print(f"{mid:4} exit={row.get('exit_code')} {row['result']:12} restored={row['restored_byte_identical']} changed={row.get('changed')}  {desc[:78]}")
+    for e in row.get('evidence', [])[:2]:
+        print('       ', e[:170])
+
+OUT.write_text(json.dumps(results, indent=2), encoding='utf-8')

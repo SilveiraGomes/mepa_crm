@@ -1,0 +1,23 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Operations (Tests\DatabaseV2\AcademyOperations)
+ ✔ A1 external instructor without membership is assigned and can teach
+ ✔ A5 duplicate assignment converges and periods are checked
+ ✔ A teacher cannot self assign but an explicit audited admin override can
+ ✔ Ending an assignment keeps the row and revokes class authority
+ ✔ Inactive instructor profile cannot be assigned
+ ✔ Session scheduling guards and initial state from policy
+ ✔ Event session link must belong to the same organizational unit
+ ✔ Effective location prefers explicit event location over class default without copying
+ ✔ Attendance is naturally idempotent and updates are audited with before after
+ ✔ Attendance requires permission scope and the class assignment
+ ✔ Attendance context and lifecycle guards
+ ✔ Bulk attendance is atomic
+ ✔ Minor attendance needs a live cover and history never substitutes for it
+ ✔ Admin override never bypasses the minor safety cover
+ ✔ Progress is derived from the real chain and records facts only
+ ✔ Resource progress follows lesson resources of the same course version
+
+Time: 00:13.684, Memory: 14.00 MB
+
+OK (16 tests, 83 assertions)

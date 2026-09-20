@@ -1,0 +1,57 @@
+"""Do the BEHAVIOURAL tests catch the runtime-dead variants that the static validator cannot see?
+Each variant is applied, the probe test_16 (expiry before commit, all three floor operations) and the
+existing Enrollment/Operations suites are run, and the exact bytes are restored (sha256 verified)."""
+import hashlib
+import json
+import os
+import pathlib
+import re
+import subprocess
+import sys
+
+ROOT = pathlib.Path('C:/wamp64/www/mepa-crm')
+API = ROOT / 'apps/api'
+DOM = API / 'app/Domain/Academy'
+ENR = DOM / 'EnrollmentService.php'
+ATT = DOM / 'AcademicAttendanceService.php'
+PHP = 'C:/wamp64/bin/php/php8.1.33/php.exe'
+OUT = pathlib.Path(sys.argv[1])
+env = dict(os.environ, WAVE5_DSN='mysql:host=127.0.0.1;port=33062;dbname=mepa_wave5_test_99f46362_pool_01', WAVE5_USER='root', WAVE5_PASSWORD='', WAVE5_ALLOW_SYNTHETIC='1', XDEBUG_MODE='off')
+
+RET_E = "                return ['enrollment_id' => $id, 'public_id'"
+ASSERT_E = "                $this->rt->safety->assertCover($cover, $this->rt->now());\n" + RET_E
+ASSERT_A = "                $this->assertCovers($covers);\n"
+
+
+def once(t, old, new, n=1):
+    assert t.count(old) == n, (old[:70], t.count(old))
+    return t.replace(old, new)
+
+
+VARIANTS = [
+    ('V1 enroll if(false)', ENR, lambda t: once(t, ASSERT_E, "                if (false) {\n                    $this->rt->safety->assertCover($cover, $this->rt->now());\n                }\n" + RET_E)),
+    ('V2 enroll after return', ENR, lambda t: once(once(t, ASSERT_E, RET_E), "'outcome' => 'CREATED'];\n", "'outcome' => 'CREATED'];\n                $this->rt->safety->assertCover($cover, $this->rt->now());\n")),
+    ('V4 enroll never-invoked closure', ENR, lambda t: once(t, ASSERT_E, "                $neverCalled = fn () => $this->rt->safety->assertCover($cover, $this->rt->now());\n" + RET_E)),
+    ('V5 enroll string literal', ENR, lambda t: once(t, ASSERT_E, "                $note = '$this->rt->safety->assertCover($cover, $this->rt->now())';\n" + RET_E)),
+    ('V6 enroll always-false condition', ENR, lambda t: once(t, ASSERT_E, "                if ($person < 0) {\n                    $this->rt->safety->assertCover($cover, $this->rt->now());\n                }\n" + RET_E)),
+    ('V7 attendance if(false) around assertCovers', ATT, lambda t: once(t, ASSERT_A, "                if (false) {\n                    $this->assertCovers($covers);\n                }\n", t.count(ASSERT_A))),
+]
+SUITES = ['AcademyR2AuditProbeTest --filter test_16', 'AcademyEnrollmentTest', 'AcademyOperationsTest']
+results = []
+for name, path, fn in VARIANTS:
+    original = path.read_bytes()
+    before = hashlib.sha256(original).hexdigest()
+    failing = []
+    try:
+        path.write_bytes(fn(original.decode('utf-8')).encode('utf-8'))
+        for suite in SUITES:
+            args = suite.split()
+            r = subprocess.run([PHP, 'vendor/phpunit/phpunit/phpunit', f'tests/DatabaseV2/{args[0]}.php'] + args[1:], cwd=API, env=env, capture_output=True, text=True)
+            names = re.findall(r'\d+\) Tests\\DatabaseV2\\\w+::(\w+)', r.stdout + r.stderr)
+            failing += [f'{args[0]}::{n}' for n in names]
+    finally:
+        path.write_bytes(original)
+    ok = hashlib.sha256(path.read_bytes()).hexdigest() == before
+    results.append({'variant': name, 'behavioural_tests_failing': failing, 'caught_by_behaviour': len(failing) > 0, 'restored_byte_identical': ok})
+    print(f"{name:46} caught_by_behaviour={len(failing) > 0!s:5} failing={failing} restored={ok}")
+OUT.write_text(json.dumps(results, indent=2), encoding='utf-8')

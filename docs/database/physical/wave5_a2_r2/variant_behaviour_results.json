@@ -1,0 +1,62 @@
+[
+  {
+    "variant": "V1 enroll if(false)",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyEnrollmentTest::test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+      "AcademyEnrollmentTest::test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  },
+  {
+    "variant": "V2 enroll after return",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyEnrollmentTest::test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+      "AcademyEnrollmentTest::test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  },
+  {
+    "variant": "V4 enroll never-invoked closure",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyEnrollmentTest::test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+      "AcademyEnrollmentTest::test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  },
+  {
+    "variant": "V5 enroll string literal",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyEnrollmentTest::test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+      "AcademyEnrollmentTest::test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  },
+  {
+    "variant": "V6 enroll always-false condition",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyEnrollmentTest::test_c7_minor_without_authorization_is_denied_and_nothing_is_stored",
+      "AcademyEnrollmentTest::test_a4_revoked_expired_or_withdrawn_cover_blocks_enrollment"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  },
+  {
+    "variant": "V7 attendance if(false) around assertCovers",
+    "behavioural_tests_failing": [
+      "AcademyR2AuditProbeTest::test_16_child_safety_expiry_before_commit_blocks_every_floor_operation",
+      "AcademyOperationsTest::test_minor_attendance_needs_a_live_cover_and_history_never_substitutes_for_it",
+      "AcademyOperationsTest::test_admin_override_never_bypasses_the_minor_safety_cover"
+    ],
+    "caught_by_behaviour": true,
+    "restored_byte_identical": true
+  }
+]

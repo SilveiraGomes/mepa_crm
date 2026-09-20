@@ -1,0 +1,23 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Enrollment (Tests\DatabaseV2\AcademyEnrollment)
+ ✔ C1 external student without membership enrolls
+ ✔ C2 existing person is reused by id or public id and never duplicated
+ ✔ Member number is never an academic identifier
+ ✔ C4 sequential duplicate enrollment converges on already enrolled with one row
+ ✔ Database unique violation is translated never leaked
+ ✔ Enrollment authorization is derived from the persisted class
+ ✔ Enrollment is refused unless the class state is configured enrollable
+ ✔ Ineligible person cannot be enrolled
+ ✔ Only approved transitions execute and pending or unknown ones are denied
+ ✔ A10 with no approved transitions nothing executes
+ ✔ Stale transition is rejected by lock version
+ ✔ Adult or non child normal flow passes without any child records
+ ✔ C7 minor without authorization is denied and nothing is stored
+ ✔ Minor with valid consent and guardian authorization is enrolled
+ ✔ A4 revoked expired or withdrawn cover blocks enrollment
+ ✔ Listing is scoped filtered and paginated
+
+Time: 00:11.913, Memory: 14.00 MB
+
+OK (16 tests, 65 assertions)

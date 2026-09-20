@@ -1,0 +1,23 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Assessment Certification (Tests\DatabaseV2\AcademyAssessmentCertification)
+ ✔ Assessment definition is policy neutral every value comes from the caller
+ ✔ Assessment update uses an allow list optimistic locking and protects used definitions
+ ✔ Attempts are numbered under lock and the attempt limit is not enforced d09
+ ✔ Attempt context lifecycle and class isolation
+ ✔ Grade versions are append only with reason history and audit
+ ✔ C5 stale writer is rejected and history and audit are preserved
+ ✔ Finalization is state policy pending until the transition is approved
+ ✔ A9 missing or malformed policy never defaults and never completes
+ ✔ Completion needs every criterion a recorded grade is not enough
+ ✔ C6 certificate is never issued without valid completion and policy
+ ✔ Certificate issue duplicate revoke and reissue lifecycle
+ ✔ Certificate revocation is state policy pending when the transition is not approved
+ ✔ Transcript states facts only and issue is blocked without policy
+ ✔ C8 a new curriculum version never rewrites a students history
+ ✔ C10 multi write operation leaves no partial state when its required audit fails
+ ✔ Required audit failure rolls back enrollment grade and certificate writes
+
+Time: 00:13.344, Memory: 14.00 MB
+
+OK (16 tests, 141 assertions)

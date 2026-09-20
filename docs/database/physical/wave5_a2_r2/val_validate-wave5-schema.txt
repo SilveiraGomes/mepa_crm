@@ -1,0 +1,14 @@
+{
+  "phase": "P0.3.5-A1",
+  "status": "STRICT_PARITY_PASS",
+  "scope": "25 Wave 5 (Academia) migration files, statically parsed, vs. model_catalog.json + wave5_manifest.json (design authority) + wave5_migrations_manifest.json (execution authority)",
+  "tables": 25,
+  "columns": 215,
+  "foreign_keys": 52,
+  "checks": 21,
+  "unique": 32,
+  "public_id": 8,
+  "cascade": 0,
+  "unexpected_drift": 0,
+  "errors": []
+}

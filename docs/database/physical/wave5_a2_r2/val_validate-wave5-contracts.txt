@@ -1,0 +1,6 @@
+{
+  status: 'APPROVED_CONTRACTS_UNCHANGED',
+  files: 160,
+  drift: 0,
+  new_wave5_migration_files_untracked_at_baseline: 0
+}

@@ -1,0 +1,374 @@
+[
+  {
+    "id": "C0",
+    "description": "CONTROL: append a comment to EnrollmentService (semantically neutral)",
+    "expected": "PASS",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "C1",
+    "description": "CONTROL: rename $cover -> $safetyCover inside enroll (neutral refactor)",
+    "expected": "PASS",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "M1a",
+    "description": "M1 enroll: early safety lock removed ($cover = null)",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.lock_early.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be locked (and its result kept) BEFORE the first write"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M1b",
+    "description": "M1 enroll: whole child-safety integration removed (lock + assert)",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.lock_early.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be locked (and its result kept) BEFORE the first write",
+      "- op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M1c",
+    "description": "M1 transition: whole child-safety integration removed",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.EnrollmentService.transition: EnrollmentService.transition: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.commit_declared.EnrollmentService.transition: EnrollmentService.transition: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.lock_early.EnrollmentService.transition: EnrollmentService.transition: the safety cover must be locked (and its result kept) BEFORE the first write",
+      "- op.child_safety.commit_late.EnrollmentService.transition: EnrollmentService.transition: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M2a",
+    "description": "M2 attendance: initial safety lock removed from apply()",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\AcademicAttendanceService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.lock_early.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be locked (and its result kept) BEFORE the first write",
+      "- op.child_safety.lock_declared.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.lock_early.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: the safety cover must be locked (and its result kept) BEFORE the first write"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M3a",
+    "description": "M3 enroll: commit-time assertCover removed",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M3b",
+    "description": "M3 transition: commit-time assertCover removed",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.commit_declared.EnrollmentService.transition: EnrollmentService.transition: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.commit_late.EnrollmentService.transition: EnrollmentService.transition: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M3c",
+    "description": "M3 attendance.record/recordBulk: commit-time assertCovers removed",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\AcademicAttendanceService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.commit_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.commit_late.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start",
+      "- op.child_safety.commit_declared.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.commit_late.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M4a",
+    "description": "M4 contract: enrollment.create flags flipped to false (code unchanged)",
+    "expected": "FAIL",
+    "files": [
+      "docs\\database\\physical\\wave5_application_contracts.json"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract",
+      "- op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=false but the code the operation executes takes the safety cover lock",
+      "- op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=false but the code the operation executes asserts the safety cover"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M4b",
+    "description": "M4 contract: enrollment.create child-safety flags deleted",
+    "expected": "FAIL",
+    "files": [
+      "docs\\database\\physical\\wave5_application_contracts.json"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.flags.EnrollmentService.enroll: EnrollmentService.enroll: the contract must declare child_safety_required and commit_time_child_safety_required (booleans; commit-time implies the early lock)",
+      "- op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract",
+      "- op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=undefined but the code the operation executes takes the safety cover lock",
+      "- op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=undefined but the code the operation executes asserts the safety cover"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M4c",
+    "description": "M4 coordinated: enrollment.create integration removed from CODE and from CONTRACT (only the pinned floor can catch this)",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php",
+      "docs\\database\\physical\\wave5_application_contracts.json"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.floor.EnrollmentService.enroll: EnrollmentService.enroll: the approved child-safety integration of enrollment.create cannot be removed from the contract"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M4d",
+    "description": "M4 coordinated: attendance.record integration removed from CODE and CONTRACT",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\AcademicAttendanceService.php",
+      "docs\\database\\physical\\wave5_application_contracts.json"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.floor.AcademicAttendanceService.record: AcademicAttendanceService.record: the approved child-safety integration of attendance.record cannot be removed from the contract",
+      "- op.child_safety.floor.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: the approved child-safety integration of attendance.record cannot be removed from the contract"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M5a",
+    "description": "M5 enroll: lock+assert moved into a private helper that enroll never calls",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.commit_declared.EnrollmentService.enroll: EnrollmentService.enroll: contract commit_time_child_safety_required=true but the code the operation executes does not assert the safety cover",
+      "- op.child_safety.lock_early.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be locked (and its result kept) BEFORE the first write",
+      "- op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "M5b",
+    "description": "M5 attendance: apply() lock moved to a helper never called",
+    "expected": "FAIL",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\AcademicAttendanceService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.lock_declared.AcademicAttendanceService.record: AcademicAttendanceService.record: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.lock_early.AcademicAttendanceService.record: AcademicAttendanceService.record: the safety cover must be locked (and its result kept) BEFORE the first write",
+      "- op.child_safety.lock_declared.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: contract child_safety_required=true but the code the operation executes does not take the safety cover lock",
+      "- op.child_safety.lock_early.AcademicAttendanceService.recordBulk: AcademicAttendanceService.recordBulk: the safety cover must be locked (and its result kept) BEFORE the first write"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "V1",
+    "description": "VARIANT enroll: assertCover wrapped in if (false) (dead code)",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "V2",
+    "description": "VARIANT enroll: assertCover placed AFTER the return (unreachable)",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "V3",
+    "description": "VARIANT enroll: assertCover(null) (asserts nothing)",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 1,
+    "status": "status: 'FAIL',",
+    "evidence": [
+      "- op.child_safety.commit_late.EnrollmentService.enroll: EnrollmentService.enroll: the safety cover must be asserted AFTER the last write and audit (commit time), not only at the start"
+    ],
+    "restored_byte_identical": true,
+    "result": "DETECTED"
+  },
+  {
+    "id": "V4",
+    "description": "VARIANT enroll: assertCover in a closure that is never invoked",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "V5",
+    "description": "VARIANT enroll: assertCover text only inside a string literal",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  },
+  {
+    "id": "V6",
+    "description": "VARIANT enroll: assertCover guarded by a condition that is always false at runtime (if ($person < 0))",
+    "expected": "FAIL?",
+    "files": [
+      "apps\\api\\app\\Domain\\Academy\\EnrollmentService.php"
+    ],
+    "mutation_applied": true,
+    "changed": true,
+    "exit_code": 0,
+    "status": "status: 'APPLICATION_CONTRACTS_PASS',",
+    "evidence": [],
+    "restored_byte_identical": true,
+    "result": "NOT_DETECTED"
+  }
+]

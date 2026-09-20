@@ -1,0 +1,25 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy R2Audit Probe (Tests\DatabaseV2\AcademyR2AuditProbe)
+ ✔ 01 original exploit enroll only actor cannot complete by any route
+ ✔ 02 authority matrix of the generic completion
+ ✔ 03 attached completion authority is reverified at commit
+ ✔ 04 policy effect contract fails closed
+ ✔ 05 effect none never completes and effect completion is not name based
+ ✔ 06 state machine refuses a completion effect the caller did not enforce
+ ✔ 07 both completion routes share one rule and one outcome
+ ✔ 08 transcript unit a only person reads correctly
+ ✔ 09 transcript mixed person is denied as a whole and leaks nothing from b
+ ✔ 10 transcript caller spoof and write path scope from the database
+ ✔ 11 transcript issue is all or nothing too
+ ✔ 12 person existence is not revealed before authorization
+ ✔ 13 certificate file ownership
+ ✔ 14 transcript file ownership
+ ✔ 15 source document ownership
+ ✔ 16 child safety expiry before commit blocks every floor operation
+ ✔ 17 child safety revocation cannot interleave and control denies after it
+ ✔ 18 audit failure rolls the generic completion back
+
+Time: 01:07.851, Memory: 16.00 MB
+
+OK (18 tests, 136 assertions)

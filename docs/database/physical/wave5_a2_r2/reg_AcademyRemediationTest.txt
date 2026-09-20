@@ -1,0 +1,30 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy Remediation (Tests\DatabaseV2\AcademyRemediation)
+ ✔ R1 1 completion service refuses when the configured criteria are not met
+ ✔ R1 2 and r1 3 the generic transition is refused and persists nothing
+ ✔ R1 4 and r1 5 no certificate and no false completion on the transcript after a refused bypass
+ ✔ R1 6 when the requirements are really met the specialized completion and the guarded transition pass
+ ✔ R1 7 transitions unrelated to completion keep working as the policy declares
+ ✔ R1 8 enroll alone never grants completion or certification
+ ✔ R1 missing completion policy is policy not configured through the generic path too
+ ✔ R1 the transition effect is declared by the policy and an ambiguous declaration fails closed
+ ✔ R1 completion authority attached to the generic transition is rechecked at commit
+ ✔ R2 1 grades view in unit a reads the grade of unit a
+ ✔ R2 2 grades view in unit a does not read the grade of unit b
+ ✔ R2 3 a claimed unit never changes the real target
+ ✔ R2 4 the aggregate transcript needs authority over every contributing unit and is never partial
+ ✔ R2 5 a superior scope with descendants is authorized and admin is never a read bypass
+ ✔ R2 6 membership never changes the academic scope
+ ✔ R2 person existence is revealed only after authorization
+ ✔ R3 1 a certificate with a file owned by its own unit is issued
+ ✔ R3 2 and r3 3 a file of another unit is refused whatever its classification
+ ✔ R3 4 a source document of another unit is refused and nothing is created
+ ✔ R3 5 claiming unit a in the payload does not make a unit b file usable
+ ✔ R3 6 an unknown file is a deterministic domain error
+ ✔ R3 7 no shared resource exception exists an ancestor units file is refused as well
+ ✔ R3 the official transcript file is checked like the certificate file
+
+Time: 00:16.494, Memory: 14.00 MB
+
+OK (23 tests, 109 assertions)

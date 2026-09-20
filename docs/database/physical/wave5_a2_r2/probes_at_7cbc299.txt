@@ -1,0 +1,97 @@
+﻿PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Academy R2Audit Probe (Tests\DatabaseV2\AcademyR2AuditProbe)
+ ✘ 01 original exploit enroll only actor cannot complete by any route
+   │
+   │ Expected AcademyError NOT_AUTHORIZED
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:126
+   │
+
+ ✘ 02 authority matrix of the generic completion
+   │
+   │ Expected AcademyError NOT_AUTHORIZED
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:148
+   │
+
+ ✘ 03 attached completion authority is reverified at commit
+   │
+   │ Expected AcademyError CLASS_ASSIGNMENT_REQUIRED
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:209
+   │
+
+ ✘ 07 both completion routes share one rule and one outcome
+   │
+   │ Expected AcademyError COMPLETION_CRITERIA_NOT_MET
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:315
+   │
+
+ ✔ 08 transcript unit a only person reads correctly
+ ✘ 09 transcript mixed person is denied as a whole and leaks nothing from b
+   │
+   │ Expected AcademyError OUT_OF_SCOPE
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:365
+   │
+
+ ✘ 10 transcript caller spoof and write path scope from the database
+   │
+   │ Failed asserting that two strings are identical.
+   │ --- Expected
+   │ +++ Actual
+   │ @@ @@
+   │ -'OUT_OF_SCOPE'
+   │ +'CONTEXT_MISMATCH'
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:241
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:388
+   │
+
+ ✘ 11 transcript issue is all or nothing too
+   │
+   │ Expected AcademyError OUT_OF_SCOPE
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:404
+   │
+
+ ✔ 12 person existence is not revealed before authorization
+ ✘ 13 certificate file ownership
+   │
+   │ Expected AcademyError OUT_OF_SCOPE
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:457
+   │
+
+ ✘ 14 transcript file ownership
+   │
+   │ Expected AcademyError OUT_OF_SCOPE
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:483
+   │
+
+ ✘ 15 source document ownership
+   │
+   │ Expected AcademyError OUT_OF_SCOPE
+   │
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\Support\PooledWaveFiveCase.php:244
+   │ C:\Users\silve\AppData\Local\Temp\claude\c--wamp64-www-mepa-crm\f9504092-6f2f-4574-a271-aeca89134c99\scratchpad\base\apps\api\tests\DatabaseV2\AcademyR2AuditProbeTest.php:496
+   │
+
+ ✔ 18 audit failure rolls the generic completion back
+
+Time: 01:08.062, Memory: 16.00 MB
+
+
+FAILURES!
+Tests: 13, Assertions: 32, Failures: 10.
