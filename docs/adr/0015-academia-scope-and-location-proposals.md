@@ -6,6 +6,17 @@
 
 Este ADR regista **duas decisões independentes**. Cada uma tem o seu próprio estado, para nunca ficar ambíguo qual foi aceite e qual foi rejeitado (nenhuma decisão parcial é escondida atrás de um único veredicto de ficheiro).
 
+## Adenda P0.3.5-A3 — atribuição de instrutores (A2-DEV-01)
+
+**Status: Proposed, para ratificação dos owners.** Esta adenda regista a interpretação já implementada em A2 sem alterar código nem fechar uma decisão institucional por inferência.
+
+- Redacção anterior: a matriz desta ADR associava `ACADEMY_TEACH` à criação/remoção de `class_instructors` e dizia que essa operação não exigia atribuição prévia.
+- Interpretação aplicada e proposta: atribuir ou terminar a atribuição de instrutores exige `ACADEMY_MANAGE` (ou override explícito `ACADEMY_ADMIN`, quando permitido e auditado). `ACADEMY_TEACH` é uma permissão pedagógica; operações pedagógicas por turma continuam a exigir atribuição activa.
+- Razão: impedir auto-atribuição por um docente e preservar separação entre administração da estrutura académica e actividade lectiva.
+- Consequência: a Academy HTTP API publica `POST /classes/{class}/instructors` e `POST /instructor-assignments/{assignment}/end` com `ACADEMY_MANAGE`; não oferece uma via de auto-atribuição com `ACADEMY_TEACH`.
+
+A autoridade para mudar o estado Accepted do corpo original não foi presumida nesta fase; por isso a adenda permanece Proposed e rastreada, sem bloquear A3.
+
 ---
 
 ## Decisão A — Localização/polo de uma turma

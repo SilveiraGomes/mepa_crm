@@ -299,7 +299,11 @@ const changed = (paths) => git(['status', '--porcelain', '--', ...paths]).split(
 check('schema.no_migration_change', changed(['apps/api/database']).length === 0 && changed(['docs/database/model_catalog.json', 'docs/database/physical/migration_waves.json', 'docs/database/physical/wave5_manifest.json', 'docs/database/physical/wave5_migrations_manifest.json']).length === 0, 'migrations / catalog / manifests must be untouched by A2');
 const gitGrep = (pattern, ...paths) => { try { return git(['grep', '-l', pattern, '--', ...paths]); } catch (e) { return ''; } };
 check('schema.no_seeds', findAll(/table\('(permissions|role_permissions|roles|user_role_scopes|scopes)'\)\s*->\s*(insert|update|delete|upsert)/).length === 0 && gitGrep('ACADEMY_', 'apps/api/database') === '', 'no Academy permission/role/grant seed may exist in production code or database/ (TEST fixtures only)');
-check('ui.none', changed(['apps/web', 'apps/api/routes', 'apps/api/app/Http', 'apps/api/resources']).length === 0, 'A2 must not touch UI, routes, controllers or resources');
+const a3HttpManifest = fs.existsSync(rel('docs/api/wave5_academy_http_contracts.json'));
+check('ui.none', changed(a3HttpManifest
+  ? ['apps/web', 'apps/api/resources']
+  : ['apps/web', 'apps/api/routes', 'apps/api/app/Http', 'apps/api/resources']).length === 0,
+  a3HttpManifest ? 'A3 may add HTTP adapters but must not add UI/view resources' : 'A2 must not touch UI, routes, controllers or resources');
 check('fin_payroll.absent', findAll(/salary|payroll|allowance|pension|\bINSS\b|remuneration|ledger/i).length === 0, 'FIN-PAYROLL-01 is out of scope: no payroll/pension/ledger identifiers');
 check('d06.absent', findAll(/retention|legal_hold|\bpurge\b|data_subject|gdpr/i).length === 0, 'D-06 is out of scope: no purge/retention/legal-hold logic');
 
