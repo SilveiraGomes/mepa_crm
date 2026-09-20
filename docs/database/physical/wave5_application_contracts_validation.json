@@ -1,12 +1,12 @@
 {
   "status": "APPLICATION_CONTRACTS_PASS",
   "validator": "scripts/validate-wave5-application-contracts.cjs",
-  "checks_total": 1429,
+  "checks_total": 1473,
   "checks_failed": 0,
   "services": 12,
-  "operations": 58,
+  "operations": 62,
   "command_operations": 30,
-  "read_operations": 28,
+  "read_operations": 32,
   "permission_matrix_rows": 31,
   "php_files_scanned": 35,
   "d09_scan": {
@@ -30,7 +30,7 @@
       },
       {
         "file": "apps/api/app/Domain/Academy/AcademicCatalogQueryService.php",
-        "line": 134,
+        "line": 164,
         "pattern": "literal",
         "text": "[$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));",
         "reason": "default page size of a bounded read model (technical, not academic)"

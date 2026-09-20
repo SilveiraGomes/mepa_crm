@@ -1,0 +1,46 @@
+{
+  "phase": "P0.3.5-A3.2",
+  "date": "2026-09-20",
+  "environment": {
+    "database": "MySQL 8.4.7",
+    "instance": "STARTED_VERIFIED / STOPPED_VERIFIED",
+    "port": 33038,
+    "pool_tables": 152
+  },
+  "method": "Same scoped query service with 1, 20, 125, and 500 children; Laravel query log; approximate JSON bytes; local smoke timings in milliseconds.",
+  "datasets": {
+    "children_1": {
+      "curriculum_detail": {"child_count": 1, "response_item_count": 0, "queries": 12, "ms": 28.803},
+      "curriculum_courses": {"child_count": 1, "response_item_count": 1, "queries": 12, "ms": 17.025},
+      "course_version_detail": {"child_count": 1, "response_item_count": 0, "queries": 14, "ms": 19.413},
+      "modules": {"child_count": 1, "response_item_count": 1, "queries": 12, "ms": 15.228},
+      "detail_payload_bytes": {"curriculum": 233, "course_version": 251}
+    },
+    "children_20": {
+      "curriculum_detail": {"child_count": 20, "response_item_count": 0, "queries": 12, "ms": 17.920},
+      "curriculum_courses": {"child_count": 20, "response_item_count": 20, "queries": 12, "ms": 21.920},
+      "course_version_detail": {"child_count": 20, "response_item_count": 0, "queries": 14, "ms": 26.278},
+      "modules": {"child_count": 20, "response_item_count": 20, "queries": 12, "ms": 17.416}
+    },
+    "children_125": {
+      "curriculum_detail": {"child_count": 125, "response_item_count": 0, "queries": 12, "ms": 17.500},
+      "curriculum_courses": {"child_count": 125, "response_item_count": 100, "queries": 12, "ms": 19.031},
+      "course_version_detail": {"child_count": 125, "response_item_count": 0, "queries": 14, "ms": 22.607},
+      "modules": {"child_count": 125, "response_item_count": 100, "queries": 12, "ms": 17.747},
+      "detail_payload_bytes": {"curriculum": 235, "course_version": 257}
+    },
+    "children_500": {
+      "curriculum_detail": {"child_count": 500, "response_item_count": 0, "queries": 12, "ms": 14.474},
+      "curriculum_courses": {"child_count": 500, "response_item_count": 100, "queries": 12, "ms": 22.644},
+      "course_version_detail": {"child_count": 500, "response_item_count": 0, "queries": 14, "ms": 20.232},
+      "modules": {"child_count": 500, "response_item_count": 100, "queries": 12, "ms": 17.913},
+      "detail_payload_bytes": {"curriculum": 235, "course_version": 257}
+    }
+  },
+  "pagination_125": {
+    "default_pages": [50, 50, 25],
+    "per_page_100_pages": [100, 25],
+    "lost_or_duplicate_records": 0
+  },
+  "result": "PASS: detail query counts and payload sizes stay approximately constant; collection response_item_count never exceeds 100. Timings are observational local baselines, not SLAs."
+}

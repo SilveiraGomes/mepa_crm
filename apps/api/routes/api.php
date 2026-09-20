@@ -43,10 +43,14 @@ Route::prefix('v1')->group(function (): void {
         Route::get('programs/{program}', [CatalogQueryController::class, 'program']);
         Route::get('curricula', [CatalogQueryController::class, 'curricula']);
         Route::get('curricula/{curriculum}', [CatalogQueryController::class, 'curriculum'])->whereNumber('curriculum');
+        Route::get('curricula/{curriculum}/courses', [CatalogQueryController::class, 'curriculumCourses'])->whereNumber('curriculum');
         Route::get('courses', [CatalogQueryController::class, 'courses']);
         Route::get('courses/{course}', [CatalogQueryController::class, 'course']);
         Route::get('courses/{course}/versions', [CatalogQueryController::class, 'courseVersions']);
         Route::get('course-versions/{courseVersion}', [CatalogQueryController::class, 'courseVersion'])->whereNumber('courseVersion');
+        Route::get('course-versions/{courseVersion}/modules', [CatalogQueryController::class, 'courseVersionModules'])->whereNumber('courseVersion');
+        Route::get('course-versions/{courseVersion}/modules/{module}/lessons', [CatalogQueryController::class, 'moduleLessons'])->whereNumber(['courseVersion', 'module']);
+        Route::get('course-versions/{courseVersion}/modules/{module}/lessons/{lesson}/resources', [CatalogQueryController::class, 'lessonResources'])->whereNumber(['courseVersion', 'module', 'lesson']);
         Route::get('cohorts', [CatalogQueryController::class, 'cohorts']);
         Route::get('cohorts/{cohort}', [CatalogQueryController::class, 'cohort']);
         Route::get('classes', [ClassQueryController::class, 'index']);

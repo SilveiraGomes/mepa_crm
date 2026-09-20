@@ -58,9 +58,18 @@ final class AcademicCatalogQueryService
         return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCurriculum($id, null), function () use ($id): array {
             $row = (array) $this->rt->db->table('curricula as cu')->join('programs as p', 'p.id', '=', 'cu.program_id')->where('cu.id', $id)
                 ->first(['cu.id', 'cu.version', 'cu.status', 'cu.published_at', 'cu.lock_version', 'p.public_id as program_public_id', 'p.code as program_code', 'p.name as program_name']);
-            $row['courses'] = $this->rt->db->table('curriculum_courses as cc')->join('courses as c', 'c.id', '=', 'cc.course_id')->where('cc.curriculum_id', $id)
-                ->orderBy('cc.sequence')->get(['c.public_id', 'c.code', 'c.name', 'c.status', 'cc.sequence', 'cc.required'])->map(fn ($r) => (array) $r)->all();
+            $row['course_count'] = $this->rt->db->table('curriculum_courses')->where('curriculum_id', $id)->count();
             return $row;
+        });
+    }
+
+    public function curriculumCourses(int $actor, int $session, int $curriculumId, array $query): array
+    {
+        return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCurriculum($curriculumId, null), function () use ($curriculumId, $query): array {
+            $q = $this->rt->db->table('curriculum_courses as cc')->join('courses as c', 'c.id', '=', 'cc.course_id')->where('cc.curriculum_id', $curriculumId);
+            $this->optionalText($q, 'c.status', $query['status'] ?? null);
+            $this->search($q, $query['search'] ?? null, ['c.code', 'c.name']);
+            return $this->page($q, $query, ['c.public_id', 'c.code', 'c.name', 'c.status', 'cc.sequence', 'cc.required'], ['sequence'=>'cc.sequence','code'=>'c.code','name'=>'c.name','status'=>'c.status']);
         });
     }
 
@@ -96,19 +105,40 @@ final class AcademicCatalogQueryService
         return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCourseVersion($id, null), function () use ($id): array {
             $row = (array) $this->rt->db->table('course_versions as cv')->join('courses as c', 'c.id', '=', 'cv.course_id')->where('cv.id', $id)
                 ->first(['cv.id', 'cv.version', 'cv.status', 'cv.lock_version', 'c.public_id as course_public_id', 'c.code as course_code', 'c.name as course_name']);
-            $modules = $this->rt->db->table('course_modules')->where('course_version_id', $id)->orderBy('sequence')->get(['id', 'sequence', 'name']);
-            $moduleIds = $modules->pluck('id')->map(fn ($v) => (int) $v)->all();
-            $lessons = $moduleIds === [] ? collect() : $this->rt->db->table('lessons')->whereIn('module_id', $moduleIds)->orderBy('sequence')->get(['id', 'module_id', 'sequence', 'name', 'required']);
-            $lessonIds = $lessons->pluck('id')->map(fn ($v) => (int) $v)->all();
-            $resources = $lessonIds === [] ? collect() : $this->rt->db->table('lesson_resources as lr')->join('resources as r', 'r.id', '=', 'lr.resource_id')->whereIn('lr.lesson_id', $lessonIds)->orderBy('lr.sequence')
-                ->get(['lr.lesson_id', 'lr.sequence', 'lr.required', 'r.public_id', 'r.resource_kind', 'r.provider', 'r.external_url', 'r.duration_seconds', 'r.status']);
-            $row['modules'] = $modules->map(function ($m) use ($lessons, $resources): array {
-                $item = ['sequence' => (int) $m->sequence, 'name' => $m->name];
-                $item['lessons'] = $lessons->where('module_id', $m->id)->values()->map(fn ($l) => ['sequence' => (int) $l->sequence, 'name' => $l->name, 'required' => (bool) $l->required,
-                    'resources' => $resources->where('lesson_id', $l->id)->values()->map(fn ($r) => ['public_id' => $r->public_id, 'sequence' => (int) $r->sequence, 'required' => (bool) $r->required, 'kind' => $r->resource_kind, 'provider' => $r->provider, 'external_url' => $r->external_url, 'duration_seconds' => $r->duration_seconds, 'status' => $r->status])->all()])->all();
-                return $item;
-            })->all();
+            $row['module_count'] = $this->rt->db->table('course_modules')->where('course_version_id', $id)->count();
+            $row['lesson_count'] = $this->rt->db->table('lessons as l')->join('course_modules as m', 'm.id', '=', 'l.module_id')->where('m.course_version_id', $id)->count();
+            $row['resource_count'] = $this->rt->db->table('lesson_resources as lr')->join('lessons as l', 'l.id', '=', 'lr.lesson_id')->join('course_modules as m', 'm.id', '=', 'l.module_id')->where('m.course_version_id', $id)->count();
             return $row;
+        });
+    }
+
+    public function courseVersionModules(int $actor, int $session, int $courseVersionId, array $query): array
+    {
+        return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCourseVersion($courseVersionId, null), function () use ($courseVersionId, $query): array {
+            $q = $this->rt->db->table('course_modules')->where('course_version_id', $courseVersionId);
+            return $this->page($q, $query, ['id', 'sequence', 'name'], ['sequence'=>'sequence','name'=>'name']);
+        });
+    }
+
+    public function moduleLessons(int $actor, int $session, int $courseVersionId, int $moduleId, array $query): array
+    {
+        return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCourseVersion($courseVersionId, null), function () use ($courseVersionId, $moduleId, $query): array {
+            $module = $this->rt->db->table('course_modules')->where('id', $moduleId)->where('course_version_id', $courseVersionId)->first(['id']);
+            if (!$module) { throw new AcademyError(AcademyReason::TARGET_NOT_FOUND); }
+            $q = $this->rt->db->table('lessons')->where('module_id', $moduleId);
+            return $this->page($q, $query, ['id', 'sequence', 'name', 'required'], ['sequence'=>'sequence','name'=>'name']);
+        });
+    }
+
+    public function lessonResources(int $actor, int $session, int $courseVersionId, int $moduleId, int $lessonId, array $query): array
+    {
+        return $this->rt->read('catalog.view', $actor, $session, fn () => $this->rt->scope->forCourseVersion($courseVersionId, null), function () use ($courseVersionId, $moduleId, $lessonId, $query): array {
+            $lesson = $this->rt->db->table('lessons as l')->join('course_modules as m', 'm.id', '=', 'l.module_id')->where('l.id', $lessonId)
+                ->where('l.module_id', $moduleId)->where('m.course_version_id', $courseVersionId)->first(['l.id']);
+            if (!$lesson) { throw new AcademyError(AcademyReason::TARGET_NOT_FOUND); }
+            $q = $this->rt->db->table('lesson_resources as lr')->join('resources as r', 'r.id', '=', 'lr.resource_id')->where('lr.lesson_id', $lessonId);
+            $this->optionalText($q, 'r.status', $query['status'] ?? null);
+            return $this->page($q, $query, ['r.public_id', 'lr.sequence', 'lr.required', 'r.resource_kind as kind', 'r.provider', 'r.external_url', 'r.duration_seconds', 'r.status'], ['sequence'=>'lr.sequence','kind'=>'r.resource_kind','status'=>'r.status']);
         });
     }
 

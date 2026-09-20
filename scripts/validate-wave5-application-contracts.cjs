@@ -196,7 +196,7 @@ for (const svc of contract.read_services || []) {
     }
   }
 }
-check('read.count', readOpCount === 28, `expected 28 A3.1 read operations, found ${readOpCount}`);
+check('read.count', readOpCount === 32, `expected 32 A3.2 read operations, found ${readOpCount}`);
 for (const k of Object.keys(matrix)) check(`matrix.used.${k}`, usedOps.has(k), `matrix row ${k} is used by no service operation`);
 check('op.count', opCount === contract.services.reduce((n, s) => n + s.operations.length, 0) && opCount >= 28, 'unexpected operation count');
 const missingReasons = files.flatMap(f => [...code[f].matchAll(/AcademyReason::([A-Z_]+)/g)].map(m => m[1])).filter(r => !reasonConsts.has(r));

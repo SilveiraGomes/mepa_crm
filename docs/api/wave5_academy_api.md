@@ -1,16 +1,27 @@
 # Wave 5 Academy HTTP API
 
-Status: P0.3.5-A3.1 read-model completion inventory. Base URI: `/api/v1/academy`. Authentication uses the existing opaque `auth_sessions` bearer token. Contextual authorization remains in the Academy application layer.
+Status: P0.3.5-A3.2 bounded read-model inventory. Base URI: `/api/v1/academy`. Authentication uses the existing opaque `auth_sessions` bearer token. Contextual authorization remains in the Academy application layer.
 
 ## A3.1 read surface
 
-A3.1 adds 28 GET contracts (58 Academy routes total): list/detail for academic units, programs, curricula, courses and versions, cohorts and classes; explicit class roster and scoped Person search; enrollment/session/assessment/attempt/certificate/transcript reads; and enrollment progress. The executable inventory, including permission, scope provenance, concealment, filter and sort allowlists, is `wave5_academy_http_contracts.json`.
+A3.1 added 28 GET contracts. A3.2 adds four paginated child collections, for 32 GET contracts and 62 Academy routes total. The executable inventory, including permission, scope provenance, concealment, filter and sort allowlists, is `wave5_academy_http_contracts.json`.
 
 Collections are restricted in SQL to authorized academic-unit IDs or to an already-authorized parent. Details return concealed 404 for absent, unauthorized, out-of-scope, or nested-parent mismatch targets. Default pagination is 50 and maximum 100.
 
 Person search is deliberately not a national directory: it returns only People with an existing academic relationship in the target class's academic unit. External/non-member enrollment remains supported by the existing opaque Person `public_id` command contract; creating/searching a new national Person is outside Academy CRUD.
 
-Modules, lessons and learning resources are not independent public CRUD roots. They are projected as a bounded content tree in course-version detail. Their write lifecycle remains intentionally outside this phase.
+Curriculum detail returns `course_count`, not its complete course relation. Course-version detail returns `module_count`, `lesson_count`, and `resource_count`, not a nested content tree. Complete subordinate relations are consumed incrementally through the paginated collections below. Modules, lessons and learning resources remain subordinate resources rather than independent public CRUD roots; their write lifecycle remains outside this phase.
+
+## A3.2 bounded child collections
+
+| Method | URI | Service operation | Filters | Sort | Pagination | Parent integrity |
+|---|---|---|---|---|---|---|
+| GET | `/curricula/{curriculum}/courses` | `AcademicCatalogQueryService::curriculumCourses` | `search`, `status` | `sequence`, `code`, `name`, `status` | default 50, max 100 | authorized persisted curriculum; relation restricted by `curriculum_id` |
+| GET | `/course-versions/{courseVersion}/modules` | `AcademicCatalogQueryService::courseVersionModules` | none | `sequence`, `name` | default 50, max 100 | authorized persisted version; modules restricted by `course_version_id` |
+| GET | `/course-versions/{courseVersion}/modules/{module}/lessons` | `AcademicCatalogQueryService::moduleLessons` | none | `sequence`, `name` | default 50, max 100 | module must belong to the version |
+| GET | `/course-versions/{courseVersion}/modules/{module}/lessons/{lesson}/resources` | `AcademicCatalogQueryService::lessonResources` | `status` | `sequence`, `kind`, `status` | default 50, max 100 | lesson must belong to the module and version |
+
+All four endpoints use `ACADEMY_VIEW`, derive scope from persisted parents, and conceal nonexistent, out-of-scope, and mismatched parents as the same external 404 response.
 
 ## Route inventory
 

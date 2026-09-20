@@ -85,8 +85,12 @@ final class AcademyHttpContractTest extends TestCase
     {
         Route::middleware('api')->get('/api/v1/academy/__read-validation', static fn (\App\Http\Requests\Academy\AcademyQueryRequest $request) => response()->json($request->validated()));
         $user = new User(['name' => 'Reader', 'email' => 'reader@example.test', 'password' => 'x']);
-        foreach ([['per_page'=>101], ['search'=>'ab'], ['sort'=>'id desc'], ['direction'=>'sideways'], ['unknown'=>'x']] as $query) {
+        foreach ([['per_page'=>101], ['per_page'=>1000], ['search'=>'ab'], ['sort'=>'id desc'], ['direction'=>'sideways'], ['unknown'=>'x']] as $query) {
             $this->actingAs($user)->getJson('/api/v1/academy/__read-validation?' . http_build_query($query))->assertStatus(422)->assertJsonPath('error.code', 'VALIDATION_ERROR');
+        }
+        foreach ([1, 50, 100] as $perPage) {
+            $this->actingAs($user)->getJson('/api/v1/academy/__read-validation?per_page=' . $perPage)
+                ->assertOk()->assertJsonPath('per_page', (string) $perPage);
         }
         $this->actingAs($user)->getJson('/api/v1/academy/__read-validation?page=2&per_page=100&search=academy&sort=name&direction=desc')
             ->assertOk()->assertJsonPath('sort', 'name')->assertJsonPath('direction', 'desc');
@@ -121,17 +125,18 @@ final class AcademyHttpContractTest extends TestCase
     {
         $manifest = json_decode(file_get_contents(base_path('../../docs/api/wave5_academy_http_contracts.json')), true, 512, JSON_THROW_ON_ERROR);
         $reads = array_values(array_filter($manifest['endpoints'], static fn (array $e): bool => $e['method'] === 'GET' && str_contains($e['service_operation'], 'QueryService::')));
-        self::assertCount(28, $reads);
+        self::assertCount(32, $reads);
         foreach ($reads as $endpoint) {
             self::assertTrue(collect(Route::getRoutes())->contains(fn ($route) => $route->uri() === 'api/v1/academy/' . $endpoint['uri'] && in_array('GET', $route->methods(), true)), $endpoint['uri']);
         }
     }
 
-    public function test_every_a31_read_endpoint_executes_the_authentication_boundary(): void
+    public function test_every_a32_read_endpoint_executes_the_authentication_boundary(): void
     {
+        $this->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class);
         $manifest = json_decode(file_get_contents(base_path('../../docs/api/wave5_academy_http_contracts.json')), true, 512, JSON_THROW_ON_ERROR);
         $reads = array_values(array_filter($manifest['endpoints'], static fn (array $e): bool => $e['method'] === 'GET' && str_contains($e['service_operation'], 'QueryService::')));
-        $numeric = ['academicUnit', 'curriculum', 'courseVersion', 'classSession', 'attempt'];
+        $numeric = ['academicUnit', 'curriculum', 'courseVersion', 'module', 'lesson', 'classSession', 'attempt'];
 
         foreach ($reads as $endpoint) {
             $uri = preg_replace_callback('/\{([^}]+)\}/', static fn (array $m): string => in_array($m[1], $numeric, true) ? '1' : '01K00000000000000000000000', $endpoint['uri']);

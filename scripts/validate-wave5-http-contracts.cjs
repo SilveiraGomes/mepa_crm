@@ -54,9 +54,9 @@ for (const endpoint of manifest.endpoints) {
 }
 
 const readEndpoints = manifest.endpoints.filter(e => e.method === 'GET' && e.service_operation.includes('QueryService::'));
-check(readEndpoints.length === 28, `expected 28 A3.1 read endpoints, found ${readEndpoints.length}`);
-const queryRequest = fs.readFileSync(path.join(root, 'apps/api/app/Http/Requests/Academy/AcademyQueryRequest.php'), 'utf8');
-check(queryRequest.includes("'max:100'") && queryRequest.includes('Rule::in'), 'read pagination and sort allowlists must be explicit');
+check(readEndpoints.length === 32, `expected 32 A3.2 read endpoints, found ${readEndpoints.length}`);
+const queryRequest = fs.readFileSync(process.env.WAVE5_HTTP_QUERY_REQUEST_PATH || path.join(root, 'apps/api/app/Http/Requests/Academy/AcademyQueryRequest.php'), 'utf8');
+check(/'per_page'\s*=>\s*\[[^\]]*'max:100'/.test(queryRequest) && queryRequest.includes('Rule::in'), 'read pagination maximum 100 and sort allowlists must be explicit');
 const readResourcePath = process.env.WAVE5_HTTP_READ_RESOURCE_PATH || path.join(root, 'apps/api/app/Http/Resources/Academy/AcademyReadResource.php');
 const readResource = fs.readFileSync(readResourcePath, 'utf8');
 check(readResource.includes('private const FIELDS') && !readResource.includes('Person::') && !readResource.includes('->toArray('), 'roster must use an explicit projection, never a raw Person model');
@@ -69,6 +69,28 @@ check(enrollmentDetail?.concealment?.includes('404'), 'enrollment detail must be
 const classQueryPath = process.env.WAVE5_HTTP_CLASS_QUERY_PATH || path.join(root, 'apps/api/app/Domain/Academy/ClassQueryService.php');
 const classQuery = fs.readFileSync(classQueryPath, 'utf8');
 check((classQuery.match(/\$target->classId !== \$classId/g) || []).length >= 2 && classQuery.includes('AcademyReason::TARGET_NOT_FOUND'), 'nested enrollment/session parent-child equality must be enforced and concealed');
+
+// A3.2: detail endpoints expose truthful counts only; every MANY relation is a
+// separately paginated collection with persisted parent equality.
+const catalogQuery = fs.readFileSync(process.env.WAVE5_HTTP_CATALOG_QUERY_PATH || path.join(root, 'apps/api/app/Domain/Academy/AcademicCatalogQueryService.php'), 'utf8');
+const methodBody = (source, name) => {
+  const start = source.search(new RegExp(`public function ${name}\\(`));
+  if (start < 0) return '';
+  const next = source.indexOf('\n    public function ', start + 10);
+  const priv = source.indexOf('\n    private function ', start + 10);
+  const ends = [next, priv].filter(x => x >= 0);
+  return source.slice(start, ends.length ? Math.min(...ends) : source.length);
+};
+const curriculumDetail = readEndpoints.find(e => e.service_operation === 'AcademicCatalogQueryService::curriculum');
+const versionDetail = readEndpoints.find(e => e.service_operation === 'AcademicCatalogQueryService::courseVersion');
+check(curriculumDetail?.nested_projection === 'counts_only' && methodBody(catalogQuery, 'curriculum').includes("['course_count']") && !methodBody(catalogQuery, 'curriculum').includes("['courses']"), 'curriculum detail must expose course_count and no courses collection');
+check(versionDetail?.nested_projection === 'counts_only' && methodBody(catalogQuery, 'courseVersion').includes("['module_count']") && !methodBody(catalogQuery, 'courseVersion').includes("['modules']"), 'courseVersion detail must expose counts and no modules tree');
+for (const operation of ['curriculumCourses', 'courseVersionModules', 'moduleLessons', 'lessonResources']) {
+  const endpoint = readEndpoints.find(e => e.service_operation === `AcademicCatalogQueryService::${operation}`);
+  check(endpoint?.pagination === true && endpoint.request === 'AcademyQueryRequest' && endpoint.resource === 'AcademyReadCollectionResource', `${operation} must remain a paginated child collection`);
+}
+check(methodBody(catalogQuery, 'moduleLessons').includes("where('course_version_id', $courseVersionId)") && methodBody(catalogQuery, 'moduleLessons').includes('AcademyReason::TARGET_NOT_FOUND'), 'moduleLessons must verify module belongs to course version');
+check(methodBody(catalogQuery, 'lessonResources').includes("where('l.module_id', $moduleId)") && methodBody(catalogQuery, 'lessonResources').includes("where('m.course_version_id', $courseVersionId)"), 'lessonResources must verify the complete persisted parent chain');
 
 const gradeHistory = manifest.endpoints.find(e => e.service_operation === 'GradeService::history');
 check(gradeHistory?.permission === 'ACADEMY_GRADES_VIEW', 'grade history must map to ACADEMY_GRADES_VIEW');

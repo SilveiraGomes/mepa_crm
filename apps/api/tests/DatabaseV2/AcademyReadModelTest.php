@@ -84,9 +84,113 @@ final class AcademyReadModelTest extends PooledWaveFiveCase
         fwrite(STDOUT, "\nA31_READ_BASELINE " . json_encode(['small'=>$small,'large'=>$large], JSON_UNESCAPED_SLASHES) . "\n");
     }
 
+    public function test_a32_details_are_constant_and_nested_collections_are_fully_paginated(): void
+    {
+        $a = $this->world(); $b = $this->world();
+        $actor = $this->actor($a['unit'], ['ACADEMY_VIEW']);
+        $service = new AcademicCatalogQueryService($this->rt());
+        $smallCurriculum = $service->curriculum($actor['user'], $actor['session'], $a['curriculum']);
+        $smallVersion = $service->courseVersion($actor['user'], $actor['session'], $a['version']);
+        $smallSizes = ['curriculum_detail'=>strlen(json_encode($smallCurriculum)), 'course_version_detail'=>strlen(json_encode($smallVersion))];
+
+        $small = [
+            'curriculum_detail' => $this->measure(fn () => $service->curriculum($actor['user'], $actor['session'], $a['curriculum'])),
+            'curriculum_courses' => $this->measure(fn () => $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], [])),
+            'course_version_detail' => $this->measure(fn () => $service->courseVersion($actor['user'], $actor['session'], $a['version'])),
+            'modules' => $this->measure(fn () => $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], [])),
+        ];
+
+        $initialResource = $this->row('resources');
+        $this->row('lesson_resources', ['lesson_id' => $a['lesson'], 'resource_id' => $initialResource, 'sequence' => 1]);
+
+        for ($i = 2; $i <= 125; $i++) {
+            $course = $this->row('courses', ['code' => 'A32-C-' . $i]);
+            $this->row('curriculum_courses', ['curriculum_id' => $a['curriculum'], 'course_id' => $course, 'sequence' => $i]);
+            $this->row('course_modules', ['course_version_id' => $a['version'], 'sequence' => $i, 'name' => 'Module ' . $i]);
+            $this->row('lessons', ['module_id' => $a['module'], 'sequence' => $i, 'name' => 'Lesson ' . $i]);
+            $resource = $this->row('resources');
+            $this->row('lesson_resources', ['lesson_id' => $a['lesson'], 'resource_id' => $resource, 'sequence' => $i]);
+            if ($i === 20) {
+                $twenty = [
+                    'curriculum_detail' => $this->measure(fn () => $service->curriculum($actor['user'], $actor['session'], $a['curriculum'])),
+                    'curriculum_courses' => $this->measure(fn () => $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], [])),
+                    'course_version_detail' => $this->measure(fn () => $service->courseVersion($actor['user'], $actor['session'], $a['version'])),
+                    'modules' => $this->measure(fn () => $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], [])),
+                ];
+            }
+        }
+
+        $curriculum = $service->curriculum($actor['user'], $actor['session'], $a['curriculum']);
+        $version = $service->courseVersion($actor['user'], $actor['session'], $a['version']);
+        self::assertSame(125, $curriculum['course_count']);
+        self::assertArrayNotHasKey('courses', $curriculum);
+        self::assertSame(125, $version['module_count']);
+        self::assertSame(125, $version['lesson_count']);
+        self::assertSame(125, $version['resource_count']);
+        foreach (['modules', 'lessons', 'resources'] as $key) self::assertArrayNotHasKey($key, $version);
+
+        foreach ([
+            fn (array $q) => $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], $q),
+            fn (array $q) => $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], $q),
+            fn (array $q) => $service->moduleLessons($actor['user'], $actor['session'], $a['version'], $a['module'], $q),
+            fn (array $q) => $service->lessonResources($actor['user'], $actor['session'], $a['version'], $a['module'], $a['lesson'], $q),
+        ] as $collection) {
+            $p1 = $collection([]); $p2 = $collection(['page'=>2]); $p3 = $collection(['page'=>3]);
+            self::assertCount(50, $p1['items']); self::assertCount(50, $p2['items']); self::assertCount(25, $p3['items']);
+            self::assertSame(125, $p1['total']);
+            $hundred = $collection(['per_page'=>100]); $remainder = $collection(['page'=>2, 'per_page'=>100]);
+            self::assertCount(100, $hundred['items']); self::assertCount(25, $remainder['items']);
+            self::assertCount(125, array_unique(array_map('serialize', array_merge($hundred['items'], $remainder['items']))));
+        }
+
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $service->curriculumCourses($actor['user'], $actor['session'], $b['curriculum'], []));
+        $this->denied(AcademyReason::TARGET_NOT_FOUND, fn () => $service->curriculumCourses($actor['user'], $actor['session'], PHP_INT_MAX, []));
+        $this->denied(AcademyReason::TARGET_NOT_FOUND, fn () => $service->moduleLessons($actor['user'], $actor['session'], $a['version'], $b['module'], []));
+        $this->denied(AcademyReason::TARGET_NOT_FOUND, fn () => $service->lessonResources($actor['user'], $actor['session'], $a['version'], $a['module'], $b['lesson'], []));
+
+        $at125 = [
+            'curriculum_detail' => $this->measure(fn () => $service->curriculum($actor['user'], $actor['session'], $a['curriculum'])),
+            'curriculum_courses' => $this->measure(fn () => $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], ['per_page'=>100])),
+            'course_version_detail' => $this->measure(fn () => $service->courseVersion($actor['user'], $actor['session'], $a['version'])),
+            'modules' => $this->measure(fn () => $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], ['per_page'=>100])),
+        ];
+        foreach ([$twenty, $at125] as $dataset) {
+            foreach ($dataset as $name => $measurement) self::assertLessThanOrEqual($small[$name]['queries'] + 1, $measurement['queries'], "$name query count grew with child count");
+        }
+        $sizes125 = ['curriculum_detail'=>strlen(json_encode($curriculum)), 'course_version_detail'=>strlen(json_encode($version))];
+
+        for ($i = 126; $i <= 500; $i++) {
+            $course = $this->row('courses', ['code' => 'A32-C-' . $i]);
+            $this->row('curriculum_courses', ['curriculum_id' => $a['curriculum'], 'course_id' => $course, 'sequence' => $i]);
+            $this->row('course_modules', ['course_version_id' => $a['version'], 'sequence' => $i, 'name' => 'Module ' . $i]);
+        }
+        $curriculum500 = $service->curriculum($actor['user'], $actor['session'], $a['curriculum']);
+        $version500 = $service->courseVersion($actor['user'], $actor['session'], $a['version']);
+        self::assertSame(500, $curriculum500['course_count']);
+        self::assertSame(500, $version500['module_count']);
+        self::assertCount(100, $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], ['per_page'=>100])['items']);
+        self::assertCount(100, $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], ['per_page'=>100])['items']);
+        $at500 = [
+            'curriculum_detail' => $this->measure(fn () => $service->curriculum($actor['user'], $actor['session'], $a['curriculum'])),
+            'curriculum_courses' => $this->measure(fn () => $service->curriculumCourses($actor['user'], $actor['session'], $a['curriculum'], ['per_page'=>100])),
+            'course_version_detail' => $this->measure(fn () => $service->courseVersion($actor['user'], $actor['session'], $a['version'])),
+            'modules' => $this->measure(fn () => $service->courseVersionModules($actor['user'], $actor['session'], $a['version'], ['per_page'=>100])),
+        ];
+        foreach ($at500 as $name => $measurement) self::assertLessThanOrEqual($small[$name]['queries'] + 1, $measurement['queries'], "$name query count grew at 500 children");
+        $sizes500 = ['curriculum_detail'=>strlen(json_encode($curriculum500)), 'course_version_detail'=>strlen(json_encode($version500))];
+        self::assertLessThanOrEqual($smallSizes['curriculum_detail'] + 16, $sizes500['curriculum_detail']);
+        self::assertLessThanOrEqual($smallSizes['course_version_detail'] + 16, $sizes500['course_version_detail']);
+        fwrite(STDOUT, "\nA32_BOUNDED_BASELINE " . json_encode(['children_1'=>$small,'children_20'=>$twenty,'children_125'=>$at125,'children_500'=>$at500,'detail_payload_bytes'=>['children_1'=>$smallSizes,'children_125'=>$sizes125,'children_500'=>$sizes500]], JSON_UNESCAPED_SLASHES) . "\n");
+    }
+
     private function measure(callable $call): array
     {
         $db = $this->db(); $db->flushQueryLog(); $db->enableQueryLog(); $start = hrtime(true); $result = $call(); $ms = (hrtime(true)-$start)/1_000_000; $queries=count($db->getQueryLog()); $db->disableQueryLog();
-        return ['rows'=>(int)($result['total']??count($result['items']??[])),'queries'=>$queries,'ms'=>round($ms,3)];
+        return [
+            'rows'=>(int)($result['total']??count($result['items']??[])),
+            'response_items'=>count($result['items']??[]),
+            'queries'=>$queries,
+            'ms'=>round($ms,3),
+        ];
     }
 }

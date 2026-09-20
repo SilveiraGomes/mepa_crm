@@ -19,7 +19,7 @@ final class AcademyReadResource extends JsonResource
         'program_name', 'course_public_id', 'course_code', 'course_name', 'course_version', 'cohort_public_id', 'cohort_name',
         'location_public_id', 'location_name', 'class_public_id', 'class_code', 'enrollment_public_id', 'enrollment_status',
         'person_public_id', 'assessment_public_id', 'assessment_name', 'event_session_id', 'result_status',
-        'modules', 'lessons', 'resources', 'courses', 'person', 'lines',
+        'course_count', 'module_count', 'lesson_count', 'resource_count', 'lessons', 'resources', 'person', 'lines',
     ];
 
     public function toArray($request): array { return $this->project((array) $this->resource); }
