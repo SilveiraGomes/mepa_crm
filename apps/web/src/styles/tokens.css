@@ -1,0 +1,58 @@
+/*
+ * Design tokens. The five MEPA institutional colours are the only hex authority;
+ * every component reads the semantic tokens below (never a raw hex).
+ *
+ * The brand danger (#e83151) and warning (#fe7f2d) do not reach 4.5:1 as text on
+ * white (4.21 and 2.53), so text and solid buttons use the *-strong variants, and the
+ * brand colours stay for borders, icons and warning surfaces with ink text (6.88:1).
+ * src/styles/tokens.test.ts asserts every pair below.
+ */
+:root {
+  --mepa-primary: #0076b3;
+  --mepa-ink: #191923;
+  --mepa-blush: #e1c0cb;
+  --mepa-danger: #e83151;
+  --mepa-warning: #fe7f2d;
+
+  --mepa-primary-strong: #056396;
+  --mepa-danger-strong: #bf2c48;
+  --mepa-warning-strong: #a25629;
+
+  --surface-page: #f7edf0;
+  --surface-card: #ffffff;
+  --surface-soft: var(--mepa-blush);
+  --surface-primary: var(--mepa-primary);
+  --surface-danger: var(--mepa-danger-strong);
+  --surface-warning: var(--mepa-warning);
+  --surface-danger-subtle: #fbe9ed;
+  --surface-warning-subtle: #fff1e6;
+  --surface-info-subtle: #e6f2f9;
+
+  --text-strong: var(--mepa-ink);
+  --text-muted: #565667;
+  --text-on-primary: #ffffff;
+  --text-on-danger: #ffffff;
+  --text-on-warning: var(--mepa-ink);
+  --text-link: var(--mepa-primary);
+  --text-link-on-soft: var(--mepa-primary-strong);
+  --text-danger: var(--mepa-danger-strong);
+  --text-warning: var(--mepa-warning-strong);
+
+  --border-subtle: #d9cdd2;
+  --border-control: #6b6b7a;
+  --border-focus: var(--mepa-ink);
+
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --shadow-card: 0 1px 2px rgb(25 25 35 / 8%), 0 2px 8px rgb(25 25 35 / 6%);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --touch-target: 2.75rem;
+  --content-max: 80rem;
+}

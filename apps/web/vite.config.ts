@@ -16,8 +16,8 @@ export default defineConfig({
         lang: 'pt-AO',
         start_url: '/',
         display: 'standalone',
-        background_color: '#071f1a',
-        theme_color: '#0b362b',
+        background_color: '#f7edf0',
+        theme_color: '#0076b3',
         icons: [{
           src: '/icons/mepa-icon.svg',
           sizes: 'any',
@@ -25,7 +25,14 @@ export default defineConfig({
           purpose: 'any maskable',
         }],
       },
-      workbox: { navigateFallback: '/index.html' },
+      workbox: {
+        navigateFallback: '/index.html',
+        runtimeCaching: [{
+          urlPattern: ({ url }) => String(url).includes('/api/'),
+          handler: 'NetworkOnly',
+          method: 'GET',
+        }],
+      },
     }),
   ],
 })

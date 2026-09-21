@@ -1,0 +1,22 @@
+.tiles { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.tile { display: grid; gap: 0.25rem; padding: var(--space-4); border-radius: var(--radius-lg); background: var(--surface-card); border: 1px solid var(--border-subtle); color: inherit; text-decoration: none; min-height: var(--touch-target); }
+.tile:hover { border-color: var(--mepa-primary); }
+.tile__value { font-size: 1.9rem; font-weight: 800; color: var(--mepa-primary-strong); }
+.tile__label { color: var(--text-muted); font-weight: 600; }
+
+.picker { display: grid; gap: var(--space-2); }
+.picker__results { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.picker__option { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 1px solid var(--border-control); border-radius: var(--radius-md); background: var(--surface-card); }
+.picker__selected { padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface-info-subtle); border: 2px solid var(--mepa-primary-strong); display: flex; justify-content: space-between; gap: var(--space-3); align-items: center; }
+
+.sheet { display: grid; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
+.sheet__row { display: grid; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
+.sheet__name { font-weight: 700; }
+
+.history { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.history li { padding: var(--space-3); border-left: 4px solid var(--mepa-primary); background: var(--surface-card); border-radius: var(--radius-sm); }
+.history li[data-latest='true'] { border-left-color: var(--mepa-ink); }
+
+.lines { display: grid; gap: var(--space-2); }
+.link-list { display: grid; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
+.link-list li { display: flex; justify-content: space-between; gap: var(--space-3); align-items: center; padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); }
