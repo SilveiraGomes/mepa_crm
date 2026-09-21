@@ -1,8 +1,8 @@
 {
-  "status": "DRIFT",
+  "status": "APPROVED_CONTRACTS_UNCHANGED",
   "comparison": "Git LF-normalized text; only exact FIN-PAYROLL-01 tracking blocks are excluded from approved business-rule comparison",
   "files": 160,
-  "drift": 1,
+  "drift": 0,
   "tracking_extensions": [],
   "new_wave5_migration_files_untracked_at_baseline": 0,
   "results": [
@@ -1412,12 +1412,12 @@
     },
     {
       "file": "docs/database/model_catalog.json",
-      "unchanged": false,
+      "unchanged": true,
       "tracking_extension": null,
-      "git_lf_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+      "git_lf_sha256": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
       "working_lf_sha256": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
       "approved_comparison_lf_sha256": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
-      "raw_checkout_matches_git_blob": false
+      "raw_checkout_matches_git_blob": true
     },
     {
       "file": "docs/database/physical/migration_waves.json",

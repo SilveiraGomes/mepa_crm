@@ -5,7 +5,7 @@
  * The brand danger (#e83151) and warning (#fe7f2d) do not reach 4.5:1 as text on
  * white (4.21 and 2.53), so text and solid buttons use the *-strong variants, and the
  * brand colours stay for borders, icons and warning surfaces with ink text (6.88:1).
- * src/styles/tokens.test.ts asserts every pair below.
+ * The UI contract validator asserts the semantic text/action pairs below.
  */
 :root {
   --mepa-primary: #0076b3;

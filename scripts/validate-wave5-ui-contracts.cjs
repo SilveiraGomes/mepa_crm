@@ -8,6 +8,7 @@ const uiPath = path.join(root, 'docs/ui/wave5_academy_ui_contracts.json')
 const httpPath = path.join(root, 'docs/api/wave5_academy_http_contracts.json')
 const appPath = path.join(root, 'apps/web/src/App.tsx')
 const srcRoot = path.join(root, 'apps/web/src')
+const tokenPath = path.join(srcRoot, 'styles/tokens.css')
 const ui = JSON.parse(fs.readFileSync(uiPath, 'utf8'))
 const http = JSON.parse(fs.readFileSync(httpPath, 'utf8'))
 const app = fs.readFileSync(appPath, 'utf8')
@@ -44,10 +45,32 @@ const httpEndpoints = new Set(http.endpoints.map((endpoint) => `${endpoint.metho
 const permissions = new Set(http.endpoints.map((endpoint) => endpoint.permission))
 const gaps = new Set(ui.contract_gaps.map((gap) => gap.id))
 
+const tokenCss = fs.readFileSync(tokenPath, 'utf8')
+function token(name) {
+  const value = tokenCss.match(new RegExp(`${name}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1]
+  if (!value) throw new Error(`Token not found: ${name}`)
+  return value
+}
+function contrast(a, b) {
+  const luminance = (hex) => {
+    const channels = hex.slice(1).match(/.{2}/g).map((part) => Number.parseInt(part, 16) / 255)
+    const linear = channels.map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+    return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722
+  }
+  const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (light + 0.05) / (dark + 0.05)
+}
+
 check(ui.version === 'P0.3.5-A4.1', 'UI contract version must be P0.3.5-A4.1')
 check(ui.defaults.page_size === 50, 'Default page size must be 50')
 check(ui.defaults.max_page_size === 100, 'Maximum page size must be 100')
 check(ui.defaults.search_minimum === 3, 'Search minimum must be 3')
+for (const [foreground, background] of [
+  ['--mepa-ink', '--mepa-blush'],
+  ['--mepa-primary-strong', '--surface-card'],
+  ['--mepa-danger-strong', '--surface-card'],
+  ['--mepa-warning-strong', '--surface-card'],
+]) check(contrast(token(foreground), token(background)) >= 4.5, `WCAG AA contrast failed: ${foreground} on ${background}`)
 
 for (const screen of ui.screens) {
   check(declaredRoutes.includes(normalizeRoute(screen.route)), `Screen route does not exist: ${screen.route}`)

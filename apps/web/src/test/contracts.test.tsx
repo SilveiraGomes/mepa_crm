@@ -37,13 +37,13 @@ describe('contratos de segurança da interface Academy', () => {
     expect(caps.can('canCertify')).toBe(false)
   })
 
-  it('preserva o backend como autoridade quando as permissões não são expostas', () => {
+  it('oculta acções enquanto as permissões efectivas não chegam', () => {
     const caps = capabilitiesFor({})
     expect(caps.known).toBe(false)
     expect(caps.can('canAssess')).toBe(false)
   })
 
-  it('mostra apenas a acÃ§Ã£o autorizada pela permission efectiva', () => {
+  it('mostra apenas a acção autorizada pela permissão efectiva', () => {
     const caps = capabilitiesFor({ permissions: ['ACADEMY_CERTIFY'] })
     expect(caps.can('canCertify')).toBe(true)
     expect(caps.can('canManage')).toBe(false)
