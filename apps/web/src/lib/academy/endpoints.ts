@@ -5,6 +5,7 @@
 const seg = (value: string | number): string => encodeURIComponent(String(value))
 
 export const ep = {
+  context: () => 'context',
   academicUnits: () => 'academic-units',
   academicUnit: (id: string | number) => `academic-units/${seg(id)}`,
   programs: () => 'programs',
@@ -29,6 +30,7 @@ export const ep = {
   classDetail: (publicId: string) => `classes/${seg(publicId)}`,
   classRoster: (publicId: string) => `classes/${seg(publicId)}/roster`,
   classPeopleSearch: (publicId: string) => `classes/${seg(publicId)}/people:search`,
+  classInstructorCandidates: (publicId: string) => `classes/${seg(publicId)}/instructor-candidates`,
   classEnrollments: (publicId: string) => `classes/${seg(publicId)}/enrollments`,
   classEnrollment: (classId: string, enrollmentId: string) => `classes/${seg(classId)}/enrollments/${seg(enrollmentId)}`,
   enrollmentTransition: (enrollmentId: string) => `enrollments/${seg(enrollmentId)}/transitions`,
@@ -58,12 +60,14 @@ export const ep = {
   classCertificates: (publicId: string) => `classes/${seg(publicId)}/certificates`,
   classCertificate: (classId: string, certificateId: string) => `classes/${seg(classId)}/certificates/${seg(certificateId)}`,
   certificateIssue: (enrollmentId: string) => `enrollments/${seg(enrollmentId)}/certificates`,
+  certificateEligibleFiles: (enrollmentId: string) => `enrollments/${seg(enrollmentId)}/eligible-files`,
   certificateRevoke: (certificateId: string) => `certificates/${seg(certificateId)}/revoke`,
   transcripts: (curriculumId: string | number, personId: string) => `curricula/${seg(curriculumId)}/people/${seg(personId)}/transcripts`,
   transcript: (curriculumId: string | number, personId: string, transcriptId: string) =>
     `curricula/${seg(curriculumId)}/people/${seg(personId)}/transcripts/${seg(transcriptId)}`,
   transcriptPreview: (curriculumId: string | number, personId: string) => `curricula/${seg(curriculumId)}/people/${seg(personId)}/transcript-preview`,
   transcriptIssue: (curriculumId: string | number, personId: string) => `curricula/${seg(curriculumId)}/people/${seg(personId)}/transcripts`,
+  transcriptEligibleFiles: (curriculumId: string | number, personId: string) => `curricula/${seg(curriculumId)}/people/${seg(personId)}/eligible-files`,
 } as const
 
 export const PUBLIC_ID_PATTERN = /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/

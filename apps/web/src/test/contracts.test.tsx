@@ -34,12 +34,19 @@ describe('contratos de segurança da interface Academy', () => {
     expect(caps.can('canView')).toBe(true)
     expect(caps.can('canAssess')).toBe(false)
     expect(caps.can('canManage')).toBe(false)
+    expect(caps.can('canCertify')).toBe(false)
   })
 
   it('preserva o backend como autoridade quando as permissões não são expostas', () => {
     const caps = capabilitiesFor({})
     expect(caps.known).toBe(false)
-    expect(caps.can('canAssess')).toBe(true)
+    expect(caps.can('canAssess')).toBe(false)
+  })
+
+  it('mostra apenas a acÃ§Ã£o autorizada pela permission efectiva', () => {
+    const caps = capabilitiesFor({ permissions: ['ACADEMY_CERTIFY'] })
+    expect(caps.can('canCertify')).toBe(true)
+    expect(caps.can('canManage')).toBe(false)
   })
 
   it('codifica query string e bloqueia redirects externos', () => {

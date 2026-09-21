@@ -1,7 +1,11 @@
+import { useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { DataTable, EmptyState, ErrorState, LoadingState, PageHeader, Pagination, StatusBadge, type Column } from '../components/ui'
+import { ActionForm, DataTable, Dialog, EmptyState, ErrorState, Field, LoadingState, PageHeader, Pagination, StatusBadge, type Column } from '../components/ui'
+import { useApp } from '../context/AppContext'
 import { useAcademyItem, useAcademyPage, useListQuery } from '../hooks/useAcademy'
+import { academyPost } from '../lib/academy/client'
 import { ep } from '../lib/academy/endpoints'
+import { toUiError, type UiError } from '../lib/academy/errors'
 import { formatDate, readableCode } from '../lib/format'
 
 type Row = Record<string, unknown>
@@ -52,6 +56,21 @@ export function CatalogDetailPage({ resource }: { resource: Resource }) {
   if (result.error) return <><PageHeader title="Recurso indisponível" back={{ to: config.back, label: 'Voltar à lista' }} /><ErrorState error={result.error} retry={result.reload} /></>
   if (!result.data) return null
   const row = result.data
-  const extra = resource === 'curricula' ? <Link className="btn btn--primary" to={`/academia/curriculos/${id}/cursos`}>Ver cursos</Link> : resource === 'courses' ? <Link className="btn btn--primary" to={`/academia/cursos/${id}/versoes`}>Ver versões</Link> : undefined
-  return <><PageHeader title={config.title(row)} back={{ to: config.back, label: 'Voltar à lista' }} actions={extra} /><section className="card"><dl className="dl">{config.fields.map(([label, key, format]) => <div className="dl__item" key={key}><dt>{label}</dt><dd>{row[key] === null || row[key] === undefined ? '—' : format(row[key])}</dd></div>)}</dl></section></>
+  const extra = resource === 'curricula' ? <Link className="btn btn--secondary" to={`/academia/curriculos/${id}/cursos`}>Ver cursos</Link> : resource === 'courses' ? <Link className="btn btn--primary" to={`/academia/cursos/${id}/versoes`}>Ver versões</Link> : undefined
+  return <><PageHeader title={config.title(row)} back={{ to: config.back, label: 'Voltar à lista' }} actions={extra} /><section className="card"><dl className="dl">{config.fields.map(([label, key, format]) => <div className="dl__item" key={key}><dt>{label}</dt><dd>{row[key] === null || row[key] === undefined ? '—' : format(row[key])}</dd></div>)}</dl></section>{resource === 'programs' && id && <ProgramMutation programId={id} onDone={result.reload} />}{resource === 'curricula' && id && <CurriculumMutations curriculumId={id} lockVersion={Number(row.lock_version)} onDone={result.reload} />}</>
+}
+
+function ProgramMutation({ programId, onDone }: { programId: string; onDone: () => void }) {
+  const { capabilities, notify } = useApp(); const [busy, setBusy] = useState(false); const [error, setError] = useState<UiError | null>(null)
+  if (!capabilities.can('canManage')) return null
+  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setBusy(true); setError(null); try { await academyPost(ep.programCurriculaCreate(programId)); notify('Nova versão curricular criada.'); onDone() } catch (value) { setError(toUiError(value)) } finally { setBusy(false) } }
+  return <section className="card"><h2>Nova versão curricular</h2><p className="muted">A versão é atribuída pelo servidor.</p><ActionForm busy={busy} submitLabel="Criar versão" onSubmit={submit} error={error}><span /></ActionForm></section>
+}
+
+function CurriculumMutations({ curriculumId, lockVersion, onDone }: { curriculumId: string; lockVersion: number; onDone: () => void }) {
+  const { capabilities, notify } = useApp(); const [courseOpen, setCourseOpen] = useState(false); const [course, setCourse] = useState(''); const [sequence, setSequence] = useState('1'); const [required, setRequired] = useState(true); const [busy, setBusy] = useState(false); const [error, setError] = useState<UiError | null>(null)
+  if (!capabilities.can('canManage')) return null
+  async function publish() { if (!window.confirm('Publicar esta versão curricular?')) return; setBusy(true); setError(null); try { await academyPost(ep.curriculumPublish(curriculumId), { lock_version: lockVersion }); notify('Currículo publicado.'); onDone() } catch (value) { setError(toUiError(value)) } finally { setBusy(false) } }
+  async function add(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setBusy(true); setError(null); try { await academyPost(ep.curriculumCourses(curriculumId), { course, sequence: Number(sequence), required }); notify('Curso associado ao currículo.'); setCourseOpen(false); onDone() } catch (value) { setError(toUiError(value)) } finally { setBusy(false) } }
+  return <section className="card stack"><h2>Gestão do currículo</h2>{error && <ErrorState error={error} />}<div className="row"><button className="btn btn--primary" disabled={busy} onClick={publish}>Publicar</button><button className="btn btn--secondary" disabled={busy} onClick={() => setCourseOpen(true)}>Associar curso</button></div><Dialog open={courseOpen} title="Associar curso" onClose={() => setCourseOpen(false)}><ActionForm busy={busy} submitLabel="Associar" onSubmit={add} error={error}><Field label="Identificador público do curso" name="course" required><input id="course" className="input" minLength={26} maxLength={26} value={course} onChange={(e) => setCourse(e.target.value.toUpperCase())} required /></Field><Field label="Ordem" name="sequence" required><input id="sequence" className="input" type="number" min="1" value={sequence} onChange={(e) => setSequence(e.target.value)} required /></Field><label className="row"><input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)} /> Curso obrigatório</label></ActionForm></Dialog></section>
 }

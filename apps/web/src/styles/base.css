@@ -29,7 +29,7 @@ a:hover { color: var(--mepa-primary-strong); }
 :focus-visible {
   outline: 3px solid var(--border-focus);
   outline-offset: 2px;
-  box-shadow: 0 0 0 5px #ffffff;
+  box-shadow: 0 0 0 5px var(--focus-ring-contrast);
 }
 
 .visually-hidden {
@@ -51,7 +51,7 @@ a:hover { color: var(--mepa-primary-strong); }
   z-index: 100;
   padding: var(--space-2) var(--space-4);
   background: var(--mepa-ink);
-  color: #ffffff;
+  color: var(--text-on-primary);
   border-radius: var(--radius-sm);
 }
 .skip-link:focus { inset-block-start: var(--space-3); }

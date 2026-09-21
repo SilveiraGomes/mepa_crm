@@ -16,7 +16,7 @@
 .topbar__spacer { flex: 1; }
 .topbar .btn { color: var(--text-on-primary); border-color: rgb(255 255 255 / 70%); background: transparent; }
 .topbar .btn:hover:not(:disabled) { background: rgb(255 255 255 / 16%); color: var(--text-on-primary); }
-.topbar :focus-visible { outline-color: #ffffff; box-shadow: 0 0 0 5px var(--mepa-ink); }
+.topbar :focus-visible { outline-color: var(--focus-ring-contrast); box-shadow: 0 0 0 5px var(--mepa-ink); }
 .topbar__menu { display: inline-flex; }
 
 .shell__body { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }

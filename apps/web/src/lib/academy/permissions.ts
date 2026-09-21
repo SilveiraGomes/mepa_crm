@@ -38,19 +38,19 @@ export const CAPABILITY_PERMISSION: Record<Capability, AcademyPermission> = {
 }
 
 export interface Capabilities {
-  /** False while the API cannot tell the UI what the actor holds (A4_API_CONTRACT_GAP-02). */
+  /** False while the effective-permission projection is loading or unavailable. */
   known: boolean
   can: (capability: Capability) => boolean
 }
 
 /**
- * Presentation only. When the permission set is known, actions the actor lacks are hidden. When it
- * is not, actions stay visible and the backend — which always decides — refuses them. It never
- * grants anything: a hidden button is not protection, and a visible one is not authority.
+ * Presentation only. Actions remain hidden until the effective permission projection is known,
+ * avoiding speculative unauthorized calls. The backend still decides every request: a hidden
+ * button is not protection, and a visible one is not authority.
  */
 export function capabilitiesFor(session: Pick<AuthSession, 'permissions'> | null): Capabilities {
   const permissions = session?.permissions
-  if (!permissions) return { known: false, can: () => session !== null }
+  if (!permissions) return { known: false, can: () => false }
   const held = new Set(permissions)
   return { known: true, can: (capability) => held.has(CAPABILITY_PERMISSION[capability]) }
 }

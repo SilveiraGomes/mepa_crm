@@ -84,7 +84,7 @@
   display: block;
   min-height: 1rem;
   border-radius: var(--radius-sm);
-  background: linear-gradient(90deg, #ece0e4 25%, #f7edf0 50%, #ece0e4 75%);
+  background: linear-gradient(90deg, var(--surface-skeleton) 25%, var(--surface-page) 50%, var(--surface-skeleton) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }

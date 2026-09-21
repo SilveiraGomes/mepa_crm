@@ -13,6 +13,7 @@ export type VocabularyKey =
 export interface VocabularyOption {
   value: string
   label: string
+  from?: string
 }
 
 export type Vocabulary = Partial<Record<VocabularyKey, readonly VocabularyOption[]>>
@@ -21,6 +22,11 @@ export const NO_VOCABULARY: Vocabulary = {}
 
 export function optionsFor(vocabulary: Vocabulary, key: VocabularyKey): readonly VocabularyOption[] | null {
   const options = vocabulary[key]
+  return options && options.length > 0 ? options : null
+}
+
+export function targetsFor(vocabulary: Vocabulary, key: VocabularyKey, from: string): readonly VocabularyOption[] | null {
+  const options = optionsFor(vocabulary, key)?.filter((option) => option.from === undefined || option.from === from)
   return options && options.length > 0 ? options : null
 }
 

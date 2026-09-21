@@ -31,11 +31,20 @@ function sourceFiles(directory) {
   })
 }
 
+function filesMatching(directory, expression) {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const target = path.join(directory, entry.name)
+    if (entry.isDirectory()) return entry.name === 'test' ? [] : filesMatching(target, expression)
+    return expression.test(entry.name) ? [target] : []
+  })
+}
+
 const declaredRoutes = [...app.matchAll(/<Route\s+path="([^"]+)"/g)].map((match) => normalizeRoute(match[1]))
 const httpEndpoints = new Set(http.endpoints.map((endpoint) => `${endpoint.method} ${endpoint.uri}`))
 const permissions = new Set(http.endpoints.map((endpoint) => endpoint.permission))
 const gaps = new Set(ui.contract_gaps.map((gap) => gap.id))
 
+check(ui.version === 'P0.3.5-A4.1', 'UI contract version must be P0.3.5-A4.1')
 check(ui.defaults.page_size === 50, 'Default page size must be 50')
 check(ui.defaults.max_page_size === 100, 'Maximum page size must be 100')
 check(ui.defaults.search_minimum === 3, 'Search minimum must be 3')
@@ -54,8 +63,14 @@ for (const screen of ui.screens) {
 for (const action of ui.actions) {
   check(httpEndpoints.has(action.endpoint), `Action references unknown endpoint: ${action.action}`)
   check(permissions.has(action.permission), `Action lacks valid permission: ${action.action}`)
+  for (const field of ['screen', 'request', 'response', 'success', 'errors', 'loading', 'confirmation', 'responsive_notes']) {
+    check(Array.isArray(action[field]) ? action[field].length > 0 : Boolean(action[field]), `Action ${action.action} lacks ${field}`)
+  }
+  check(action.implemented === true, `CRUD action is not implemented: ${action.action}`)
   if (!action.implemented) check(gaps.has(action.gap), `Unimplemented action lacks a registered contract gap: ${action.action}`)
 }
+
+for (const gap of ui.contract_gaps) check(Boolean(gap.status), `Contract gap lacks closure status: ${gap.id}`)
 
 for (const required of ['404', '401', '403', '409:STALE_WRITE', '422:ACADEMIC_POLICY_NOT_CONFIGURED', '422:STATE_POLICY_PENDING', '422:PARTICIPATION_REQUIREMENTS_NOT_MET']) {
   check(Boolean(ui.critical_error_mappings[required]), `Critical error mapping missing: ${required}`)
@@ -63,12 +78,20 @@ for (const required of ['404', '401', '403', '409:STALE_WRITE', '422:ACADEMIC_PO
 check(ui.critical_error_mappings['404'] === 'Recurso não encontrado ou indisponível.', 'F-06 404 wording must remain generic')
 
 const production = sourceFiles(srcRoot).map((file) => fs.readFileSync(file, 'utf8')).join('\n')
+const styleSources = filesMatching(srcRoot, /\.css$/)
+  .filter((file) => path.basename(file) !== 'tokens.css')
+  .map((file) => fs.readFileSync(file, 'utf8'))
+  .join('\n')
 check(!/\b(mockData|fakeStudent|fakeClasses)\b/i.test(production), 'Production screen depends on mock data')
 check(!/\bpeople\.id\b|\bperson_id\b/.test(production), 'Raw internal Person ID is referenced in production UI')
 check(!/academyPatch\([^\n]*enroll[^\n]*status/i.test(production), 'Forbidden generic Enrollment status PATCH found')
+check(!/\b(?:actor|user|session|account)\.roles?\b|\broles?\s*\.\s*(?:includes|some)\s*\(/i.test(production), 'U7 role-based UI authority found')
+check(!/#[0-9a-f]{3,8}\b/i.test(styleSources), 'U10 hardcoded colour found outside the token authority')
 check(production.includes('useAcademyPage'), 'No server-side pagination hook found')
 check(production.includes('UNAVAILABLE_MESSAGE'), 'Concealed 404 mapping is not used')
 check(production.includes('PARTICIPATION_REQUIREMENTS_NOT_MET'), 'Child safety error mapping is missing')
+check(ui.actions.find((action) => action.action === 'issue certificate')?.permission === 'ACADEMY_CERTIFY', 'U8 certificate issue must require ACADEMY_CERTIFY')
+check(ui.actions.find((action) => action.action === 'assign instructor')?.permission === 'ACADEMY_MANAGE', 'U9 instructor assignment must require ACADEMY_MANAGE')
 
 if (failures.length) {
   console.error(`UI_CONTRACTS_FAIL ${failures.length}/${checks}`)

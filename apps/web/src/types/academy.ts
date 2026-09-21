@@ -141,6 +141,7 @@ export interface ClassSummary {
 }
 
 export interface ClassDetail extends ClassSummary {
+  course_version_id: number
   academic_unit_name: string
   cohort_public_id?: PublicId
   cohort_name?: string
@@ -173,9 +174,26 @@ export interface EnrollmentDetail {
 
 export interface ClassInstructorAssignment {
   assignment_id: number
+  person_public_id: PublicId
+  display_name: string
   status: string
   starts_at: string
   ends_at?: string | null
+  lock_version: number
+}
+
+export interface EligibleFile {
+  public_id: PublicId
+  file_name: string
+  media_type: string
+}
+
+export interface AcademyContextPayload {
+  permissions: string[]
+  vocabulary: {
+    transitions: Record<'enrollment' | 'session' | 'attempt', { from: string; to: string }[]>
+    attendance_statuses: string[]
+  }
 }
 
 export interface ClassSession {
@@ -235,7 +253,7 @@ export interface GradeVersion {
 }
 
 export interface ProgressPayload {
-  lessons: { name: string; completion_ratio?: string | number; completed_at?: string; status: string }[]
+  lessons: { id?: number; name: string; completion_ratio?: string | number; completed_at?: string; status: string }[]
   resources: { public_id: PublicId; resource_kind: string; watched_seconds?: number; verified_at?: string; status: string }[]
 }
 
