@@ -117,9 +117,12 @@ final class AcademicAttendanceService
             $session,
             fn () => $this->rt->scope->forSession($classSessionId, null),
             function (AcademyTarget $target) use ($classSessionId, $page, $perPage) {
-                $query = $this->rt->db->table('academic_attendance')->where('class_session_id', $classSessionId);
+                $query = $this->rt->db->table('enrollments as e')->join('people as p', 'p.id', '=', 'e.person_id')
+                    ->leftJoin('academic_attendance as aa', function ($join) use ($classSessionId): void {
+                        $join->on('aa.enrollment_id', '=', 'e.id')->where('aa.class_session_id', '=', $classSessionId);
+                    })->where('e.class_id', $target->classId)->whereNull('p.archived_at');
                 $total = (clone $query)->count();
-                $rows = $query->orderBy('id')->forPage($page, $perPage)->get(['id', 'enrollment_id', 'status', 'recorded_by', 'recorded_at', 'lock_version']);
+                $rows = $query->orderBy('p.full_name')->forPage($page, $perPage)->get(['e.public_id as enrollment_public_id', 'p.full_name as display_name', 'aa.status', 'aa.recorded_at', 'aa.lock_version']);
                 return ['total' => $total, 'page' => $page, 'per_page' => $perPage, 'items' => $rows->map(fn ($r) => (array) $r)->all()];
             },
             $claimed

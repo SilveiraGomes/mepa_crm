@@ -1,14 +1,14 @@
 {
   "status": "APPLICATION_CONTRACTS_PASS",
   "validator": "scripts/validate-wave5-application-contracts.cjs",
-  "checks_total": 1473,
+  "checks_total": 1513,
   "checks_failed": 0,
   "services": 12,
-  "operations": 62,
+  "operations": 65,
   "command_operations": 30,
-  "read_operations": 32,
-  "permission_matrix_rows": 31,
-  "php_files_scanned": 35,
+  "read_operations": 35,
+  "permission_matrix_rows": 34,
+  "php_files_scanned": 37,
   "d09_scan": {
     "patterns": [
       "named",
@@ -19,7 +19,7 @@
       "attempts_literal",
       "approved_by_threshold"
     ],
-    "findings": 16,
+    "findings": 17,
     "reviewed_false_positives": [
       {
         "file": "apps/api/app/Domain/Academy/AcademicAttendanceService.php",
@@ -92,6 +92,13 @@
         "reason": "pagination cap (technical), not academic"
       },
       {
+        "file": "apps/api/app/Domain/Academy/AcademyResourceGuard.php",
+        "line": 60,
+        "pattern": "literal",
+        "text": "[$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));",
+        "reason": "default page size of the bounded eligible-file picker (technical, not academic)"
+      },
+      {
         "file": "apps/api/app/Domain/Academy/AssessmentAttemptService.php",
         "line": 23,
         "pattern": "attempts_literal",
@@ -107,14 +114,14 @@
       },
       {
         "file": "apps/api/app/Domain/Academy/ClassQueryService.php",
-        "line": 89,
+        "line": 102,
         "pattern": "literal",
         "text": "[$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));",
         "reason": "default page size of a bounded read model (technical, not academic)"
       },
       {
         "file": "apps/api/app/Domain/Academy/ClassQueryService.php",
-        "line": 100,
+        "line": 113,
         "pattern": "literal",
         "text": "[$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));",
         "reason": "default page size of a bounded read model (technical, not academic)"

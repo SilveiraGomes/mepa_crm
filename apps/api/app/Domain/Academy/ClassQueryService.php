@@ -28,7 +28,7 @@ final class ClassQueryService
         return $this->rt->read('class.view', $actor, $session, fn () => $this->rt->scope->forClass($classId, null), fn () => (array) $this->rt->db->table('classes as c')
             ->join('academic_units as au', 'au.id', '=', 'c.academic_unit_id')->join('course_versions as cv', 'cv.id', '=', 'c.course_version_id')->join('courses as co', 'co.id', '=', 'cv.course_id')
             ->leftJoin('cohorts as h', 'h.id', '=', 'c.cohort_id')->leftJoin('physical_locations as pl', 'pl.id', '=', 'c.location_id')->where('c.id', $classId)
-            ->first(['c.public_id', 'c.code', 'c.capacity', 'c.status', 'c.lock_version', 'au.code as academic_unit_code', 'au.name as academic_unit_name', 'co.public_id as course_public_id', 'co.code as course_code', 'co.name as course_name', 'cv.version as course_version', 'h.public_id as cohort_public_id', 'h.name as cohort_name', 'pl.public_id as location_public_id', 'pl.name as location_name']));
+            ->first(['c.public_id', 'c.code', 'c.capacity', 'c.status', 'c.lock_version', 'au.code as academic_unit_code', 'au.name as academic_unit_name', 'co.public_id as course_public_id', 'co.code as course_code', 'co.name as course_name', 'cv.id as course_version_id', 'cv.version as course_version', 'h.public_id as cohort_public_id', 'h.name as cohort_name', 'pl.public_id as location_public_id', 'pl.name as location_name']));
     }
 
     public function roster(int $actor, int $session, int $classId, array $input): array
@@ -44,6 +44,19 @@ final class ClassQueryService
     public function searchPeopleForEnrollment(int $actor, int $session, int $classId, array $input): array
     {
         return $this->rt->read('person.search', $actor, $session, fn () => $this->rt->scope->forClass($classId, null), function (AcademyTarget $target) use ($input): array {
+            $term = trim((string) ($input['search'] ?? ''));
+            if (mb_strlen($term) < 3) { throw new AcademyError(AcademyReason::INVALID_INPUT, ['field' => 'search']); }
+            $needle = '%' . addcslashes($term, '%_\\') . '%';
+            $q = $this->rt->db->table('people as p')->whereNull('p.archived_at')->where(function (Builder $scope) use ($target): void {
+                $scope->whereExists(fn (Builder $x) => $x->selectRaw('1')->from('enrollments as e')->join('classes as c', 'c.id', '=', 'e.class_id')->whereColumn('e.person_id', 'p.id')->where('c.academic_unit_id', $target->academicUnitId));
+            })->where(fn (Builder $x) => $x->where('p.full_name', 'like', $needle)->orWhere('p.public_id', $input['search']));
+            return $this->page($q, $input, ['p.public_id', 'p.full_name as display_name'], ['name'=>'p.full_name']);
+        });
+    }
+
+    public function searchInstructorCandidates(int $actor, int $session, int $classId, array $input): array
+    {
+        return $this->rt->read('instructor.candidate.search', $actor, $session, fn () => $this->rt->scope->forClass($classId, null), function (AcademyTarget $target) use ($input): array {
             $term = trim((string) ($input['search'] ?? ''));
             if (mb_strlen($term) < 3) { throw new AcademyError(AcademyReason::INVALID_INPUT, ['field' => 'search']); }
             $needle = '%' . addcslashes($term, '%_\\') . '%';
@@ -88,7 +101,7 @@ final class ClassQueryService
         return $this->rt->read('progress.view', $actor, $session, fn () => $this->rt->scope->forEnrollment($enrollmentId, null), function () use ($enrollmentId, $input): array {
             [$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));
             $lessons = $this->rt->db->table('progress as p')->join('lessons as l', 'l.id', '=', 'p.lesson_id')->where('p.enrollment_id', $enrollmentId)
-                ->orderBy('l.sequence')->forPage($page, $perPage)->get(['l.name', 'p.completion_ratio', 'p.completed_at', 'p.status'])->map(fn ($r) => (array) $r)->all();
+                ->orderBy('l.sequence')->forPage($page, $perPage)->get(['l.id', 'l.name', 'p.completion_ratio', 'p.completed_at', 'p.status'])->map(fn ($r) => (array) $r)->all();
             $resources = $this->rt->db->table('resource_progress as rp')->join('resources as r', 'r.id', '=', 'rp.resource_id')->where('rp.enrollment_id', $enrollmentId)
                 ->orderBy('rp.id')->forPage($page, $perPage)->get(['r.public_id', 'r.resource_kind', 'rp.watched_seconds', 'rp.verified_at', 'rp.status'])->map(fn ($r) => (array) $r)->all();
             return ['total' => max(count($lessons), count($resources)), 'page' => $page, 'per_page' => $perPage, 'items' => [['lessons' => $lessons, 'resources' => $resources]]];

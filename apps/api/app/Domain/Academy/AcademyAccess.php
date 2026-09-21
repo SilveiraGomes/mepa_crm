@@ -154,6 +154,37 @@ final class AcademyAccess
         return array_map(static fn (object $row): int => (int) $row->id, $this->db->select($sql, $bindings));
     }
 
+    /**
+     * Returns only effective Academy permission codes that cover at least one academic unit.
+     * Role names, grant rows, scope rows and their provenance never leave the server.
+     */
+    public function effectivePermissionCodes(int $actor, int $session): array
+    {
+        $representative = [
+            AcademyOperation::VIEW => 'catalog.view',
+            AcademyOperation::MANAGE => 'structure.manage',
+            AcademyOperation::ENROLL => 'enrollment.create',
+            AcademyOperation::TEACH => 'session.manage',
+            AcademyOperation::ATTENDANCE => 'attendance.record',
+            AcademyOperation::ASSESS => 'attempt.record',
+            AcademyOperation::GRADES_VIEW => 'grade.view',
+            AcademyOperation::CERTIFY => 'certificate.issue',
+        ];
+        $effective = [];
+        foreach ($representative as $permission => $operation) {
+            try {
+                if ($this->authorizedAcademicUnitIds($operation, $actor, $session) !== []) {
+                    $effective[] = $permission;
+                }
+            } catch (AcademyError $error) {
+                if ($error->reason !== AcademyReason::NOT_AUTHORIZED) {
+                    throw $error;
+                }
+            }
+        }
+        return $effective;
+    }
+
     private static function dataType(): string
     {
         return AcademyOperation::DATA_TYPE;

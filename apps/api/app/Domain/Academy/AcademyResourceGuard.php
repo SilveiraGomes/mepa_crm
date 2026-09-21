@@ -55,6 +55,21 @@ final class AcademyResourceGuard
         return $document;
     }
 
+    public function eligibleFiles(AcademyTarget $target, array $input): array
+    {
+        [$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));
+        $query = $this->db->table('files')->whereIn('owner_unit_id', $target->unitIds)->whereNull('owner_department_id')
+            ->where('status', 'AVAILABLE')->whereNull('deleted_at')->whereNull('purged_at');
+        if (!empty($input['search'])) {
+            $needle = '%' . addcslashes(trim((string) $input['search']), '%_\\') . '%';
+            $query->where('original_name', 'like', $needle);
+        }
+        $total = (clone $query)->count();
+        $items = $query->orderBy('original_name')->forPage($page, $perPage)
+            ->get(['public_id', 'original_name as file_name', 'mime_type as media_type'])->map(fn ($row) => (array) $row)->all();
+        return ['total' => $total, 'page' => $page, 'per_page' => $perPage, 'items' => $items];
+    }
+
     private function assertOwnedByTarget(AcademyTarget $target, int $ownerUnit, string $entity): void
     {
         if (!in_array($ownerUnit, $target->unitIds, true)) {

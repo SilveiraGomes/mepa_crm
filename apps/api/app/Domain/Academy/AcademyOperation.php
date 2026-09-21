@@ -37,6 +37,9 @@ final class AcademyOperation
         'progress.view' => [self::VIEW, false, false, false],
         // Contextual candidate lookup is part of the enrollment workflow, not a general directory read.
         'person.search' => [self::ENROLL, false, false, false],
+        'instructor.candidate.search' => [self::MANAGE, false, false, false],
+        'certificate.file.select' => [self::CERTIFY, false, false, false],
+        'transcript.file.select' => [self::CERTIFY, false, false, false],
         'structure.manage' => [self::MANAGE, false, false, true],
         'enrollment.view' => [self::VIEW, false, false, false],
         'enrollment.create' => [self::ENROLL, false, false, true],

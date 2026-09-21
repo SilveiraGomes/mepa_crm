@@ -113,9 +113,10 @@ final class InstructorAssignmentService
             fn () => $this->rt->scope->forClass($classId, null),
             function (AcademyTarget $target) {
                 $t = AcademyRuntime::ts($this->rt->now());
-                return $this->rt->db->table('class_instructors')->where('class_id', $target->classId)->whereIn('status', $this->rt->policy->set('class_instructors', 'active'))
+                return $this->rt->db->table('class_instructors as ci')->join('instructors as i', 'i.id', '=', 'ci.instructor_id')->join('people as p', 'p.id', '=', 'i.person_id')
+                    ->where('ci.class_id', $target->classId)->whereIn('ci.status', $this->rt->policy->set('class_instructors', 'active'))
                     ->where('starts_at', '<=', $t)->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>', $t))
-                    ->orderBy('id')->limit(200)->get(['id', 'instructor_id', 'status', 'starts_at', 'ends_at'])->map(fn ($r) => (array) $r)->all();
+                    ->orderBy('ci.id')->limit(200)->get(['ci.id as assignment_id', 'ci.status', 'ci.starts_at', 'ci.ends_at', 'ci.lock_version', 'p.public_id as person_public_id', 'p.full_name as display_name'])->map(fn ($r) => (array) $r)->all();
             },
             $claimed
         );

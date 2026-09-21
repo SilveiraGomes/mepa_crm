@@ -1,10 +1,12 @@
 # Wave 5 Academy HTTP API
 
-Status: P0.3.5-A3.2 bounded read-model inventory. Base URI: `/api/v1/academy`. Authentication uses the existing opaque `auth_sessions` bearer token. Contextual authorization remains in the Academy application layer.
+Status: P0.3.5-A4.1 API/UI contract closure. Base URI: `/api/v1/academy`. Authentication still uses an already-issued opaque `auth_sessions` bearer token; login, refresh and logout remain blocked pending an approved institutional authentication command contract. Contextual authorization remains in the Academy application layer.
 
 ## A3.1 read surface
 
 A3.1 added 28 GET contracts. A3.2 adds four paginated child collections, for 32 GET contracts and 62 Academy routes total. The executable inventory, including permission, scope provenance, concealment, filter and sort allowlists, is `wave5_academy_http_contracts.json`.
+
+A4.1 adds four bounded read endpoints, for 36 GET contracts and 66 Academy routes total: effective permission/vocabulary context, instructor candidates authorized by `ACADEMY_MANAGE`, and certificate/transcript eligible-file projections authorized by `ACADEMY_CERTIFY`. The file pickers expose only `public_id`, display name and media type. Issue requests now accept that public ULID and resolve it server-side before the existing provenance guard; no command rule changed.
 
 Collections are restricted in SQL to authorized academic-unit IDs or to an already-authorized parent. Details return concealed 404 for absent, unauthorized, out-of-scope, or nested-parent mismatch targets. Default pagination is 50 and maximum 100.
 
@@ -27,6 +29,10 @@ All four endpoints use `ACADEMY_VIEW`, derive scope from persisted parents, and 
 
 | Method | URI | Controller action | A2 service operation | Permission | Concealment | Request | Resource | Pagination | Audit |
 |---|---|---|---|---|---|---|---|---|---|
+| GET | `/context` | `AcademyContextController@show` | `AcademyContextQueryService::context` | ACADEMY_VIEW | session 401 | `ContextRequest` | `AcademyContextResource` | no | no |
+| GET | `/classes/{class}/instructor-candidates` | `ClassQueryController@instructorCandidates` | `ClassQueryService::searchInstructorCandidates` | ACADEMY_MANAGE | scoped 404 | `AcademyQueryRequest` | `AcademyCollectionResource` | yes | no |
+| GET | `/enrollments/{enrollment}/eligible-files` | `EligibleFileController@certificate` | `EligibleFileQueryService::forCertificate` | ACADEMY_CERTIFY | scoped 404 | `AcademyQueryRequest` | `AcademyCollectionResource` | yes | no |
+| GET | `/curricula/{curriculum}/people/{person}/eligible-files` | `EligibleFileController@transcript` | `EligibleFileQueryService::forTranscript` | ACADEMY_CERTIFY | scoped 404/all-or-nothing | `AcademyQueryRequest` | `AcademyCollectionResource` | yes | no |
 | POST | `/programs/{program}/curricula` | `CurriculumController@store` | `CurriculumService::createVersion` | ACADEMY_MANAGE | scoped 404 | `ContextRequest` | `AcademyActionResource` | no | service |
 | POST | `/curricula/{curriculum}/publish` | `CurriculumController@publish` | `CurriculumService::publish` | ACADEMY_MANAGE | scoped 404 | `VersionedActionRequest` | `AcademyActionResource` | no | service |
 | POST | `/curricula/{curriculum}/courses` | `CurriculumController@addCourse` | `CurriculumService::addCourse` | ACADEMY_MANAGE | scoped 404 | `CurriculumCourseRequest` | `AcademyActionResource` | no | service |
@@ -68,7 +74,7 @@ The missing read contracts are now explicit application services and HTTP contra
 - `page` defaults to 1. `per_page` defaults to 50 and is capped at 100 (bulk attendance is capped at 200 items by both request and service).
 - Only documented fields are accepted. Unknown or protected fields such as `created_by`, `issued_by`, `status`, arbitrary unit claims, and internal flags fail validation.
 - `academic_unit_id`, `unit_id`, and `class_id`, when accepted as optional context claims, can only narrow/check context; A2 derives authority from persisted rows.
-- Public IDs are used where the schema provides them. Numeric route IDs remain only for approved tables without `public_id`.
+- Public IDs are used where the schema provides them. Curriculum-course, certificate and transcript issue payloads use public ULIDs for course/file references; the HTTP adapter resolves them before calling the unchanged command service. Numeric route IDs remain only for approved tables without `public_id`.
 - No destructive DELETE routes exist.
 
 ## Concealment and error matrix
@@ -95,6 +101,6 @@ Unauthenticated requests return 401 `UNAUTHENTICATED` before target resolution. 
 
 A3.1 exposes endpoint-specific allowlists recorded in the HTTP manifest: scoped search for academic units, programs, courses, cohorts, classes, roster and assessments; factual status filters where stored; relationship filters using approved public IDs or numeric identifiers only where no `public_id` exists; and bounded date filters for sessions. Sort is limited to documented logical keys and translated to fixed SQL columns. No arbitrary sort/filter column or national Person search is accepted.
 
-## A4 consumption notes
+## A4.1 consumption notes
 
-The future PWA may build action visibility from the permission named in the route inventory. It must treat 404 as an opaque unavailable resource, use `lock_version` for versioned commands, confirm transition/revoke/finalize actions, display validation errors by field, and never infer absence versus lack of scope. Catalogue screens and person-bearing rosters can consume the A3.1 GET contracts. Person search remains intentionally contextual and is not a general identity directory.
+The PWA builds action visibility from the permission codes returned by `/context`; this is presentation logic only and never replaces backend authorization. It treats 404 as an opaque unavailable resource, uses `lock_version` for versioned commands, confirms transition/revoke/finalize actions, displays validation errors by field, and never infers absence versus lack of scope. Person and file search remain intentionally contextual and are not general directories. Empty transition/status vocabularies keep controls unavailable while D-11 is open.

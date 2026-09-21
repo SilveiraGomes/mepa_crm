@@ -16,10 +16,11 @@ final class AcademyReadResource extends JsonResource
         'capacity', 'lock_version', 'max_score', 'pass_score', 'max_attempts', 'weight', 'attempt_number', 'final_score',
         'completion_ratio', 'watched_seconds', 'kind', 'provider', 'external_url', 'duration_seconds', 'lesson_name',
         'academic_unit_code', 'academic_unit_name', 'organizational_unit_public_id', 'program_public_id', 'program_code',
-        'program_name', 'course_public_id', 'course_code', 'course_name', 'course_version', 'cohort_public_id', 'cohort_name',
+        'program_name', 'course_public_id', 'course_code', 'course_name', 'course_version_id', 'course_version', 'cohort_public_id', 'cohort_name',
         'location_public_id', 'location_name', 'class_public_id', 'class_code', 'enrollment_public_id', 'enrollment_status',
         'person_public_id', 'assessment_public_id', 'assessment_name', 'event_session_id', 'result_status',
         'course_count', 'module_count', 'lesson_count', 'resource_count', 'lessons', 'resources', 'person', 'lines',
+        'file_name', 'media_type',
     ];
 
     public function toArray($request): array { return $this->project((array) $this->resource); }

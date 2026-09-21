@@ -192,11 +192,11 @@ for (const svc of contract.read_services || []) {
       const boundary = body.includes(`$this->rt->read(`) || body.includes(`authorizedAcademicUnitIds(`);
       check(`read.boundary.${id}`, boundary && body.includes(`'${o.operation}'`), `${id}: must authorize via runtime read or SQL-scoped collection authorization`);
       check(`read.models.${id}`, !/::query\(|App\\Models|use\s+App\\Models/.test(body), `${id}: raw model construction/query is forbidden`);
-      if (o.pagination) check(`read.page.${id}`, body.includes('$this->page(') || body.includes('AcademyInput::page('), `${id}: paginated read must use the bounded page helper`);
+      if (o.pagination) check(`read.page.${id}`, body.includes('$this->page(') || body.includes('AcademyInput::page(') || body.includes('resources->eligibleFiles('), `${id}: paginated read must use the bounded page helper`);
     }
   }
 }
-check('read.count', readOpCount === 32, `expected 32 A3.2 read operations, found ${readOpCount}`);
+check('read.count', readOpCount === 35, `expected 35 A4.1 read operations, found ${readOpCount}`);
 for (const k of Object.keys(matrix)) check(`matrix.used.${k}`, usedOps.has(k), `matrix row ${k} is used by no service operation`);
 check('op.count', opCount === contract.services.reduce((n, s) => n + s.operations.length, 0) && opCount >= 28, 'unexpected operation count');
 const missingReasons = files.flatMap(f => [...code[f].matchAll(/AcademyReason::([A-Z_]+)/g)].map(m => m[1])).filter(r => !reasonConsts.has(r));
@@ -234,6 +234,7 @@ const d09Allow = [
   ['AcademicPolicyResolver.php', ['literal'], /DECIMAL\(20,6\)/, 'SQL type width of the exact DECIMAL comparison'],
   ['AcademyInput.php', ['literal'], /min\(100, max\(1, \$perPage\)\)/, 'pagination cap (technical), not academic'],
   ['QueryService.php', ['literal'], /AcademyInput::page/, 'default page size of a bounded read model (technical, not academic)'],
+  ['AcademyResourceGuard.php', ['literal'], /AcademyInput::page/, 'default page size of the bounded eligible-file picker (technical, not academic)'],
   ['EnrollmentService.php', ['literal'], /\$perPage = 50/, 'default page size of a bounded listing (technical, not academic)'],
   ['AcademicAttendanceService.php', ['literal'], /\$perPage = 100/, 'default page size of a bounded listing (technical, not academic)'],
   ['AssessmentAttemptService.php', ['attempts_literal'], /\$attemptNumber < 1/, 'schema CHECK ck_assessment_attempts_number (attempt_number >= 1): technical invariant, not an attempt limit'],
@@ -339,7 +340,7 @@ check('fin_payroll.absent', findAll(/salary|payroll|allowance|pension|\bINSS\b|r
 check('d06.absent', findAll(/retention|legal_hold|\bpurge\b|data_subject|gdpr/i).length === 0, 'D-06 is out of scope: no purge/retention/legal-hold logic');
 
 // 12. tests exist for the mission matrix ------------------------------------------------------------------------------------------
-const testFiles = ['AuthorizationTest', 'EnrollmentTest', 'OperationsTest', 'AssessmentCertificationTest', 'ConcurrencyTest', 'RemediationTest'].map(n => read(`apps/api/tests/DatabaseV2/Academy${n}.php`)).concat(read('apps/api/tests/Unit/AcademyDomainUnitTest.php')).join('\n');
+const testFiles = ['AuthorizationTest', 'EnrollmentTest', 'OperationsTest', 'AssessmentCertificationTest', 'ConcurrencyTest', 'RemediationTest', 'ContractClosureTest'].map(n => read(`apps/api/tests/DatabaseV2/Academy${n}.php`)).concat(read('apps/api/tests/Unit/AcademyDomainUnitTest.php')).join('\n');
 const markers = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8', 'a9', 'a10', 'e1', 'e2', 'e3', 'e4', 'r1_1', 'r1_2', 'r1_3', 'r1_4', 'r1_5', 'r1_6', 'r1_7', 'r1_8', 'r2_1', 'r2_2', 'r2_3', 'r2_4', 'r2_5', 'r2_6', 'r3_1', 'r3_2', 'r3_3', 'r3_4', 'r3_5', 'r3_6', 'r3_7'];
 for (const m of markers) check(`tests.marker.${m}`, new RegExp(`function test_(\\w*_)?${m}_`).test(testFiles), `no test named for ${m.toUpperCase()}`);
 check('tests.uses_v2_pool', /PooledWaveFiveCase/.test(testFiles) && !/DROP DATABASE|CREATE DATABASE/i.test(testFiles), 'tests must use the pooled Test Infrastructure V2 base and never CREATE/DROP DATABASE');

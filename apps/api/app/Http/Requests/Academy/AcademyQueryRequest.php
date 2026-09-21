@@ -51,12 +51,15 @@ final class AcademyQueryRequest extends AcademyRequest
             'ClassQueryController@index' => [['search', 'academic_unit', 'course_version', 'cohort', 'status'], ['code', 'name', 'status']],
             'ClassQueryController@roster' => [['search', 'status'], ['name', 'status', 'enrolled_at']],
             'ClassQueryController@people' => [['search'], ['name']],
+            'ClassQueryController@instructorCandidates' => [['search'], ['name']],
             'ClassQueryController@sessions' => [['status', 'date_from', 'date_to'], ['starts_at', 'status']],
             'ClassQueryController@progress' => [[], []],
             'AssessmentQueryController@index' => [['search', 'status'], ['name', 'status']],
             'AssessmentQueryController@attempts' => [['status'], ['name', 'status', 'starts_at']],
             'DocumentQueryController@certificates' => [['status'], ['name', 'status', 'issued_at', 'version']],
             'DocumentQueryController@transcripts' => [['status'], ['status', 'issued_at', 'version']],
+            'EligibleFileController@certificate' => [['search'], ['name']],
+            'EligibleFileController@transcript' => [['search'], ['name']],
         ];
         foreach ($map as $suffix => $config) {
             if (str_ends_with($action, $suffix)) { return $config; }

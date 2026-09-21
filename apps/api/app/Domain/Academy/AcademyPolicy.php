@@ -95,6 +95,25 @@ final class AcademyPolicy
         return self::UNKNOWN;
     }
 
+    /** Read-only UI projection. Missing D-11 configuration is represented by an empty list. */
+    public function configuredSet(string $kind, string $role): array
+    {
+        $values = $this->states[$kind]['sets'][$role] ?? [];
+        return is_array($values) ? array_values(array_filter($values, 'is_string')) : [];
+    }
+
+    /** Only approved transitions are projected. Pending proposals never become UI choices. */
+    public function approvedTransitions(string $kind): array
+    {
+        $safe = [];
+        foreach ($this->transitions['approved'][$kind] ?? [] as $entry) {
+            if (is_array($entry) && is_string($entry[0] ?? null) && is_string($entry[1] ?? null)) {
+                $safe[] = ['from' => $entry[0], 'to' => $entry[1]];
+            }
+        }
+        return $safe;
+    }
+
     // The effect an APPROVED transition declares. Third element of the approved entry: [from, to, effect].
     // Anything but exactly one recognised declaration, or a declaration that contradicts the role sets
     // (see EFFECT_TARGETS), is ambiguous and fails closed.

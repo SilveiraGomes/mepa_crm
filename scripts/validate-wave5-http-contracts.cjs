@@ -54,7 +54,7 @@ for (const endpoint of manifest.endpoints) {
 }
 
 const readEndpoints = manifest.endpoints.filter(e => e.method === 'GET' && e.service_operation.includes('QueryService::'));
-check(readEndpoints.length === 32, `expected 32 A3.2 read endpoints, found ${readEndpoints.length}`);
+check(readEndpoints.length === 36, `expected 36 A4.1 read endpoints, found ${readEndpoints.length}`);
 const queryRequest = fs.readFileSync(process.env.WAVE5_HTTP_QUERY_REQUEST_PATH || path.join(root, 'apps/api/app/Http/Requests/Academy/AcademyQueryRequest.php'), 'utf8');
 check(/'per_page'\s*=>\s*\[[^\]]*'max:100'/.test(queryRequest) && queryRequest.includes('Rule::in'), 'read pagination maximum 100 and sort allowlists must be explicit');
 const readResourcePath = process.env.WAVE5_HTTP_READ_RESOURCE_PATH || path.join(root, 'apps/api/app/Http/Resources/Academy/AcademyReadResource.php');

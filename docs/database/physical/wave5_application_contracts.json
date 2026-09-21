@@ -197,6 +197,24 @@
       "admin_override": false,
       "audit": false
     },
+    "instructor.candidate.search": {
+      "permission": "ACADEMY_MANAGE",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "certificate.file.select": {
+      "permission": "ACADEMY_CERTIFY",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
+    "transcript.file.select": {
+      "permission": "ACADEMY_CERTIFY",
+      "class_assignment": false,
+      "admin_override": false,
+      "audit": false
+    },
     "structure.manage": {
       "permission": "ACADEMY_MANAGE",
       "class_assignment": false,
@@ -1470,6 +1488,7 @@
         {"method":"detail","operation":"class.view","permission":"ACADEMY_VIEW","scope_source":"classes.academic_unit_id -> academic_units.unit_id","class_assignment_required":false,"child_safety_relevance":"no roster included","policy_dependency":"status factual","pagination":false,"sensitive_projection":"class detail","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"roster","operation":"enrollment.view","permission":"ACADEMY_VIEW","scope_source":"persisted class target","class_assignment_required":false,"child_safety_relevance":"minimal Person projection; no birth/contact/guardian data","policy_dependency":"status factual","pagination":true,"sensitive_projection":"person public_id+display_name and enrollment facts","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"searchPeopleForEnrollment","operation":"person.search","permission":"ACADEMY_ENROLL","scope_source":"target class unit plus existing academic relationship in same unit","class_assignment_required":false,"child_safety_relevance":"minimal Person projection","policy_dependency":"none","pagination":true,"sensitive_projection":"public_id+display_name only","domain_errors":["INVALID_INPUT","TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
+        {"method":"searchInstructorCandidates","operation":"instructor.candidate.search","permission":"ACADEMY_MANAGE","scope_source":"target class unit plus existing academic relationship in same unit","class_assignment_required":false,"child_safety_relevance":"minimal Person projection","policy_dependency":"none","pagination":true,"sensitive_projection":"public_id+display_name only","domain_errors":["INVALID_INPUT","TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"enrollment","operation":"enrollment.view","permission":"ACADEMY_VIEW","scope_source":"enrollment persisted class and nested parent equality","class_assignment_required":false,"child_safety_relevance":"minimal Person projection","policy_dependency":"status factual","pagination":false,"sensitive_projection":"enrollment+Person summary","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"sessions","operation":"session.view","permission":"ACADEMY_VIEW","scope_source":"persisted class target","class_assignment_required":false,"child_safety_relevance":"none","policy_dependency":"status factual","pagination":true,"sensitive_projection":"session summary","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"session","operation":"session.view","permission":"ACADEMY_VIEW","scope_source":"session persisted class and nested parent equality","class_assignment_required":false,"child_safety_relevance":"none","policy_dependency":"status factual","pagination":false,"sensitive_projection":"session detail","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
@@ -1492,6 +1511,13 @@
         {"method":"certificate","operation":"certificate.view","permission":"ACADEMY_VIEW","scope_source":"certificate -> enrollment -> persisted class plus nested parent equality","class_assignment_required":false,"child_safety_relevance":"minimal Person projection","policy_dependency":"status factual","pagination":false,"sensitive_projection":"certificate detail; file metadata/token excluded","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"transcripts","operation":"transcript.view","permission":"ACADEMY_GRADES_VIEW","scope_source":"curriculum unit plus all contributing enrollment units; all-or-nothing","class_assignment_required":false,"child_safety_relevance":"no Person profile in list","policy_dependency":"status factual","pagination":true,"sensitive_projection":"issued transcript summary; file metadata excluded","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
         {"method":"transcript","operation":"transcript.view","permission":"ACADEMY_GRADES_VIEW","scope_source":"issued transcript curriculum/person plus all contributing units and nested equality","class_assignment_required":false,"child_safety_relevance":"minimal Person projection","policy_dependency":"stored result facts only","pagination":false,"sensitive_projection":"issued transcript and lines; file metadata excluded","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]}
+      ]
+    },
+    {
+      "name": "EligibleFileQueryService",
+      "operations": [
+        {"method":"forCertificate","operation":"certificate.file.select","permission":"ACADEMY_CERTIFY","scope_source":"enrollment persisted class unit and file owner_unit_id","class_assignment_required":false,"child_safety_relevance":"no Person profile","policy_dependency":"file availability facts only; classification not interpreted","pagination":true,"sensitive_projection":"file public_id, display name and media type only","domain_errors":["TARGET_NOT_FOUND","NOT_AUTHORIZED","OUT_OF_SCOPE"]},
+        {"method":"forTranscript","operation":"transcript.file.select","permission":"ACADEMY_CERTIFY","scope_source":"curriculum unit plus every contributing enrollment unit and file owner_unit_id","class_assignment_required":false,"child_safety_relevance":"no Person profile","policy_dependency":"file availability facts only; classification not interpreted","pagination":true,"sensitive_projection":"file public_id, display name and media type only","domain_errors":["TARGET_NOT_FOUND","INVALID_PERSON_REFERENCE","NOT_AUTHORIZED","OUT_OF_SCOPE"]}
       ]
     }
   ],

@@ -125,7 +125,7 @@ final class AcademyHttpContractTest extends TestCase
     {
         $manifest = json_decode(file_get_contents(base_path('../../docs/api/wave5_academy_http_contracts.json')), true, 512, JSON_THROW_ON_ERROR);
         $reads = array_values(array_filter($manifest['endpoints'], static fn (array $e): bool => $e['method'] === 'GET' && str_contains($e['service_operation'], 'QueryService::')));
-        self::assertCount(32, $reads);
+        self::assertCount(36, $reads);
         foreach ($reads as $endpoint) {
             self::assertTrue(collect(Route::getRoutes())->contains(fn ($route) => $route->uri() === 'api/v1/academy/' . $endpoint['uri'] && in_array('GET', $route->methods(), true)), $endpoint['uri']);
         }
@@ -140,7 +140,7 @@ final class AcademyHttpContractTest extends TestCase
 
         foreach ($reads as $endpoint) {
             $uri = preg_replace_callback('/\{([^}]+)\}/', static fn (array $m): string => in_array($m[1], $numeric, true) ? '1' : '01K00000000000000000000000', $endpoint['uri']);
-            $query = str_contains($uri, 'people:search') ? '?search=abc' : '';
+            $query = str_contains($uri, 'people:search') || str_contains($uri, 'instructor-candidates') ? '?search=abc' : '';
             $this->getJson('/api/v1/academy/' . $uri . $query)
                 ->assertStatus(401)
                 ->assertExactJson(['error' => ['code' => 'UNAUTHENTICATED', 'message' => 'Authentication is required.']]);
