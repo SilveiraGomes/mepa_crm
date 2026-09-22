@@ -34,7 +34,7 @@
   --text-on-primary: #ffffff;
   --text-on-danger: #ffffff;
   --text-on-warning: var(--mepa-ink);
-  --text-link: var(--mepa-primary);
+  --text-link: var(--mepa-primary-strong);
   --text-link-on-soft: var(--mepa-primary-strong);
   --text-danger: var(--mepa-danger-strong);
   --text-warning: var(--mepa-warning-strong);

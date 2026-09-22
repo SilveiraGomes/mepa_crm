@@ -22,8 +22,9 @@ final class AcademyServiceFactory
     public function make(string $service): object
     {
         try {
-            $access = (array) config('academy_http.access_policy', []);
-            $child = (array) config('academy_http.child_policy', []);
+            $testOnly = app()->environment('e2e') && (bool) config('academy_e2e.enabled', false);
+            $access = (array) config($testOnly ? 'academy_e2e.access_policy' : 'academy_http.access_policy', []);
+            $child = (array) config($testOnly ? 'academy_e2e.child_policy' : 'academy_http.child_policy', []);
             $eventPolicy = new EventPolicy(
                 (string) ($access['version'] ?? ''),
                 (array) ($access['states'] ?? []),
@@ -39,7 +40,7 @@ final class AcademyServiceFactory
                 (string) ($child['guardian_kind'] ?? ''),
                 (string) ($child['participation_purpose'] ?? '')
             );
-            $academy = (array) config('academy', []);
+            $academy = (array) config($testOnly ? 'academy_e2e.academy' : 'academy', []);
             $policy = new AcademyPolicy(
                 isset($academy['policy_version']) ? (string) $academy['policy_version'] : null,
                 (array) ($academy['states'] ?? []),

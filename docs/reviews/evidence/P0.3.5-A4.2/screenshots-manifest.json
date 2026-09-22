@@ -1,0 +1,24 @@
+{
+  "phase": "P0.3.5-A4.2",
+  "captured_at": "2026-09-22T11:15:00+01:00",
+  "runner": "Playwright 1.63 / Chromium headless / production Vite preview",
+  "assertions": {
+    "horizontal_overflow": "PASS",
+    "primary_actions_clipped": "PASS",
+    "modal_viewport": "PASS",
+    "labels_and_focus": "PASS",
+    "critical_or_serious_axe": 0,
+    "uncaught_console_errors": 0,
+    "unexpected_5xx": 0,
+    "external_requests": 0,
+    "token_query_leaks": 0
+  },
+  "viewports": {
+    "desktop": {"size": "1440x900", "status": "PASS", "screens": ["login", "dashboard", "classes", "class", "roster", "enrollment", "attendance", "assessments", "grades", "certificates", "transcripts"]},
+    "laptop": {"size": "1366x768", "status": "PASS", "screens": ["login", "dashboard", "classes", "class", "roster", "enrollment", "attendance"]},
+    "tablet": {"size": "768x1024", "status": "PASS", "screens": ["login", "dashboard", "classes", "class", "roster", "enrollment", "attendance"]},
+    "mobile": {"size": "390x844", "status": "PASS", "screens": ["login", "dashboard", "classes", "class", "roster", "enrollment", "attendance"]}
+  },
+  "result_file": "playwright-results.json",
+  "result": "16 passed"
+}

@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:a11y": "vitest run src/test/accessibility.test.tsx",
+    "test:e2e": "playwright test",
     "preview": "vite preview"
   },
   "dependencies": {
