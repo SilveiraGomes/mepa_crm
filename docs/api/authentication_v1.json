@@ -1,0 +1,35 @@
+{
+  "version": "MEPA_LOCAL_AUTH_V1",
+  "base_uri": "/api/v1/auth",
+  "credential_source": {
+    "identifier": "users.login",
+    "secret": "users.password_hash",
+    "hashing": "Laravel Hasher",
+    "active_account": "users.status plus archived_at and mfa_required",
+    "active_authority": "active user_role_scopes joined to active roles"
+  },
+  "session": {
+    "store": "auth_sessions",
+    "bearer": "32 random bytes encoded base64url",
+    "persisted_token": "binary SHA-256 digest only",
+    "expiration": "fixed at issue time; default 480 minutes",
+    "revocation": "revoked_at plus lock_version",
+    "frontend_storage": "sessionStorage, tab scoped"
+  },
+  "endpoints": [
+    {"method": "POST", "uri": "login", "status": 201, "request": ["login", "password"], "response": ["session.token", "session.token_type", "session.expires_at", "user.public_id", "user.login", "user.account_kind"], "throttle": "5/minute/IP"},
+    {"method": "GET", "uri": "me", "status": 200, "auth": "api.auth", "response": ["user", "session.expires_at"]},
+    {"method": "POST", "uri": "logout", "status": 204, "semantics": "idempotent; known active token is revoked, repeated/unknown token remains 204"}
+  ],
+  "errors": {
+    "INVALID_CREDENTIALS": 401,
+    "UNAUTHENTICATED": 401,
+    "SESSION_EXPIRED": 401,
+    "SESSION_REVOKED": 401,
+    "RATE_LIMITED": 429
+  },
+  "refresh": {
+    "status": "NOT_APPLICABLE",
+    "reason": "auth_sessions contains one bearer digest and fixed expiry; it has no separate renewable credential, rotation family, or absolute renewal boundary. Re-authentication is required after expiry."
+  }
+}

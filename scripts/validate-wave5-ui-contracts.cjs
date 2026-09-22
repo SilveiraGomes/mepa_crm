@@ -61,7 +61,8 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05)
 }
 
-check(ui.version === 'P0.3.5-A4.1', 'UI contract version must be P0.3.5-A4.1')
+check(ui.version === 'P0.3.5-A4.2', 'UI contract version must be P0.3.5-A4.2')
+check(ui.contract_gaps.find((gap) => gap.id === 'A4_API_CONTRACT_GAP-01')?.status === 'RESOLVED', 'GAP-01 must be resolved by the A4.2 auth contract')
 check(ui.defaults.page_size === 50, 'Default page size must be 50')
 check(ui.defaults.max_page_size === 100, 'Maximum page size must be 100')
 check(ui.defaults.search_minimum === 3, 'Search minimum must be 3')

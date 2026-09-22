@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['person_id', 'account_kind', 'public_id', 'login', 'password_hash', 'status', 'mfa_required'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -29,8 +25,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password_hash',
     ];
 
     /**
@@ -39,6 +34,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'mfa_required' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 }

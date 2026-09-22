@@ -1,9 +1,13 @@
-// The API validates an opaque bearer token but exposes no login, refresh or /me endpoint yet
-// (A4_API_CONTRACT_GAP-01/02). This store is the single seam a real sign-in flow will feed.
+// MEPA Local Auth V1 uses an opaque bearer with fixed issue-time expiry. There is deliberately no
+// client-side refresh or sliding expiration; expiry requires a new credential verification.
 // The token lives in sessionStorage only (tab-scoped, gone when the tab closes) — never localStorage.
+
+import type { AuthUser } from './client'
 
 export interface AuthSession {
   token: string
+  expiresAt: string
+  user: AuthUser
   /** Academy permission codes granted to the actor. Absent = the API does not tell the UI. */
   permissions?: readonly string[]
 }
@@ -16,9 +20,13 @@ function read(): AuthSession | null {
     const raw = window.sessionStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<AuthSession>
-    if (typeof parsed.token !== 'string' || parsed.token === '') return null
+    if (typeof parsed.token !== 'string' || parsed.token === '' || typeof parsed.expiresAt !== 'string' || !parsed.user) return null
+    if (Date.parse(parsed.expiresAt) <= Date.now()) {
+      window.sessionStorage.removeItem(STORAGE_KEY)
+      return null
+    }
     const permissions = Array.isArray(parsed.permissions) ? parsed.permissions.filter((p): p is string => typeof p === 'string') : undefined
-    return { token: parsed.token, permissions }
+    return { token: parsed.token, expiresAt: parsed.expiresAt, user: parsed.user as AuthUser, permissions }
   } catch {
     return null
   }

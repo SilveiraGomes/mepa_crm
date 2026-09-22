@@ -1,5 +1,5 @@
 {
-  "version": "P0.3.5-A4.1",
+  "version": "P0.3.5-A4.2",
   "http_contract": "docs/api/wave5_academy_http_contracts.json",
   "defaults": { "page_size": 50, "max_page_size": 100, "search_minimum": 3, "locale": "pt-AO" },
   "critical_error_mappings": {
@@ -12,7 +12,7 @@
     "422:PARTICIPATION_REQUIREMENTS_NOT_MET": "generic-participation-failure"
   },
   "contract_gaps": [
-    { "id": "A4_API_CONTRACT_GAP-01", "status": "A4_1_DOMAIN_CONTRACT_CONFLICT", "screen": "Sign in", "user_goal": "Authenticate in the CRM", "required_endpoint": "POST auth/login and refresh/logout contract", "existing_endpoint": null, "gap": "No approved institutional authentication command contract exists", "impact": "A real login/refresh/logout E2E cannot be implemented without adding domain authority outside this phase", "resolution": "Stopped under the A4.1 no-new-command rule; an approved authentication contract is required" },
+    { "id": "A4_API_CONTRACT_GAP-01", "status": "RESOLVED", "screen": "Sign in", "user_goal": "Authenticate in the CRM", "required_endpoint": "POST auth/login, GET auth/me and POST auth/logout", "existing_endpoint": "POST auth/login, GET auth/me and POST auth/logout", "gap": null, "impact": null, "resolution": "MEPA Local Auth V1 verifies users.login/password_hash, issues a fixed-expiry opaque auth_sessions bearer, projects the public user, and revokes idempotently; refresh is NOT_APPLICABLE because the current schema has no independent renewable credential or absolute renewal boundary" },
     { "id": "A4_API_CONTRACT_GAP-02", "status": "RESOLVED", "screen": "All Academy screens", "user_goal": "Hide actions and navigation not granted to the actor", "required_endpoint": "GET context", "existing_endpoint": "GET context", "gap": null, "impact": null, "resolution": "Safe effective Academy permission codes are projected from backend authorization" },
     { "id": "A4_API_CONTRACT_GAP-03", "status": "RESOLVED", "screen": "Lifecycle and attendance", "user_goal": "Choose only approved states", "required_endpoint": "GET context", "existing_endpoint": "GET context", "gap": null, "impact": "When D-11 has no approved values, the UI explicitly keeps the relevant controls unavailable", "resolution": "Only backend-approved transitions and attendance statuses are returned" },
     { "id": "A4_API_CONTRACT_GAP-04", "status": "RESOLVED", "screen": "Instructor assignment", "user_goal": "Select a person and assign as instructor", "required_endpoint": "GET classes/{class}/instructor-candidates", "existing_endpoint": "GET classes/{class}/instructor-candidates", "gap": null, "impact": null, "resolution": "Dedicated scoped picker uses ACADEMY_MANAGE" },

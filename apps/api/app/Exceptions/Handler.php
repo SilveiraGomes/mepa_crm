@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,6 +39,13 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (TooManyRequestsHttpException $e, Request $request) {
+            if (!$request->is('api/v1/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'RATE_LIMITED', 'message' => 'Too many requests. Try again later.']], 429, $e->getHeaders());
+        });
+
         $this->renderable(function (AcademyError $e, Request $request) {
             if (!$request->is('api/v1/academy/*')) {
                 return null;

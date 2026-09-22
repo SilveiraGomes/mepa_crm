@@ -5,64 +5,75 @@ declare(strict_types=1);
 namespace Tests\DatabaseV2;
 
 use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
+use Illuminate\Support\Facades\RateLimiter;
+use Tests\DatabaseV2\Support\HttpWaveFiveCase;
 
-final class AcademyHttpAuthenticationTest extends TestCase
+final class AcademyHttpAuthenticationTest extends HttpWaveFiveCase
 {
-    protected function setUp(): void
+    public function test_auth_01_login_and_current_user_contract(): void
     {
-        parent::setUp();
-        $dsn = (string) getenv('WAVE5_DSN');
-        parse_str(str_replace(';', '&', substr($dsn, 6)), $parts);
-        config([
-            'database.default' => 'mysql',
-            'database.connections.mysql.host' => $parts['host'] ?? '127.0.0.1',
-            'database.connections.mysql.port' => $parts['port'] ?? 3306,
-            'database.connections.mysql.database' => $parts['dbname'] ?? '',
-            'database.connections.mysql.username' => getenv('WAVE5_USER') ?: 'root',
-            'database.connections.mysql.password' => getenv('WAVE5_PASSWORD') ?: '',
-        ]);
-        DB::purge('mysql');
-        DB::reconnect('mysql');
+        $account = $this->authAccount();
+        $login = $this->postJson('/api/v1/auth/login', ['login' => $account['login'], 'password' => $account['password']])
+            ->assertCreated()->assertJsonPath('data.user.login', $account['login'])
+            ->assertJsonPath('data.session.token_type', 'Bearer')
+            ->assertJsonMissing(['password_hash']);
+        $token = (string) $login->json('data.session.token');
+        self::assertGreaterThanOrEqual(43, strlen($token));
+        $this->getJson('/api/v1/auth/me', ['Authorization' => 'Bearer ' . $token])
+            ->assertOk()->assertJsonPath('data.user.login', $account['login']);
     }
 
-    public function test_valid_existing_session_reaches_the_academy_layer(): void
+    public function test_auth_02_and_03_wrong_password_and_unknown_account_are_identical(): void
     {
-        $token = 'a3-http-valid-' . bin2hex(random_bytes(8));
-        $this->createAuthSession($token, null, '+1 hour');
-
-        $this->getJson('/api/v1/academy/classes/not-a-public-id/enrollments', ['Authorization' => 'Bearer ' . $token])
-            ->assertStatus(422)
-            ->assertExactJson(['error' => ['code' => 'ACADEMIC_POLICY_NOT_CONFIGURED', 'message' => 'The academic policy required for this operation is not configured.']]);
+        $account = $this->authAccount();
+        $expected = ['error' => ['code' => 'INVALID_CREDENTIALS', 'message' => 'The supplied credentials are invalid.']];
+        $this->postJson('/api/v1/auth/login', ['login' => $account['login'], 'password' => 'wrong'])
+            ->assertStatus(401)->assertExactJson($expected);
+        $this->postJson('/api/v1/auth/login', ['login' => 'unknown-' . bin2hex(random_bytes(4)), 'password' => 'wrong'])
+            ->assertStatus(401)->assertExactJson($expected);
     }
 
-    public function test_revoked_expired_and_unknown_tokens_are_uniformly_unauthenticated(): void
+    public function test_auth_04_and_05_expired_revoked_and_unknown_tokens_have_explicit_safe_errors(): void
     {
-        $revoked = 'a3-http-revoked-' . bin2hex(random_bytes(8));
-        $expired = 'a3-http-expired-' . bin2hex(random_bytes(8));
-        $this->createAuthSession($revoked, now()->subMinute()->format('Y-m-d H:i:s.u'), '+1 hour');
-        $this->createAuthSession($expired, null, '-1 minute');
-        $expected = ['error' => ['code' => 'UNAUTHENTICATED', 'message' => 'Authentication is required.']];
+        $account = $this->authAccount();
+        $expired = $this->token($account['user'], '-1 minute', null);
+        $revoked = $this->token($account['user'], '+1 hour', now('UTC')->format('Y-m-d H:i:s.u'));
+        $this->getJson('/api/v1/auth/me', ['Authorization' => 'Bearer ' . $expired])
+            ->assertStatus(401)->assertJsonPath('error.code', 'SESSION_EXPIRED');
+        $this->getJson('/api/v1/auth/me', ['Authorization' => 'Bearer ' . $revoked])
+            ->assertStatus(401)->assertJsonPath('error.code', 'SESSION_REVOKED');
+        $this->getJson('/api/v1/auth/me', ['Authorization' => 'Bearer unknown'])
+            ->assertStatus(401)->assertJsonPath('error.code', 'UNAUTHENTICATED');
+    }
 
-        foreach ([$revoked, $expired, 'a3-http-unknown'] as $token) {
-            $this->getJson('/api/v1/academy/classes/not-a-public-id/enrollments', ['Authorization' => 'Bearer ' . $token])
-                ->assertStatus(401)->assertExactJson($expected);
+    public function test_auth_06_and_07_logout_revokes_and_is_idempotent(): void
+    {
+        $account = $this->authAccount();
+        $token = (string) $this->postJson('/api/v1/auth/login', ['login' => $account['login'], 'password' => $account['password']])->json('data.session.token');
+        $headers = ['Authorization' => 'Bearer ' . $token];
+        $this->postJson('/api/v1/auth/logout', [], $headers)->assertNoContent();
+        $this->getJson('/api/v1/auth/me', $headers)->assertStatus(401)->assertJsonPath('error.code', 'SESSION_REVOKED');
+        $this->postJson('/api/v1/auth/logout', [], $headers)->assertNoContent();
+    }
+
+    public function test_auth_08_login_rate_limit_is_enforced_with_the_contract_error(): void
+    {
+        RateLimiter::clear(hash('sha256', '127.0.0.1'));
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])->assertStatus(401);
         }
+        $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])
+            ->assertStatus(429)->assertJsonPath('error.code', 'RATE_LIMITED');
     }
 
-    private function createAuthSession(string $token, ?string $revokedAt, string $expiry): void
+    private function token(int $user, string $expiry, ?string $revoked): string
     {
-        $user = (int) DB::table('users')->min('id');
-        self::assertGreaterThan(0, $user);
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         DB::table('auth_sessions')->insert([
-            'user_id' => $user,
-            'token_hash' => hash('sha256', $token, true),
-            'expires_at' => now('UTC')->modify($expiry)->format('Y-m-d H:i:s.u'),
-            'revoked_at' => $revokedAt,
-            'ip_hash' => null,
-            'device_id' => null,
-            'created_at' => now('UTC')->format('Y-m-d H:i:s.u'),
-            'lock_version' => 0,
+            'user_id' => $user, 'token_hash' => hash('sha256', $token, true),
+            'expires_at' => now('UTC')->modify($expiry)->format('Y-m-d H:i:s.u'), 'revoked_at' => $revoked,
+            'ip_hash' => null, 'device_id' => null, 'created_at' => now('UTC')->format('Y-m-d H:i:s.u'), 'lock_version' => 0,
         ]);
+        return $token;
     }
 }

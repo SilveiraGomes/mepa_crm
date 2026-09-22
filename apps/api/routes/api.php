@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\Academy\AssessmentQueryController;
 use App\Http\Controllers\Api\V1\Academy\DocumentQueryController;
 use App\Http\Controllers\Api\V1\Academy\AcademyContextController;
 use App\Http\Controllers\Api\V1\Academy\EligibleFileController;
+use App\Http\Controllers\Api\V1\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,12 @@ Route::prefix('v1')->group(function (): void {
             'status' => 'ok',
             'application' => 'MEPA CRM API',
         ]);
+    });
+
+    Route::prefix('auth')->group(function (): void {
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login');
+        Route::post('logout', [AuthController::class, 'logout'])->middleware('throttle:30,1');
+        Route::get('me', [AuthController::class, 'me'])->middleware(['api.auth', 'throttle:60,1']);
     });
 
     Route::prefix('academy')->middleware(['academy.auth', 'throttle:60,1'])->group(function (): void {
