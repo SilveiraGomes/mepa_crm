@@ -1,12 +1,9 @@
 {
   "contract": "MEPA_PEOPLE_FAMILIES_V1",
-  "phase": "P0.5",
-  "status": "BLOCKED_PRE_IMPLEMENTATION",
-  "audited_head": "700cbd5e2de485e532981f38839be8a5541d7123",
-  "gate_codes": [
-    "PEOPLE_INSTITUTIONAL_DECISION_REQUIRED",
-    "PEOPLE_SCOPE_DECISION_REQUIRED"
-  ],
+  "phase": "P0.5-I",
+  "status": "IMPLEMENTED_PENDING_INDEPENDENT_AUDIT",
+  "decision": "docs/adr/0017-people-scope-lifecycle-privacy.md",
+  "baseline_head": "7c4083484fb79e6dd1ff7e6d4d619925f140ea44",
   "invariants": {
     "person_is_identity_root": true,
     "membership_is_separate": true,
@@ -15,84 +12,480 @@
     "internal_numeric_ids_public": false,
     "silent_auto_merge_allowed": false,
     "backend_authorization_required": true,
+    "person_owning_unit": false,
+    "household_owning_unit": false,
+    "hard_delete_allowed": false,
     "default_page_size": 50,
     "maximum_page_size": 100
   },
   "public_identifiers": {
     "person": "people.public_id",
     "household": "households.public_id",
-    "nested_resources": "parent_resource_context_only"
+    "nested_resources": "parent_resource_context_only",
+    "nested_reference": "opaque HMAC ref (32 hex) resolved only among the parent's own rows; never a primary key"
   },
-  "blocked_decisions": [
-    {
-      "id": "P0.5-D01",
-      "subject": "Person and Household ownership and visibility",
-      "blocks": [
-        "person.create",
-        "person.list",
-        "person.detail",
-        "person.update",
-        "person.search",
-        "contact.lifecycle",
-        "address.lifecycle",
-        "household.lifecycle",
-        "household_member.lifecycle",
-        "relationship.lifecycle",
-        "audit.unit_derivation",
-        "f06_idor_proof"
+  "schema_delta": {
+    "manifest": "docs/database/physical/p05_people_delta_manifest.json",
+    "validator": "scripts/validate-p05-people-schema.cjs",
+    "person_unit_contexts": {
+      "context_kind": [
+        "ONBOARDING",
+        "EMPLOYMENT",
+        "DISCIPLESHIP",
+        "LEGACY_IMPORT"
       ],
-      "reason": "No persisted, approved rule maps a general Person or Household to the organizational unit whose scope authorizes access. Non-members may have no membership, while audit_logs.unit_id is mandatory."
+      "status": [
+        "ACTIVE",
+        "INACTIVE"
+      ],
+      "public_id": false
     },
-    {
-      "id": "P0.5-D02",
-      "subject": "Reference catalogs and lifecycle states",
-      "blocks": [
-        "person.create",
-        "contact.create",
-        "household_member.add",
-        "relationship.create",
-        "status.transitions"
+    "relationship_types": {
+      "semantics": [
+        "SYMMETRIC",
+        "INVERSE_PAIRED"
       ],
-      "reason": "Required catalogs are empty and D-11 leaves exact states, transitions, household roles and relationship taxonomy open."
+      "inverse_relationship_type_id": "nullable self-FK RESTRICT"
     },
-    {
-      "id": "P0.5-D03",
-      "subject": "Encryption key custody, sensitive projections and retention",
-      "blocks": [
-        "contact.production_write",
-        "address.production_write",
-        "person_document.production_write",
-        "minor_sensitive_projection",
-        "archive_and_purge"
+    "birth_precisions": [
+      "EXACT",
+      "MONTH",
+      "YEAR",
+      "UNKNOWN"
+    ],
+    "rejected_columns": [
+      "people.unit_id",
+      "households.unit_id"
+    ]
+  },
+  "catalogs": {
+    "source": "App\\Domain\\People\\PeopleCatalog (ADR-0017 D02, installed by migration 2026_09_23_000004)",
+    "person_statuses": [
+      "ACTIVE",
+      "INACTIVE",
+      "DECEASED"
+    ],
+    "person_transitions": [
+      [
+        "ACTIVE",
+        "INACTIVE"
       ],
-      "reason": "D-06 and D-08 do not yet approve key custody, rotation, retention, legal hold, purge and production qualification."
-    }
+      [
+        "INACTIVE",
+        "ACTIVE"
+      ],
+      [
+        "ACTIVE",
+        "DECEASED"
+      ],
+      [
+        "INACTIVE",
+        "DECEASED"
+      ]
+    ],
+    "person_statuses_excluded": [
+      "MERGED"
+    ],
+    "household_statuses": [
+      "ACTIVE",
+      "INACTIVE",
+      "ARCHIVED"
+    ],
+    "household_transitions": [
+      [
+        "ACTIVE",
+        "INACTIVE"
+      ],
+      [
+        "INACTIVE",
+        "ACTIVE"
+      ],
+      [
+        "ACTIVE",
+        "ARCHIVED"
+      ],
+      [
+        "INACTIVE",
+        "ARCHIVED"
+      ],
+      [
+        "ARCHIVED",
+        "ACTIVE"
+      ]
+    ],
+    "reason_required": [
+      "person.mark_deceased",
+      "household.archive",
+      "household.restore",
+      "export.CLASS_C"
+    ],
+    "household_roles": [
+      "REFERENCE_PERSON",
+      "MEMBER",
+      "DEPENDENT"
+    ],
+    "relationship_types": {
+      "SPOUSE": [
+        "SYMMETRIC",
+        "SPOUSE"
+      ],
+      "SIBLING": [
+        "SYMMETRIC",
+        "SIBLING"
+      ],
+      "PARENT": [
+        "INVERSE_PAIRED",
+        "CHILD"
+      ],
+      "CHILD": [
+        "INVERSE_PAIRED",
+        "PARENT"
+      ],
+      "GUARDIAN": [
+        "INVERSE_PAIRED",
+        "DEPENDENT"
+      ],
+      "DEPENDENT": [
+        "INVERSE_PAIRED",
+        "GUARDIAN"
+      ]
+    },
+    "guardian_grants_children_authority": false,
+    "contact_types": [
+      "PHONE",
+      "EMAIL"
+    ],
+    "contact_types_basis": "model_catalog contact_types purpose; emergency contacts stay Class C child data in Children",
+    "link_statuses": [
+      "ACTIVE",
+      "INACTIVE"
+    ]
+  },
+  "permissions": [
+    "PEOPLE_VIEW",
+    "PEOPLE_CREATE",
+    "PEOPLE_EDIT",
+    "PEOPLE_SENSITIVE_VIEW",
+    "PEOPLE_CONTACT_MANAGE",
+    "PEOPLE_ADDRESS_MANAGE",
+    "HOUSEHOLD_VIEW",
+    "HOUSEHOLD_MANAGE",
+    "RELATIONSHIP_MANAGE",
+    "PEOPLE_EXPORT",
+    "PEOPLE_EXPORT_CLASS_C"
   ],
+  "permission_data_type": "PEOPLE",
+  "roles_created": false,
+  "authorization": {
+    "rule": "permission AND active institutional scope AND persisted compatible context; permission never replaces scope",
+    "resolver": "App\\Domain\\People\\PeopleAuthority",
+    "tiers": {
+      "GENERAL": [
+        "PERSON_UNIT_CONTEXT",
+        "MEMBERSHIP",
+        "MINISTERIAL_ASSIGNMENT",
+        "FUNCTION_ASSIGNMENT",
+        "DEPARTMENT_MEMBERSHIP",
+        "DEPARTMENT_APPOINTMENT",
+        "GOVERNANCE_MEMBERSHIP",
+        "EVENT_REGISTRATION"
+      ],
+      "ACADEMY": [
+        "ACADEMY_ENROLLMENT"
+      ],
+      "CHILDREN": [
+        "CHILD_PROFILE"
+      ]
+    },
+    "non_general_tiers": "minimal projection only; not listed or searched in People; no People writes",
+    "client_context": "optional working-unit preference confirmed by the server; context_kind and unit_id never accepted from the client",
+    "creation": "Person + ONBOARDING person_unit_contexts row in the same transaction at a unit inside the PEOPLE_CREATE scope",
+    "household": "authority over >=1 currently active member; membership changes also need authority over every affected Person",
+    "relationship": "authority over both People",
+    "final_check": "actor, session and every recorded decision re-verified with FOR SHARE reads before commit",
+    "audit_unit": "unit of the persisted context that authorized the operation (export: lowest PEOPLE_EXPORT scope root); never a Person/Household property"
+  },
   "http": {
     "base_path": "/api/v1/people",
     "authentication": "ADR-0016 bearer session",
-    "published_paths": [],
-    "publication_rule": "No People path may be registered until P0.5-D01 and the required operation catalog are approved and executable.",
+    "published_paths": [
+      {
+        "method": "GET",
+        "path": "/api/v1/people/context",
+        "permission": "ANY_PEOPLE_PERMISSION",
+        "operation": "context",
+        "audited": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/catalogs",
+        "permission": "ANY_PEOPLE_PERMISSION",
+        "operation": "catalogs",
+        "audited": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/selector",
+        "permission": "HOUSEHOLD_MANAGE|RELATIONSHIP_MANAGE",
+        "operation": "person.selector",
+        "audited": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people",
+        "permission": "PEOPLE_VIEW",
+        "operation": "person.list",
+        "audited": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people",
+        "permission": "PEOPLE_CREATE",
+        "operation": "person.create",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/{person}",
+        "permission": "PEOPLE_VIEW",
+        "operation": "person.detail",
+        "audited": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/people/{person}",
+        "permission": "PEOPLE_EDIT",
+        "operation": "person.update",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/inactivate",
+        "permission": "PEOPLE_EDIT",
+        "operation": "person.inactivate",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/reactivate",
+        "permission": "PEOPLE_EDIT",
+        "operation": "person.reactivate",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/mark-deceased",
+        "permission": "PEOPLE_EDIT",
+        "operation": "person.mark_deceased",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/{person}/contacts",
+        "permission": "PEOPLE_SENSITIVE_VIEW|PEOPLE_CONTACT_MANAGE",
+        "operation": "contact.list",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/contacts",
+        "permission": "PEOPLE_CONTACT_MANAGE",
+        "operation": "contact.create",
+        "audited": true
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/people/{person}/contacts/{contact}",
+        "permission": "PEOPLE_CONTACT_MANAGE",
+        "operation": "contact.update",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/contacts/{contact}/end",
+        "permission": "PEOPLE_CONTACT_MANAGE",
+        "operation": "contact.end",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/{person}/addresses",
+        "permission": "PEOPLE_SENSITIVE_VIEW|PEOPLE_ADDRESS_MANAGE",
+        "operation": "address.list",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/addresses",
+        "permission": "PEOPLE_ADDRESS_MANAGE",
+        "operation": "address.create",
+        "audited": true
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/people/{person}/addresses/{address}",
+        "permission": "PEOPLE_ADDRESS_MANAGE",
+        "operation": "address.update",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/addresses/{address}/end",
+        "permission": "PEOPLE_ADDRESS_MANAGE",
+        "operation": "address.end",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/{person}/households",
+        "permission": "HOUSEHOLD_VIEW",
+        "operation": "household.for_person",
+        "audited": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/{person}/relationships",
+        "permission": "PEOPLE_SENSITIVE_VIEW|RELATIONSHIP_MANAGE",
+        "operation": "relationship.list",
+        "audited": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/relationships",
+        "permission": "RELATIONSHIP_MANAGE",
+        "operation": "relationship.create",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/{person}/relationships/{relationship}/end",
+        "permission": "RELATIONSHIP_MANAGE",
+        "operation": "relationship.end",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/households",
+        "permission": "HOUSEHOLD_VIEW",
+        "operation": "household.list",
+        "audited": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.create",
+        "audited": true
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/people/households/{household}",
+        "permission": "HOUSEHOLD_VIEW",
+        "operation": "household.detail",
+        "audited": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/v1/people/households/{household}",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.update",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/inactivate",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.inactivate",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/reactivate",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.reactivate",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/archive",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.archive",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/restore",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household.restore",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/members",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household_member.add",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/households/{household}/members/{member}/end",
+        "permission": "HOUSEHOLD_MANAGE",
+        "operation": "household_member.end",
+        "audited": true
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/people/exports",
+        "permission": "PEOPLE_EXPORT (+PEOPLE_SENSITIVE_VIEW for SENSITIVE, +PEOPLE_EXPORT_CLASS_C for CLASS_C)",
+        "operation": "export",
+        "audited": true
+      }
+    ],
+    "generic_status_endpoint": false,
     "concealment": {
       "not_found_and_out_of_scope_same_external_response": true,
+      "status": 404,
+      "code": "RESOURCE_NOT_FOUND",
       "applies_to": [
         "person",
         "household",
         "contact",
         "address",
-        "relationship"
-      ]
+        "relationship",
+        "household_member"
+      ],
+      "visible_but_not_permitted": "403 FORBIDDEN (only when the actor can already see the target)"
     },
     "pagination": {
       "server_side": true,
       "default_per_page": 50,
-      "max_per_page": 100
+      "max_per_page": 100,
+      "over_max": "422 VALIDATION_ERROR"
     },
     "sorting": "allowlist_only",
+    "sort_allowlist": [
+      "name",
+      "created"
+    ],
+    "unknown_fields": "422 VALIDATION_ERROR",
     "errors": {
-      "decision_required": "PEOPLE_INSTITUTIONAL_DECISION_REQUIRED",
-      "scope_required": "PEOPLE_SCOPE_DECISION_REQUIRED",
-      "file_dependency": "PEOPLE_FILE_DEPENDENCY"
+      "RESOURCE_NOT_FOUND": 404,
+      "FORBIDDEN": 403,
+      "SENSITIVE_DATA_RESTRICTED": 403,
+      "MINOR_PROTECTED": 403,
+      "VALIDATION_ERROR": 422,
+      "REASON_REQUIRED": 422,
+      "EXPORT_TOO_LARGE": 422,
+      "STALE_WRITE": 409,
+      "TRANSITION_NOT_ALLOWED": 409,
+      "PERSON_DECEASED": 409,
+      "CONTACT_EXISTS": 409,
+      "ALREADY_MEMBER": 409,
+      "HOUSEHOLD_NOT_ACTIVE": 409,
+      "RELATIONSHIP_EXISTS": 409,
+      "RELATIONSHIP_CONFLICT": 409,
+      "PEOPLE_CRYPTO_UNAVAILABLE": 503,
+      "PEOPLE_NOT_CONFIGURED": 503
     }
   },
   "projections": {
@@ -101,8 +494,17 @@
         "public_id",
         "display_name",
         "birth_precision",
-        "status_code",
-        "lock_version"
+        "status",
+        "age_band",
+        "protected_minor",
+        "lock_version",
+        "projection",
+        "restricted",
+        "capabilities"
+      ],
+      "class_b_with_PEOPLE_SENSITIVE_VIEW": [
+        "birth",
+        "created_at"
       ],
       "forbidden": [
         "id",
@@ -113,41 +515,99 @@
         "contact_blind_index",
         "document_ciphertext",
         "document_blind_index",
-        "key_version"
+        "key_version",
+        "unit_id"
       ]
     },
     "minor_common": {
+      "allowed": [
+        "public_id",
+        "display_name",
+        "birth_precision",
+        "status",
+        "age_band",
+        "protected_minor",
+        "lock_version",
+        "projection",
+        "restricted",
+        "capabilities"
+      ],
       "forbidden": [
+        "birth",
         "contacts",
+        "addresses",
         "documents",
+        "households",
+        "relationships",
         "guardian_authorizations",
         "consents",
         "custody_visits",
-        "emergency_contacts"
+        "emergency_contacts",
+        "support_notes",
+        "member_number"
       ],
-      "rule": "Sensitive child data requires a separate approved data-type permission and the existing child-safety boundary."
+      "protected_when": "child_profiles row exists OR stored birth proves or cannot exclude age < 18 (EXACT/MONTH/YEAR, Africa/Luanda); UNKNOWN birth without child profile is not presumed minor",
+      "rule": "Sensitive child data requires the Children domain gate; People never creates or interprets guardian/consent."
     },
     "membership": {
       "write_allowed": false,
       "member_number_allowed": false,
-      "read_projection": "Only an already-supported factual projection may be added after scope approval."
+      "read_projection": "none in P0.5"
     }
+  },
+  "crypto": {
+    "algorithm": "AES-256-GCM, random 96-bit nonce, 128-bit tag, AAD bound to purpose + Person public_id",
+    "key_versioning": "key_version per row; unknown version fails closed",
+    "blind_index": "HMAC-SHA256 with a distinct key; only person_contacts.value (exact search, duplicate refusal); no blind index for the address line",
+    "key_ring": "PEOPLE_KEYRING_PATH (JSON) outside DB, code tree, Git and public directory; refused inside the repository or public path",
+    "fail_closed": true,
+    "plaintext_fallback": false,
+    "secrets_in_logs": false,
+    "phone_storage": "string"
+  },
+  "exports": {
+    "STANDARD": [
+      "PEOPLE_EXPORT"
+    ],
+    "SENSITIVE": [
+      "PEOPLE_EXPORT",
+      "PEOPLE_SENSITIVE_VIEW"
+    ],
+    "CLASS_C": [
+      "PEOPLE_EXPORT",
+      "PEOPLE_EXPORT_CLASS_C",
+      "reason"
+    ],
+    "scope": "People with a GENERAL context inside the intersection of the scopes of every required permission",
+    "max_rows": 1000,
+    "minors": "no Class B/C columns",
+    "audited": true,
+    "format": "CSV (UTF-8 BOM, ';', formula cells neutralised) inside a no-store JSON body"
   },
   "storage": {
     "files_vertical_created": false,
-    "person_files_usage": "Existing safe metadata primitives only",
+    "person_files_usage": "none in P0.5-I",
     "missing_dependency_error": "PEOPLE_FILE_DEPENDENCY"
   },
   "production_data_policy": {
     "mock_or_synthetic_data_allowed": false,
-    "real_personal_data_in_repository_allowed": false
+    "real_personal_data_in_repository_allowed": false,
+    "synthetic_data_scope": "isolated mepa_wave5_test_* pools only"
   },
   "evidence": {
-    "unit": "NOT_RUN",
-    "feature_integration": "NOT_RUN",
-    "security": "NOT_RUN",
-    "e2e_p01_p10": "NOT_RUN",
-    "visual_qa": "NOT_RUN",
-    "reason": "The required authorization provenance and catalogs are not approved; mocks cannot establish production behavior."
+    "report": "docs/reviews/P0.5_people_families_implementation.md",
+    "directory": "docs/reviews/evidence/P0.5-I",
+    "backend_tests": [
+      "tests/DatabaseV2/PeoplePersonTest.php",
+      "tests/DatabaseV2/PeopleContactTest.php",
+      "tests/DatabaseV2/PeopleAddressTest.php",
+      "tests/DatabaseV2/PeopleHouseholdTest.php",
+      "tests/DatabaseV2/PeopleRelationshipTest.php",
+      "tests/DatabaseV2/PeopleExportTest.php",
+      "tests/Unit/PeopleCryptoTest.php"
+    ],
+    "e2e": "apps/web/tests/e2e/people.spec.ts (P01-P12, visual QA 4 viewports, axe)",
+    "runner": "scripts/run-p05-people-e2e.py",
+    "mutation_probes": "scripts/p05-people-mutation-probes.py (M1-M10)"
   }
 }

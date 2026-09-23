@@ -19,6 +19,12 @@ use App\Http\Controllers\Api\V1\Academy\DocumentQueryController;
 use App\Http\Controllers\Api\V1\Academy\AcademyContextController;
 use App\Http\Controllers\Api\V1\Academy\EligibleFileController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\People\AddressController;
+use App\Http\Controllers\Api\V1\People\ContactController;
+use App\Http\Controllers\Api\V1\People\ExportController;
+use App\Http\Controllers\Api\V1\People\HouseholdController;
+use App\Http\Controllers\Api\V1\People\PersonController;
+use App\Http\Controllers\Api\V1\People\RelationshipController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +49,44 @@ Route::prefix('v1')->group(function (): void {
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login');
         Route::post('logout', [AuthController::class, 'logout'])->middleware('throttle:30,1');
         Route::get('me', [AuthController::class, 'me'])->middleware(['api.auth', 'throttle:60,1']);
+    });
+
+    // P0.5-I People / Families (ADR-0017). Literal paths precede {person}; every target is a public_id and
+    // every nested resource is reached only through its parent. No generic status endpoint.
+    Route::prefix('people')->middleware(['api.auth', 'throttle:120,1'])->group(function (): void {
+        Route::get('context', [PersonController::class, 'context']);
+        Route::get('catalogs', [PersonController::class, 'catalogs']);
+        Route::get('selector', [PersonController::class, 'selector'])->middleware('throttle:60,1');
+        Route::post('exports', [ExportController::class, 'store'])->middleware('throttle:10,1');
+        Route::get('households', [HouseholdController::class, 'index']);
+        Route::post('households', [HouseholdController::class, 'store']);
+        Route::get('households/{household}', [HouseholdController::class, 'show']);
+        Route::patch('households/{household}', [HouseholdController::class, 'update']);
+        Route::post('households/{household}/inactivate', [HouseholdController::class, 'inactivate']);
+        Route::post('households/{household}/reactivate', [HouseholdController::class, 'reactivate']);
+        Route::post('households/{household}/archive', [HouseholdController::class, 'archive']);
+        Route::post('households/{household}/restore', [HouseholdController::class, 'restore']);
+        Route::post('households/{household}/members', [HouseholdController::class, 'addMember']);
+        Route::post('households/{household}/members/{member}/end', [HouseholdController::class, 'endMember']);
+        Route::get('/', [PersonController::class, 'index']);
+        Route::post('/', [PersonController::class, 'store']);
+        Route::get('{person}', [PersonController::class, 'show']);
+        Route::patch('{person}', [PersonController::class, 'update']);
+        Route::post('{person}/inactivate', [PersonController::class, 'inactivate']);
+        Route::post('{person}/reactivate', [PersonController::class, 'reactivate']);
+        Route::post('{person}/mark-deceased', [PersonController::class, 'markDeceased']);
+        Route::get('{person}/contacts', [ContactController::class, 'index']);
+        Route::post('{person}/contacts', [ContactController::class, 'store']);
+        Route::patch('{person}/contacts/{contact}', [ContactController::class, 'update']);
+        Route::post('{person}/contacts/{contact}/end', [ContactController::class, 'end']);
+        Route::get('{person}/addresses', [AddressController::class, 'index']);
+        Route::post('{person}/addresses', [AddressController::class, 'store']);
+        Route::patch('{person}/addresses/{address}', [AddressController::class, 'update']);
+        Route::post('{person}/addresses/{address}/end', [AddressController::class, 'end']);
+        Route::get('{person}/households', [HouseholdController::class, 'forPerson']);
+        Route::get('{person}/relationships', [RelationshipController::class, 'index']);
+        Route::post('{person}/relationships', [RelationshipController::class, 'store']);
+        Route::post('{person}/relationships/{relationship}/end', [RelationshipController::class, 'end']);
     });
 
     Route::prefix('academy')->middleware(['academy.auth', 'throttle:60,1'])->group(function (): void {

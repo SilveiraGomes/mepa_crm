@@ -5,12 +5,23 @@ import { getSession, subscribeSession, type AuthSession } from '../lib/auth/sess
 import { academyGet } from '../lib/academy/client'
 import { ep } from '../lib/academy/endpoints'
 import type { AcademyContextPayload, Item } from '../types/academy'
+import { peopleGet } from '../lib/people/client'
+import { pe } from '../lib/people/endpoints'
+import type { PeopleContext, WorkingUnit } from '../types/people'
+
+/** People permissions projected by the API (presentation only; the backend decides every request). */
+export interface PeopleAccess {
+  known: boolean
+  has: (permission: string) => boolean
+  workingUnits: WorkingUnit[]
+}
 
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
   session: AuthSession | null
   capabilities: Capabilities
   vocabulary: Vocabulary
+  people: PeopleAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -27,6 +38,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     academyGet<Item<AcademyContextPayload>>(ep.context(), {}, controller.signal).then((result) => setAcademyContext(result.data), () => setAcademyContext(null))
     return () => controller.abort()
   }, [sessionToken])
+  const [peopleContext, setPeopleContext] = useState<PeopleContext | null | 'none'>(null)
+  useEffect(() => {
+    if (!sessionToken) { setPeopleContext(null); return }
+    const controller = new AbortController()
+    peopleGet<Item<PeopleContext>>(pe.context(), {}, controller.signal).then((result) => setPeopleContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setPeopleContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken])
+  const people = useMemo<PeopleAccess>(() => {
+    if (peopleContext === null) return { known: false, has: () => false, workingUnits: [] }
+    if (peopleContext === 'none') return { known: true, has: () => false, workingUnits: [] }
+    const held = new Set(peopleContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), workingUnits: peopleContext.working_units }
+  }, [peopleContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -42,7 +68,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}
