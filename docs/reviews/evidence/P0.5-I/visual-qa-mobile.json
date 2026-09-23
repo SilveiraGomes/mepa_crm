@@ -1,0 +1,19 @@
+{
+  "people-list": {
+    "overflow": false,
+    "critical_visible": true
+  },
+  "person-detail": {
+    "overflow": false,
+    "critical_visible": true
+  },
+  "person-form": {
+    "overflow": false,
+    "critical_visible": true
+  },
+  "household-detail": {
+    "overflow": false,
+    "critical_visible": true,
+    "modal_inside": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+    "password": "E2E-People-Password-42!",
+    "accounts": {
+        "manager": {
+            "login": "pessoas.gestor.e2e",
+            "user": 1,
+            "user_public_id": "01M37Y540Q7TPHGNTC4G40QBMH",
+            "browser_token": "people-test-5a77ec5a3e7fbc54f6b438f0343af99ea953f0c1",
+            "expires_at": "2026-09-24 04:08:47.101511",
+            "unit": "01M37Y53WYP1E33SX9BWZ9X743"
+        },
+        "viewer": {
+            "login": "pessoas.consulta.e2e",
+            "user": 2,
+            "user_public_id": "01M37Y548Z3HDG7E3H3VK1VDKV",
+            "browser_token": "people-test-ce3466b97a1d4c8778851e23a8c0c9bb6b749d74",
+            "expires_at": "2026-09-24 04:08:47.239950",
+            "unit": "01M37Y53WYP1E33SX9BWZ9X743"
+        },
+        "wrong_scope": {
+            "login": "pessoas.outra.e2e",
+            "user": 3,
+            "user_public_id": "01M37Y54DAP9G18Z6SSB5BD9GD",
+            "browser_token": "people-test-0d42c2ceb947daf819a291135758400994692376",
+            "expires_at": "2026-09-24 04:08:47.556332",
+            "unit": "01M37Y53YBRJKRAZX1EEKTZK84"
+        }
+    },
+    "people": {
+        "base": "01M37Y54QQR1048WDAMHFGNPW8",
+        "sensitive": "01M37Y54RVRXCQK4YWM9ZFRRC5",
+        "spouse_a": "01M37Y54SA3NR97H0YN4QQZWMA",
+        "spouse_b": "01M37Y54SS4P8V1CV8W62ANVDG",
+        "parent": "01M37Y54TX8XDF0CM5TG75DBZD",
+        "child": "01M37Y54VBJKMARMKYCJ36WHHD",
+        "family_a": "01M37Y54VRAS8DKK2BPSGMG52N",
+        "family_b": "01M37Y54W6928J2FZ9KA3E2CGG",
+        "family_c": "01M37Y54X46QC9PWGQ6R5GYYPB",
+        "stale": "01M37Y54XK1HXX6ZSAY9P1B6H4",
+        "mobile": "01M37Y54Y222FT9C97A7448AH7",
+        "minor": "01M37Y54Z4A1DVH55FNX1ZDPEE",
+        "foreign": "01M37Y54ZHXT8JYBZJ7VZV94PM"
+    },
+    "household": "01M37Y54ZX6F0K4AZSMZ7DNBMR",
+    "territory": {
+        "province": "E2E-PROV",
+        "municipality": "E2E-MUN"
+    },
+    "user_ids": [
+        1,
+        2,
+        3
+    ]
+}
