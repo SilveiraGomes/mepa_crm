@@ -207,7 +207,34 @@ abstract class WaveFiveCase extends TestCase
             }
             $row[$name] = $value;
         }
+        // P0.5-I: explicit values for PHYSICAL delta columns absent from the catalog (e.g. people.birth_month)
+        // are kept; values for columns that do not exist are still ignored, exactly as before.
+        $physical = array_map(fn (object $c): string => $c->c, $this->db()->select('SELECT COLUMN_NAME AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?', [$table]));
+        foreach ($values as $name => $value) {
+            if (!array_key_exists($name, $row) && in_array($name, $physical, true)) {
+                $row[$name] = $value;
+            }
+        }
+        foreach ($this->physicalOnlyRequired($table, $row) as $name => $value) {
+            $row[$name] = $value;
+        }
         return (int) $this->db()->table($table)->insertGetId($row);
+    }
+
+    /**
+     * P0.5-I: approved deltas may add NOT NULL columns that model_catalog.json (the per-wave approved
+     * model) does not list, e.g. relationship_types.semantics. Such columns are discovered from the live
+     * schema and filled from their closed CHECK enum, so catalog-driven fixtures keep working.
+     */
+    private function physicalOnlyRequired(string $table, array $row): array
+    {
+        $out = [];
+        foreach ($this->db()->select("SELECT COLUMN_NAME AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT IS NULL AND EXTRA NOT LIKE '%auto_increment%'", [$table]) as $column) {
+            if (!array_key_exists($column->c, $row) && ($allowed = $this->enumValuesFor($table, $column->c))) {
+                $out[$column->c] = $allowed[0];
+            }
+        }
+        return $out;
     }
 
     /**
