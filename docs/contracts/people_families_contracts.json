@@ -1,0 +1,153 @@
+{
+  "contract": "MEPA_PEOPLE_FAMILIES_V1",
+  "phase": "P0.5",
+  "status": "BLOCKED_PRE_IMPLEMENTATION",
+  "audited_head": "700cbd5e2de485e532981f38839be8a5541d7123",
+  "gate_codes": [
+    "PEOPLE_INSTITUTIONAL_DECISION_REQUIRED",
+    "PEOPLE_SCOPE_DECISION_REQUIRED"
+  ],
+  "invariants": {
+    "person_is_identity_root": true,
+    "membership_is_separate": true,
+    "non_member_allowed": true,
+    "member_number_issued": false,
+    "internal_numeric_ids_public": false,
+    "silent_auto_merge_allowed": false,
+    "backend_authorization_required": true,
+    "default_page_size": 50,
+    "maximum_page_size": 100
+  },
+  "public_identifiers": {
+    "person": "people.public_id",
+    "household": "households.public_id",
+    "nested_resources": "parent_resource_context_only"
+  },
+  "blocked_decisions": [
+    {
+      "id": "P0.5-D01",
+      "subject": "Person and Household ownership and visibility",
+      "blocks": [
+        "person.create",
+        "person.list",
+        "person.detail",
+        "person.update",
+        "person.search",
+        "contact.lifecycle",
+        "address.lifecycle",
+        "household.lifecycle",
+        "household_member.lifecycle",
+        "relationship.lifecycle",
+        "audit.unit_derivation",
+        "f06_idor_proof"
+      ],
+      "reason": "No persisted, approved rule maps a general Person or Household to the organizational unit whose scope authorizes access. Non-members may have no membership, while audit_logs.unit_id is mandatory."
+    },
+    {
+      "id": "P0.5-D02",
+      "subject": "Reference catalogs and lifecycle states",
+      "blocks": [
+        "person.create",
+        "contact.create",
+        "household_member.add",
+        "relationship.create",
+        "status.transitions"
+      ],
+      "reason": "Required catalogs are empty and D-11 leaves exact states, transitions, household roles and relationship taxonomy open."
+    },
+    {
+      "id": "P0.5-D03",
+      "subject": "Encryption key custody, sensitive projections and retention",
+      "blocks": [
+        "contact.production_write",
+        "address.production_write",
+        "person_document.production_write",
+        "minor_sensitive_projection",
+        "archive_and_purge"
+      ],
+      "reason": "D-06 and D-08 do not yet approve key custody, rotation, retention, legal hold, purge and production qualification."
+    }
+  ],
+  "http": {
+    "base_path": "/api/v1/people",
+    "authentication": "ADR-0016 bearer session",
+    "published_paths": [],
+    "publication_rule": "No People path may be registered until P0.5-D01 and the required operation catalog are approved and executable.",
+    "concealment": {
+      "not_found_and_out_of_scope_same_external_response": true,
+      "applies_to": [
+        "person",
+        "household",
+        "contact",
+        "address",
+        "relationship"
+      ]
+    },
+    "pagination": {
+      "server_side": true,
+      "default_per_page": 50,
+      "max_per_page": 100
+    },
+    "sorting": "allowlist_only",
+    "errors": {
+      "decision_required": "PEOPLE_INSTITUTIONAL_DECISION_REQUIRED",
+      "scope_required": "PEOPLE_SCOPE_DECISION_REQUIRED",
+      "file_dependency": "PEOPLE_FILE_DEPENDENCY"
+    }
+  },
+  "projections": {
+    "person_common": {
+      "allowed": [
+        "public_id",
+        "display_name",
+        "birth_precision",
+        "status_code",
+        "lock_version"
+      ],
+      "forbidden": [
+        "id",
+        "status_id",
+        "merged_into_id",
+        "member_number",
+        "contact_ciphertext",
+        "contact_blind_index",
+        "document_ciphertext",
+        "document_blind_index",
+        "key_version"
+      ]
+    },
+    "minor_common": {
+      "forbidden": [
+        "contacts",
+        "documents",
+        "guardian_authorizations",
+        "consents",
+        "custody_visits",
+        "emergency_contacts"
+      ],
+      "rule": "Sensitive child data requires a separate approved data-type permission and the existing child-safety boundary."
+    },
+    "membership": {
+      "write_allowed": false,
+      "member_number_allowed": false,
+      "read_projection": "Only an already-supported factual projection may be added after scope approval."
+    }
+  },
+  "storage": {
+    "files_vertical_created": false,
+    "person_files_usage": "Existing safe metadata primitives only",
+    "missing_dependency_error": "PEOPLE_FILE_DEPENDENCY"
+  },
+  "production_data_policy": {
+    "mock_or_synthetic_data_allowed": false,
+    "real_personal_data_in_repository_allowed": false
+  },
+  "evidence": {
+    "unit": "NOT_RUN",
+    "feature_integration": "NOT_RUN",
+    "security": "NOT_RUN",
+    "e2e_p01_p10": "NOT_RUN",
+    "visual_qa": "NOT_RUN",
+    "reason": "The required authorization provenance and catalogs are not approved; mocks cannot establish production behavior."
+  }
+}

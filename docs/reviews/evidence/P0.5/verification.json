@@ -1,0 +1,81 @@
+{
+  "phase": "P0.5",
+  "subject": "People / Families preflight",
+  "baseline_head": "700cbd5e2de485e532981f38839be8a5541d7123",
+  "date": "2026-09-23",
+  "result": "BLOCKED_PRE_IMPLEMENTATION",
+  "gate_codes": [
+    "PEOPLE_INSTITUTIONAL_DECISION_REQUIRED",
+    "PEOPLE_SCOPE_DECISION_REQUIRED"
+  ],
+  "checks": [
+    {
+      "command": "node scripts/validate-people-families-contracts.cjs",
+      "result": "PASS",
+      "details": "0 errors"
+    },
+    {
+      "command": "node scripts/probe-people-families-validator.cjs",
+      "result": "PASS",
+      "details": "6 of 6 mutations detected: internal ID exposure, permission bypass, pagination removal, F-06 regression, forced membership and mock production data"
+    },
+    {
+      "command": "php vendor/bin/phpunit --testsuite Unit",
+      "result": "PASS",
+      "details": "19 tests, 317 assertions"
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "details": "TypeScript and Vite production build; 63 modules; PWA generateSW; 13 precache entries"
+    },
+    {
+      "command": "node scripts/validate-wave1-schema.cjs",
+      "result": "FAIL",
+      "details": "Physical strict_errors is empty on MySQL 8.4.7, but manifest.catalog_sha256 is stale; overall result DRIFT_DETECTED"
+    },
+    {
+      "command": "graphify update . --no-cluster",
+      "result": "PASS_WITH_WARNING",
+      "details": "5685 nodes, 10233 raw edges, 0 missing endpoints, 0 dangling endpoints, 0 self-loops; 98 undirected same-endpoint collapsed-edge candidates remain visible"
+    }
+  ],
+  "database_observation": {
+    "people_rows": 0,
+    "person_contact_rows": 0,
+    "address_rows": 0,
+    "household_rows": 0,
+    "household_member_rows": 0,
+    "person_relationship_rows": 0,
+    "person_status_catalog_rows": 0,
+    "contact_type_catalog_rows": 0,
+    "household_role_catalog_rows": 0,
+    "relationship_type_catalog_rows": 0,
+    "permission_rows": 0
+  },
+  "product_changes": {
+    "schema_changed": false,
+    "migrations_added": false,
+    "api_paths_published": false,
+    "ui_routes_added": false,
+    "membership_changed": false,
+    "member_number_changed": false
+  },
+  "not_run": [
+    "E2E-P01",
+    "E2E-P02",
+    "E2E-P03",
+    "E2E-P04",
+    "E2E-P05",
+    "E2E-P06",
+    "E2E-P07",
+    "E2E-P08",
+    "E2E-P09",
+    "E2E-P10",
+    "visual QA 1440x900",
+    "visual QA 1366x768",
+    "visual QA 768x1024",
+    "visual QA 390x844"
+  ],
+  "not_run_reason": "No safe People HTTP/UI surface can be published until scope provenance and required institutional catalogs are approved."
+}
