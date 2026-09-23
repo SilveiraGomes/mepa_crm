@@ -1,11 +1,29 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const evidence = path.resolve(here, '../../../../docs/reviews/evidence/P0.3.5-A4.2')
+const apiRoot = path.resolve(here, '../../../api')
+const rateLimitReset = path.join(apiRoot, 'tests/DatabaseV2/Support/reset_e2e_rate_limiters.php')
+const php = process.env.MEPA_PHP_BIN ?? 'C:\\wamp64\\bin\\php\\php8.1.33\\php.exe'
 const fx = JSON.parse(fs.readFileSync(path.join(evidence, 'fixtures.json'), 'utf8'))
+
+type AxeViolation = { impact: string | null }
+type AxeRuntime = { run(document: Document, options: { resultTypes: string[] }): Promise<{ violations: AxeViolation[] }> }
+
+function resetE2ERateLimiters() {
+  execFileSync(php, [rateLimitReset], {
+    cwd: apiRoot,
+    env: { ...process.env, APP_ENV: 'e2e', MEPA_E2E_RATE_LIMIT_RESET: '1' },
+    stdio: 'pipe',
+  })
+}
+
+test.beforeEach(() => resetE2ERateLimiters())
+test.afterEach(() => resetE2ERateLimiters())
 
 async function login(page: Page, actor: keyof typeof fx.accounts = 'manager') {
   await page.goto('/entrar')
@@ -42,6 +60,17 @@ function observe(page: Page) {
   page.on('pageerror', (error) => errors.push(`pageerror: ${error.message}`))
   page.on('request', (request) => requests.push(request.url()))
   page.on('response', (response) => {
+    const request = response.request()
+    const headers = response.headers()
+    const rateHeaders = {
+      retryAfter: headers['retry-after'] ?? null,
+      limit: headers['x-ratelimit-limit'] ?? null,
+      remaining: headers['x-ratelimit-remaining'] ?? null,
+      reset: headers['x-ratelimit-reset'] ?? null,
+    }
+    if (response.url().includes('/api/') && (response.status() >= 400 || rateHeaders.limit !== null)) {
+      console.log(`[network] ${request.method()} ${new URL(response.url()).pathname} status=${response.status()} retry-after=${rateHeaders.retryAfter ?? '-'} x-ratelimit-limit=${rateHeaders.limit ?? '-'} x-ratelimit-remaining=${rateHeaders.remaining ?? '-'} x-ratelimit-reset=${rateHeaders.reset ?? '-'}`)
+    }
     if (response.status() >= 400) httpFailures.push({ status: response.status(), url: response.url() })
     if (response.status() >= 500) badResponses.push(`${response.status()} ${response.url()}`)
   })
@@ -189,24 +218,41 @@ test.describe.serial('A4.2 real-browser critical flows', () => {
     await assertClean(observation, [404])
   })
 
-  test('E2E-AUTH invalid login, logout/back, expiry and permission menu', async ({ page }) => {
+  test('E2E-AUTH-01 invalid login keeps the external denial generic', async ({ page }) => {
     const observation = observe(page)
     await page.goto('/entrar')
     await page.getByLabel('Utilizador').fill('nobody')
     await page.getByLabel('Palavra-passe').fill('wrong')
     await page.getByRole('button', { name: 'Entrar', exact: true }).click()
     await expect(page.getByRole('alert')).toContainText('não estão correctos')
-    await login(page, 'instructor')
-    await expect(page.getByRole('link', { name: 'Históricos académicos' })).toHaveCount(0)
+    await assertClean(observation, [401])
+  })
+
+  test('E2E-AUTH-02 logout blocks back and protected refresh', async ({ page }) => {
+    const observation = observe(page)
+    await login(page)
     await logout(page)
     await page.goBack()
     expect(page.url() === 'about:blank' || /\/entrar$/.test(page.url())).toBeTruthy()
     await page.goto('/academia')
     await expect(page).toHaveURL(/\/entrar$/)
+    await assertClean(observation)
+  })
+
+  test('E2E-AUTH-03 expired session returns to sign-in', async ({ page }) => {
+    const observation = observe(page)
+    await page.goto('/entrar')
     await page.evaluate(({ token, user }) => sessionStorage.setItem('mepa.session', JSON.stringify({ token, expiresAt: new Date(Date.now() + 3600000).toISOString(), user })), { token: fx.expired_token, user: { public_id: 'E2E', login: 'operador.e2e', account_kind: 'HUMAN' } })
     await page.goto('/academia/turmas')
     await expect(page).toHaveURL(/\/entrar$/)
     await assertClean(observation, [401])
+  })
+
+  test('E2E-AUTH-04 effective permissions constrain the menu', async ({ page }) => {
+    const observation = observe(page)
+    await authenticate(page, 'instructor')
+    await expect(page.getByRole('link', { name: 'Históricos académicos' })).toHaveCount(0)
+    await assertClean(observation)
   })
 })
 
@@ -238,7 +284,11 @@ test.describe('visual, accessibility, keyboard and PWA evidence', () => {
     for (const route of [`/academia/turmas/${fx.main.class}`, `/academia/sessoes/${fx.main.session_id}/presencas`, `/academia/turmas/${fx.main.class}/tentativas/${fx.main.attempt_id}`, `/academia/turmas/${fx.main.class}/certificados`]) {
       await page.goto(route)
       await page.addScriptTag({ path: path.resolve(here, '../../node_modules/axe-core/axe.min.js') })
-      const violations = await page.evaluate(async () => (await (window as any).axe.run(document, { resultTypes: ['violations'] })).violations.filter((v: any) => ['critical', 'serious'].includes(v.impact)))
+      const violations = await page.evaluate(async () => {
+        const axe = (window as unknown as { axe: AxeRuntime }).axe
+        const result = await axe.run(document, { resultTypes: ['violations'] })
+        return result.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact ?? ''))
+      })
       expect(violations).toEqual([])
     }
     await page.evaluate(() => sessionStorage.clear())

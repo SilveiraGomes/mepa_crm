@@ -58,12 +58,20 @@ final class AcademyHttpAuthenticationTest extends HttpWaveFiveCase
 
     public function test_auth_08_login_rate_limit_is_enforced_with_the_contract_error(): void
     {
-        RateLimiter::clear(hash('sha256', '127.0.0.1'));
-        for ($attempt = 1; $attempt <= 5; $attempt++) {
-            $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])->assertStatus(401);
+        $key = md5('login' . hash('sha256', '127.0.0.1'));
+        RateLimiter::clear($key);
+        try {
+            for ($attempt = 1; $attempt <= 5; $attempt++) {
+                $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])->assertStatus(401);
+            }
+            $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])
+                ->assertStatus(429)->assertJsonPath('error.code', 'RATE_LIMITED')
+                ->assertHeader('X-RateLimit-Limit', '5')
+                ->assertHeader('X-RateLimit-Remaining', '0');
+        } finally {
+            // The deliberate throttle proof must not contaminate later scenarios.
+            RateLimiter::clear($key);
         }
-        $this->postJson('/api/v1/auth/login', ['login' => 'missing', 'password' => 'wrong'])
-            ->assertStatus(429)->assertJsonPath('error.code', 'RATE_LIMITED');
     }
 
     private function token(int $user, string $expiry, ?string $revoked): string

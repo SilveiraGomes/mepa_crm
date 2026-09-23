@@ -74,7 +74,7 @@
         {
           "title": "A4.2 real-browser critical flows",
           "file": "academy.spec.ts",
-          "line": 62,
+          "line": 91,
           "column": 15,
           "specs": [
             {
@@ -89,7 +89,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -102,18 +102,47 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 31731,
+                      "duration": 11063,
                       "errors": [],
-                      "stdout": [],
-                      "stderr": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/people:search status=200 retry-after=- x-ratelimit-limit=20 x-ratelimit-remaining=15 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/enrollments status=201 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        }
+                      ],
+                      "stderr": [
+                        {
+                          "text": "(node:39856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+                        }
+                      ],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:10:32.728Z",
+                      "startTime": "2026-09-22T23:19:04.162Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -126,7 +155,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-2ed4c75d3cbf92fbafa5",
               "file": "academy.spec.ts",
-              "line": 63,
+              "line": 92,
               "column": 3
             },
             {
@@ -141,7 +170,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -154,18 +183,34 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 25930,
+                      "duration": 5987,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] PUT /api/v1/academy/sessions/1/attendance/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:11:09.085Z",
+                      "startTime": "2026-09-22T23:19:16.926Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -178,7 +223,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-b1ed90d97be4584fe365",
               "file": "academy.spec.ts",
-              "line": 78,
+              "line": 107,
               "column": 3
             },
             {
@@ -193,7 +238,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -206,18 +251,40 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 18781,
+                      "duration": 7509,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/attempts/1 status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/attempts/1/grades status=201 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/attempts/1/grades/revisions status=201 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:11:35.140Z",
+                      "startTime": "2026-09-22T23:19:22.945Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -230,7 +297,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-1eee36cc56b6dfe7e815",
               "file": "academy.spec.ts",
-              "line": 91,
+              "line": 120,
               "column": 3
             },
             {
@@ -245,7 +312,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -258,18 +325,46 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 56780,
+                      "duration": 7768,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/certificates status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/enrollments/01M35PMDB6P3B22Z1XE9YKT3KQ/eligible-files status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/enrollments/01M35PMDB6P3B22Z1XE9YKT3KQ/certificates status=201 retry-after=- x-ratelimit-limit=10 x-ratelimit-remaining=3 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/certificates status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/certificates/01M35PNS0DS70YGTT40N0AVVGN status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/certificates/01M35PNS0DS70YGTT40N0AVVGN/revoke status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/certificates/01M35PNS0DS70YGTT40N0AVVGN status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:11:54.036Z",
+                      "startTime": "2026-09-22T23:19:30.486Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -282,7 +377,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-d56a16062ab6ea5a65d7",
               "file": "academy.spec.ts",
-              "line": 107,
+              "line": 136,
               "column": 3
             },
             {
@@ -297,7 +392,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -310,18 +405,25 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7093,
+                      "duration": 3857,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=404 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:12:50.947Z",
+                      "startTime": "2026-09-22T23:19:38.293Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -334,7 +436,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-6c9276f1502cf0fe1e1f",
               "file": "academy.spec.ts",
-              "line": 124,
+              "line": 153,
               "column": 3
             },
             {
@@ -349,7 +451,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -362,18 +464,34 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 15014,
+                      "duration": 5310,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] PUT /api/v1/academy/sessions/1/attendance/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:12:58.108Z",
+                      "startTime": "2026-09-22T23:19:42.206Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -386,7 +504,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-ccec16b16179e8a40dff",
               "file": "academy.spec.ts",
-              "line": 132,
+              "line": 161,
               "column": 3
             },
             {
@@ -401,7 +519,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -414,18 +532,28 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 5443,
+                      "duration": 4288,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:13:13.218Z",
+                      "startTime": "2026-09-22T23:19:47.558Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -438,7 +566,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-6876389ce6bb6e74ce4f",
               "file": "academy.spec.ts",
-              "line": 146,
+              "line": 175,
               "column": 3
             },
             {
@@ -453,7 +581,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -466,18 +594,52 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 39465,
+                      "duration": 10286,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/attempts/1 status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/attempts/1 status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/attempts/1/grades/revisions status=201 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/attempts/1/grades/revisions status=409 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:13:18.716Z",
+                      "startTime": "2026-09-22T23:19:51.882Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -490,7 +652,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-0e192b17ad1118907105",
               "file": "academy.spec.ts",
-              "line": 156,
+              "line": 185,
               "column": 3
             },
             {
@@ -505,7 +667,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -518,18 +680,28 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 50783,
+                      "duration": 5007,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMDQWJ35J8BWFM3ETEZA5/enrollments/01M35PMDWHVKFZF32S465QX4RJ status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/enrollments/01M35PMDWHVKFZF32S465QX4RJ/complete status=422 retry-after=- x-ratelimit-limit=20 x-ratelimit-remaining=15 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:13:58.328Z",
+                      "startTime": "2026-09-22T23:20:02.204Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -542,7 +714,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-6c36f15fd745ee755873",
               "file": "academy.spec.ts",
-              "line": 170,
+              "line": 199,
               "column": 3
             },
             {
@@ -557,7 +729,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -570,18 +742,31 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 12024,
+                      "duration": 8167,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/curricula/1/people/01M35PMD8CYHKTB46S37TH2YJF/eligible-files status=404 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/curricula/1/people/01M35PMD8CYHKTB46S37TH2YJF/transcripts status=404 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/academy/curricula/1/people/01M35PMD8CYHKTB46S37TH2YJF/transcript-preview status=404 retry-after=- x-ratelimit-limit=20 x-ratelimit-remaining=14 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:14:49.169Z",
+                      "startTime": "2026-09-22T23:20:07.265Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -594,11 +779,11 @@
               ],
               "id": "8cf18ea9dd1be77d180b-376cc852157f1e363326",
               "file": "academy.spec.ts",
-              "line": 180,
+              "line": 209,
               "column": 3
             },
             {
-              "title": "E2E-AUTH invalid login, logout/back, expiry and permission menu",
+              "title": "E2E-AUTH-01 invalid login keeps the external denial generic",
               "ok": true,
               "tags": [],
               "tests": [
@@ -609,7 +794,7 @@
                       "type": "serial",
                       "location": {
                         "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                        "line": 62,
+                        "line": 91,
                         "column": 15
                       }
                     }
@@ -622,18 +807,22 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 24667,
+                      "duration": 6549,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] POST /api/v1/auth/login status=401 retry-after=- x-ratelimit-limit=5 x-ratelimit-remaining=4 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:15:01.262Z",
+                      "startTime": "2026-09-22T23:20:15.850Z",
                       "annotations": [
                         {
                           "type": "serial",
                           "location": {
                             "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
-                            "line": 62,
+                            "line": 91,
                             "column": 15
                           }
                         }
@@ -644,9 +833,183 @@
                   "status": "expected"
                 }
               ],
-              "id": "8cf18ea9dd1be77d180b-4f24c0a8786349dd61fb",
+              "id": "8cf18ea9dd1be77d180b-95ccd1f4d3762cf08f42",
               "file": "academy.spec.ts",
-              "line": 192,
+              "line": 221,
+              "column": 3
+            },
+            {
+              "title": "E2E-AUTH-02 logout blocks back and protected refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                        "line": 91,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6784,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[network] POST /api/v1/auth/login status=201 retry-after=- x-ratelimit-limit=5 x-ratelimit-remaining=4 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] POST /api/v1/auth/logout status=204 retry-after=- x-ratelimit-limit=30 x-ratelimit-remaining=28 x-ratelimit-reset=-\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-22T23:20:22.488Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                            "line": 91,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8cf18ea9dd1be77d180b-8e077af250fdc4ef4ff6",
+              "file": "academy.spec.ts",
+              "line": 231,
+              "column": 3
+            },
+            {
+              "title": "E2E-AUTH-03 expired session returns to sign-in",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                        "line": 91,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5493,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=401 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-22T23:20:29.360Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                            "line": 91,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8cf18ea9dd1be77d180b-c611182eb1f408d28ac0",
+              "file": "academy.spec.ts",
+              "line": 242,
+              "column": 3
+            },
+            {
+              "title": "E2E-AUTH-04 effective permissions constrain the menu",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                        "line": 91,
+                        "column": 15
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3944,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-09-22T23:20:34.923Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\tests\\e2e\\academy.spec.ts",
+                            "line": 91,
+                            "column": 15
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8cf18ea9dd1be77d180b-fde51bd62f98e1340fc9",
+              "file": "academy.spec.ts",
+              "line": 251,
               "column": 3
             }
           ]
@@ -654,7 +1017,7 @@
         {
           "title": "visual, accessibility, keyboard and PWA evidence",
           "file": "academy.spec.ts",
-          "line": 213,
+          "line": 259,
           "column": 6,
           "specs": [
             {
@@ -673,12 +1036,76 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 21449,
+                      "duration": 20173,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/enrollments/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=48 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=47 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=46 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/assessments status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=45 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=44 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/attempts/1/grades status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=43 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/attempts/1 status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=42 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=41 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/certificates status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=40 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=39 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=38 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:15:26.003Z",
+                      "startTime": "2026-09-22T23:20:38.937Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -688,7 +1115,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-0b0b49a8115f6a828d60",
               "file": "academy.spec.ts",
-              "line": 216,
+              "line": 262,
               "column": 5
             },
             {
@@ -707,12 +1134,49 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8617,
+                      "duration": 13864,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/enrollments/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=48 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=47 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:15:47.513Z",
+                      "startTime": "2026-09-22T23:20:59.157Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -722,7 +1186,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-9f69199f39109e9c6b08",
               "file": "academy.spec.ts",
-              "line": 216,
+              "line": 262,
               "column": 5
             },
             {
@@ -741,12 +1205,46 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 7165,
+                      "duration": 13626,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/enrollments/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=48 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=47 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:15:56.175Z",
+                      "startTime": "2026-09-22T23:21:13.057Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -756,7 +1254,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-40cb5e7f4dd914b76b2d",
               "file": "academy.spec.ts",
-              "line": 216,
+              "line": 262,
               "column": 5
             },
             {
@@ -775,12 +1273,46 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8074,
+                      "duration": 12329,
                       "errors": [],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=57 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=56 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=55 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=54 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=53 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=52 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/roster status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=51 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=50 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/classes/01M35PMCTKGJPE0DVWT6YFT4XP/enrollments/01M35PMDA66J5P6B6SKE8AG17J status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=49 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=48 x-ratelimit-reset=-\n"
+                        },
+                        {
+                          "text": "[network] GET /api/v1/academy/sessions/1/attendance status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=47 x-ratelimit-reset=-\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:16:03.394Z",
+                      "startTime": "2026-09-22T23:21:26.726Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -790,7 +1322,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-57f69212419c1ae58437",
               "file": "academy.spec.ts",
-              "line": 216,
+              "line": 262,
               "column": 5
             },
             {
@@ -809,12 +1341,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 5965,
+                      "duration": 7185,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-09-22T10:16:11.513Z",
+                      "startTime": "2026-09-22T23:21:39.110Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -824,7 +1356,7 @@
               ],
               "id": "8cf18ea9dd1be77d180b-29ee007339aea10a816b",
               "file": "academy.spec.ts",
-              "line": 236,
+              "line": 282,
               "column": 3
             }
           ]
@@ -834,9 +1366,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-09-22T10:10:28.590Z",
-    "duration": 350766.325,
-    "expected": 16,
+    "startTime": "2026-09-22T23:19:02.625Z",
+    "duration": 164874.171,
+    "expected": 19,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
