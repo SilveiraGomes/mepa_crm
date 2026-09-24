@@ -1,0 +1,277 @@
+{
+  "runner": "scripts/run-p05-people-e2e.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 19.7,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33040,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\8dacf71827be\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"8dacf71827be\",\n  \"pid\": 25388,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"af076a6f-b7e8-11f1-ac19-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\8dacf71827be\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33040",
+      "rc": 0,
+      "seconds": 102.7,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_8dacf718_pool_01\",\n    \"mepa_wave4_test_8dacf718_pool_02\",\n    \"mepa_wave3_test_8dacf718_pool_01\",\n    \"mepa_wave5_test_8dacf718_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_8dacf718_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_8dacf718_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_8dacf718_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_8dacf718_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 159,\n      \"tables\": 153\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "people_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/PeopleE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 21.2,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:20.638, Memory: 26.00 MB\n\nOK (1 test, 17 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "web_build",
+      "cmd": "npm.cmd run build",
+      "rc": 0,
+      "seconds": 93.6,
+      "stdout_tail": "ransforming...\n✓ 72 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/manifest.webmanifest                          0.35 kB\ndist/index.html                                    0.66 kB │ gzip:  0.39 kB\ndist/assets/index-BNuTmL9b.css                    17.05 kB │ gzip:  4.02 kB\ndist/assets/format-CApMsh0F.js                     1.00 kB │ gzip:  0.49 kB\ndist/assets/DashboardPage-YZoJsHa5.js              1.46 kB │ gzip:  0.72 kB\ndist/assets/useAcademy-Cmm3euIS.js                 1.88 kB │ gzip:  0.87 kB\ndist/assets/AuthPage-D0_kosHm.js                   2.73 kB │ gzip:  1.25 kB\ndist/assets/errors-Dwmami29.js                     3.34 kB │ gzip:  1.34 kB\ndist/assets/ContentPages-SmFb36Ng.js               5.44 kB │ gzip:  1.63 kB\ndist/assets/workbox-window.prod.es5-BBnX5xw4.js    5.75 kB │ gzip:  2.36 kB\ndist/assets/CatalogPages-BPVev36z.js               9.27 kB │ gzip:  2.73 kB\ndist/assets/HouseholdPages-DcREuOmc.js             9.61 kB │ gzip:  3.21 kB\ndist/assets/PersonAreaPages-gq4QVZvn.js           14.99 kB │ gzip:  4.10 kB\ndist/assets/ClassPages-B256qG5k.js                17.48 kB │ gzip:  4.64 kB\ndist/assets/PeoplePages-DGwsVEMs.js               20.94 kB │ gzip:  7.04 kB\ndist/assets/AcademicPages-B15kzSiA.js             25.90 kB │ gzip:  6.33 kB\ndist/assets/index-D17zN92T.js                    260.58 kB │ gzip: 82.98 kB\n✓ built in 7.34s\n\nPWA v0.21.2\nmode      generateSW\nprecache  18 entries (388.73 KiB)\nfiles generated\n  dist/sw.js\n  dist/workbox-abeb32eb.js\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_people",
+      "cmd": "npx.cmd playwright test --config playwright.people.config.ts",
+      "rc": 0,
+      "seconds": 176.3,
+      "stdout_tail": "06 wrong-scope Person is concealed like a nonexistent one (4.3s)\n  ok  7 tests\\e2e\\people.spec.ts:208:3 › P0.5-I People / Families critical flows › P07 minor projection is minimal and sensitive areas are closed (5.8s)\n  ok  8 tests\\e2e\\people.spec.ts:230:3 › P0.5-I People / Families critical flows › P08 stale write is rejected without overwrite (9.3s)\n  ok  9 tests\\e2e\\people.spec.ts:248:3 › P0.5-I People / Families critical flows › P09 mobile 390x844 list, search, detail and edit (7.8s)\n  ok 10 tests\\e2e\\people.spec.ts:270:3 › P0.5-I People / Families critical flows › P10 non-member keeps no membership and no member number (5.0s)\n  ok 11 tests\\e2e\\people.spec.ts:283:3 › P0.5-I People / Families critical flows › P11 Class B hidden without PEOPLE_SENSITIVE_VIEW (5.4s)\n  ok 12 tests\\e2e\\people.spec.ts:302:3 › P0.5-I People / Families critical flows › P12 Class C export without PEOPLE_EXPORT_CLASS_C is denied (4.0s)\n  ok 13 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA desktop (9.3s)\n  ok 14 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA laptop (8.5s)\n  ok 15 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA tablet (8.7s)\n  ok 16 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA mobile (14.0s)\n  ok 17 tests\\e2e\\people.spec.ts:365:3 › P0.5-I visual QA and accessibility › axe: no critical or serious violations on People screens (19.6s)\n\n  17 passed (2.7m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "academy_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/AcademyE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 20.1,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:19.543, Memory: 14.00 MB\n\nOK (1 test, 1 assertion)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_academy_regression",
+      "cmd": "npx.cmd playwright test tests/e2e/academy.spec.ts",
+      "rc": 0,
+      "seconds": 179.8,
+      "stdout_tail": "limit-limit=30 x-ratelimit-remaining=27 x-ratelimit-reset=-\n  ok 12 tests\\e2e\\academy.spec.ts:231:3 › A4.2 real-browser critical flows › E2E-AUTH-02 logout blocks back and protected refresh (5.1s)\n[network] GET /api/v1/academy/context status=401 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n  ok 13 tests\\e2e\\academy.spec.ts:242:3 › A4.2 real-browser critical flows › E2E-AUTH-03 expired session returns to sign-in (3.2s)\n[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n[network] GET /api/v1/people/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n  ok 14 tests\\e2e\\academy.spec.ts:251:3 › A4.2 real-browser critical flows › E2E-AUTH-04 effective permissions constrain the menu (2.7s)\n  ok 15 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA desktop (19.9s)\n  ok 16 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA laptop (20.9s)\n  ok 17 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA tablet (20.2s)\n  ok 18 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA mobile (14.9s)\n  ok 19 tests\\e2e\\academy.spec.ts:282:3 › visual, accessibility, keyboard and PWA evidence › axe critical pages, keyboard focus and built PWA assets (9.0s)\n\n  19 passed (2.9m)\n",
+      "stderr_tail": "(node:8252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33040",
+      "rc": 0,
+      "seconds": 37.2,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "keyring": {
+    "location": "OS temp directory, outside the repository",
+    "inside_repository": false,
+    "distinct_keys": true,
+    "deleted_after_run": true
+  },
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_8dacf718_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_8dacf718_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_8dacf718_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_8dacf718_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 159,
+      "tables": 153
+    }
+  },
+  "schema_parity": {
+    "rc": 0,
+    "status": "STRICT_PARITY_PASS"
+  },
+  "schema_parity_probes": {
+    "rc": 0,
+    "status": "PASS"
+  },
+  "phpunit": [
+    {
+      "file": "tests/DatabaseV2/PeopleContextAuthorityTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (8 tests, 220 assertions)"
+      ],
+      "seconds": 82.8
+    },
+    {
+      "file": "tests/DatabaseV2/PeoplePersonTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 1354 assertions)"
+      ],
+      "seconds": 79.2
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleContactTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (6 tests, 195 assertions)"
+      ],
+      "seconds": 31.3
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleAddressTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (3 tests, 94 assertions)"
+      ],
+      "seconds": 49.5
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleHouseholdTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 138 assertions)"
+      ],
+      "seconds": 28.9
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleRelationshipTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 112 assertions)"
+      ],
+      "seconds": 26.6
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleExportTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (4 tests, 50 assertions)"
+      ],
+      "seconds": 23.5
+    },
+    {
+      "file": "tests/Unit",
+      "rc": 0,
+      "summary": [
+        "OK (23 tests, 423 assertions)"
+      ],
+      "seconds": 6.2
+    },
+    {
+      "file": "tests/Feature",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 175 assertions)"
+      ],
+      "seconds": 6.6
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyAuthorizationTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 52 assertions)"
+      ],
+      "seconds": 31.2
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyEnrollmentTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (16 tests, 65 assertions)"
+      ],
+      "seconds": 31.5
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyOperationsTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (16 tests, 83 assertions)"
+      ],
+      "seconds": 31.2
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyReadModelTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (3 tests, 111 assertions)"
+      ],
+      "seconds": 60.7
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyHttpAuthenticationTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 35 assertions)"
+      ],
+      "seconds": 57.4
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyContractClosureTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (4 tests, 21 assertions)"
+      ],
+      "seconds": 23.8
+    },
+    {
+      "file": "tests/Database/PooledWaveThreeCheckinConcurrencyTest.php",
+      "rc": 1,
+      "summary": [],
+      "seconds": 0.3
+    }
+  ],
+  "mutation_probes": {
+    "rc": 0,
+    "summary": [
+      "M1: control=PASS detected=YES restored=True",
+      "M2: control=PASS detected=YES restored=True",
+      "M3: control=PASS detected=YES restored=True",
+      "M4: control=PASS detected=YES restored=True",
+      "M5: control=PASS detected=YES restored=True",
+      "M6: control=PASS detected=YES restored=True",
+      "M7: control=PASS detected=YES restored=True",
+      "M8: control=PASS detected=YES restored=True",
+      "M9: control=PASS detected=YES restored=True",
+      "M10: control=PASS detected=YES restored=True",
+      "M11: control=PASS detected=YES restored=True",
+      "M12: control=PASS detected=YES restored=True",
+      "M13: control=PASS detected=YES restored=True"
+    ]
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true
+  },
+  "playwright_people": {
+    "startTime": "2026-09-24T07:47:47.159Z",
+    "duration": 162358.826,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "playwright_academy": {
+    "startTime": "2026-09-24T07:50:54.428Z",
+    "duration": 174919.42899999997,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "log_scan": {
+    "bytes_scanned": 3469753,
+    "leaks": []
+  },
+  "infrastructure_stop": "STOPPED_VERIFIED"
+}
