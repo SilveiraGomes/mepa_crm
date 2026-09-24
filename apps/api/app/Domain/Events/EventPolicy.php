@@ -21,4 +21,9 @@ final class EventPolicy
     {
         return in_array($state, $this->states[$kind] ?? [], true);
     }
+    /** The configured states permits() accepts for $kind (for set-based SQL filters). */
+    public function permitted(string $kind): array
+    {
+        return array_values(array_filter($this->states[$kind] ?? [], 'is_string'));
+    }
 }

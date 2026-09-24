@@ -255,11 +255,14 @@ final class PeoplePersonTest extends PeopleHttpCase
 
     public function test_academy_and_children_contexts_give_minimal_contextual_projection_only(): void
     {
+        // P0.5-R1: an enrollment authorizes only while the Academy policy calls it operational (explicit test policy).
+        $academy = (require base_path('config/academy_e2e.php'))['academy'];
+        config(['academy' => $academy]);
         $unit = $this->unit();
         $academic = $this->row('academic_units', ['unit_id' => $unit]);
         $class = $this->row('classes', ['academic_unit_id' => $academic]);
         $student = $this->row('people', ['full_name' => 'Aluno Só Academia']);
-        $this->row('enrollments', ['person_id' => $student, 'class_id' => $class]);
+        $this->row('enrollments', ['person_id' => $student, 'class_id' => $class, 'status' => $academy['states']['enrollments']['sets']['operational'][0]]);
         $publicStudent = (string) DB::table('people')->where('id', $student)->value('public_id');
         $staff = $this->staff(self::ALL, $unit);
         $detail = $this->api($staff, 'GET', 'people/' . $publicStudent)->assertOk()->json('data');

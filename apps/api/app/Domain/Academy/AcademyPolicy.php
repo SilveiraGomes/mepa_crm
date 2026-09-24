@@ -43,6 +43,12 @@ final class AcademyPolicy
         return $this->version;
     }
 
+    /** Non-throwing form of version(): false while the policy has no version (D-11 open). */
+    public function isVersioned(): bool
+    {
+        return $this->version !== null && trim($this->version) !== '';
+    }
+
     public function initial(string $kind): string
     {
         $initial = $this->states[$kind]['initial'] ?? null;

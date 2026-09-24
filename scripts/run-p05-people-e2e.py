@@ -34,6 +34,8 @@ API = REPO / "apps" / "api"
 WEB = REPO / "apps" / "web"
 PHP = os.environ.get("MEPA_PHP_BIN", r"C:\wamp64\bin\php\php8.1.33\php.exe")
 EVIDENCE = REPO / "docs" / "reviews" / "evidence" / "P0.5-I"
+# Fixed by apps/web/playwright.people.config.ts (the People reporter always writes here).
+PEOPLE_PLAYWRIGHT = REPO / "docs" / "reviews" / "evidence" / "P0.5-I" / "playwright-results.json"
 NPX = "npx.cmd" if os.name == "nt" else "npx"
 NPM = "npm.cmd" if os.name == "nt" else "npm"
 
@@ -66,8 +68,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--phpunit", nargs="*", default=[], help="DatabaseV2/Unit/Feature test files to run on the pools")
     parser.add_argument("--skip-academy", action="store_true")
-    parser.add_argument("--mutations", action="store_true", help="run scripts/p05-people-mutation-probes.py (M1-M10) on the pool")
+    parser.add_argument("--mutations", action="store_true", help="run scripts/p05-people-mutation-probes.py (M1-M13) on the pool")
+    parser.add_argument("--evidence", default=None, help="repo-relative evidence directory (default docs/reviews/evidence/P0.5-I)")
     args = parser.parse_args()
+    global EVIDENCE
+    if args.evidence:
+        EVIDENCE = REPO / args.evidence
 
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     report = {"runner": "scripts/run-p05-people-e2e.py", "steps": []}
@@ -109,7 +115,7 @@ def main():
             summary = [line for line in result["stdout_tail"].splitlines() if line.startswith(("OK (", "Tests:", "FAILURES", "ERRORS"))]
             report["phpunit"].append({"file": test, "rc": result["rc"], "summary": summary, "seconds": result["seconds"]})
         if args.mutations:
-            mutations = run([sys.executable, "scripts/p05-people-mutation-probes.py"], REPO, test_env, timeout=3600)
+            mutations = run([sys.executable, "scripts/p05-people-mutation-probes.py", "--out", str((EVIDENCE / "mutation-probes.json").relative_to(REPO))], REPO, test_env, timeout=3600)
             report["mutation_probes"] = {"rc": mutations["rc"], "summary": mutations["stdout_tail"].strip().splitlines()}
         fixture = run([PHP, "vendor/phpunit/phpunit/phpunit", "tests/DatabaseV2/PeopleE2EFixtureTest.php"], API, test_env)
         report["steps"].append({"step": "people_fixture", **fixture})
@@ -132,6 +138,8 @@ def main():
 
         people = run([NPX, "playwright", "test", "--config", "playwright.people.config.ts"], WEB, server_env, timeout=1800)
         report["steps"].append({"step": "playwright_people", **people})
+        if PEOPLE_PLAYWRIGHT.parent != EVIDENCE:
+            shutil.copyfile(PEOPLE_PLAYWRIGHT, EVIDENCE / "playwright-results.json")
         results = json.loads((EVIDENCE / "playwright-results.json").read_text(encoding="utf-8"))
         report["playwright_people"] = results.get("stats", {})
 

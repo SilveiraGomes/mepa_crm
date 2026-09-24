@@ -19,12 +19,26 @@ final class AcademyServiceFactory
     {
     }
 
+    /**
+     * Server-owned Events access, Children and Academy policy configuration (test vocabulary only under
+     * APP_ENV=e2e with ACADEMY_E2E_TEST_POLICY). Shared with People, which consumes the Events and Academy
+     * semantics of its context sources instead of naming their states.
+     * @return array{access: array, child: array, academy: array}
+     */
+    public static function policyConfig(): array
+    {
+        $testOnly = app()->environment('e2e') && (bool) config('academy_e2e.enabled', false);
+        return [
+            'access' => (array) config($testOnly ? 'academy_e2e.access_policy' : 'academy_http.access_policy', []),
+            'child' => (array) config($testOnly ? 'academy_e2e.child_policy' : 'academy_http.child_policy', []),
+            'academy' => (array) config($testOnly ? 'academy_e2e.academy' : 'academy', []),
+        ];
+    }
+
     public function make(string $service): object
     {
         try {
-            $testOnly = app()->environment('e2e') && (bool) config('academy_e2e.enabled', false);
-            $access = (array) config($testOnly ? 'academy_e2e.access_policy' : 'academy_http.access_policy', []);
-            $child = (array) config($testOnly ? 'academy_e2e.child_policy' : 'academy_http.child_policy', []);
+            ['access' => $access, 'child' => $child, 'academy' => $academy] = self::policyConfig();
             $eventPolicy = new EventPolicy(
                 (string) ($access['version'] ?? ''),
                 (array) ($access['states'] ?? []),
@@ -40,7 +54,6 @@ final class AcademyServiceFactory
                 (string) ($child['guardian_kind'] ?? ''),
                 (string) ($child['participation_purpose'] ?? '')
             );
-            $academy = (array) config($testOnly ? 'academy_e2e.academy' : 'academy', []);
             $policy = new AcademyPolicy(
                 isset($academy['policy_version']) ? (string) $academy['policy_version'] : null,
                 (array) ($academy['states'] ?? []),

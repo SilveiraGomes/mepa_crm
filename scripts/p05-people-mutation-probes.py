@@ -1,4 +1,4 @@
-"""P0.5-I negative probes (section 21): each mutation M1..M10 is applied to PRODUCTION code, the test
+"""P0.5-I negative probes (section 21) + P0.5-R1 (M11..M13): each mutation is applied to PRODUCTION code, the test
 that must catch it is run and has to FAIL, and the file is restored byte-for-byte (SHA-256 checked).
 A control run of every test on the unmodified tree must PASS first.
 
@@ -54,6 +54,16 @@ PROBES = [
     ("M10", "Class C export without PEOPLE_EXPORT_CLASS_C", [
         (D + "ExportService.php", "self::CLASS_C => [PeopleCatalog::PEOPLE_EXPORT_CLASS_C],", "self::CLASS_C => [],"),
     ], "tests/DatabaseV2/PeopleExportTest.php", "test_class_c_export_requires_separate_permission_and_reason"),
+    # P0.5-R1 (P05R-F01): the source domain decides which registrations / enrollments still authorize.
+    ("M11", "cancelled event registration authorizes (Events semantics ignored)", [
+        (D + "PeopleAuthority.php", "[$registration, $registrationBindings] = $this->events->predicate('er', 'ev');", "[$registration, $registrationBindings] = ['1 = 1', []];"),
+    ], "tests/DatabaseV2/PeopleContextAuthorityTest.php", "test_ctx_e2_cancelled_event_registration_no_longer_grants_context"),
+    ("M12", "non-operational enrollment authorizes (Academy semantics ignored)", [
+        (D + "PeopleAuthority.php", "[$enrollment, $enrollmentBindings] = $this->academy->predicate('e');", "[$enrollment, $enrollmentBindings] = ['1 = 1', []];"),
+    ], "tests/DatabaseV2/PeopleContextAuthorityTest.php", "test_ctx_a2_enrollment_that_becomes_non_operational_no_longer_grants_context"),
+    ("M13", "commit-time context re-check removed (TOCTOU)", [
+        (D + "PeopleRuntime.php", "                    $this->authority->recheck($actor, $decision);\n", ""),
+    ], "tests/DatabaseV2/PeopleContextAuthorityTest.php", "test_ctx_r1_source_state_change_between_read_and_commit_is_denied"),
 ]
 
 
@@ -72,8 +82,14 @@ def main() -> int:
     if os.environ.get("WAVE5_ALLOW_SYNTHETIC") != "1":
         print("WAVE5 pool environment required", file=sys.stderr)
         return 2
+    # Optional: --only M11,M12 --out <repo-relative json> (default: every probe, P0.5-I evidence file).
+    args = sys.argv[1:]
+    only = set(args[args.index("--only") + 1].split(",")) if "--only" in args else None
+    out = REPO / (args[args.index("--out") + 1] if "--out" in args else "docs/reviews/evidence/P0.5-I/mutation-probes.json")
     results = []
     for mid, name, edits, test, method in PROBES:
+        if only is not None and mid not in only:
+            continue
         control_rc, control = phpunit(test, method)
         files = {}
         for rel, old, new in edits:
@@ -95,7 +111,6 @@ def main() -> int:
                         "control_passed": control_rc == 0, "control": control, "mutant_detected": mutated_rc != 0, "mutant": mutated, "restored_byte_for_byte": restored})
         print(f"{mid}: control={'PASS' if control_rc == 0 else 'FAIL'} detected={'YES' if mutated_rc != 0 else 'NO'} restored={restored}")
     ok = all(r["control_passed"] and r["mutant_detected"] and r["restored_byte_for_byte"] for r in results)
-    out = REPO / "docs" / "reviews" / "evidence" / "P0.5-I" / "mutation-probes.json"
     out.write_text(json.dumps({"probe": "P0.5-I_PEOPLE_MUTATIONS", "status": "PASS" if ok else "FAIL", "results": results}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     return 0 if ok else 1
 

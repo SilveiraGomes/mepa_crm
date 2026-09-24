@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\People;
 
+use App\Domain\Academy\AcademyEnrollmentContext;
+use App\Domain\Events\EventParticipationContext;
 use App\Domain\WaveFour\DomainClock;
 use Illuminate\Database\Connection;
 
@@ -24,15 +26,23 @@ use Illuminate\Database\Connection;
 //              event registrations. Full People authority, subject to the permission.
 //   ACADEMY  - Academy enrollments: contextual minimal projection only (edits stay in Academy).
 //   CHILDREN - child profiles: minimal projection only (child data stays behind the Children gate).
-// Temporal sources count only while [starts_at, ends_at) contains the database clock.
+// Temporal sources count only while [starts_at, ends_at) contains the database clock. Event registrations
+// and Academy enrollments count only while their own domain says the relation still authorizes
+// (EventParticipationContext / AcademyEnrollmentContext): People never names a source state, and the
+// same filter is applied by contexts(), scopePredicate() and the final locking recheck() (P05R-F01).
 final class PeopleAuthority
 {
     public const GENERAL = 'GENERAL';
     public const ACADEMY = 'ACADEMY';
     public const CHILDREN = 'CHILDREN';
 
-    public function __construct(private Connection $db, private array $activeUserStatuses, private array $activeGrantStatuses)
-    {
+    public function __construct(
+        private Connection $db,
+        private array $activeUserStatuses,
+        private array $activeGrantStatuses,
+        private EventParticipationContext $events,
+        private AcademyEnrollmentContext $academy
+    ) {
     }
 
     public function now(): string
@@ -133,9 +143,9 @@ final class PeopleAuthority
     {
         $now = $this->now();
         $out = [];
-        foreach ($this->sources() as [$source, $tier, $idColumn, $unitColumn, $kind, $from, $personColumn, $temporal]) {
+        foreach ($this->sources() as [$source, $tier, $idColumn, $unitColumn, $kind, $from, $personColumn, $temporal, $filter]) {
             $sql = "SELECT {$idColumn} AS source_id, {$unitColumn} AS unit_id, {$kind} AS kind {$from} AND {$personColumn} = ?";
-            $bindings = [$personId];
+            $bindings = [...$filter, $personId];
             if ($temporal !== null) {
                 $sql .= " AND {$temporal}.starts_at <= ? AND ({$temporal}.ends_at IS NULL OR {$temporal}.ends_at > ?)";
                 $bindings[] = $now;
@@ -164,11 +174,12 @@ final class PeopleAuthority
         $unitList = implode(',', array_map('intval', array_keys($units)));
         $clauses = [];
         $bindings = [];
-        foreach ($this->sources() as [, $tier, , $unitColumn, , $from, $personColumn, $temporal]) {
+        foreach ($this->sources() as [, $tier, , $unitColumn, , $from, $personColumn, $temporal, $filter]) {
             if (!in_array($tier, $tiers, true)) {
                 continue;
             }
             $clause = "EXISTS (SELECT 1 {$from} AND {$personColumn} = {$alias}.id AND {$unitColumn} IN ({$unitList})";
+            array_push($bindings, ...$filter);
             if ($temporal !== null) {
                 $clause .= " AND {$temporal}.starts_at <= ? AND ({$temporal}.ends_at IS NULL OR {$temporal}.ends_at > ?)";
                 $bindings[] = $now;
@@ -249,20 +260,22 @@ final class PeopleAuthority
         return $codes;
     }
 
-    // [source, tier, id column, unit column, kind expression, FROM ... WHERE <static filter>, person column, temporal alias|null]
+    // [source, tier, id column, unit column, kind expression, FROM ... WHERE <filter>, person column, temporal alias|null, filter bindings]
     private function sources(): array
     {
+        [$registration, $registrationBindings] = $this->events->predicate('er', 'ev');
+        [$enrollment, $enrollmentBindings] = $this->academy->predicate('e');
         return [
-            ['PERSON_UNIT_CONTEXT', self::GENERAL, 'puc.id', 'puc.unit_id', 'puc.context_kind', "FROM person_unit_contexts puc WHERE puc.status = 'ACTIVE'", 'puc.person_id', 'puc'],
-            ['MEMBERSHIP', self::GENERAL, 'mp.id', 'mp.congregation_id', "'MEMBERSHIP'", 'FROM membership_periods mp JOIN memberships m ON m.id = mp.membership_id WHERE 1 = 1', 'm.person_id', 'mp'],
-            ['MINISTERIAL_ASSIGNMENT', self::GENERAL, 'ma.id', 'op.unit_id', "'MINISTERIAL_ASSIGNMENT'", 'FROM ministerial_assignments ma JOIN organizational_posts op ON op.id = ma.post_id WHERE 1 = 1', 'ma.person_id', 'ma'],
-            ['FUNCTION_ASSIGNMENT', self::GENERAL, 'fa.id', 'fa.unit_id', "'FUNCTION_ASSIGNMENT'", 'FROM function_assignments fa WHERE 1 = 1', 'fa.person_id', 'fa'],
-            ['DEPARTMENT_MEMBERSHIP', self::GENERAL, 'dm.id', 'di.unit_id', "'DEPARTMENT_MEMBERSHIP'", 'FROM department_memberships dm JOIN department_instances di ON di.id = dm.instance_id WHERE 1 = 1', 'dm.person_id', 'dm'],
-            ['DEPARTMENT_APPOINTMENT', self::GENERAL, 'da.id', 'dmi.unit_id', "'DEPARTMENT_APPOINTMENT'", 'FROM department_appointments da JOIN department_posts dp ON dp.id = da.post_id JOIN department_instances dmi ON dmi.id = dp.instance_id WHERE 1 = 1', 'da.person_id', 'da'],
-            ['GOVERNANCE_MEMBERSHIP', self::GENERAL, 'gm.id', 'gb.unit_id', "'GOVERNANCE_MEMBERSHIP'", 'FROM governance_body_memberships gm JOIN governance_bodies gb ON gb.id = gm.body_id WHERE 1 = 1', 'gm.person_id', 'gm'],
-            ['EVENT_REGISTRATION', self::GENERAL, 'er.id', 'ev.owner_unit_id', "'EVENT_REGISTRATION'", 'FROM event_registrations er JOIN events ev ON ev.id = er.event_id WHERE 1 = 1', 'er.person_id', null],
-            ['ACADEMY_ENROLLMENT', self::ACADEMY, 'e.id', 'au.unit_id', "'ACADEMY_ENROLLMENT'", 'FROM enrollments e JOIN classes c ON c.id = e.class_id JOIN academic_units au ON au.id = c.academic_unit_id WHERE 1 = 1', 'e.person_id', null],
-            ['CHILD_PROFILE', self::CHILDREN, 'cp.id', 'cp.owner_unit_id', "'CHILD_PROFILE'", 'FROM child_profiles cp WHERE 1 = 1', 'cp.person_id', null],
+            ['PERSON_UNIT_CONTEXT', self::GENERAL, 'puc.id', 'puc.unit_id', 'puc.context_kind', "FROM person_unit_contexts puc WHERE puc.status = 'ACTIVE'", 'puc.person_id', 'puc', []],
+            ['MEMBERSHIP', self::GENERAL, 'mp.id', 'mp.congregation_id', "'MEMBERSHIP'", 'FROM membership_periods mp JOIN memberships m ON m.id = mp.membership_id WHERE 1 = 1', 'm.person_id', 'mp', []],
+            ['MINISTERIAL_ASSIGNMENT', self::GENERAL, 'ma.id', 'op.unit_id', "'MINISTERIAL_ASSIGNMENT'", 'FROM ministerial_assignments ma JOIN organizational_posts op ON op.id = ma.post_id WHERE 1 = 1', 'ma.person_id', 'ma', []],
+            ['FUNCTION_ASSIGNMENT', self::GENERAL, 'fa.id', 'fa.unit_id', "'FUNCTION_ASSIGNMENT'", 'FROM function_assignments fa WHERE 1 = 1', 'fa.person_id', 'fa', []],
+            ['DEPARTMENT_MEMBERSHIP', self::GENERAL, 'dm.id', 'di.unit_id', "'DEPARTMENT_MEMBERSHIP'", 'FROM department_memberships dm JOIN department_instances di ON di.id = dm.instance_id WHERE 1 = 1', 'dm.person_id', 'dm', []],
+            ['DEPARTMENT_APPOINTMENT', self::GENERAL, 'da.id', 'dmi.unit_id', "'DEPARTMENT_APPOINTMENT'", 'FROM department_appointments da JOIN department_posts dp ON dp.id = da.post_id JOIN department_instances dmi ON dmi.id = dp.instance_id WHERE 1 = 1', 'da.person_id', 'da', []],
+            ['GOVERNANCE_MEMBERSHIP', self::GENERAL, 'gm.id', 'gb.unit_id', "'GOVERNANCE_MEMBERSHIP'", 'FROM governance_body_memberships gm JOIN governance_bodies gb ON gb.id = gm.body_id WHERE 1 = 1', 'gm.person_id', 'gm', []],
+            ['EVENT_REGISTRATION', self::GENERAL, 'er.id', 'ev.owner_unit_id', "'EVENT_REGISTRATION'", 'FROM event_registrations er JOIN events ev ON ev.id = er.event_id WHERE ' . $registration, 'er.person_id', null, $registrationBindings],
+            ['ACADEMY_ENROLLMENT', self::ACADEMY, 'e.id', 'au.unit_id', "'ACADEMY_ENROLLMENT'", 'FROM enrollments e JOIN classes c ON c.id = e.class_id JOIN academic_units au ON au.id = c.academic_unit_id WHERE ' . $enrollment, 'e.person_id', null, $enrollmentBindings],
+            ['CHILD_PROFILE', self::CHILDREN, 'cp.id', 'cp.owner_unit_id', "'CHILD_PROFILE'", 'FROM child_profiles cp WHERE 1 = 1', 'cp.person_id', null, []],
         ];
     }
 }
