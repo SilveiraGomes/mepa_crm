@@ -1,0 +1,279 @@
+{
+  "runner": "scripts/run-p05-people-e2e.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 27.6,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33084,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\1a82456c109a\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"1a82456c109a\",\n  \"pid\": 38044,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"a73b0745-b7ac-11f1-9a7f-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\1a82456c109a\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33084",
+      "rc": 0,
+      "seconds": 41.8,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_1a82456c_pool_01\",\n    \"mepa_wave4_test_1a82456c_pool_02\",\n    \"mepa_wave3_test_1a82456c_pool_01\",\n    \"mepa_wave5_test_1a82456c_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_1a82456c_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_1a82456c_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_1a82456c_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_1a82456c_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 159,\n      \"tables\": 153\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "people_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/PeopleE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 35.1,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:34.355, Memory: 26.00 MB\n\nOK (1 test, 17 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "web_build",
+      "cmd": "npm.cmd run build",
+      "rc": 0,
+      "seconds": 28.7,
+      "stdout_tail": "_kosHm.js                 \u001b[39m\u001b[1m\u001b[2m  2.73 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  1.25 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/errors-Dwmami29.js                   \u001b[39m\u001b[1m\u001b[2m  3.34 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  1.34 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/ContentPages-SmFb36Ng.js             \u001b[39m\u001b[1m\u001b[2m  5.44 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  1.63 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/workbox-window.prod.es5-BBnX5xw4.js  \u001b[39m\u001b[1m\u001b[2m  5.75 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  2.36 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/CatalogPages-BPVev36z.js             \u001b[39m\u001b[1m\u001b[2m  9.27 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  2.73 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/HouseholdPages-DcREuOmc.js           \u001b[39m\u001b[1m\u001b[2m  9.61 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  3.21 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/PersonAreaPages-gq4QVZvn.js          \u001b[39m\u001b[1m\u001b[2m 14.99 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  4.10 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/ClassPages-B256qG5k.js               \u001b[39m\u001b[1m\u001b[2m 17.48 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  4.64 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/PeoplePages-DGwsVEMs.js              \u001b[39m\u001b[1m\u001b[2m 20.94 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  7.04 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/AcademicPages-B15kzSiA.js            \u001b[39m\u001b[1m\u001b[2m 25.90 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  6.33 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/index-D17zN92T.js                    \u001b[39m\u001b[1m\u001b[2m260.58 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip: 82.98 kB\u001b[22m\n\u001b[32m✓ built in 5.94s\u001b[39m\n\nPWA v0.21.2\nmode      generateSW\nprecache  18 entries (388.73 KiB)\nfiles generated\n  dist/sw.js\n  dist/workbox-abeb32eb.js\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_people",
+      "cmd": "npx.cmd playwright test --config playwright.people.config.ts",
+      "rc": 0,
+      "seconds": 163.3,
+      "stdout_tail": "P06 wrong-scope Person is concealed like a nonexistent one (4.1s)\n  ok  7 tests\\e2e\\people.spec.ts:208:3 › P0.5-I People / Families critical flows › P07 minor projection is minimal and sensitive areas are closed (6.1s)\n  ok  8 tests\\e2e\\people.spec.ts:230:3 › P0.5-I People / Families critical flows › P08 stale write is rejected without overwrite (9.6s)\n  ok  9 tests\\e2e\\people.spec.ts:248:3 › P0.5-I People / Families critical flows › P09 mobile 390x844 list, search, detail and edit (7.3s)\n  ok 10 tests\\e2e\\people.spec.ts:270:3 › P0.5-I People / Families critical flows › P10 non-member keeps no membership and no member number (4.1s)\n  ok 11 tests\\e2e\\people.spec.ts:283:3 › P0.5-I People / Families critical flows › P11 Class B hidden without PEOPLE_SENSITIVE_VIEW (6.5s)\n  ok 12 tests\\e2e\\people.spec.ts:302:3 › P0.5-I People / Families critical flows › P12 Class C export without PEOPLE_EXPORT_CLASS_C is denied (3.7s)\n  ok 13 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA desktop (9.4s)\n  ok 14 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA laptop (9.7s)\n  ok 15 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA tablet (9.3s)\n  ok 16 tests\\e2e\\people.spec.ts:324:5 › P0.5-I visual QA and accessibility › visual QA mobile (8.8s)\n  ok 17 tests\\e2e\\people.spec.ts:365:3 › P0.5-I visual QA and accessibility › axe: no critical or serious violations on People screens (15.7s)\n\n  17 passed (2.6m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "academy_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/AcademyE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 11.5,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:10.814, Memory: 14.00 MB\n\nOK (1 test, 1 assertion)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_academy_regression",
+      "cmd": "npx.cmd playwright test tests/e2e/academy.spec.ts",
+      "rc": 0,
+      "seconds": 160.2,
+      "stdout_tail": "limit-limit=30 x-ratelimit-remaining=27 x-ratelimit-reset=-\n  ok 12 tests\\e2e\\academy.spec.ts:231:3 › A4.2 real-browser critical flows › E2E-AUTH-02 logout blocks back and protected refresh (4.9s)\n[network] GET /api/v1/academy/context status=401 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n  ok 13 tests\\e2e\\academy.spec.ts:242:3 › A4.2 real-browser critical flows › E2E-AUTH-03 expired session returns to sign-in (3.3s)\n[network] GET /api/v1/academy/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=59 x-ratelimit-reset=-\n[network] GET /api/v1/people/context status=200 retry-after=- x-ratelimit-limit=60 x-ratelimit-remaining=58 x-ratelimit-reset=-\n  ok 14 tests\\e2e\\academy.spec.ts:251:3 › A4.2 real-browser critical flows › E2E-AUTH-04 effective permissions constrain the menu (2.5s)\n  ok 15 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA desktop (21.3s)\n  ok 16 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA laptop (14.1s)\n  ok 17 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA tablet (12.7s)\n  ok 18 tests\\e2e\\academy.spec.ts:262:5 › visual, accessibility, keyboard and PWA evidence › visual QA mobile (12.6s)\n  ok 19 tests\\e2e\\academy.spec.ts:282:3 › visual, accessibility, keyboard and PWA evidence › axe critical pages, keyboard focus and built PWA assets (7.2s)\n\n  19 passed (2.6m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33084",
+      "rc": 0,
+      "seconds": 8.7,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "keyring": {
+    "location": "OS temp directory, outside the repository",
+    "inside_repository": false,
+    "distinct_keys": true,
+    "deleted_after_run": true
+  },
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_1a82456c_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_1a82456c_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_1a82456c_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_1a82456c_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 159,
+      "tables": 153
+    }
+  },
+  "schema_parity": {
+    "rc": 0,
+    "status": "STRICT_PARITY_PASS"
+  },
+  "schema_parity_probes": {
+    "rc": 0,
+    "status": "PASS"
+  },
+  "phpunit": [
+    {
+      "file": "tests/DatabaseV2/PeopleContextAuthorityTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (8 tests, 220 assertions)"
+      ],
+      "seconds": 37.3
+    },
+    {
+      "file": "tests/DatabaseV2/PeoplePersonTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 1354 assertions)"
+      ],
+      "seconds": 19.9
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleContactTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (6 tests, 195 assertions)"
+      ],
+      "seconds": 13.2
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleAddressTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (3 tests, 94 assertions)"
+      ],
+      "seconds": 12.6
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleHouseholdTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 138 assertions)"
+      ],
+      "seconds": 13.7
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleRelationshipTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 112 assertions)"
+      ],
+      "seconds": 12.7
+    },
+    {
+      "file": "tests/DatabaseV2/PeopleExportTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (4 tests, 50 assertions)"
+      ],
+      "seconds": 11.7
+    },
+    {
+      "file": "tests/Unit",
+      "rc": 0,
+      "summary": [
+        "OK (23 tests, 423 assertions)"
+      ],
+      "seconds": 3.1
+    },
+    {
+      "file": "tests/Feature",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 175 assertions)"
+      ],
+      "seconds": 1.1
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyAuthorizationTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (15 tests, 52 assertions)"
+      ],
+      "seconds": 13.5
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyEnrollmentTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (16 tests, 65 assertions)"
+      ],
+      "seconds": 14.0
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyOperationsTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (16 tests, 83 assertions)"
+      ],
+      "seconds": 15.9
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyReadModelTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (3 tests, 111 assertions)"
+      ],
+      "seconds": 30.6
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyHttpAuthenticationTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (5 tests, 35 assertions)"
+      ],
+      "seconds": 52.6
+    },
+    {
+      "file": "tests/DatabaseV2/AcademyContractClosureTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (4 tests, 21 assertions)"
+      ],
+      "seconds": 13.0
+    },
+    {
+      "file": "tests/DatabaseV2/PooledWaveThreeCheckinConcurrencyTest.php",
+      "rc": 0,
+      "summary": [
+        "OK (3 tests, 144 assertions)"
+      ],
+      "seconds": 15.9
+    }
+  ],
+  "mutation_probes": {
+    "rc": 0,
+    "summary": [
+      "M1: control=PASS detected=YES restored=True",
+      "M2: control=PASS detected=YES restored=True",
+      "M3: control=PASS detected=YES restored=True",
+      "M4: control=PASS detected=YES restored=True",
+      "M5: control=PASS detected=YES restored=True",
+      "M6: control=PASS detected=YES restored=True",
+      "M7: control=PASS detected=YES restored=True",
+      "M8: control=PASS detected=YES restored=True",
+      "M9: control=PASS detected=YES restored=True",
+      "M10: control=PASS detected=YES restored=True",
+      "M11: control=PASS detected=YES restored=True",
+      "M12: control=PASS detected=YES restored=True",
+      "M13: control=PASS detected=YES restored=True"
+    ]
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true
+  },
+  "playwright_people": {
+    "startTime": "2026-09-24T00:25:26.019Z",
+    "duration": 158730.448,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "playwright_academy": {
+    "startTime": "2026-09-24T00:28:19.467Z",
+    "duration": 156976.70500000002,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "log_scan": {
+    "bytes_scanned": 3469745,
+    "leaks": []
+  },
+  "infrastructure_stop": "STOPPED_VERIFIED"
+}

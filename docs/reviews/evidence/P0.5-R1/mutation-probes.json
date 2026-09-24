@@ -1,0 +1,176 @@
+{
+  "probe": "P0.5-I_PEOPLE_MUTATIONS",
+  "status": "PASS",
+  "results": [
+    {
+      "id": "M1",
+      "mutation": "internal numeric ID exposed",
+      "files": [
+        "app/Domain/People/PersonRecords.php",
+        "app/Http/People/PeopleOutput.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_list_is_scoped_paginated_and_exposes_public_ids_only",
+      "control_passed": true,
+      "control": "OK (1 test, 1078 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 6, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M2",
+      "mutation": "permission bypass",
+      "files": [
+        "app/Domain/People/PeopleAuthority.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_permission_is_required_and_never_replaces_scope",
+      "control_passed": true,
+      "control": "OK (1 test, 14 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 2, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M3",
+      "mutation": "contextual scope bypass",
+      "files": [
+        "app/Domain/People/PeopleAuthority.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_out_of_scope_and_nonexistent_targets_are_indistinguishable",
+      "control_passed": true,
+      "control": "OK (1 test, 17 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 5, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M4",
+      "mutation": "pagination removed",
+      "files": [
+        "app/Domain/People/PersonService.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_list_is_scoped_paginated_and_exposes_public_ids_only",
+      "control_passed": true,
+      "control": "OK (1 test, 1078 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 3, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M5",
+      "mutation": "F-06 concealment broken",
+      "files": [
+        "app/Domain/People/PeopleGuard.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_out_of_scope_and_nonexistent_targets_are_indistinguishable",
+      "control_passed": true,
+      "control": "OK (1 test, 17 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 5, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M6",
+      "mutation": "non-member forced into membership",
+      "files": [
+        "app/Domain/People/PersonService.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_create_non_member_person_writes_onboarding_context_and_audit_from_that_context",
+      "control_passed": true,
+      "control": "OK (1 test, 79 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 67, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M7",
+      "mutation": "plaintext fallback at rest",
+      "files": [
+        "app/Domain/People/ContactService.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleContactTest.php::test_contact_is_encrypted_with_key_version_and_blind_index_and_round_trips",
+      "control_passed": true,
+      "control": "OK (1 test, 43 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 4, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M8",
+      "mutation": "relationship inverse broken",
+      "files": [
+        "app/Domain/People/RelationshipService.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleRelationshipTest.php::test_parent_produces_child_atomically_and_end_closes_both",
+      "control_passed": true,
+      "control": "OK (1 test, 51 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 5, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M9",
+      "mutation": "minor projection exposes sensitive data",
+      "files": [
+        "app/Domain/People/PersonRecords.php"
+      ],
+      "test": "tests/DatabaseV2/PeoplePersonTest.php::test_class_b_birth_requires_sensitive_view_and_minor_projection_is_minimal",
+      "control_passed": true,
+      "control": "OK (1 test, 35 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 15, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M10",
+      "mutation": "Class C export without PEOPLE_EXPORT_CLASS_C",
+      "files": [
+        "app/Domain/People/ExportService.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleExportTest.php::test_class_c_export_requires_separate_permission_and_reason",
+      "control_passed": true,
+      "control": "OK (1 test, 20 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 4, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M11",
+      "mutation": "cancelled event registration authorizes (Events semantics ignored)",
+      "files": [
+        "app/Domain/People/PeopleAuthority.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleContextAuthorityTest.php::test_ctx_e2_cancelled_event_registration_no_longer_grants_context",
+      "control_passed": true,
+      "control": "OK (1 test, 26 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 14, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M12",
+      "mutation": "non-operational enrollment authorizes (Academy semantics ignored)",
+      "files": [
+        "app/Domain/People/PeopleAuthority.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleContextAuthorityTest.php::test_ctx_a2_enrollment_that_becomes_non_operational_no_longer_grants_context",
+      "control_passed": true,
+      "control": "OK (1 test, 21 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 15, Failures: 1.",
+      "restored_byte_for_byte": true
+    },
+    {
+      "id": "M13",
+      "mutation": "commit-time context re-check removed (TOCTOU)",
+      "files": [
+        "app/Domain/People/PeopleRuntime.php"
+      ],
+      "test": "tests/DatabaseV2/PeopleContextAuthorityTest.php::test_ctx_r1_source_state_change_between_read_and_commit_is_denied",
+      "control_passed": true,
+      "control": "OK (1 test, 23 assertions)",
+      "mutant_detected": true,
+      "mutant": "FAILURES! | Tests: 1, Assertions: 15, Failures: 1.",
+      "restored_byte_for_byte": true
+    }
+  ]
+}

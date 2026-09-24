@@ -1,0 +1,12 @@
+{
+  "validator": "P05_PEOPLE_SCHEMA_PARITY",
+  "engine": "8.4.7",
+  "tables": 32,
+  "columns": 281,
+  "foreign_keys": 55,
+  "checks": 29,
+  "rejected_columns_present": [],
+  "missing_delta_migrations": [],
+  "status": "STRICT_PARITY_PASS",
+  "errors": []
+}
