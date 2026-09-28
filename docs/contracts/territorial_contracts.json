@@ -1,0 +1,26 @@
+{
+  "phase": "P0.6",
+  "status": "IMPLEMENTED_FOR_INDEPENDENT_AUDIT",
+  "canonical_resource": "organizational_units",
+  "catalog_resource": "territorial_areas",
+  "physical_location_separation": "unit_location_links only; no address, coordinate or property identity on organizational_units",
+  "hierarchy": ["GENERAL_DIRECTION", "REGIONAL_DIRECTION", "PROVINCIAL_DIRECTION", "MUNICIPAL_DIRECTION", "GENERAL_CENTER?", "CENTER", "CONGREGATION"],
+  "parent_rules_source": "docs/database/unit_parent_rules.json",
+  "lifecycle": ["DRAFT", "ACTIVE", "CLOSED"],
+  "permissions": ["TERRITORIAL_VIEW", "TERRITORIAL_MANAGE", "TERRITORIAL_MOVE", "TERRITORIAL_LIFECYCLE"],
+  "authorization": "permission and active UNIT scope on the same grant; descendants only when include_descendants=1",
+  "concealment": "unknown and out-of-scope unit, parent, child and move target return the same 404",
+  "identifiers": "organizational_units.public_id only; numeric PK/FK never leaves API",
+  "reads": {"list": "server paginated max 100", "roots": "server paginated max 50", "children": "lazy and paginated max 50", "path": "bounded depth 64", "full_tree_endpoint": false},
+  "writes": ["create", "update_metadata", "move", "lifecycle"],
+  "move": {"explicit": true, "free_parent_update": false, "lock": "organizational_structure_lock:NATIONAL_TREE", "cycle_check": true, "commit_time_recheck": true, "history": "unit_parent_periods"},
+  "general_center_optional": true,
+  "people_integration": "person_unit_contexts keeps stable unit_id; people.unit_id is forbidden",
+  "audit": {"source": "P06_TERRITORIAL", "actions": ["TERRITORIAL_CREATE", "TERRITORIAL_UPDATE", "TERRITORIAL_MOVE", "TERRITORIAL_LIFECYCLE"]},
+  "endpoints": [
+    "GET /api/v1/territorial/context", "GET /api/v1/territorial/units", "GET /api/v1/territorial/roots",
+    "POST /api/v1/territorial/units", "GET /api/v1/territorial/units/{public_id}", "PATCH /api/v1/territorial/units/{public_id}",
+    "GET /api/v1/territorial/units/{public_id}/children", "GET /api/v1/territorial/units/{public_id}/path",
+    "POST /api/v1/territorial/units/{public_id}/move", "POST /api/v1/territorial/units/{public_id}/lifecycle"
+  ]
+}

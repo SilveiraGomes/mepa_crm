@@ -8,6 +8,9 @@ import type { AcademyContextPayload, Item } from '../types/academy'
 import { peopleGet } from '../lib/people/client'
 import { pe } from '../lib/people/endpoints'
 import type { PeopleContext, WorkingUnit } from '../types/people'
+import { territorialGet } from '../lib/territorial/client'
+import { te } from '../lib/territorial/endpoints'
+import type { TerritorialContext } from '../types/territorial'
 
 /** People permissions projected by the API (presentation only; the backend decides every request). */
 export interface PeopleAccess {
@@ -15,6 +18,7 @@ export interface PeopleAccess {
   has: (permission: string) => boolean
   workingUnits: WorkingUnit[]
 }
+export interface TerritorialAccess { known: boolean; has: (permission: string) => boolean; types: { code: string; label: string }[] }
 
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
@@ -22,6 +26,7 @@ interface AppValue {
   capabilities: Capabilities
   vocabulary: Vocabulary
   people: PeopleAccess
+  territorial: TerritorialAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -53,6 +58,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const held = new Set(peopleContext.permissions)
     return { known: true, has: (permission) => held.has(permission), workingUnits: peopleContext.working_units }
   }, [peopleContext])
+  const [territorialContext, setTerritorialContext] = useState<TerritorialContext | null | 'none'>(null)
+  useEffect(() => {
+    if (!sessionToken) { setTerritorialContext(null); return }
+    const controller = new AbortController()
+    territorialGet<Item<TerritorialContext>>(te.context(), {}, controller.signal).then((result) => setTerritorialContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setTerritorialContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken])
+  const territorial = useMemo<TerritorialAccess>(() => {
+    if (territorialContext === null) return { known: false, has: () => false, types: [] }
+    if (territorialContext === 'none') return { known: true, has: () => false, types: [] }
+    const held = new Set(territorialContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), types: territorialContext.types }
+  }, [territorialContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -68,7 +88,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, people, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}

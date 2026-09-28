@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\Academy\DocumentQueryController;
 use App\Http\Controllers\Api\V1\Academy\AcademyContextController;
 use App\Http\Controllers\Api\V1\Academy\EligibleFileController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
 use App\Http\Controllers\Api\V1\People\AddressController;
 use App\Http\Controllers\Api\V1\People\ContactController;
 use App\Http\Controllers\Api\V1\People\ExportController;
@@ -49,6 +50,19 @@ Route::prefix('v1')->group(function (): void {
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:login');
         Route::post('logout', [AuthController::class, 'logout'])->middleware('throttle:30,1');
         Route::get('me', [AuthController::class, 'me'])->middleware(['api.auth', 'throttle:60,1']);
+    });
+
+    Route::prefix('territorial')->middleware(['api.auth', 'throttle:60,1'])->group(function (): void {
+        Route::get('context', [TerritorialController::class, 'context']);
+        Route::get('units', [TerritorialController::class, 'index']);
+        Route::get('roots', [TerritorialController::class, 'roots']);
+        Route::post('units', [TerritorialController::class, 'store'])->middleware('throttle:20,1');
+        Route::get('units/{unit}', [TerritorialController::class, 'show']);
+        Route::patch('units/{unit}', [TerritorialController::class, 'update'])->middleware('throttle:20,1');
+        Route::get('units/{unit}/children', [TerritorialController::class, 'children']);
+        Route::get('units/{unit}/path', [TerritorialController::class, 'path']);
+        Route::post('units/{unit}/move', [TerritorialController::class, 'move'])->middleware('throttle:10,1');
+        Route::post('units/{unit}/lifecycle', [TerritorialController::class, 'lifecycle'])->middleware('throttle:10,1');
     });
 
     // P0.5-I People / Families (ADR-0017). Literal paths precede {person}; every target is a public_id and

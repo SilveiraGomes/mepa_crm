@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
 use App\Domain\People\PeopleError;
+use App\Domain\Territorial\TerritorialError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -80,6 +81,27 @@ class Handler extends ExceptionHandler
                 return null;
             }
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        $this->renderable(function (TerritorialError $e, Request $request) {
+            if (!$request->is('api/v1/territorial', 'api/v1/territorial/*')) return null;
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('territorial_http_concealed', ['reason'=>$e->reason,'route'=>$request->route()?->uri(),'actor_id'=>$request->user()?->getAuthIdentifier()]);
+                return response()->json(['error'=>['code'=>'RESOURCE_NOT_FOUND','message'=>'The requested resource was not found.']],404);
+            }
+            [$status,$code,$message]=match($e->reason){
+                'NOT_AUTHORIZED'=>[403,'FORBIDDEN','You are not authorized to perform this operation.'],
+                'INVALID_INPUT'=>[422,'VALIDATION_ERROR','The request data is invalid.'],
+                'INVALID_PARENT_TYPE','CYCLE_DETECTED','ROOT_MOVE_FORBIDDEN','TRANSITION_NOT_ALLOWED','ACTIVE_DEPENDENCIES','MUNICIPAL_CENTER_REQUIRED','GENERAL_CENTER_EXISTS','STALE_WRITE'=>[409,$e->reason,'The request conflicts with the territorial structure.'],
+                default=>[409,'CONFLICT','The operation could not be completed.'],
+            };
+            Log::notice('territorial_http_domain_error',['reason'=>$e->reason,'route'=>$request->route()?->uri(),'actor_id'=>$request->user()?->getAuthIdentifier()]);
+            return response()->json(['error'=>['code'=>$code,'message'=>$message]],$status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/territorial', 'api/v1/territorial/*')) return null;
+            return response()->json(['error'=>['code'=>'VALIDATION_ERROR','message'=>'The request data is invalid.','details'=>['fields'=>$e->errors()]]],422);
         });
 
         // P0.5-I People / Families. F-06: unknown, malformed and out-of-scope targets share one response.
