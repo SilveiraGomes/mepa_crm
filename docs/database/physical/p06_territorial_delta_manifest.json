@@ -1,0 +1,14 @@
+{
+  "phase": "P0.6",
+  "migrations": [
+    "2026_09_24_000001_p06_install_territorial_catalog.php"
+  ],
+  "schema_changes": [],
+  "controlled_data": [
+    "permissions:TERRITORIAL_VIEW",
+    "permissions:TERRITORIAL_MANAGE",
+    "permissions:TERRITORIAL_MOVE",
+    "permissions:TERRITORIAL_LIFECYCLE",
+    "organizational_structure_lock:NATIONAL_TREE"
+  ]
+}
