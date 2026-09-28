@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "mode": "INFORMATION_SCHEMA_AND_CONTROLLED_DATA",
+  "schema_changes": 0,
+  "details": {
+    "rows": [
+      "permission:TERRITORIAL_LIFECYCLE",
+      "permission:TERRITORIAL_MANAGE",
+      "permission:TERRITORIAL_MOVE",
+      "permission:TERRITORIAL_VIEW",
+      "lock:NATIONAL_TREE"
+    ]
+  }
+}

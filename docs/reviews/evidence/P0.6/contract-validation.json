@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "checks": {
+    "M1_cycle_validation": true,
+    "M2_parent_type_validation": true,
+    "M3_general_center_optional": true,
+    "M4_scope_bypass": true,
+    "M5_f06": true,
+    "M6_internal_id": true,
+    "M7_bounded_tree": true,
+    "M8_commit_recheck": true,
+    "ui_lazy": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "M1 cycle_validation",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M2 parent_type_validation",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M3 general_center_optional",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M4 scope_bypass",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M5 f06",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M6 internal_id",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M7 bounded_tree",
+      "status": "PASS",
+      "isolated_in_memory": true
+    },
+    {
+      "id": "M8 commit_recheck",
+      "status": "PASS",
+      "isolated_in_memory": true
+    }
+  ],
+  "source_restored_byte_for_byte": true
+}

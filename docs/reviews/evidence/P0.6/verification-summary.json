@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "territorial": {"tests": 11, "assertions": 135},
+  "people_regression": {"tests": 8, "assertions": 220},
+  "academy_regression": {"tests": 5, "assertions": 35},
+  "web": {"test_files": 3, "tests": 14, "build": "PASS", "lint": "PASS", "pwa": "PASS"},
+  "e2e": {"projects": 4, "passed": 4, "failed": 0, "screenshots": 16},
+  "contracts": {"mutations": 8, "passed": 8, "source_restored_byte_for_byte": true},
+  "schema": {"schema_changes": 0, "controlled_rows": 5, "status": "PASS"},
+  "database_docs": {"tables": 199, "columns": 1753, "foreign_keys": 440, "errors": 0},
+  "auth_contracts": {"checks": 20, "status": "PASS"},
+  "graphify": {"nodes_before": 6245, "nodes_after": 6541, "edges_after": 11748, "dangling": 0, "unexplained_shrink": false}
+}
