@@ -1,0 +1,17 @@
+
+> web@0.0.0 test
+> vitest run
+
+
+ RUN  v3.2.7 C:/wamp64/www/mepa-crm/apps/web
+
+ ✓ src/test/people.test.tsx (3 tests) 14ms
+ ✓ src/test/contracts.test.tsx (10 tests) 349ms
+   ✓ paginação > desactiva limites e pede a página seguinte  329ms
+ ✓ src/test/accessibility.test.tsx (1 test) 459ms
+   ✓ acessibilidade programática > não encontra violações no cabeçalho e paginação base  454ms
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  06:29:21
+   Duration  5.70s (transform 381ms, setup 2.97s, collect 1.69s, tests 822ms, environment 6.99s, prepare 1.68s)

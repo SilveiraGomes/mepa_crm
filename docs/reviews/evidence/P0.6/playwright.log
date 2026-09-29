@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ok 1 [desktop-1440x900] › tests\e2e\territorial.spec.ts:5:1 › T09 T12 lazy tree, detail, child and four-view visual QA (9.5s)
+  ok 2 [laptop-1366x768] › tests\e2e\territorial.spec.ts:5:1 › T09 T12 lazy tree, detail, child and four-view visual QA (12.6s)
+  ok 3 [tablet-768x1024] › tests\e2e\territorial.spec.ts:5:1 › T09 T12 lazy tree, detail, child and four-view visual QA (9.5s)
+  ok 4 [mobile-390x844] › tests\e2e\territorial.spec.ts:5:1 › T09 T12 lazy tree, detail, child and four-view visual QA (8.8s)
+
+  4 passed (1.3m)

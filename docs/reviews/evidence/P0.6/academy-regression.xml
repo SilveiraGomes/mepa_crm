@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\DatabaseV2\AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" tests="5" assertions="35" errors="0" warnings="0" failures="0" skipped="0" time="9.161501">
+    <testcase name="test_auth_01_login_and_current_user_contract" class="Tests\DatabaseV2\AcademyHttpAuthenticationTest" classname="Tests.DatabaseV2.AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" line="13" assertions="8" time="8.449974"/>
+    <testcase name="test_auth_02_and_03_wrong_password_and_unknown_account_are_identical" class="Tests\DatabaseV2\AcademyHttpAuthenticationTest" classname="Tests.DatabaseV2.AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" line="26" assertions="4" time="0.214224"/>
+    <testcase name="test_auth_04_and_05_expired_revoked_and_unknown_tokens_have_explicit_safe_errors" class="Tests\DatabaseV2\AcademyHttpAuthenticationTest" classname="Tests.DatabaseV2.AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" line="36" assertions="6" time="0.208663"/>
+    <testcase name="test_auth_06_and_07_logout_revokes_and_is_idempotent" class="Tests\DatabaseV2\AcademyHttpAuthenticationTest" classname="Tests.DatabaseV2.AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" line="49" assertions="6" time="0.165934"/>
+    <testcase name="test_auth_08_login_rate_limit_is_enforced_with_the_contract_error" class="Tests\DatabaseV2\AcademyHttpAuthenticationTest" classname="Tests.DatabaseV2.AcademyHttpAuthenticationTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\AcademyHttpAuthenticationTest.php" line="59" assertions="11" time="0.122707"/>
+  </testsuite>
+</testsuites>

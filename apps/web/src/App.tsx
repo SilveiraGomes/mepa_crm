@@ -13,6 +13,7 @@ const academic = () => import('./pages/AcademicPages')
 const peoplePages = () => import('./pages/PeoplePages')
 const personAreas = () => import('./pages/PersonAreaPages')
 const householdPages = () => import('./pages/HouseholdPages')
+const territorialPages = () => import('./pages/TerritorialPages')
 
 function named<T extends ComponentType<Record<string, never>>>(load: () => Promise<Record<string, unknown>>, name: string) {
   return lazy(async () => ({ default: (await load())[name] as T }))
@@ -55,6 +56,10 @@ const RelationshipsPage = named(personAreas, 'RelationshipsPage')
 const HouseholdsPage = named(householdPages, 'HouseholdsPage')
 const HouseholdCreatePage = named(householdPages, 'HouseholdCreatePage')
 const HouseholdDetailPage = named(householdPages, 'HouseholdDetailPage')
+const TerritorialTreePage = named(territorialPages, 'TerritorialTreePage')
+const TerritorialListPage = named(territorialPages, 'TerritorialListPage')
+const TerritorialDetailPage = named(territorialPages, 'TerritorialDetailPage')
+const TerritorialFormPage = named(territorialPages, 'TerritorialFormPage')
 
 function Protected({ children }: { children: ReactNode }) {
   const { session } = useApp()
@@ -70,6 +75,11 @@ function App() {
   return <AppProvider><BrowserRouter><Suspense fallback={<main className="main"><LoadingState /></main>}><Routes>
     <Route path="/entrar" element={<AuthPage />} />
     <Route element={<Protected><AppShell /></Protected>}>
+      <Route path="/estrutura-territorial" element={<TerritorialTreePage />} />
+      <Route path="/estrutura-territorial/lista" element={<TerritorialListPage />} />
+      <Route path="/estrutura-territorial/nova" element={<TerritorialFormPage />} />
+      <Route path="/estrutura-territorial/:id" element={<TerritorialDetailPage />} />
+      <Route path="/estrutura-territorial/:id/editar" element={<TerritorialFormPage />} />
       <Route path="/pessoas" element={<PeopleListPage />} />
       <Route path="/pessoas/nova" element={<PersonCreatePage />} />
       <Route path="/pessoas/exportar" element={<PeopleExportPage />} />

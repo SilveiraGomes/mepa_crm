@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-09-29T06:31:00+01:00",
+  "journey": "tree -> lazy children -> unit detail -> edit -> move dialog",
+  "viewports": [
+    {"name": "desktop", "width": 1440, "height": 900, "screens": ["tree", "detail", "edit", "move"], "overflow": false, "status": "PASS"},
+    {"name": "laptop", "width": 1366, "height": 768, "screens": ["tree", "detail", "edit", "move"], "overflow": false, "status": "PASS"},
+    {"name": "tablet", "width": 768, "height": 1024, "screens": ["tree", "detail", "edit", "move"], "overflow": false, "status": "PASS"},
+    {"name": "mobile", "width": 390, "height": 844, "screens": ["tree", "detail", "edit", "move"], "overflow": false, "status": "PASS"}
+  ],
+  "automated_result": {"expected": 4, "unexpected": 0, "flaky": 0, "children_requests_before_expand": 0, "children_requests_after_five_expansions": 5},
+  "manual_review": "PASS: hierarchy, actions, forms, breadcrumb and modal remain legible and functional in every requested viewport."
+}

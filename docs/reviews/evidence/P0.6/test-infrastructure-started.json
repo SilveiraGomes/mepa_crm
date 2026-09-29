@@ -1,0 +1,12 @@
+{
+  "status": "STARTED_VERIFIED",
+  "port": 33091,
+  "session_id": "ed171690a5da",
+  "server_uuid": "c6be879d-bb91-11f1-b5ed-842afd0b4147",
+  "version": "8.4.7",
+  "database": "mepa_wave5_test_ed171690_pool_01",
+  "migrations_ran": 160,
+  "tables": 153,
+  "territorial_tests": "13/13",
+  "e2e_projects": "4/4"
+}

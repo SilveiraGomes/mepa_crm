@@ -1,0 +1,14 @@
+php.exe : Xdebug: [Log Files] File 'c:/wamp64/logs/xdebug.log' could not be opened.
+At line:2 char:523
++ ... TEXITCODE}; & 'C:\wamp64\bin\php\php8.1.33\php.exe' apps/api/vendor/b ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Xdebug: [Log Fi... not be opened.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+.....                                                               5 / 5 (100%)
+
+Time: 00:09.172, Memory: 34.00 MB
+
+OK (5 tests, 35 assertions)
