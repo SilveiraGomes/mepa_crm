@@ -10,6 +10,9 @@ const catalog = () => import('./pages/CatalogPages')
 const content = () => import('./pages/ContentPages')
 const classes = () => import('./pages/ClassPages')
 const academic = () => import('./pages/AcademicPages')
+const peoplePages = () => import('./pages/PeoplePages')
+const personAreas = () => import('./pages/PersonAreaPages')
+const householdPages = () => import('./pages/HouseholdPages')
 
 function named<T extends ComponentType<Record<string, never>>>(load: () => Promise<Record<string, unknown>>, name: string) {
   return lazy(async () => ({ default: (await load())[name] as T }))
@@ -40,6 +43,18 @@ const CertificatesPage = named(academic, 'CertificatesPage')
 const CertificatePage = named(academic, 'CertificatePage')
 const TranscriptLandingPage = named(academic, 'TranscriptLandingPage')
 const TranscriptPage = named(academic, 'TranscriptPage')
+const PeopleListPage = named(peoplePages, 'PeopleListPage')
+const PersonCreatePage = named(peoplePages, 'PersonCreatePage')
+const PersonDetailPage = named(peoplePages, 'PersonDetailPage')
+const PersonEditPage = named(peoplePages, 'PersonEditPage')
+const PeopleExportPage = named(peoplePages, 'PeopleExportPage')
+const ContactsPage = named(personAreas, 'ContactsPage')
+const AddressesPage = named(personAreas, 'AddressesPage')
+const FamilyPage = named(personAreas, 'FamilyPage')
+const RelationshipsPage = named(personAreas, 'RelationshipsPage')
+const HouseholdsPage = named(householdPages, 'HouseholdsPage')
+const HouseholdCreatePage = named(householdPages, 'HouseholdCreatePage')
+const HouseholdDetailPage = named(householdPages, 'HouseholdDetailPage')
 
 function Protected({ children }: { children: ReactNode }) {
   const { session } = useApp()
@@ -55,6 +70,18 @@ function App() {
   return <AppProvider><BrowserRouter><Suspense fallback={<main className="main"><LoadingState /></main>}><Routes>
     <Route path="/entrar" element={<AuthPage />} />
     <Route element={<Protected><AppShell /></Protected>}>
+      <Route path="/pessoas" element={<PeopleListPage />} />
+      <Route path="/pessoas/nova" element={<PersonCreatePage />} />
+      <Route path="/pessoas/exportar" element={<PeopleExportPage />} />
+      <Route path="/pessoas/:personId" element={<PersonDetailPage />} />
+      <Route path="/pessoas/:personId/editar" element={<PersonEditPage />} />
+      <Route path="/pessoas/:personId/contactos" element={<ContactsPage />} />
+      <Route path="/pessoas/:personId/enderecos" element={<AddressesPage />} />
+      <Route path="/pessoas/:personId/familia" element={<FamilyPage />} />
+      <Route path="/pessoas/:personId/relacoes" element={<RelationshipsPage />} />
+      <Route path="/familias" element={<HouseholdsPage />} />
+      <Route path="/familias/nova" element={<HouseholdCreatePage />} />
+      <Route path="/familias/:householdId" element={<HouseholdDetailPage />} />
       <Route path="/academia" element={<DashboardPage />} />
       <Route path="/academia/unidades" element={<CatalogListPage resource="units" />} />
       <Route path="/academia/unidades/:id" element={<CatalogDetailPage resource="units" />} />

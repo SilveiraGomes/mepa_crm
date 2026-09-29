@@ -1,0 +1,131 @@
+{
+  "probe": "MEPA_PEOPLE_FAMILIES_VALIDATOR_MUTATIONS_V2",
+  "status": "PASS",
+  "control_errors": [],
+  "detected": 17,
+  "total": 17,
+  "mutations": [
+    {
+      "name": "internal people.id exposure",
+      "detected": true,
+      "errors": [
+        "Person public identity must be public_id"
+      ]
+    },
+    {
+      "name": "output guard no longer rejects *_id",
+      "detected": true,
+      "errors": [
+        "output guard does not reject *_id keys"
+      ]
+    },
+    {
+      "name": "permission bypass",
+      "detected": true,
+      "errors": [
+        "backend authorization bypass enabled"
+      ]
+    },
+    {
+      "name": "scope bypass in resolver",
+      "detected": true,
+      "errors": [
+        "resolver no longer intersects contexts with scope"
+      ]
+    },
+    {
+      "name": "pagination removal",
+      "detected": true,
+      "errors": [
+        "server-side pagination drift"
+      ]
+    },
+    {
+      "name": "config pagination widened",
+      "detected": true,
+      "errors": [
+        "config pagination drift"
+      ]
+    },
+    {
+      "name": "F-06 regression in contract",
+      "detected": true,
+      "errors": [
+        "F-06 concealment removed"
+      ]
+    },
+    {
+      "name": "F-06 regression in handler",
+      "detected": true,
+      "errors": [
+        "F-06: out-of-scope not rendered as the nonexistent response"
+      ]
+    },
+    {
+      "name": "non-member forced membership",
+      "detected": true,
+      "errors": [
+        "non-member support removed",
+        "member number must remain untouched"
+      ]
+    },
+    {
+      "name": "person service writes memberships",
+      "detected": true,
+      "errors": [
+        "Person service writes membership data"
+      ]
+    },
+    {
+      "name": "mock production data",
+      "detected": true,
+      "errors": [
+        "mock production data allowed"
+      ]
+    },
+    {
+      "name": "unregistered route",
+      "detected": true,
+      "errors": [
+        "route not in contract: POST /api/v1/people/exports-all",
+        "contract path not registered: POST /api/v1/people/exports"
+      ]
+    },
+    {
+      "name": "undeclared DELETE route",
+      "detected": true,
+      "errors": [
+        "route not in contract: DELETE /api/v1/people/{person}",
+        "DELETE route published in People"
+      ]
+    },
+    {
+      "name": "Class C export without its permission",
+      "detected": true,
+      "errors": [
+        "Class C export does not require PEOPLE_EXPORT_CLASS_C"
+      ]
+    },
+    {
+      "name": "relationship inverse drift",
+      "detected": true,
+      "errors": [
+        "relationship semantics drift: PARENT"
+      ]
+    },
+    {
+      "name": "people.unit_id introduced",
+      "detected": true,
+      "errors": [
+        "unit_id added by the P0.5 delta"
+      ]
+    },
+    {
+      "name": "plaintext fallback allowed",
+      "detected": true,
+      "errors": [
+        "crypto fail-closed contract weakened"
+      ]
+    }
+  ]
+}

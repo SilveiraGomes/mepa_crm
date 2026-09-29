@@ -1,0 +1,12 @@
+{
+  "phase": "P0.5-I",
+  "decision": "docs/adr/0017-people-scope-lifecycle-privacy.md#delta-estrutural-aprovado-para-implementação",
+  "catalog_governance": "docs/database/model_catalog.json is NOT modified; the approved delta is declared here and verified by scripts/validate-p05-people-schema.cjs against the Wave 1 catalog model plus this delta.",
+  "migrations": [
+    "2026_09_23_000001_p05_people_birth_precision.php",
+    "2026_09_23_000002_p05_relationship_type_semantics.php",
+    "2026_09_23_000003_p05_create_person_unit_contexts.php",
+    "2026_09_23_000004_p05_install_people_catalogs.php"
+  ],
+  "rejected_columns": ["people.unit_id", "households.unit_id"]
+}

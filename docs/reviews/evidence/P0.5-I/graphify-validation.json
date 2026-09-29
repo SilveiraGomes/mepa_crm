@@ -1,0 +1,35 @@
+{
+  "tool": "graphify update . (incremental, clustered)",
+  "baseline_p05_preflight": {
+    "nodes": 5685,
+    "raw_edges": 10233
+  },
+  "after": {
+    "node_count": 6245,
+    "raw_edge_count": 11123,
+    "missing_endpoint_edges": 0,
+    "dangling_endpoint_edges": 0,
+    "self_loop_edges": 0,
+    "undirected_same_endpoint_collapsed_edges": 0
+  },
+  "shrink": false,
+  "people_symbols_present": {
+    "PeopleAuthority": true,
+    "PeopleCrypto": true,
+    "PersonService": true,
+    "ContactService": true,
+    "AddressService": true,
+    "HouseholdService": true,
+    "RelationshipService": true,
+    "ExportService": true,
+    "PeopleGuard": true,
+    "PeopleRuntime": true,
+    "PeopleCatalog": true,
+    "PeopleHttpCase": true
+  },
+  "query": "PeopleAuthority person_unit_contexts PeopleCrypto HouseholdService RelationshipService",
+  "query_head": [
+    "Graph: graphify-out/graph.json (6245 nodes) | Traversal: BFS depth=2 | Start: ['PeopleAuthority', 'HouseholdService', 'RelationshipService', '.contexts()', 'PeopleCrypto', 'person()', '.unit()'] | 194 nodes found"
+  ],
+  "note": "An unclustered --no-cluster rebuild reports 578 dangling edges, all stdlib/Node-builtin import targets (555 pre-existing, 25 new from P0.5 scripts/specs, 2 resolved); the clustered graph materializes them and reports 0."
+}

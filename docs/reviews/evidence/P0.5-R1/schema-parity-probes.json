@@ -1,0 +1,35 @@
+{
+  "probe": "P05_PEOPLE_SCHEMA_PARITY_DRIFTS",
+  "control_clean": true,
+  "results": [
+    {
+      "name": "people.unit_id added",
+      "detected": true
+    },
+    {
+      "name": "birth_month missing",
+      "detected": true
+    },
+    {
+      "name": "MONTH without month accepted (ADR literal CHECK)",
+      "detected": true
+    },
+    {
+      "name": "semantics CHECK dropped",
+      "detected": true
+    },
+    {
+      "name": "inverse FK cascades",
+      "detected": true
+    },
+    {
+      "name": "person_unit_contexts missing",
+      "detected": true
+    },
+    {
+      "name": "context_kind unconstrained",
+      "detected": true
+    }
+  ],
+  "status": "PASS"
+}

@@ -1,0 +1,13 @@
+.fieldset { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4) var(--space-4); margin: 0; min-width: 0; display: grid; gap: var(--space-3); }
+.fieldset legend { padding-inline: var(--space-2); }
+.row.wrap { flex-wrap: wrap; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; font-size: 0.85rem; overflow-wrap: anywhere; }
+.restricted-note { font-size: 0.9rem; }
+.sidenav__group { margin-block-end: var(--space-4); }
+.person-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.person-list__item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); min-width: 0; }
+.person-list__main { display: grid; gap: 0.15rem; min-width: 0; overflow-wrap: anywhere; }
+.person-list__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.section-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); }
+.checkbox { display: flex; align-items: center; gap: var(--space-2); min-height: var(--touch-target); font-weight: 600; }
+.checkbox input { width: 1.25rem; height: 1.25rem; }

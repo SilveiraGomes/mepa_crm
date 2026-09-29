@@ -1,0 +1,409 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+.FF.FFFF                                                            8 / 8 (100%)
+
+Time: 00:19.911, Memory: 34.00 MB
+
+There were 6 failures:
+
+1) Tests\DatabaseV2\PeopleContextAuthorityTest::test_ctx_e2_cancelled_event_registration_no_longer_grants_context
+Expected response status code [404] but received 200.
+Failed asserting that 404 is identical to 200.
+
+The following exception occurred during the last request:
+
+App\Domain\People\PeopleError: STALE_WRITE in apps\api\app\Domain\People\PersonService.php:313
+Stack trace:
+#0 apps\api\app\Domain\People\PersonService.php(217): App\Domain\People\PersonService->assertVersion(Object(stdClass), 0)
+#1 apps\api\app\Domain\People\PeopleRuntime.php(48): App\Domain\People\PersonService->App\Domain\People\{closure}(Object(App\Domain\People\PeopleGuard), Object(App\Domain\People\PeopleActor))
+#2 apps\api\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php(30): App\Domain\People\PeopleRuntime->App\Domain\People\{closure}(Object(Illuminate\Database\MySqlConnection))
+#3 apps\api\app\Domain\People\PeopleRuntime.php(54): Illuminate\Database\Connection->transaction(Object(Closure), 5)
+#4 apps\api\app\Domain\People\PersonService.php(230): App\Domain\People\PeopleRuntime->write(2, 2, Object(Closure))
+#5 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(73): App\Domain\People\PersonService->transition(2, 2, '01M38AN289K9B21...', 'inactivate', NULL, 0)
+#6 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(57): App\Http\Controllers\Api\V1\People\PersonController->transition(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN289K9B21...', 'inactivate')
+#7 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(54): App\Http\Controllers\Api\V1\People\PersonController->inactivate(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN289K9B21...')
+#8 apps\api\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(43): Illuminate\Routing\Controller->callAction('inactivate', Array)
+#9 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(260): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(App\Http\Controllers\Api\V1\People\PersonController), 'inactivate')
+#10 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(205): Illuminate\Routing\Route->runController()
+#11 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(798): Illuminate\Routing\Route->run()
+#12 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Routing\Router->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 apps\api\app\Http\Middleware\AuthenticateApiSession.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#14 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): App\Http\Middleware\AuthenticateApiSession->handle(Object(Illuminate\Http\Request), Object(Closure))
+#15 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#16 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\SubstituteBindings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(62): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#19 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), '120', '1')
+#20 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(102): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#22 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(54): Illuminate\Routing\Middleware\ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate\Http\Request), Object(Closure), 'api', Object(Closure))
+#23 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), 'api')
+#24 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#25 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(799): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#26 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(776): Illuminate\Routing\Router->runRouteWithinStack(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request))
+#27 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(740): Illuminate\Routing\Router->runRoute(Object(Illuminate\Http\Request), Object(Illuminate\Routing\Route))
+#28 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(729): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#29 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(190): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#30 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}(Object(Illuminate\Http\Request))
+#31 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#32 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#33 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle(Object(Illuminate\Http\Request), Object(Closure))
+#34 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#35 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php(40): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#36 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\TrimStrings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#37 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#38 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#39 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php(86): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#40 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle(Object(Illuminate\Http\Request), Object(Closure))
+#41 apps\api\vendor\fruitcake\laravel-cors\src\HandleCors.php(52): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#42 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Fruitcake\Cors\HandleCors->handle(Object(Illuminate\Http\Request), Object(Closure))
+#43 apps\api\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#44 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Http\Middleware\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#45 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#46 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(165): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#47 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(134): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#48 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(557): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#49 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(523): Illuminate\Foundation\Testing\TestCase->call('POST', '/api/v1/people/...', Array, Array, Array, Array, '{"lock_version"...')
+#50 apps\api\tests\DatabaseV2\Support\PeopleHttpCase.php(79): Illuminate\Foundation\Testing\TestCase->json('POST', '/api/v1/people/...', Array)
+#51 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(110): Tests\DatabaseV2\Support\PeopleHttpCase->api(Array, 'POST', 'people/01M38AN2...', Array)
+#52 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(140): Tests\DatabaseV2\PeopleContextAuthorityTest->assertConcealed(Array, '01M38AN289K9B21...')
+#53 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1617): Tests\DatabaseV2\PeopleContextAuthorityTest->test_ctx_e2_cancelled_event_registration_no_longer_grants_context()
+#54 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#55 apps\api\vendor\phpunit\phpunit\src\Framework\TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#56 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(Tests\DatabaseV2\PeopleContextAuthorityTest))
+#57 apps\api\vendor\phpunit\phpunit\src\Framework\TestSuite.php(685): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#58 apps\api\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#59 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#60 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#61 apps\api\vendor\phpunit\phpunit\phpunit(107): PHPUnit\TextUI\Command::main()
+#62 {main}
+
+----------------------------------------------------------------------------------
+
+STALE_WRITE
+
+apps\api\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:123
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:112
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:140
+
+2) Tests\DatabaseV2\PeopleContextAuthorityTest::test_ctx_e2_event_not_permitted_or_other_policy_version_does_not_grant_context
+Expected response status code [404] but received 200.
+Failed asserting that 404 is identical to 200.
+
+The following exception occurred during the last request:
+
+App\Domain\People\PeopleError: STALE_WRITE in apps\api\app\Domain\People\PersonService.php:313
+Stack trace:
+#0 apps\api\app\Domain\People\PersonService.php(217): App\Domain\People\PersonService->assertVersion(Object(stdClass), 0)
+#1 apps\api\app\Domain\People\PeopleRuntime.php(48): App\Domain\People\PersonService->App\Domain\People\{closure}(Object(App\Domain\People\PeopleGuard), Object(App\Domain\People\PeopleActor))
+#2 apps\api\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php(30): App\Domain\People\PeopleRuntime->App\Domain\People\{closure}(Object(Illuminate\Database\MySqlConnection))
+#3 apps\api\app\Domain\People\PeopleRuntime.php(54): Illuminate\Database\Connection->transaction(Object(Closure), 5)
+#4 apps\api\app\Domain\People\PersonService.php(230): App\Domain\People\PeopleRuntime->write(3, 3, Object(Closure))
+#5 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(73): App\Domain\People\PersonService->transition(3, 3, '01M38AN3C285G5B...', 'inactivate', NULL, 0)
+#6 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(57): App\Http\Controllers\Api\V1\People\PersonController->transition(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN3C285G5B...', 'inactivate')
+#7 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(54): App\Http\Controllers\Api\V1\People\PersonController->inactivate(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN3C285G5B...')
+#8 apps\api\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(43): Illuminate\Routing\Controller->callAction('inactivate', Array)
+#9 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(260): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(App\Http\Controllers\Api\V1\People\PersonController), 'inactivate')
+#10 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(205): Illuminate\Routing\Route->runController()
+#11 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(798): Illuminate\Routing\Route->run()
+#12 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Routing\Router->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 apps\api\app\Http\Middleware\AuthenticateApiSession.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#14 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): App\Http\Middleware\AuthenticateApiSession->handle(Object(Illuminate\Http\Request), Object(Closure))
+#15 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#16 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\SubstituteBindings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(62): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#19 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), '120', '1')
+#20 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(102): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#22 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(54): Illuminate\Routing\Middleware\ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate\Http\Request), Object(Closure), 'api', Object(Closure))
+#23 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), 'api')
+#24 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#25 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(799): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#26 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(776): Illuminate\Routing\Router->runRouteWithinStack(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request))
+#27 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(740): Illuminate\Routing\Router->runRoute(Object(Illuminate\Http\Request), Object(Illuminate\Routing\Route))
+#28 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(729): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#29 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(190): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#30 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}(Object(Illuminate\Http\Request))
+#31 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#32 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#33 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle(Object(Illuminate\Http\Request), Object(Closure))
+#34 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#35 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php(40): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#36 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\TrimStrings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#37 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#38 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#39 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php(86): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#40 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle(Object(Illuminate\Http\Request), Object(Closure))
+#41 apps\api\vendor\fruitcake\laravel-cors\src\HandleCors.php(52): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#42 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Fruitcake\Cors\HandleCors->handle(Object(Illuminate\Http\Request), Object(Closure))
+#43 apps\api\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#44 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Http\Middleware\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#45 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#46 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(165): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#47 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(134): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#48 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(557): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#49 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(523): Illuminate\Foundation\Testing\TestCase->call('POST', '/api/v1/people/...', Array, Array, Array, Array, '{"lock_version"...')
+#50 apps\api\tests\DatabaseV2\Support\PeopleHttpCase.php(79): Illuminate\Foundation\Testing\TestCase->json('POST', '/api/v1/people/...', Array)
+#51 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(110): Tests\DatabaseV2\Support\PeopleHttpCase->api(Array, 'POST', 'people/01M38AN3...', Array)
+#52 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(154): Tests\DatabaseV2\PeopleContextAuthorityTest->assertConcealed(Array, '01M38AN3C285G5B...')
+#53 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1617): Tests\DatabaseV2\PeopleContextAuthorityTest->test_ctx_e2_event_not_permitted_or_other_policy_version_does_not_grant_context()
+#54 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#55 apps\api\vendor\phpunit\phpunit\src\Framework\TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#56 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(Tests\DatabaseV2\PeopleContextAuthorityTest))
+#57 apps\api\vendor\phpunit\phpunit\src\Framework\TestSuite.php(685): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#58 apps\api\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#59 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#60 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#61 apps\api\vendor\phpunit\phpunit\phpunit(107): PHPUnit\TextUI\Command::main()
+#62 {main}
+
+----------------------------------------------------------------------------------
+
+STALE_WRITE
+
+apps\api\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:123
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:112
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:154
+
+3) Tests\DatabaseV2\PeopleContextAuthorityTest::test_ctx_a2_enrollment_that_becomes_non_operational_no_longer_grants_context
+Expected response status code [404] but received 200.
+Failed asserting that 404 is identical to 200.
+
+apps\api\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:123
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:181
+
+4) Tests\DatabaseV2\PeopleContextAuthorityTest::test_unconfigured_domain_policies_fail_closed
+Expected response status code [404] but received 200.
+Failed asserting that 404 is identical to 200.
+
+The following exception occurred during the last request:
+
+App\Domain\People\PeopleError: OUT_OF_SCOPE in apps\api\app\Domain\People\PeopleAuthority.php:194
+Stack trace:
+#0 apps\api\app\Domain\People\PeopleGuard.php(26): App\Domain\People\PeopleAuthority->authorize(Object(App\Domain\People\PeopleActor), 'PEOPLE_EDIT', 13, NULL, Array)
+#1 apps\api\app\Domain\People\PersonService.php(215): App\Domain\People\PeopleGuard->require('PEOPLE_EDIT', 13)
+#2 apps\api\app\Domain\People\PeopleRuntime.php(48): App\Domain\People\PersonService->App\Domain\People\{closure}(Object(App\Domain\People\PeopleGuard), Object(App\Domain\People\PeopleActor))
+#3 apps\api\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php(30): App\Domain\People\PeopleRuntime->App\Domain\People\{closure}(Object(Illuminate\Database\MySqlConnection))
+#4 apps\api\app\Domain\People\PeopleRuntime.php(54): Illuminate\Database\Connection->transaction(Object(Closure), 5)
+#5 apps\api\app\Domain\People\PersonService.php(230): App\Domain\People\PeopleRuntime->write(6, 6, Object(Closure))
+#6 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(73): App\Domain\People\PersonService->transition(6, 6, '01M38AN59NR7B6N...', 'inactivate', NULL, 0)
+#7 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(57): App\Http\Controllers\Api\V1\People\PersonController->transition(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN59NR7B6N...', 'inactivate')
+#8 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(54): App\Http\Controllers\Api\V1\People\PersonController->inactivate(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN59NR7B6N...')
+#9 apps\api\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(43): Illuminate\Routing\Controller->callAction('inactivate', Array)
+#10 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(260): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(App\Http\Controllers\Api\V1\People\PersonController), 'inactivate')
+#11 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(205): Illuminate\Routing\Route->runController()
+#12 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(798): Illuminate\Routing\Route->run()
+#13 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Routing\Router->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#14 apps\api\app\Http\Middleware\AuthenticateApiSession.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): App\Http\Middleware\AuthenticateApiSession->handle(Object(Illuminate\Http\Request), Object(Closure))
+#16 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#17 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\SubstituteBindings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#18 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#19 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(62): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#20 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), '120', '1')
+#21 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#22 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(102): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#23 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(54): Illuminate\Routing\Middleware\ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate\Http\Request), Object(Closure), 'api', Object(Closure))
+#24 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), 'api')
+#25 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#26 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(799): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#27 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(776): Illuminate\Routing\Router->runRouteWithinStack(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request))
+#28 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(740): Illuminate\Routing\Router->runRoute(Object(Illuminate\Http\Request), Object(Illuminate\Routing\Route))
+#29 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(729): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#30 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(190): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#31 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}(Object(Illuminate\Http\Request))
+#32 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#33 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#34 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle(Object(Illuminate\Http\Request), Object(Closure))
+#35 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#36 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php(40): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#37 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\TrimStrings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#38 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#39 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#40 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php(86): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#41 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle(Object(Illuminate\Http\Request), Object(Closure))
+#42 apps\api\vendor\fruitcake\laravel-cors\src\HandleCors.php(52): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#43 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Fruitcake\Cors\HandleCors->handle(Object(Illuminate\Http\Request), Object(Closure))
+#44 apps\api\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#45 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Http\Middleware\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#46 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#47 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(165): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#48 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(134): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#49 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(557): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#50 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(523): Illuminate\Foundation\Testing\TestCase->call('POST', '/api/v1/people/...', Array, Array, Array, Array, '{"lock_version"...')
+#51 apps\api\tests\DatabaseV2\Support\PeopleHttpCase.php(79): Illuminate\Foundation\Testing\TestCase->json('POST', '/api/v1/people/...', Array)
+#52 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(110): Tests\DatabaseV2\Support\PeopleHttpCase->api(Array, 'POST', 'people/01M38AN5...', Array)
+#53 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(196): Tests\DatabaseV2\PeopleContextAuthorityTest->assertConcealed(Array, '01M38AN59NR7B6N...')
+#54 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1617): Tests\DatabaseV2\PeopleContextAuthorityTest->test_unconfigured_domain_policies_fail_closed()
+#55 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#56 apps\api\vendor\phpunit\phpunit\src\Framework\TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#57 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(Tests\DatabaseV2\PeopleContextAuthorityTest))
+#58 apps\api\vendor\phpunit\phpunit\src\Framework\TestSuite.php(685): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#59 apps\api\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#60 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#61 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#62 apps\api\vendor\phpunit\phpunit\phpunit(107): PHPUnit\TextUI\Command::main()
+#63 {main}
+
+Next App\Domain\People\PeopleError: FORBIDDEN in apps\api\app\Domain\People\PeopleGuard.php:30
+Stack trace:
+#0 apps\api\app\Domain\People\PersonService.php(215): App\Domain\People\PeopleGuard->require('PEOPLE_EDIT', 13)
+#1 apps\api\app\Domain\People\PeopleRuntime.php(48): App\Domain\People\PersonService->App\Domain\People\{closure}(Object(App\Domain\People\PeopleGuard), Object(App\Domain\People\PeopleActor))
+#2 apps\api\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php(30): App\Domain\People\PeopleRuntime->App\Domain\People\{closure}(Object(Illuminate\Database\MySqlConnection))
+#3 apps\api\app\Domain\People\PeopleRuntime.php(54): Illuminate\Database\Connection->transaction(Object(Closure), 5)
+#4 apps\api\app\Domain\People\PersonService.php(230): App\Domain\People\PeopleRuntime->write(6, 6, Object(Closure))
+#5 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(73): App\Domain\People\PersonService->transition(6, 6, '01M38AN59NR7B6N...', 'inactivate', NULL, 0)
+#6 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(57): App\Http\Controllers\Api\V1\People\PersonController->transition(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN59NR7B6N...', 'inactivate')
+#7 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(54): App\Http\Controllers\Api\V1\People\PersonController->inactivate(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN59NR7B6N...')
+#8 apps\api\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(43): Illuminate\Routing\Controller->callAction('inactivate', Array)
+#9 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(260): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(App\Http\Controllers\Api\V1\People\PersonController), 'inactivate')
+#10 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(205): Illuminate\Routing\Route->runController()
+#11 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(798): Illuminate\Routing\Route->run()
+#12 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Routing\Router->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 apps\api\app\Http\Middleware\AuthenticateApiSession.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#14 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): App\Http\Middleware\AuthenticateApiSession->handle(Object(Illuminate\Http\Request), Object(Closure))
+#15 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#16 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\SubstituteBindings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(62): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#19 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), '120', '1')
+#20 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(102): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#22 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(54): Illuminate\Routing\Middleware\ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate\Http\Request), Object(Closure), 'api', Object(Closure))
+#23 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), 'api')
+#24 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#25 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(799): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#26 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(776): Illuminate\Routing\Router->runRouteWithinStack(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request))
+#27 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(740): Illuminate\Routing\Router->runRoute(Object(Illuminate\Http\Request), Object(Illuminate\Routing\Route))
+#28 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(729): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#29 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(190): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#30 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}(Object(Illuminate\Http\Request))
+#31 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#32 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#33 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle(Object(Illuminate\Http\Request), Object(Closure))
+#34 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#35 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php(40): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#36 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\TrimStrings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#37 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#38 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#39 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php(86): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#40 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle(Object(Illuminate\Http\Request), Object(Closure))
+#41 apps\api\vendor\fruitcake\laravel-cors\src\HandleCors.php(52): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#42 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Fruitcake\Cors\HandleCors->handle(Object(Illuminate\Http\Request), Object(Closure))
+#43 apps\api\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#44 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Http\Middleware\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#45 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#46 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(165): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#47 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(134): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#48 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(557): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#49 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(523): Illuminate\Foundation\Testing\TestCase->call('POST', '/api/v1/people/...', Array, Array, Array, Array, '{"lock_version"...')
+#50 apps\api\tests\DatabaseV2\Support\PeopleHttpCase.php(79): Illuminate\Foundation\Testing\TestCase->json('POST', '/api/v1/people/...', Array)
+#51 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(110): Tests\DatabaseV2\Support\PeopleHttpCase->api(Array, 'POST', 'people/01M38AN5...', Array)
+#52 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(196): Tests\DatabaseV2\PeopleContextAuthorityTest->assertConcealed(Array, '01M38AN59NR7B6N...')
+#53 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1617): Tests\DatabaseV2\PeopleContextAuthorityTest->test_unconfigured_domain_policies_fail_closed()
+#54 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#55 apps\api\vendor\phpunit\phpunit\src\Framework\TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#56 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(Tests\DatabaseV2\PeopleContextAuthorityTest))
+#57 apps\api\vendor\phpunit\phpunit\src\Framework\TestSuite.php(685): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#58 apps\api\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#59 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#60 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#61 apps\api\vendor\phpunit\phpunit\phpunit(107): PHPUnit\TextUI\Command::main()
+#62 {main}
+
+----------------------------------------------------------------------------------
+
+FORBIDDEN
+
+apps\api\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:123
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:112
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:196
+
+5) Tests\DatabaseV2\PeopleContextAuthorityTest::test_ctx_r1_source_state_change_between_read_and_commit_is_denied
+event: the final re-check must deny
+
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:227
+
+6) Tests\DatabaseV2\PeopleContextAuthorityTest::test_ctx_f06_nonexistent_and_non_authorizing_context_are_indistinguishable
+Expected response status code [404] but received 200.
+Failed asserting that 404 is identical to 200.
+
+The following exception occurred during the last request:
+
+App\Domain\People\PeopleError: STALE_WRITE in apps\api\app\Domain\People\PersonService.php:313
+Stack trace:
+#0 apps\api\app\Domain\People\PersonService.php(217): App\Domain\People\PersonService->assertVersion(Object(stdClass), 0)
+#1 apps\api\app\Domain\People\PeopleRuntime.php(48): App\Domain\People\PersonService->App\Domain\People\{closure}(Object(App\Domain\People\PeopleGuard), Object(App\Domain\People\PeopleActor))
+#2 apps\api\vendor\laravel\framework\src\Illuminate\Database\Concerns\ManagesTransactions.php(30): App\Domain\People\PeopleRuntime->App\Domain\People\{closure}(Object(Illuminate\Database\MySqlConnection))
+#3 apps\api\app\Domain\People\PeopleRuntime.php(54): Illuminate\Database\Connection->transaction(Object(Closure), 5)
+#4 apps\api\app\Domain\People\PersonService.php(230): App\Domain\People\PeopleRuntime->write(8, 8, Object(Closure))
+#5 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(73): App\Domain\People\PersonService->transition(8, 8, '01M38AN6GPA9BDN...', 'inactivate', NULL, 0)
+#6 apps\api\app\Http\Controllers\Api\V1\People\PersonController.php(57): App\Http\Controllers\Api\V1\People\PersonController->transition(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN6GPA9BDN...', 'inactivate')
+#7 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Controller.php(54): App\Http\Controllers\Api\V1\People\PersonController->inactivate(Object(App\Http\Requests\People\LifecycleRequest), '01M38AN6GPA9BDN...')
+#8 apps\api\vendor\laravel\framework\src\Illuminate\Routing\ControllerDispatcher.php(43): Illuminate\Routing\Controller->callAction('inactivate', Array)
+#9 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(260): Illuminate\Routing\ControllerDispatcher->dispatch(Object(Illuminate\Routing\Route), Object(App\Http\Controllers\Api\V1\People\PersonController), 'inactivate')
+#10 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Route.php(205): Illuminate\Routing\Route->runController()
+#11 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(798): Illuminate\Routing\Route->run()
+#12 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Routing\Router->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 apps\api\app\Http\Middleware\AuthenticateApiSession.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#14 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): App\Http\Middleware\AuthenticateApiSession->handle(Object(Illuminate\Http\Request), Object(Closure))
+#15 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#16 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\SubstituteBindings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(62): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#19 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), '120', '1')
+#20 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(126): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(102): Illuminate\Routing\Middleware\ThrottleRequests->handleRequest(Object(Illuminate\Http\Request), Object(Closure), Array)
+#22 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php(54): Illuminate\Routing\Middleware\ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate\Http\Request), Object(Closure), 'api', Object(Closure))
+#23 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Routing\Middleware\ThrottleRequests->handle(Object(Illuminate\Http\Request), Object(Closure), 'api')
+#24 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#25 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(799): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#26 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(776): Illuminate\Routing\Router->runRouteWithinStack(Object(Illuminate\Routing\Route), Object(Illuminate\Http\Request))
+#27 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(740): Illuminate\Routing\Router->runRoute(Object(Illuminate\Http\Request), Object(Illuminate\Routing\Route))
+#28 apps\api\vendor\laravel\framework\src\Illuminate\Routing\Router.php(729): Illuminate\Routing\Router->dispatchToRoute(Object(Illuminate\Http\Request))
+#29 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(190): Illuminate\Routing\Router->dispatch(Object(Illuminate\Http\Request))
+#30 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(141): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}(Object(Illuminate\Http\Request))
+#31 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#32 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#33 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle(Object(Illuminate\Http\Request), Object(Closure))
+#34 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#35 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\TrimStrings.php(40): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#36 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\TrimStrings->handle(Object(Illuminate\Http\Request), Object(Closure))
+#37 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#38 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#39 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance.php(86): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#40 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle(Object(Illuminate\Http\Request), Object(Closure))
+#41 apps\api\vendor\fruitcake\laravel-cors\src\HandleCors.php(52): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#42 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Fruitcake\Cors\HandleCors->handle(Object(Illuminate\Http\Request), Object(Closure))
+#43 apps\api\vendor\laravel\framework\src\Illuminate\Http\Middleware\TrustProxies.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#44 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(180): Illuminate\Http\Middleware\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#45 apps\api\vendor\laravel\framework\src\Illuminate\Pipeline\Pipeline.php(116): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#46 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(165): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#47 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Http\Kernel.php(134): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#48 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(557): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#49 apps\api\vendor\laravel\framework\src\Illuminate\Foundation\Testing\Concerns\MakesHttpRequests.php(523): Illuminate\Foundation\Testing\TestCase->call('POST', '/api/v1/people/...', Array, Array, Array, Array, '{"lock_version"...')
+#50 apps\api\tests\DatabaseV2\Support\PeopleHttpCase.php(79): Illuminate\Foundation\Testing\TestCase->json('POST', '/api/v1/people/...', Array)
+#51 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(110): Tests\DatabaseV2\Support\PeopleHttpCase->api(Array, 'POST', 'people/01M38AN6...', Array)
+#52 apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php(247): Tests\DatabaseV2\PeopleContextAuthorityTest->assertConcealed(Array, '01M38AN6GPA9BDN...')
+#53 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1617): Tests\DatabaseV2\PeopleContextAuthorityTest->test_ctx_f06_nonexistent_and_non_authorizing_context_are_indistinguishable()
+#54 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(1223): PHPUnit\Framework\TestCase->runTest()
+#55 apps\api\vendor\phpunit\phpunit\src\Framework\TestResult.php(729): PHPUnit\Framework\TestCase->runBare()
+#56 apps\api\vendor\phpunit\phpunit\src\Framework\TestCase.php(973): PHPUnit\Framework\TestResult->run(Object(Tests\DatabaseV2\PeopleContextAuthorityTest))
+#57 apps\api\vendor\phpunit\phpunit\src\Framework\TestSuite.php(685): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#58 apps\api\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(651): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#59 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(146): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\Framework\TestSuite), Array, Array, true)
+#60 apps\api\vendor\phpunit\phpunit\src\TextUI\Command.php(99): PHPUnit\TextUI\Command->run(Array, true)
+#61 apps\api\vendor\phpunit\phpunit\phpunit(107): PHPUnit\TextUI\Command::main()
+#62 {main}
+
+----------------------------------------------------------------------------------
+
+STALE_WRITE
+
+apps\api\vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:123
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:112
+apps\api\tests\DatabaseV2\PeopleContextAuthorityTest.php:247
+
+FAILURES!
+Tests: 8, Assertions: 137, Failures: 6.

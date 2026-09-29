@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
+use App\Domain\People\PeopleError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -76,6 +77,40 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/academy/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        // P0.5-I People / Families. F-06: unknown, malformed and out-of-scope targets share one response.
+        $this->renderable(function (PeopleError $e, Request $request) {
+            if (!$request->is('api/v1/people', 'api/v1/people/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('people_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match ($e->reason) {
+                'NOT_AUTHORIZED', 'FORBIDDEN' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                'SENSITIVE_RESTRICTED' => [403, 'SENSITIVE_DATA_RESTRICTED', 'Sensitive data requires a specific permission.'],
+                'MINOR_PROTECTED' => [403, 'MINOR_PROTECTED', 'Data of minors is not available in this projection.'],
+                'INVALID_INPUT', 'CONTEXT_UNIT_INVALID' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                'REASON_REQUIRED' => [422, 'REASON_REQUIRED', 'A reason is required for this operation.'],
+                'EXPORT_TOO_LARGE' => [422, 'EXPORT_TOO_LARGE', 'The export exceeds the allowed size. Narrow the filters.'],
+                'STALE_WRITE', 'TRANSITION_NOT_ALLOWED', 'PERSON_DECEASED', 'CONTACT_EXISTS', 'ALREADY_MEMBER',
+                'HOUSEHOLD_NOT_ACTIVE', 'RELATIONSHIP_EXISTS', 'RELATIONSHIP_CONFLICT' => [409, $e->reason, 'The request conflicts with the current resource state.'],
+                'CRYPTO_UNAVAILABLE' => [503, 'PEOPLE_CRYPTO_UNAVAILABLE', 'Protected data is temporarily unavailable.'],
+                'CATALOG_INVALID', 'CONFIG_MISSING' => [503, 'PEOPLE_NOT_CONFIGURED', 'The People configuration is not available.'],
+                default => [409, 'CONFLICT', 'The operation could not be completed.'],
+            };
+            Log::notice('people_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $fields = $status === 422 && isset($e->context['field']) ? ['details' => ['fields' => [(string) $e->context['field'] => ['invalid']]]] : [];
+            return response()->json(['error' => ['code' => $code, 'message' => $message] + $fields], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/people', 'api/v1/people/*')) {
                 return null;
             }
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
