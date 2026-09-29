@@ -37,28 +37,40 @@ try {
   const missing = []
   const migrationOnly = {
     person_unit_contexts: { columns: [
-      {name:'id',nullable:false},{name:'person_id',nullable:false,target:'people.id',index:['ix_person_unit_contexts_person_id_status_starts_at']},
+      {name:'id',nullable:false,pk:true},{name:'person_id',nullable:false,target:'people.id',index:['ix_person_unit_contexts_person_id_status_starts_at']},
       {name:'unit_id',nullable:false,target:'organizational_units.id',index:['ix_person_unit_contexts_unit_id_context_kind_status_starts_at']},
       {name:'context_kind',nullable:false,index:['ix_person_unit_contexts_unit_id_context_kind_status_starts_at']},{name:'status',nullable:false,index:['ix_person_unit_contexts_person_id_status_starts_at','ix_person_unit_contexts_unit_id_context_kind_status_starts_at']},
       {name:'starts_at',nullable:false,index:['ix_person_unit_contexts_person_id_status_starts_at','ix_person_unit_contexts_unit_id_context_kind_status_starts_at']},{name:'ends_at',nullable:true},{name:'reason',nullable:true},
       {name:'source_document_id',nullable:true,target:'legal_documents.id',index:['ix_person_unit_contexts_source_document_id']},{name:'created_at',nullable:false},{name:'lock_version',nullable:false},
     ]},
   }
+  const expectedColumns = new Set()
+  const expectedIndexes = new Set()
+  const expectedFks = new Set()
   for (const tableName of selectedTables) {
     const table = catalog.tables.find((candidate) => candidate.name === tableName) || migrationOnly[tableName]
     if (!table) { missing.push(`catalog-table:${tableName}`); continue }
     for (const column of table.columns) {
       const nullable = column.nullable ? 'YES' : 'NO'
-      if (!actualColumns.has(`${tableName}:${column.name}:${nullable}`)) missing.push(`column:${tableName}.${column.name}:${nullable}`)
-      for (const index of column.index || []) if (!actualIndexes.has(`${tableName}:${index}:${column.name}`)) missing.push(`index:${tableName}.${index}.${column.name}`)
+      expectedColumns.add(`${tableName}:${column.name}:${nullable}`)
+      if (column.pk) expectedIndexes.add(`${tableName}:PRIMARY:${column.name}`)
+      for (const index of [...(column.index || []), ...(column.unique || [])]) expectedIndexes.add(`${tableName}:${index}:${column.name}`)
       if (column.target) {
         const [targetTable, targetColumn] = column.target.split('.')
-        if (!actualFks.has(`${tableName}:${column.name}:${targetTable}:${targetColumn}`)) missing.push(`fk:${tableName}.${column.name}->${column.target}`)
+        expectedFks.add(`${tableName}:${column.name}:${targetTable}:${targetColumn}`)
       }
     }
   }
+  for (const value of expectedColumns) if (!actualColumns.has(value)) missing.push(`column:${value}`)
+  for (const value of expectedIndexes) if (!actualIndexes.has(value)) missing.push(`index:${value}`)
+  for (const value of expectedFks) if (!actualFks.has(value)) missing.push(`fk:${value}`)
+  const unexpected = [
+    ...[...actualColumns].filter((value) => !expectedColumns.has(value)).map((value) => `column:${value}`),
+    ...[...actualIndexes].filter((value) => !expectedIndexes.has(value)).map((value) => `index:${value}`),
+    ...[...actualFks].filter((value) => !expectedFks.has(value)).map((value) => `fk:${value}`),
+  ]
   const controlled = mysqlRows("SELECT CONCAT('permission:',code) FROM permissions WHERE code IN ('TERRITORIAL_VIEW','TERRITORIAL_MANAGE','TERRITORIAL_MOVE','TERRITORIAL_LIFECYCLE') UNION ALL SELECT CONCAT('lock:',code) FROM organizational_structure_lock WHERE code='NATIONAL_TREE'").map(([value]) => value)
-  if (controlled.length !== 5 || missing.length || manifest.schema_changes.length !== 0) status = 'FAIL'
+  if (controlled.length !== 5 || missing.length || unexpected.length || manifest.schema_changes.length !== 0) status = 'FAIL'
   details = {
     database: mysqlRows('SELECT DATABASE()')[0][0],
     compared_tables: selectedTables.length,
@@ -66,6 +78,7 @@ try {
     compared_indexes: indexes.length,
     compared_foreign_keys: fks.length,
     missing_or_mismatched: missing,
+    unexpected: unexpected,
     controlled_rows: controlled,
     manifest_schema_changes: manifest.schema_changes,
   }
