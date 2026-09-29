@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "checks": {
+    "M1_cycle_validation": true,
+    "M2_parent_type_validation": true,
+    "M3_general_center_optional": true,
+    "M4_scope_bypass": true,
+    "M5_f06": true,
+    "M6_internal_id": true,
+    "M7_bounded_tree": true,
+    "M8_commit_recheck": true,
+    "ui_lazy": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "M1_cycle_validation",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_t05_and_t07_cycles_are_denied",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "rc\\TextUI\\Command.php(99): PHPUnit\\TextUI\\Command->run(Array, true)\n#56 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\phpunit\\phpunit\\phpunit(107): PHPUnit\\TextUI\\Command::main()\n#57 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\bin\\phpunit(122): include('C:\\\\wamp64\\\\www\\\\m...')\n#58 {main}\n\n----------------------------------------------------------------------------------\n\nINVALID_PARENT_TYPE\r\n\n--- Expected\n+++ Actual\n@@ @@\n-'CYCLE_DETECTED'\n+'INVALID_PARENT_TYPE'\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\AssertableJsonString.php:243\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:664\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:17\n\nFAILURES!\r\nTests: 13, Assertions: 151, Failures: 1.\r\n"
+    },
+    {
+      "id": "M2_parent_type_validation",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_t04_invalid_parent_is_denied",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.F...........                                                     13 / 13 (100%)\r\n\r\nTime: 00:14.197, Memory: 36.00 MB\r\n\r\nThere was 1 failure:\n\n1) Tests\\DatabaseV2\\TerritorialVerticalTest::test_t04_invalid_parent_is_denied\nExpected response status code [409] but received 201.\nFailed asserting that 409 is identical to 201.\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:15\n\nFAILURES!\r\nTests: 13, Assertions: 150, Failures: 1.\r\n"
+    },
+    {
+      "id": "M3_general_center_optional",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_t01_t03_valid_paths_with_and_without_general_center",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "): PHPUnit\\TextUI\\Command->run(Array, true)\n#57 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\phpunit\\phpunit\\phpunit(107): PHPUnit\\TextUI\\Command::main()\n#58 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\bin\\phpunit(122): include('C:\\\\wamp64\\\\www\\\\m...')\n#59 {main}\n\n----------------------------------------------------------------------------------\n\nINVALID_PARENT_TYPE\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\Concerns\\AssertsStatusCodes.php:26\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:38\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:13\n\nFAILURES!\r\nTests: 13, Assertions: 4, Failures: 1, Skipped: 12.\r\n"
+    },
+    {
+      "id": "M4_scope_bypass",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_scope_matrix_conceals_ancestors_siblings_other_regions_parents_and_move_targets",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "lTest::test_t08_wrong_scope_sibling_is_concealed\nExpected response status code [404] but received 200.\nFailed asserting that 404 is identical to 200.\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:21\n\n2) Tests\\DatabaseV2\\TerritorialVerticalTest::test_scope_matrix_conceals_ancestors_siblings_other_regions_parents_and_move_targets\nExpected response status code [404] but received 200.\nFailed asserting that 404 is identical to 200.\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:23\n\nFAILURES!\r\nTests: 13, Assertions: 144, Failures: 2.\r\n"
+    },
+    {
+      "id": "M5_f06",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_scope_matrix_conceals_ancestors_siblings_other_regions_parents_and_move_targets",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "nit\\phpunit\\src\\TextUI\\Command.php(146): PHPUnit\\TextUI\\TestRunner->run(Object(PHPUnit\\Framework\\TestSuite), Array, Array, true)\n#52 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\phpunit\\phpunit\\src\\TextUI\\Command.php(99): PHPUnit\\TextUI\\Command->run(Array, true)\n#53 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\phpunit\\phpunit\\phpunit(107): PHPUnit\\TextUI\\Command::main()\n#54 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\bin\\phpunit(122): include('C:\\\\wamp64\\\\www\\\\m...')\n#55 {main}\n\n----------------------------------------------------------------------------------\n\nOUT_OF_SCOPE\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:23\n\nFAILURES!\r\nTests: 13, Assertions: 144, Failures: 2.\r\n"
+    },
+    {
+      "id": "M6_internal_id",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_public_payloads_and_audit_are_safe",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "): PHPUnit\\TextUI\\Command->run(Array, true)\n#55 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\phpunit\\phpunit\\phpunit(107): PHPUnit\\TextUI\\Command::main()\n#56 C:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\bin\\phpunit(122): include('C:\\\\wamp64\\\\www\\\\m...')\n#57 {main}\n\n----------------------------------------------------------------------------------\n\nINVARIANT_VIOLATION\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\TestResponse.php:123\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\vendor\\laravel\\framework\\src\\Illuminate\\Testing\\Concerns\\AssertsStatusCodes.php:26\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:38\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:13\n\nFAILURES!\r\nTests: 13, Assertions: 1, Failures: 1, Skipped: 12.\r\n"
+    },
+    {
+      "id": "M7_bounded_tree",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "target_test": "test_tree_reads_are_bounded",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false,
+      "output_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n...........F.                                                     13 / 13 (100%)\r\n\r\nTime: 00:13.144, Memory: 36.00 MB\r\n\r\nThere was 1 failure:\n\n1) Tests\\DatabaseV2\\TerritorialVerticalTest::test_tree_reads_are_bounded\nFailed asserting that 100 is identical to 50.\n\nC:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\TerritorialVerticalTest.php:35\n\nFAILURES!\r\nTests: 13, Assertions: 148, Failures: 1.\r\n"
+    },
+    {
+      "id": "M8_commit_recheck",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_VALIDATOR_FAILURE",
+      "exit_code": 1,
+      "detected": true,
+      "timed_out": false
+    }
+  ],
+  "source_hashes_before": {
+    "service": "baf9f6086a82136a2824e4e11180f4d0689a72a77b6a5db0da6355559240883e",
+    "authority": "63d09ae8f7983d976e692ef594d049559818bca386a2566f276d8c8d7b7e9d42",
+    "output": "d8ff75c3afde493a7e278099c3faac68ee9153dd1ad647d6ef3d032fc92186d3",
+    "handler": "777ae5270e98479a82c64c8d59223d3d8f864daf0c03d3c5d941a53028e99290",
+    "routes": "631bb9c9e7bfae5f5f4b5df95a7471f280270c756dfd37ecdc85ec5587542c79",
+    "rules": "bf244e91b4c8282b5c2cf0053fe9c9176671a50b3f21dd996d6f234520063b7e",
+    "contracts": "42462dd703ca29af84b9511746b423717bf0c71ba4c924dcbbc3c355e142c4db",
+    "ui": "cf0de4321725895a17d67efba008e10058ed562663a09b9c6e4fed8e6bb282d5"
+  },
+  "source_hashes_after": {
+    "service": "baf9f6086a82136a2824e4e11180f4d0689a72a77b6a5db0da6355559240883e",
+    "authority": "63d09ae8f7983d976e692ef594d049559818bca386a2566f276d8c8d7b7e9d42",
+    "output": "d8ff75c3afde493a7e278099c3faac68ee9153dd1ad647d6ef3d032fc92186d3",
+    "handler": "777ae5270e98479a82c64c8d59223d3d8f864daf0c03d3c5d941a53028e99290",
+    "routes": "631bb9c9e7bfae5f5f4b5df95a7471f280270c756dfd37ecdc85ec5587542c79",
+    "rules": "bf244e91b4c8282b5c2cf0053fe9c9176671a50b3f21dd996d6f234520063b7e",
+    "contracts": "42462dd703ca29af84b9511746b423717bf0c71ba4c924dcbbc3c355e142c4db",
+    "ui": "cf0de4321725895a17d67efba008e10058ed562663a09b9c6e4fed8e6bb282d5"
+  },
+  "source_restored_byte_for_byte": true
+}

@@ -1,0 +1,32 @@
+{
+    "same_link": [
+        [
+            "OK",
+            "STALE_WRITE"
+        ],
+        [
+            "OK",
+            "STALE_WRITE"
+        ]
+    ],
+    "last_link": [
+        [
+            "OK",
+            "STALE_WRITE"
+        ],
+        [
+            "LAST_ACTIVE_LINK_REQUIRED",
+            "OK"
+        ]
+    ],
+    "both_links": [
+        [
+            "LAST_ACTIVE_LINK_REQUIRED",
+            "OK"
+        ],
+        [
+            "LAST_ACTIVE_LINK_REQUIRED",
+            "OK"
+        ]
+    ]
+}

@@ -1,0 +1,126 @@
+{
+  "phase": "P0.7",
+  "adr": "docs/adr/0018-physical-locations-v1-policy.md",
+  "status": "IMPLEMENTED_FOR_INDEPENDENT_AUDIT",
+  "resources": ["physical_locations", "addresses", "properties", "temples", "unit_location_links", "occupation_types"],
+  "identity_separation": {
+    "unit_vs_location": "organizational_units and physical_locations are separate trees; the only relation is unit_location_links (temporal)",
+    "forbidden_columns": ["physical_locations.owner_unit_id", "properties.owner_unit_id", "physical_locations.unit_id", "organizational_units.location_id", "temples.unit_id", "temples.parent_id"],
+    "temple": "religious use of one location; not a Congregation, creates no organizational unit, no parent, no Territorial participation",
+    "centro_congregacao": "Centro and Congregação stay organizational units; a building is never a unit"
+  },
+  "permissions": {
+    "data_type": "PHYSICAL",
+    "codes": ["PHYSICAL_LOCATION_VIEW", "PHYSICAL_LOCATION_MANAGE", "PHYSICAL_LOCATION_PUBLISH", "PROPERTY_VIEW", "PROPERTY_MANAGE", "TEMPLE_VIEW", "TEMPLE_MANAGE", "UNIT_LOCATION_LINK_MANAGE"],
+    "roles_created": 0
+  },
+  "authority": {
+    "engine": "App\\Domain\\Territorial\\TerritorialAuthority (the one scope engine) with data_type PHYSICAL",
+    "rule": "permission + active role + UNIT scope of the same grant (descendants when include_descendants=1) + ACTIVE unit_location_links row vigente now whose unit is covered",
+    "property_and_temple": "authority over their location_id",
+    "unit_decisions": "create location, link target and transfer destination require the unit itself to be covered",
+    "anti_escalation": "linking an existing location needs UNIT_LOCATION_LINK_MANAGE on the target unit AND prior authority over the location through another active link in scope",
+    "public_id_is_not_authority": true,
+    "ownership_status_grants_authority": false,
+    "order": "permission held anywhere (403 otherwise, independent of the target) -> target resolved -> scope/link (404 otherwise)"
+  },
+  "concealment": {
+    "response": {"status": 404, "code": "RESOURCE_NOT_FOUND"},
+    "cases": ["unknown public_id", "malformed public_id", "out of scope", "location without an ACTIVE vigente link", "unknown link ref"],
+    "applies_to": ["location", "property", "temple", "link"]
+  },
+  "unlinked_locations": {"list": false, "search": false, "detail": "concealed 404", "operational": false},
+  "creation": {"transaction": "addresses + physical_locations + first unit_location_links", "first_link_failure": "full rollback", "loose_location_endpoint": false},
+  "lifecycle": {
+    "locations_properties_temples": ["DRAFT", "ACTIVE", "CLOSED"],
+    "transitions": [["DRAFT", "ACTIVE"], ["DRAFT", "CLOSED"], ["ACTIVE", "CLOSED"]],
+    "closed_terminal": true,
+    "hard_delete": false,
+    "close_location_requires": "no ACTIVE property or temple; forces PRIVATE",
+    "links": ["ACTIVE", "ENDED"]
+  },
+  "links": {
+    "actions": ["link", "end-link", "transfer", "set-primary"],
+    "max_active_per_unit_location": 1,
+    "max_active_primary_per_unit": 1,
+    "first_active_link_of_unit_is_primary": true,
+    "property_same_location": true,
+    "period": "[starts_at, ends_at), ends_at > starts_at",
+    "source_document_id": "never accepted; new P0.7 links NULL; historic values preserved",
+    "last_active_link": "LAST_ACTIVE_LINK_REQUIRED unless transfer or close_location in the same transaction",
+    "transfer": "old link ENDED at t, new link starts at t (no gap, no overlap); audit old unit (transfer) + new unit (create), one correlation"
+  },
+  "occupation_types": {"codes": ["OWNED", "RENTED", "CEDED", "BORROWED", "TEMPORARY", "OTHER"], "other_requires_reason": true, "meaning": "how the unit occupies the location, not the building type"},
+  "ownership_status": {"codes": ["REGISTERED", "IN_REGULARIZATION", "UNREGISTERED", "UNKNOWN"], "default": "UNKNOWN", "explicit_action": "POST /properties/{id}/ownership-status", "documentary_only": true},
+  "owner": {
+    "owner_person": "{kind: PERSON, person: {public_id, display_name}} only with independent PEOPLE_VIEW authority over that Person; otherwise {kind: PERSON, person: null}; never in lists",
+    "owner_name_external": "only GET /properties/{id}/external-owner (PROPERTY_MANAGE, audited); never list/search/export/public",
+    "mutually_exclusive": true
+  },
+  "address": {
+    "cipher": "AES-256-GCM (P0.5 PeopleCrypto primitive and key ring), key_version per row, fail-closed",
+    "aad": "mepa.physical.address.line1.v1|<location public_id>",
+    "blind_index": false,
+    "plaintext": "GET /locations/{id}/address, PHYSICAL_LOCATION_MANAGE in scope, audited PHYSICAL_LOCATION_ADDRESS_READ",
+    "key_location": "outside DB, code tree, Git and public directory (PHYSICAL_KEYRING_PATH, defaults to the P0.5 ring)"
+  },
+  "publication": {
+    "default": "PRIVATE",
+    "publish_requires": ["PHYSICAL_LOCATION_PUBLISH", "scope via active link", "location ACTIVE", "latitude and longitude", "lock_version", "commit-time recheck", "audit with reason"],
+    "coordinate_change": "APPROVED_PUBLIC -> PRIVATE in the same transaction",
+    "closed": "PRIVATE",
+    "public_projection_fields": ["public_id", "name", "latitude", "longitude"],
+    "anonymous_endpoint": false
+  },
+  "concurrency": {
+    "optimistic": "lock_version on physical_locations, properties, temples, unit_location_links (STALE_WRITE)",
+    "lock_order": ["organizational_structure_lock NATIONAL_TREE (shared)", "organizational_units (ascending id)", "physical_locations", "properties/temples", "unit_location_links"],
+    "invariant_reads": "locking reads (FOR UPDATE / FOR SHARE) so a concurrent commit is never missed by the transaction snapshot",
+    "commit_time_recheck": "actor/session + every decision (grants FOR SHARE) + link invariants + publication"
+  },
+  "pagination": {"default": 50, "max": 100, "over_max": "422"},
+  "audit": {
+    "source": "P07_PHYSICAL",
+    "unit": "unit of the authorizing active link; link operations: unit of the link changed",
+    "actions": ["PHYSICAL_LOCATION_CREATE", "PHYSICAL_LOCATION_UPDATE", "PHYSICAL_LOCATION_ADDRESS_READ", "PHYSICAL_LOCATION_ADDRESS_UPDATE", "PHYSICAL_LOCATION_ACTIVATE", "PHYSICAL_LOCATION_CLOSE", "PHYSICAL_LOCATION_PUBLISH", "PHYSICAL_LOCATION_UNPUBLISH", "PROPERTY_CREATE", "PROPERTY_UPDATE", "PROPERTY_OWNERSHIP_STATUS", "PROPERTY_ACTIVATE", "PROPERTY_CLOSE", "PROPERTY_EXTERNAL_OWNER_READ", "TEMPLE_CREATE", "TEMPLE_UPDATE", "TEMPLE_ACTIVATE", "TEMPLE_CLOSE", "UNIT_LOCATION_LINK_CREATE", "UNIT_LOCATION_LINK_END", "UNIT_LOCATION_LINK_TRANSFER", "UNIT_LOCATION_LINK_SET_PRIMARY"],
+    "metadata_never": ["address line", "locality", "owner names", "ciphertext", "keys"]
+  },
+  "documents_files": "out of scope (P0.8): no upload, download, property_documents, storage or files.classification interpretation",
+  "endpoints": [
+    "GET /api/v1/physical/context",
+    "GET /api/v1/physical/locations",
+    "POST /api/v1/physical/locations",
+    "GET /api/v1/physical/locations/{location}",
+    "PATCH /api/v1/physical/locations/{location}",
+    "GET /api/v1/physical/locations/{location}/address",
+    "PUT /api/v1/physical/locations/{location}/address",
+    "POST /api/v1/physical/locations/{location}/activate",
+    "POST /api/v1/physical/locations/{location}/close",
+    "POST /api/v1/physical/locations/{location}/publish",
+    "POST /api/v1/physical/locations/{location}/unpublish",
+    "GET /api/v1/physical/locations/{location}/links",
+    "POST /api/v1/physical/locations/{location}/links",
+    "POST /api/v1/physical/locations/{location}/links/{link}/end",
+    "POST /api/v1/physical/locations/{location}/links/{link}/transfer",
+    "POST /api/v1/physical/locations/{location}/links/{link}/set-primary",
+    "GET /api/v1/physical/links",
+    "GET /api/v1/physical/properties",
+    "POST /api/v1/physical/properties",
+    "GET /api/v1/physical/properties/{property}",
+    "PATCH /api/v1/physical/properties/{property}",
+    "POST /api/v1/physical/properties/{property}/ownership-status",
+    "POST /api/v1/physical/properties/{property}/activate",
+    "POST /api/v1/physical/properties/{property}/close",
+    "GET /api/v1/physical/properties/{property}/external-owner",
+    "GET /api/v1/physical/temples",
+    "POST /api/v1/physical/temples",
+    "GET /api/v1/physical/temples/{temple}",
+    "PATCH /api/v1/physical/temples/{temple}",
+    "POST /api/v1/physical/temples/{temple}/activate",
+    "POST /api/v1/physical/temples/{temple}/close"
+  ],
+  "ui": {
+    "section": "Locais e Património",
+    "routes": ["/locais", "/locais/novo", "/locais/:id", "/locais/:id/editar", "/imoveis", "/imoveis/novo", "/imoveis/:id", "/imoveis/:id/editar", "/templos", "/templos/novo", "/templos/:id", "/templos/:id/editar", "/ligacoes"]
+  }
+}
