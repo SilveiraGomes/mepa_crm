@@ -11,6 +11,9 @@ import type { PeopleContext, WorkingUnit } from '../types/people'
 import { territorialGet } from '../lib/territorial/client'
 import { te } from '../lib/territorial/endpoints'
 import type { TerritorialContext } from '../types/territorial'
+import { physicalGet } from '../lib/physical/client'
+import { ph } from '../lib/physical/endpoints'
+import type { CodeLabel, PhysicalContext, PhysicalUnit } from '../types/physical'
 
 /** People permissions projected by the API (presentation only; the backend decides every request). */
 export interface PeopleAccess {
@@ -19,6 +22,8 @@ export interface PeopleAccess {
   workingUnits: WorkingUnit[]
 }
 export interface TerritorialAccess { known: boolean; has: (permission: string) => boolean; types: { code: string; label: string }[] }
+/** Physical permissions projected by the API (presentation only; the backend decides every request). */
+export interface PhysicalAccess { known: boolean; has: (permission: string) => boolean; units: PhysicalUnit[]; occupationTypes: PhysicalContext['occupation_types']; ownershipStatuses: CodeLabel[] }
 
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
@@ -27,6 +32,7 @@ interface AppValue {
   vocabulary: Vocabulary
   people: PeopleAccess
   territorial: TerritorialAccess
+  physical: PhysicalAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -73,6 +79,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const held = new Set(territorialContext.permissions)
     return { known: true, has: (permission) => held.has(permission), types: territorialContext.types }
   }, [territorialContext])
+  const [physicalContext, setPhysicalContext] = useState<PhysicalContext | null | 'none'>(null)
+  useEffect(() => {
+    if (!sessionToken) { setPhysicalContext(null); return }
+    const controller = new AbortController()
+    physicalGet<Item<PhysicalContext>>(ph.context(), {}, controller.signal).then((result) => setPhysicalContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setPhysicalContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken])
+  const physical = useMemo<PhysicalAccess>(() => {
+    if (physicalContext === null) return { known: false, has: () => false, units: [], occupationTypes: [], ownershipStatuses: [] }
+    if (physicalContext === 'none') return { known: true, has: () => false, units: [], occupationTypes: [], ownershipStatuses: [] }
+    const held = new Set(physicalContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), units: physicalContext.units, occupationTypes: physicalContext.occupation_types, ownershipStatuses: physicalContext.ownership_statuses }
+  }, [physicalContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -88,7 +109,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}

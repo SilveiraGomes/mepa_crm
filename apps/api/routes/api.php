@@ -20,6 +20,10 @@ use App\Http\Controllers\Api\V1\Academy\AcademyContextController;
 use App\Http\Controllers\Api\V1\Academy\EligibleFileController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
+use App\Http\Controllers\Api\V1\Physical\LinkController;
+use App\Http\Controllers\Api\V1\Physical\LocationController;
+use App\Http\Controllers\Api\V1\Physical\PropertyController;
+use App\Http\Controllers\Api\V1\Physical\TempleController;
 use App\Http\Controllers\Api\V1\People\AddressController;
 use App\Http\Controllers\Api\V1\People\ContactController;
 use App\Http\Controllers\Api\V1\People\ExportController;
@@ -63,6 +67,42 @@ Route::prefix('v1')->group(function (): void {
         Route::get('units/{unit}/path', [TerritorialController::class, 'path']);
         Route::post('units/{unit}/move', [TerritorialController::class, 'move'])->middleware('throttle:10,1');
         Route::post('units/{unit}/lifecycle', [TerritorialController::class, 'lifecycle'])->middleware('throttle:10,1');
+    });
+
+    // P0.7 Physical Locations / Properties / Temples / Unit <-> Location links (ADR-0018). Every target is a public_id
+    // (links: an opaque ref under their location); no generic status or visibility endpoint; no anonymous route.
+    Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {
+        Route::get('context', [LocationController::class, 'context']);
+        Route::get('locations', [LocationController::class, 'index']);
+        Route::post('locations', [LocationController::class, 'store'])->middleware('throttle:physical-write');
+        Route::get('locations/{location}', [LocationController::class, 'show']);
+        Route::patch('locations/{location}', [LocationController::class, 'update'])->middleware('throttle:physical-write');
+        Route::get('locations/{location}/address', [LocationController::class, 'address'])->middleware('throttle:physical-sensitive');
+        Route::put('locations/{location}/address', [LocationController::class, 'updateAddress'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/activate', [LocationController::class, 'activate'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/close', [LocationController::class, 'close'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/publish', [LocationController::class, 'publish'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/unpublish', [LocationController::class, 'unpublish'])->middleware('throttle:physical-write');
+        Route::get('locations/{location}/links', [LinkController::class, 'index']);
+        Route::post('locations/{location}/links', [LinkController::class, 'store'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/links/{link}/end', [LinkController::class, 'end'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/links/{link}/transfer', [LinkController::class, 'transfer'])->middleware('throttle:physical-write');
+        Route::post('locations/{location}/links/{link}/set-primary', [LinkController::class, 'setPrimary'])->middleware('throttle:physical-write');
+        Route::get('links', [LinkController::class, 'forUnit']);
+        Route::get('properties', [PropertyController::class, 'index']);
+        Route::post('properties', [PropertyController::class, 'store'])->middleware('throttle:physical-write');
+        Route::get('properties/{property}', [PropertyController::class, 'show']);
+        Route::patch('properties/{property}', [PropertyController::class, 'update'])->middleware('throttle:physical-write');
+        Route::post('properties/{property}/ownership-status', [PropertyController::class, 'ownershipStatus'])->middleware('throttle:physical-write');
+        Route::post('properties/{property}/activate', [PropertyController::class, 'activate'])->middleware('throttle:physical-write');
+        Route::post('properties/{property}/close', [PropertyController::class, 'close'])->middleware('throttle:physical-write');
+        Route::get('properties/{property}/external-owner', [PropertyController::class, 'externalOwner'])->middleware('throttle:physical-sensitive');
+        Route::get('temples', [TempleController::class, 'index']);
+        Route::post('temples', [TempleController::class, 'store'])->middleware('throttle:physical-write');
+        Route::get('temples/{temple}', [TempleController::class, 'show']);
+        Route::patch('temples/{temple}', [TempleController::class, 'update'])->middleware('throttle:physical-write');
+        Route::post('temples/{temple}/activate', [TempleController::class, 'activate'])->middleware('throttle:physical-write');
+        Route::post('temples/{temple}/close', [TempleController::class, 'close'])->middleware('throttle:physical-write');
     });
 
     // P0.5-I People / Families (ADR-0017). Literal paths precede {person}; every target is a public_id and

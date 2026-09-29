@@ -62,5 +62,16 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by(hash('sha256', (string) $request->ip()));
         });
+        // P0.7 Physical Locations: own per-user buckets (reads, writes, audited sensitive reads) so a normal page
+        // journey never drains the write budget shared by numeric route throttles.
+        RateLimiter::for('physical', function (Request $request) {
+            return Limit::perMinute(240)->by('physical|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('physical-write', function (Request $request) {
+            return Limit::perMinute(60)->by('physical-write|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('physical-sensitive', function (Request $request) {
+            return Limit::perMinute(30)->by('physical-sensitive|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
     }
 }
