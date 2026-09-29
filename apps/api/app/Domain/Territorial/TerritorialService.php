@@ -136,7 +136,10 @@ final class TerritorialService
             $this->db->table('unit_parent_periods')->insert(['unit_id'=>$unit->id,'parent_unit_id'=>$parent->id,'status'=>'ACTIVE','starts_at'=>$now,'ends_at'=>null,'reason'=>(string)$input['reason'],'source_document_id'=>null,'created_at'=>$now,'lock_version'=>0]);
             $changed=$this->db->table('organizational_units')->where('id',$unit->id)->where('lock_version',$unit->lock_version)->update(['parent_id'=>$parent->id,'municipality_id'=>$parent->municipality_id,'lock_version'=>$unit->lock_version+1]);
             if($changed!==1) throw new TerritorialError(TerritorialReason::STALE_WRITE);
-            $this->audit->record($actor,(int)$unit->id,'TERRITORIAL_MOVE',(int)$unit->id,['parent'=>(int)$unit->parent_id,'version'=>(int)$unit->lock_version],['old_parent'=>(int)$unit->parent_id,'new_parent'=>(int)$parent->id,'version'=>$unit->lock_version+1],(string)$input['reason']);
+            $descendants=$this->db->select('WITH RECURSIVE descendants AS (SELECT id,0 depth FROM organizational_units WHERE parent_id=? UNION ALL SELECT ou.id,d.depth+1 FROM organizational_units ou JOIN descendants d ON ou.parent_id=d.id WHERE d.depth<64) SELECT id FROM descendants',[$unit->id]);
+            $descendantIds=array_map(fn($row)=>(int)$row->id,$descendants);
+            foreach(array_chunk($descendantIds,500) as $chunk)$this->db->table('organizational_units')->whereIn('id',$chunk)->update(['municipality_id'=>$parent->municipality_id,'lock_version'=>$this->db->raw('lock_version + 1')]);
+            $this->audit->record($actor,(int)$unit->id,'TERRITORIAL_MOVE',(int)$unit->id,['parent'=>(int)$unit->parent_id,'municipality'=>(int)($unit->municipality_id??0),'version'=>(int)$unit->lock_version],['old_parent'=>(int)$unit->parent_id,'new_parent'=>(int)$parent->id,'municipality'=>(int)($parent->municipality_id??0),'descendants_updated'=>count($descendantIds),'version'=>$unit->lock_version+1],(string)$input['reason']);
             return $this->project($this->unitRow((int)$unit->id))+['path'=>$this->pathFor($actor,(int)$unit->id)];
         },3);
     }
