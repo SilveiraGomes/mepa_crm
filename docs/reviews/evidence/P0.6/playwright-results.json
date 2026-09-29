@@ -4,8 +4,7 @@
       "C:\\Program Files\\nodejs\\node.exe",
       "C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
       "test",
-      "--config",
-      "playwright.territorial.config.ts"
+      "--config=playwright.territorial.config.ts"
     ],
     "configFile": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\playwright.territorial.config.ts",
     "rootDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
@@ -136,12 +135,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 13314,
+                  "duration": 9490,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-09-29T05:29:48.329Z",
+                  "startTime": "2026-09-29T11:15:02.962Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -170,12 +169,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 9206,
+                  "duration": 12648,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-09-29T05:30:07.573Z",
+                  "startTime": "2026-09-29T11:15:19.915Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -204,12 +203,12 @@
                   "workerIndex": 2,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8952,
+                  "duration": 9497,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-09-29T05:30:19.517Z",
+                  "startTime": "2026-09-29T11:15:48.434Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -238,12 +237,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8441,
+                  "duration": 8814,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-09-29T05:30:31.102Z",
+                  "startTime": "2026-09-29T11:16:03.569Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -261,8 +260,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-09-29T05:29:46.800Z",
-    "duration": 54280.833,
+    "startTime": "2026-09-29T11:14:59.942Z",
+    "duration": 75189.995,
     "expected": 4,
     "skipped": 0,
     "unexpected": 0,

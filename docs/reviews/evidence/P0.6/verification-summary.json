@@ -4,11 +4,11 @@
   "people_regression": {"tests": 8, "assertions": 220},
   "academy_regression": {"tests": 5, "assertions": 35},
   "web": {"test_files": 3, "tests": 14, "build": "PASS", "lint": "PASS", "pwa": "PASS"},
-  "e2e": {"projects": 4, "passed": 4, "failed": 0, "screenshots": 16, "children_requests_before_expand": 0, "children_requests_after_five_expansions": 5},
+  "e2e": {"projects": 4, "passed": 4, "failed": 0, "screenshots": 16, "children_requests_before_expand": 0, "children_requests_after_five_expansions": 5, "credential_mode": "RUNTIME_RANDOM_TRANSIENT", "credential_manifest_removed": true},
   "contracts": {"mutations": 8, "passed": 8, "mode": "ON_DISK_EXPECTED_FAILURE", "source_restored_byte_for_byte": true},
-  "schema": {"schema_changes": 0, "compared_tables": 11, "compared_columns": 105, "compared_indexes": 64, "compared_foreign_keys": 27, "mismatches": 0, "controlled_rows": 5, "status": "PASS"},
+  "schema": {"schema_changes": 0, "comparison": "BIDIRECTIONAL", "compared_tables": 11, "compared_columns": 105, "compared_indexes": 64, "compared_foreign_keys": 27, "missing_or_mismatched": 0, "unexpected": 0, "controlled_rows": 5, "status": "PASS"},
   "database_docs": {"tables": 199, "columns": 1753, "foreign_keys": 440, "errors": 0},
   "auth_contracts": {"checks": 20, "status": "PASS"},
   "test_infrastructure": {"start": "STARTED_VERIFIED", "migrations": 160, "tables": 153, "stop": "STOPPED_VERIFIED", "datadir_removed": true},
-  "graphify": {"source_commit": "10ee42b999edddfbd37c541f0524c921afbcbef9", "nodes_before": 6245, "nodes_after": 6566, "edges_after": 11777, "dangling": 0, "unexplained_shrink": false}
+  "graphify": {"source_commit": "2e81672a4684ab805313f0c771ae877d39472229", "nodes_before": 6566, "nodes_after": 6594, "edges_after": 11845, "dangling": 0, "unexplained_shrink": false}
 }
