@@ -1,0 +1,288 @@
+{
+  "status": "PASS",
+  "checks": {
+    "S01_no_owner_unit_column": true,
+    "S02_authority_only_through_active_vigente_links": true,
+    "S03_single_scope_engine_reused": true,
+    "S04_f06_concealment": true,
+    "S05_permission_checked_before_target": true,
+    "S06_source_document_never_accepted": true,
+    "S07_primary_demotion_locked": true,
+    "S08_last_active_link": true,
+    "S09_publish_permission": true,
+    "S10_public_projection_minimal": true,
+    "S11_crypto_fail_closed_own_aad": true,
+    "S12_temple_is_not_a_unit": true,
+    "S13_commit_time_recheck": true,
+    "S14_bounded_collections": true,
+    "S15_lock_order": true,
+    "S16_output_guard": true,
+    "S17_routes_match_contract_bidirectionally": true,
+    "S18_no_generic_status_or_delete_route": true,
+    "S19_manifest_single_schema_change": true,
+    "S20_ui_section_and_routes": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "filter": "test_l01_|test_l04_|test_l05_|test_l07_|test_l08_|test_l10_|test_l13_|test_source_document_id_|test_commit_time_recheck_|test_collections_|test_catalog_is_idempotent_",
+      "exit_code": 0,
+      "seconds": 26.4,
+      "summary": "OK (11 tests, 348 assertions)",
+      "failure_head": ""
+    },
+    {
+      "id": "M1a",
+      "description": "owner_unit_id artificial (code writes an owner unit on the location)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/LocationService.php"
+      ],
+      "detected": true,
+      "filter": "test_l01_",
+      "exit_code": 1,
+      "seconds": 9.9,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l01_address_location_and_first_link_are_created_atomically | Expected response status code [201] but received 409. | Failed asserting that 201 is identical to 409.\r | \r"
+    },
+    {
+      "id": "M2",
+      "description": "scope bypass: any active link authorizes regardless of the actor scope",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/PhysicalAuthority.php"
+      ],
+      "detected": true,
+      "filter": "test_l05_",
+      "exit_code": 1,
+      "seconds": 11.6,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l05_f06_wrong_scope_unknown_malformed_and_unlinked_targets_are_indistinguishable | Expected response status code [404] but received 200. | Failed asserting that 404 is identical to 200. | "
+    },
+    {
+      "id": "M3",
+      "description": "F-06 broken: OUT_OF_SCOPE no longer concealed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Exceptions/Handler.php"
+      ],
+      "detected": true,
+      "filter": "test_l05_",
+      "exit_code": 1,
+      "seconds": 11.6,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l05_f06_wrong_scope_unknown_malformed_and_unlinked_targets_are_indistinguishable | Expected response status code [404] but received 409. | Failed asserting that 404 is identical to 409.\r | \r"
+    },
+    {
+      "id": "M4",
+      "description": "source_document_id accepted by the link request",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Http/Requests/Physical/LinkCreateRequest.php"
+      ],
+      "detected": true,
+      "filter": "test_source_document_id_",
+      "exit_code": 1,
+      "seconds": 9.2,
+      "summary": "Tests: 1, Assertions: 8, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_source_document_id_unit_id_status_and_visibility_are_never_accepted_from_requests | Expected response status code [422] but received 201. | Failed asserting that 422 is identical to 201. | "
+    },
+    {
+      "id": "M5",
+      "description": "second active primary: demotion and the D10.3 invariant removed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/LinkService.php",
+        "apps/api/app/Domain/Physical/PhysicalInvariants.php"
+      ],
+      "detected": true,
+      "filter": "test_l07_",
+      "exit_code": 1,
+      "seconds": 10,
+      "summary": "Tests: 1, Assertions: 12, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l07_set_primary_keeps_at_most_one_primary_per_unit | Failed asserting that 2 is identical to 1. |  | C:\\wamp64\\www\\mepa-crm\\apps\\api\\tests\\DatabaseV2\\PhysicalVerticalTest.php:276"
+    },
+    {
+      "id": "M6",
+      "description": "last active link removable without transfer/close (service rule and D04 invariant removed)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/LinkService.php",
+        "apps/api/app/Domain/Physical/PhysicalInvariants.php"
+      ],
+      "detected": true,
+      "filter": "test_l08_",
+      "exit_code": 1,
+      "seconds": 11.8,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l08_last_active_link_cannot_end_without_transfer_or_close | Expected response status code [409] but received 200. | Failed asserting that 409 is identical to 200. | "
+    },
+    {
+      "id": "M7",
+      "description": "publish without PHYSICAL_LOCATION_PUBLISH",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/LocationService.php"
+      ],
+      "detected": true,
+      "filter": "test_l10_",
+      "exit_code": 1,
+      "seconds": 9.3,
+      "summary": "Tests: 1, Assertions: 8, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l10_publish_exposes_only_the_minimal_public_projection | Expected response status code [403] but received 200. | Failed asserting that 403 is identical to 200.\r | \r"
+    },
+    {
+      "id": "M8",
+      "description": "public projection leaks address/owner/status fields",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/PhysicalRecords.php"
+      ],
+      "detected": true,
+      "filter": "test_l10_",
+      "exit_code": 1,
+      "seconds": 9.3,
+      "summary": "Tests: 1, Assertions: 19, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l10_publish_exposes_only_the_minimal_public_projection | Failed asserting that two arrays are identical.\r | \r | The following exception occurred during the last request:"
+    },
+    {
+      "id": "M9",
+      "description": "plaintext fallback of the address line",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/PhysicalRuntime.php"
+      ],
+      "detected": true,
+      "filter": "test_l13_",
+      "exit_code": 1,
+      "seconds": 10.5,
+      "summary": "Tests: 1, Assertions: 25, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l13_address_is_encrypted_with_its_own_aad_and_fails_closed | Expected response status code [503] but received 201. | Failed asserting that 503 is identical to 201.\r | \r"
+    },
+    {
+      "id": "M10",
+      "description": "Temple treated as an Organizational Unit (creates a Congregation)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/TempleService.php"
+      ],
+      "detected": true,
+      "filter": "test_l04_",
+      "exit_code": 1,
+      "seconds": 10,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_l04_two_temples_on_one_location_create_no_congregation | a temple never creates an organizational unit | Failed asserting that 10 is identical to 8. | "
+    },
+    {
+      "id": "M11",
+      "description": "commit-time recheck removed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/PhysicalRuntime.php"
+      ],
+      "detected": true,
+      "filter": "test_commit_time_recheck_",
+      "exit_code": 1,
+      "seconds": 10.2,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_commit_time_recheck_refuses_a_grant_revoked_during_the_transaction | Failed asserting that an array contains 401.\r | \r | The following exception occurred during the last request:"
+    },
+    {
+      "id": "M12",
+      "description": "collections unbounded",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Physical/PhysicalRuntime.php"
+      ],
+      "detected": true,
+      "filter": "test_collections_",
+      "exit_code": 1,
+      "seconds": 12,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_collections_are_paginated_default_50_max_100 | Expected response status code [422] but received 200. | Failed asserting that 422 is identical to 200. | "
+    },
+    {
+      "id": "M1b",
+      "description": "owner_unit_id artificial column in the schema",
+      "status": "PASS",
+      "mode": "DB_MUTATION_EXPECTED_TEST_AND_PARITY_FAILURE",
+      "detected_by_tests": true,
+      "detected_by_schema_parity": true,
+      "schema_restored_parity_pass": true,
+      "filter": "test_catalog_is_idempotent_",
+      "exit_code": 1,
+      "seconds": 54.3,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\PhysicalVerticalTest::test_catalog_is_idempotent_and_matches_adr_0018 | physical_locations must not have an owner unit | Failed asserting that two arrays are identical. | --- Expected"
+    }
+  ],
+  "probes_passed": 13,
+  "source_hashes_before": {
+    "authority": "5bc03c2e8794b36804f4aa7c3e525348df831af14e01018428cb059590265231",
+    "runtime": "fc3d5d9a28613a6bb8f90469b890a712585c30c4d12a2a49fd44c8b3d62e7ed5",
+    "invariants": "ece05f0aa6dd613d7a0f7067fba8b1ff60191578f669b54fa77dfcbf8584bfd7",
+    "records": "4fa1012261d4116d25fe850641fe6fb21f6b2dfc41093aa2f51753d187565681",
+    "location": "ad6de6b63ea15a35765cbb9e6fdeae1c4e1e562c545ed9686e6c6c20da5a27a9",
+    "link": "de718645e845bf1637cbee234222689c0bcbfc0dd043e263e336fd5796d2fb43",
+    "property": "b29877249044f48b497a01bdfac14967daf642bfc3bd7af0cf06f8491eee9070",
+    "temple": "9af0a9e5e7760a74c168b1d80f765d017246be915c21383e1602ddea0e9d27cc",
+    "catalog": "36985db5c6e8f60c0fe411ecad75266b2993db4e7b054e384f6f23cb9c4839d1",
+    "guard": "1cd0f89f2fa793674f73ee3dff29bc9b7b81dffc76995e55701c84a6f3cd86bc",
+    "territorialAuthority": "63d09ae8f7983d976e692ef594d049559818bca386a2566f276d8c8d7b7e9d42",
+    "factory": "88b164bce12f83bd7b81aa68c2caba7cc81ba38cb6d32afd7d3b1796525e9f95",
+    "output": "722ca4949ec8e61b41d53f050bdb3fc7929e2774214300f368257734fe2b072c",
+    "handler": "777ae5270e98479a82c64c8d59223d3d8f864daf0c03d3c5d941a53028e99290",
+    "routes": "631bb9c9e7bfae5f5f4b5df95a7471f280270c756dfd37ecdc85ec5587542c79",
+    "linkRequest": "56e18c8d40cf33b8f4a79a8f3eeb08e0baa72865523d85d817fe3bbd2dddeda9",
+    "config": "e43990ab18fc14c89159b0d403d9d336058c995eca9e63ecee94931cf11d5fe6",
+    "contracts": "9b67e76258af29ce9f589fda4a2c2fc1a98bddd7018bf609dbee7edc714ef6d6",
+    "manifest": "91222c7753a098c95ed3ff119ba597096c53d96de97f7fafe073dd48f94ed5a1",
+    "templesMigration": "17a878287808655a6c2d0b2b0bfd5b3175e63f23431508340b4a257751005c20",
+    "app": "43ba58953502868d066e9f52685df66be39397b58ef958854801ae76130da0ca",
+    "shell": "355d9c07354d38bc3dfd5176986dcfb16be0382e2d79df8f29460c3f7b062eb9",
+    "pages": "a21e8b0ea1fca7336e2eedd5afa05fff2a42ac93a2cefdd24ecc5f39a746b3af",
+    "patrimony": "eb76414a7917044f41d65b9a1b532e56462d72c4dc00d546bc7b237afa31b37a"
+  },
+  "source_hashes_after": {
+    "authority": "5bc03c2e8794b36804f4aa7c3e525348df831af14e01018428cb059590265231",
+    "runtime": "fc3d5d9a28613a6bb8f90469b890a712585c30c4d12a2a49fd44c8b3d62e7ed5",
+    "invariants": "ece05f0aa6dd613d7a0f7067fba8b1ff60191578f669b54fa77dfcbf8584bfd7",
+    "records": "4fa1012261d4116d25fe850641fe6fb21f6b2dfc41093aa2f51753d187565681",
+    "location": "ad6de6b63ea15a35765cbb9e6fdeae1c4e1e562c545ed9686e6c6c20da5a27a9",
+    "link": "de718645e845bf1637cbee234222689c0bcbfc0dd043e263e336fd5796d2fb43",
+    "property": "b29877249044f48b497a01bdfac14967daf642bfc3bd7af0cf06f8491eee9070",
+    "temple": "9af0a9e5e7760a74c168b1d80f765d017246be915c21383e1602ddea0e9d27cc",
+    "catalog": "36985db5c6e8f60c0fe411ecad75266b2993db4e7b054e384f6f23cb9c4839d1",
+    "guard": "1cd0f89f2fa793674f73ee3dff29bc9b7b81dffc76995e55701c84a6f3cd86bc",
+    "territorialAuthority": "63d09ae8f7983d976e692ef594d049559818bca386a2566f276d8c8d7b7e9d42",
+    "factory": "88b164bce12f83bd7b81aa68c2caba7cc81ba38cb6d32afd7d3b1796525e9f95",
+    "output": "722ca4949ec8e61b41d53f050bdb3fc7929e2774214300f368257734fe2b072c",
+    "handler": "777ae5270e98479a82c64c8d59223d3d8f864daf0c03d3c5d941a53028e99290",
+    "routes": "631bb9c9e7bfae5f5f4b5df95a7471f280270c756dfd37ecdc85ec5587542c79",
+    "linkRequest": "56e18c8d40cf33b8f4a79a8f3eeb08e0baa72865523d85d817fe3bbd2dddeda9",
+    "config": "e43990ab18fc14c89159b0d403d9d336058c995eca9e63ecee94931cf11d5fe6",
+    "contracts": "9b67e76258af29ce9f589fda4a2c2fc1a98bddd7018bf609dbee7edc714ef6d6",
+    "manifest": "91222c7753a098c95ed3ff119ba597096c53d96de97f7fafe073dd48f94ed5a1",
+    "templesMigration": "17a878287808655a6c2d0b2b0bfd5b3175e63f23431508340b4a257751005c20",
+    "app": "43ba58953502868d066e9f52685df66be39397b58ef958854801ae76130da0ca",
+    "shell": "355d9c07354d38bc3dfd5176986dcfb16be0382e2d79df8f29460c3f7b062eb9",
+    "pages": "a21e8b0ea1fca7336e2eedd5afa05fff2a42ac93a2cefdd24ecc5f39a746b3af",
+    "patrimony": "eb76414a7917044f41d65b9a1b532e56462d72c4dc00d546bc7b237afa31b37a"
+  },
+  "source_restored_byte_for_byte": true
+}

@@ -1,0 +1,13 @@
+/* P0.7 Locais e Património. Mobile-first; colours only through tokens.css. */
+.physical-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-width: 0; }
+.physical-actions > .btn { flex: 0 1 auto; }
+.physical-filters { display: grid; gap: var(--space-3); align-items: end; }
+.physical-filters > .btn { justify-self: start; }
+@media (width >= 48rem) {
+  .physical-filters { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; }
+}
+@media (width < 30rem) {
+  .physical-actions { width: 100%; }
+  .physical-actions > .btn { flex: 1 1 100%; justify-content: center; }
+  .page-header__actions .physical-actions > .btn { flex-basis: calc(50% - var(--space-2)); }
+}

@@ -8,7 +8,9 @@ use Illuminate\Database\Connection;
 
 final class TerritorialAuthority
 {
-    public function __construct(private Connection $db, private array $activeUsers, private array $activeGrants)
+    // $dataType selects the permission domain evaluated by the SAME grant/scope/descendant resolver: Physical
+    // Locations (ADR 0018 D03) reuse this engine with data_type PHYSICAL instead of a second scope engine.
+    public function __construct(private Connection $db, private array $activeUsers, private array $activeGrants, private string $dataType = TerritorialCatalog::DATA_TYPE)
     {
     }
 
@@ -34,7 +36,7 @@ final class TerritorialAuthority
             ->join('roles as r', 'r.id', '=', 'urs.role_id')->join('role_permissions as rp', 'rp.role_id', '=', 'r.id')
             ->join('permissions as p', 'p.id', '=', 'rp.permission_id')->join('scopes as s', 's.id', '=', 'urs.scope_id')
             ->where('urs.user_id', $actor->user)->where('r.is_active', 1)->where('p.code', $permission)
-            ->where('p.data_type', TerritorialCatalog::DATA_TYPE)->whereColumn('p.action', 'p.code')
+            ->where('p.data_type', $this->dataType)->whereColumn('p.action', 'p.code')
             ->where('s.scope_kind', 'UNIT')->whereNull('s.department_instance_id')->whereNotNull('s.unit_id');
         if ($lock) $q->sharedLock();
         $now = $this->now(); $roots = [];

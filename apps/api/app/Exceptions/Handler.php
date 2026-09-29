@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
 use App\Domain\People\PeopleError;
+use App\Domain\Physical\PhysicalError;
 use App\Domain\Territorial\TerritorialError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -102,6 +103,38 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/territorial', 'api/v1/territorial/*')) return null;
             return response()->json(['error'=>['code'=>'VALIDATION_ERROR','message'=>'The request data is invalid.','details'=>['fields'=>$e->errors()]]],422);
+        });
+
+        // P0.7 Physical Locations (ADR-0018). F-06: unknown, malformed, out-of-scope and unlinked (no active vigente
+        // link) locations, properties, temples and links share one response.
+        $this->renderable(function (PhysicalError $e, Request $request) {
+            if (!$request->is('api/v1/physical', 'api/v1/physical/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('physical_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match ($e->reason) {
+                'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                'REASON_REQUIRED' => [422, 'REASON_REQUIRED', 'A reason is required for this operation.'],
+                'STALE_WRITE', 'TRANSITION_NOT_ALLOWED', 'ACTIVE_DEPENDENCIES', 'LAST_ACTIVE_LINK_REQUIRED', 'LINK_EXISTS', 'LOCATION_CLOSED',
+                'LOCATION_NOT_ACTIVE', 'COORDINATES_REQUIRED', 'UNIT_NOT_OPERATIONAL', 'CODE_EXISTS' => [409, $e->reason, 'The request conflicts with the current resource state.'],
+                'CRYPTO_UNAVAILABLE' => [503, 'PHYSICAL_CRYPTO_UNAVAILABLE', 'Protected data is temporarily unavailable.'],
+                'CONFIG_MISSING' => [503, 'PHYSICAL_NOT_CONFIGURED', 'The Physical Locations configuration is not available.'],
+                default => [409, 'CONFLICT', 'The operation could not be completed.'],
+            };
+            Log::notice('physical_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $fields = $status === 422 && isset($e->context['field']) ? ['details' => ['fields' => [(string) $e->context['field'] => ['invalid']]]] : [];
+            return response()->json(['error' => ['code' => $code, 'message' => $message] + $fields], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/physical', 'api/v1/physical/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
         });
 
         // P0.5-I People / Families. F-06: unknown, malformed and out-of-scope targets share one response.

@@ -14,6 +14,8 @@ const peoplePages = () => import('./pages/PeoplePages')
 const personAreas = () => import('./pages/PersonAreaPages')
 const householdPages = () => import('./pages/HouseholdPages')
 const territorialPages = () => import('./pages/TerritorialPages')
+const physicalPages = () => import('./pages/PhysicalPages')
+const patrimonyPages = () => import('./pages/PatrimonyPages')
 
 function named<T extends ComponentType<Record<string, never>>>(load: () => Promise<Record<string, unknown>>, name: string) {
   return lazy(async () => ({ default: (await load())[name] as T }))
@@ -60,6 +62,17 @@ const TerritorialTreePage = named(territorialPages, 'TerritorialTreePage')
 const TerritorialListPage = named(territorialPages, 'TerritorialListPage')
 const TerritorialDetailPage = named(territorialPages, 'TerritorialDetailPage')
 const TerritorialFormPage = named(territorialPages, 'TerritorialFormPage')
+const LocationsPage = named(physicalPages, 'LocationsPage')
+const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
+const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
+const LocationEditPage = named(physicalPages, 'LocationEditPage')
+const UnitLinksPage = named(physicalPages, 'UnitLinksPage')
+const PropertiesPage = named(patrimonyPages, 'PropertiesPage')
+const PropertyFormPage = named(patrimonyPages, 'PropertyFormPage')
+const PropertyDetailPage = named(patrimonyPages, 'PropertyDetailPage')
+const TemplesPage = named(patrimonyPages, 'TemplesPage')
+const TempleFormPage = named(patrimonyPages, 'TempleFormPage')
+const TempleDetailPage = named(patrimonyPages, 'TempleDetailPage')
 
 function Protected({ children }: { children: ReactNode }) {
   const { session } = useApp()
@@ -80,6 +93,19 @@ function App() {
       <Route path="/estrutura-territorial/nova" element={<TerritorialFormPage />} />
       <Route path="/estrutura-territorial/:id" element={<TerritorialDetailPage />} />
       <Route path="/estrutura-territorial/:id/editar" element={<TerritorialFormPage />} />
+      <Route path="/locais" element={<LocationsPage />} />
+      <Route path="/locais/novo" element={<LocationCreatePage />} />
+      <Route path="/locais/:id" element={<LocationDetailPage />} />
+      <Route path="/locais/:id/editar" element={<LocationEditPage />} />
+      <Route path="/imoveis" element={<PropertiesPage />} />
+      <Route path="/imoveis/novo" element={<PropertyFormPage />} />
+      <Route path="/imoveis/:id" element={<PropertyDetailPage />} />
+      <Route path="/imoveis/:id/editar" element={<PropertyFormPage />} />
+      <Route path="/templos" element={<TemplesPage />} />
+      <Route path="/templos/novo" element={<TempleFormPage />} />
+      <Route path="/templos/:id" element={<TempleDetailPage />} />
+      <Route path="/templos/:id/editar" element={<TempleFormPage />} />
+      <Route path="/ligacoes" element={<UnitLinksPage />} />
       <Route path="/pessoas" element={<PeopleListPage />} />
       <Route path="/pessoas/nova" element={<PersonCreatePage />} />
       <Route path="/pessoas/exportar" element={<PeopleExportPage />} />

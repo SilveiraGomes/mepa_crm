@@ -1,0 +1,34 @@
+{
+  "status": "STARTED_VERIFIED",
+  "port": 33031,
+  "datadir": "C:\\\\Users\\\\silve\\\\AppData\\\\Local\\\\Temp\\\\mepa-test-mysql\\\\7e129988ef72\\\\data\\\\",
+  "session_id": "7e129988ef72",
+  "pid": 41952,
+  "version": "8.4.7",
+  "version_comment": "MySQL Community Server - GPL",
+  "server_uuid": "6efec347-bc51-11f1-a434-842afd0b4147",
+  "pid_file": "C:\\\\Users\\\\silve\\\\AppData\\\\Local\\\\Temp\\\\mepa-test-mysql\\\\7e129988ef72\\\\data\\\\mysqld.pid",
+  "notes": "",
+  "pools": {
+    "mepa_wave4_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_7e129988_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 162,
+      "tables": 154
+    }
+  }
+}

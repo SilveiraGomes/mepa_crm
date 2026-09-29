@@ -1,0 +1,65 @@
+{
+  "project": "desktop-1440x900",
+  "checks": [
+    {
+      "screen": "locations-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "location-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "property-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "temple-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "transfer-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "set-primary-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "create-location",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "unit-links",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "publish-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "published-location",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    }
+  ]
+}

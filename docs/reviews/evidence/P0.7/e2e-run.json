@@ -1,0 +1,173 @@
+{
+  "runner": "scripts/run-p07-physical-e2e.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 12.7,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33031,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\7e129988ef72\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"7e129988ef72\",\n  \"pid\": 41952,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"6efec347-bc51-11f1-a434-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\7e129988ef72\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33031",
+      "rc": 0,
+      "seconds": 40.8,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_7e129988_pool_01\",\n    \"mepa_wave4_test_7e129988_pool_02\",\n    \"mepa_wave3_test_7e129988_pool_01\",\n    \"mepa_wave5_test_7e129988_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_7e129988_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_7e129988_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_7e129988_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_7e129988_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 162,\n      \"tables\": 154\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "physical_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/PhysicalE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 9.8,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:09.454, Memory: 30.00 MB\n\nOK (1 test, 8 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_physical",
+      "cmd": "npx.cmd playwright test --config playwright.physical.config.ts",
+      "rc": 0,
+      "seconds": 180.8,
+      "stdout_tail": ".0s)\n  ok  8 [laptop-1366x768] › tests\\e2e\\physical.spec.ts:139:1 › L01/L10 UI: create location with its first link, activate and publish (8.9s)\n  ok  9 [tablet-768x1024] › tests\\e2e\\physical.spec.ts:61:1 › L14 mobile-first journey: list -> detail -> property -> temple (16.3s)\n  ok 10 [tablet-768x1024] › tests\\e2e\\physical.spec.ts:97:1 › links: transfer and set-primary dialogs stay inside the viewport (11.2s)\n  ok 11 [tablet-768x1024] › tests\\e2e\\physical.spec.ts:126:1 › create form, unit links and F-06 message (8.0s)\n  ok 12 [tablet-768x1024] › tests\\e2e\\physical.spec.ts:139:1 › L01/L10 UI: create location with its first link, activate and publish (11.7s)\n  ok 13 [mobile-390x844] › tests\\e2e\\physical.spec.ts:61:1 › L14 mobile-first journey: list -> detail -> property -> temple (13.2s)\n  ok 14 [mobile-390x844] › tests\\e2e\\physical.spec.ts:97:1 › links: transfer and set-primary dialogs stay inside the viewport (10.8s)\n  ok 15 [mobile-390x844] › tests\\e2e\\physical.spec.ts:126:1 › create form, unit links and F-06 message (6.3s)\n  ok 16 [mobile-390x844] › tests\\e2e\\physical.spec.ts:139:1 › L01/L10 UI: create location with its first link, activate and publish (7.7s)\n\n  16 passed (3.0m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33031",
+      "rc": 0,
+      "seconds": 8.8,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at": "2026-09-29T23:02:15+0100",
+  "keyring": {
+    "location": "OS temp directory, outside the repository",
+    "inside_repository": false,
+    "distinct_keys": true,
+    "deleted_after_run": true
+  },
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_7e129988_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_7e129988_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 162,
+      "tables": 154
+    }
+  },
+  "schema_parity": {
+    "rc": 0,
+    "status": "PASS"
+  },
+  "p06_schema_parity": {
+    "rc": 0
+  },
+  "physical_phpunit": {
+    "rc": 0,
+    "summary": "OK (21 tests, 875 assertions)",
+    "seconds": 31.7
+  },
+  "regressions": {
+    "territorial": {
+      "rc": 0,
+      "summary": "OK (13 tests, 151 assertions)"
+    },
+    "people_context": {
+      "rc": 0,
+      "summary": "OK (8 tests, 220 assertions)"
+    },
+    "people_address": {
+      "rc": 0,
+      "summary": "OK (3 tests, 94 assertions)"
+    },
+    "academy": {
+      "rc": 0,
+      "summary": "OK (5 tests, 35 assertions)"
+    }
+  },
+  "validators": {
+    "physical_contracts": {
+      "rc": 0,
+      "tail": "a0ca\",\n    \"shell\": \"355d9c07354d38bc3dfd5176986dcfb16be0382e2d79df8f29460c3f7b062eb9\",\n    \"pages\": \"a21e8b0ea1fca7336e2eedd5afa05fff2a42ac93a2cefdd24ecc5f39a746b3af\",\n    \"patrimony\": \"eb76414a7917044f41d65b9a1b532e56462d72c4dc00d546bc7b237afa31b37a\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "territorial_contracts": {
+      "rc": 0,
+      "tail": "7542c79\",\n    \"rules\": \"bf244e91b4c8282b5c2cf0053fe9c9176671a50b3f21dd996d6f234520063b7e\",\n    \"contracts\": \"42462dd703ca29af84b9511746b423717bf0c71ba4c924dcbbc3c355e142c4db\",\n    \"ui\": \"cf0de4321725895a17d67efba008e10058ed562663a09b9c6e4fed8e6bb282d5\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "http_contracts": {
+      "rc": 0,
+      "tail": "HTTP_CONTRACTS_PASS 828 checks 66 endpoints"
+    },
+    "ui_contracts": {
+      "rc": 0,
+      "tail": "UI_CONTRACTS_PASS 530 checks; 34 screens; 25 actions; 0 contract-gapped actions"
+    },
+    "auth_contracts": {
+      "rc": 0,
+      "tail": "AUTH_CONTRACTS_PASS 20 checks; MEPA_LOCAL_AUTH_V1; refresh NOT_APPLICABLE"
+    },
+    "application_contracts": {
+      "rc": 0,
+      "tail": "{\n  status: 'APPLICATION_CONTRACTS_PASS',\n  checks: 1513,\n  failed: 0,\n  operations: 65,\n  command_operations: 30,\n  read_operations: 35,\n  d09_reviewed_false_positives: 17\n}"
+    },
+    "people_families_contracts": {
+      "rc": 0,
+      "tail": "{\n  \"validator\": \"MEPA_PEOPLE_FAMILIES_IMPLEMENTATION_V1\",\n  \"status\": \"PASS\",\n  \"endpoints\": 33,\n  \"errors\": []\n}"
+    },
+    "database_docs": {
+      "rc": 0,
+      "tail": "{\n  \"tables\": 199,\n  \"columns\": 1753,\n  \"fks\": 440,\n  \"master_relations\": 440,\n  \"local_links\": \"checked\",\n  \"identifier_strategy\": \"ACCEPTED\",\n  \"public_id_entities\": 54,\n  \"errors\": []\n}"
+    }
+  },
+  "web": {
+    "tests": {
+      "rc": 0
+    },
+    "lint": {
+      "rc": 0
+    }
+  },
+  "web_build": {
+    "rc": 0,
+    "pwa": true
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true
+  },
+  "playwright_physical": {
+    "startTime": "2026-09-29T22:10:47.052Z",
+    "duration": 178116.704,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "e2e_db_checks": {
+    "congregations_before": 1
+  },
+  "log_scan": {
+    "bytes_scanned": 4563300,
+    "leaks": []
+  },
+  "fixture_manifest_removed": true,
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-09-29T23:13:54+0100"
+}

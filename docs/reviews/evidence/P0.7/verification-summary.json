@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "phase": "P0.7-I",
+  "baseline": "7f9243932801b8a84ee6990dcfc5ded61b273bdc",
+  "schema_commit": "46746b5",
+  "implementation_commit": "be625df",
+  "test_infrastructure": {"start": "STARTED_VERIFIED", "port": 33031, "session": "7e129988ef72", "wave5_migrations": 162, "wave5_tables": 154, "stop": "STOPPED_VERIFIED", "dev_database_touched": false},
+  "schema": {"status": "PASS", "comparison": "BIDIRECTIONAL", "tables": 6, "columns": 57, "index_entries": 27, "foreign_keys": 11, "missing_or_mismatched": 0, "unexpected": 0, "forbidden_columns_present": 0, "controlled_rows": 14, "schema_changes": 1, "p06_schema_parity": "PASS"},
+  "physical_phpunit": {"tests": 21, "assertions": 875, "status": "PASS"},
+  "e2e_matrix": {
+    "L01": "test_l01_address_location_and_first_link_are_created_atomically + Playwright L01/L10 UI",
+    "L02": "test_l02_location_without_active_vigente_link_is_invisible",
+    "L03": "test_l03_property_is_created_on_a_linked_location",
+    "L04": "test_l04_two_temples_on_one_location_create_no_congregation",
+    "L05": "test_l05_f06_wrong_scope_unknown_malformed_and_unlinked_targets_are_indistinguishable",
+    "L06": "test_l06_linking_an_existing_location_requires_prior_authority_over_it",
+    "L07": "test_l07_set_primary_keeps_at_most_one_primary_per_unit + Playwright set-primary",
+    "L08": "test_l08_last_active_link_cannot_end_without_transfer_or_close",
+    "L09": "test_l09_transfer_preserves_history_and_moves_authority",
+    "L10": "test_l10_publish_exposes_only_the_minimal_public_projection + Playwright publish",
+    "L11": "test_l11_coordinate_change_on_published_location_returns_it_to_private",
+    "L12": "test_l12_owner_person_projection_never_leaks_people_data",
+    "L13": "test_l13_address_is_encrypted_with_its_own_aad_and_fails_closed",
+    "L14": "Playwright 'L14 mobile-first journey' x 4 viewports",
+    "L15": "test_l15_concurrent_set_primary_never_leaves_two_primaries (real MySQL connections)",
+    "L16": "test_l16_concurrent_end_link_and_transfer_never_orphan_the_location (real MySQL connections)",
+    "passed": 16
+  },
+  "concurrency": {
+    "C1": {"different_links_rounds": [["OK", "OK"], ["OK", "OK"], ["OK", "OK"]], "same_link": ["OK", "STALE_WRITE"], "final_primaries": 1},
+    "C2": {"same_link_end_vs_transfer": [["OK", "STALE_WRITE"], ["OK", "STALE_WRITE"]], "last_link_end_vs_transfer": [["OK", "STALE_WRITE"], ["LAST_ACTIVE_LINK_REQUIRED", "OK"]], "two_links_ended": [["LAST_ACTIVE_LINK_REQUIRED", "OK"], ["LAST_ACTIVE_LINK_REQUIRED", "OK"]], "orphaned_locations": 0}
+  },
+  "mutation_probes": {"physical": {"control": "PASS", "probes": ["M1a", "M1b", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12"], "detected": 13, "restored_byte_for_byte": true}, "territorial": {"detected": 8, "of": 8, "restored_byte_for_byte": true}},
+  "regressions": {"territorial": "13 tests / 151 assertions", "people_context_authority": "8 / 220", "people_address": "3 / 94", "academy_http_authentication": "5 / 35"},
+  "validators": {"physical_contracts": "PASS (20 structural + 13 probes)", "territorial_contracts": "PASS", "http_contracts": "HTTP_CONTRACTS_PASS 828 checks", "ui_contracts": "UI_CONTRACTS_PASS 530 checks", "auth_contracts": "AUTH_CONTRACTS_PASS 20 checks", "application_contracts": "APPLICATION_CONTRACTS_PASS 1513 checks", "people_families_contracts": "PASS", "database_docs": "199 tables, 1753 columns, 440 FKs, 0 errors"},
+  "web": {"vitest": "4 files / 18 tests PASS", "eslint": "PASS", "build": "PASS", "pwa": "PASS"},
+  "playwright": {"projects": 4, "tests": 16, "passed": 16, "failed": 0, "flaky": 0, "screenshots": 40, "visual_checks": 40, "overflow": 0, "clipped_buttons": 0, "dialogs_outside_viewport": 0},
+  "security": {"log_scan_bytes": 4563300, "leaks": 0, "keyring_outside_repository": true, "keyring_deleted": true, "fixture_manifest_removed": true},
+  "graphify": {"source_commit": "be625df5", "nodes_before": 6594, "edges_before": 11845, "nodes_after": 7088, "edges_after": 13085, "dangling": 0, "missing_physical_files": 0, "duplicate_ids": 0, "unexplained_shrink": false, "communities": "551 -> 515 (re-clustering; labels renamed by hub, LLM relabel pending)"}
+}

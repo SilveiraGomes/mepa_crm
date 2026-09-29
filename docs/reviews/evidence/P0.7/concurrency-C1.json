@@ -1,0 +1,21 @@
+{
+    "different_links_rounds": [
+        [
+            "OK",
+            "OK"
+        ],
+        [
+            "OK",
+            "OK"
+        ],
+        [
+            "OK",
+            "OK"
+        ]
+    ],
+    "same_link": [
+        "OK",
+        "STALE_WRITE"
+    ],
+    "final_primaries": 1
+}
