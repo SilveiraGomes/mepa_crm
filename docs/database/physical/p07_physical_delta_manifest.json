@@ -1,0 +1,36 @@
+{
+  "phase": "P0.7",
+  "adr": "docs/adr/0018-physical-locations-v1-policy.md",
+  "migrations": [
+    "2026_09_29_000001_p07_create_temples.php",
+    "2026_09_29_000002_p07_install_physical_catalog.php"
+  ],
+  "schema_changes": [
+    "CREATE TABLE temples (model_catalog design, no extra column or CHECK)"
+  ],
+  "forbidden_columns": [
+    "physical_locations.owner_unit_id",
+    "properties.owner_unit_id",
+    "physical_locations.unit_id",
+    "organizational_units.location_id",
+    "temples.unit_id",
+    "temples.parent_id"
+  ],
+  "unchanged_tables": ["addresses", "physical_locations", "properties", "occupation_types", "unit_location_links", "files", "legal_documents"],
+  "controlled_data": [
+    "occupation_types:OWNED",
+    "occupation_types:RENTED",
+    "occupation_types:CEDED",
+    "occupation_types:BORROWED",
+    "occupation_types:TEMPORARY",
+    "occupation_types:OTHER",
+    "permissions:PHYSICAL_LOCATION_VIEW",
+    "permissions:PHYSICAL_LOCATION_MANAGE",
+    "permissions:PHYSICAL_LOCATION_PUBLISH",
+    "permissions:PROPERTY_VIEW",
+    "permissions:PROPERTY_MANAGE",
+    "permissions:TEMPLE_VIEW",
+    "permissions:TEMPLE_MANAGE",
+    "permissions:UNIT_LOCATION_LINK_MANAGE"
+  ]
+}
