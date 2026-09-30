@@ -1,0 +1,815 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.membership.config.ts"
+    ],
+    "configFile": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\playwright.membership.config.ts",
+    "rootDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-1440x900",
+        "name": "desktop-1440x900",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "membership.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "laptop-1366x768",
+        "name": "laptop-1366x768",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "membership.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tablet-768x1024",
+        "name": "tablet-768x1024",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "membership.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-390x844",
+        "name": "mobile-390x844",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "membership.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../../docs/reviews/evidence/P0.9/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "membership.spec.ts",
+      "file": "membership.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "members list, navigation and scoped search by official number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13910,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:04:06.377Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-01cec0287fc5e419793a",
+          "file": "membership.spec.ts",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "M01-M03 admission in the browser: submit, validate, approve issues the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19591,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:04:20.748Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-18917dd35a2d48e73305",
+          "file": "membership.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "M24 collective admission follows the list order and is all-or-nothing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11343,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:04:40.382Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-1c020740019abb2a2b81",
+          "file": "membership.spec.ts",
+          "line": 116,
+          "column": 1
+        },
+        {
+          "title": "M23 member detail, legacy identifiers, milestones and history (mobile-first)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17941,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:04:51.754Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-4261a6b59393578e59e8",
+          "file": "membership.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "M10 transfer completion in the browser moves the Congregation and keeps the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22589,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:05:09.728Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-6930c0842c302793c5dc",
+          "file": "membership.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "members list, navigation and scoped search by official number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11488,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:05:34.617Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-99a495db0fc2a2ca0a05",
+          "file": "membership.spec.ts",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "M01-M03 admission in the browser: submit, validate, approve issues the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 21160,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:05:46.545Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-a1e0fb26d9e8e15d1cd1",
+          "file": "membership.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "M24 collective admission follows the list order and is all-or-nothing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22813,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:06:07.754Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-af74148285cc674615bb",
+          "file": "membership.spec.ts",
+          "line": 116,
+          "column": 1
+        },
+        {
+          "title": "M23 member detail, legacy identifiers, milestones and history (mobile-first)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23384,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:06:30.646Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-c44f3590e8f51d532c1c",
+          "file": "membership.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "M10 transfer completion in the browser moves the Congregation and keeps the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 25177,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:06:54.084Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-5628cbc79772a220e70b",
+          "file": "membership.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "members list, navigation and scoped search by official number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10583,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:07:22.315Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-9b79b2a14822e795a8bb",
+          "file": "membership.spec.ts",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "M01-M03 admission in the browser: submit, validate, approve issues the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18932,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:07:33.390Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-dc07b8ce606820131301",
+          "file": "membership.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "M24 collective admission follows the list order and is all-or-nothing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13231,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:07:52.361Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-31d5f3852f3232a643b9",
+          "file": "membership.spec.ts",
+          "line": 116,
+          "column": 1
+        },
+        {
+          "title": "M23 member detail, legacy identifiers, milestones and history (mobile-first)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19197,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:08:05.633Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-02aff7b72547ef317c62",
+          "file": "membership.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "M10 transfer completion in the browser moves the Congregation and keeps the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24618,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:08:24.871Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-e275bdef94f294ae95e7",
+          "file": "membership.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "members list, navigation and scoped search by official number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12417,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:08:52.576Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-bd990254ac2a1324e20a",
+          "file": "membership.spec.ts",
+          "line": 62,
+          "column": 1
+        },
+        {
+          "title": "M01-M03 admission in the browser: submit, validate, approve issues the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19196,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:09:05.513Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-6c3c7ac9784adc9725db",
+          "file": "membership.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "M24 collective admission follows the list order and is all-or-nothing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12891,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:09:24.752Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-c77e089018fe23e58d1e",
+          "file": "membership.spec.ts",
+          "line": 116,
+          "column": 1
+        },
+        {
+          "title": "M23 member detail, legacy identifiers, milestones and history (mobile-first)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18530,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:09:37.689Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-cfc61f76b8e5db9a64bb",
+          "file": "membership.spec.ts",
+          "line": 143,
+          "column": 1
+        },
+        {
+          "title": "M10 transfer completion in the browser moves the Congregation and keeps the number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24722,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-30T09:09:56.269Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8989d4b11360778fb7be-8a9df3e532f2262e1816",
+          "file": "membership.spec.ts",
+          "line": 173,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-30T09:04:04.715Z",
+    "duration": 377246.28,
+    "expected": 20,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

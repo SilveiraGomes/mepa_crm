@@ -1,0 +1,42 @@
+{
+    "C2a_0": {
+        "race": "complete vs inactivate",
+        "complete": "OK",
+        "inactivate": "TRANSFER_IN_PROGRESS",
+        "open_periods": 1,
+        "at": "destination"
+    },
+    "C2a_1": {
+        "race": "complete vs end",
+        "complete": "OK",
+        "end": "OUT_OF_SCOPE",
+        "open_periods": 1,
+        "at": "destination"
+    },
+    "C2a_2": {
+        "race": "complete vs inactivate",
+        "complete": "OK",
+        "inactivate": "TRANSFER_IN_PROGRESS",
+        "open_periods": 1,
+        "at": "destination"
+    },
+    "C2a_3": {
+        "race": "complete vs end",
+        "complete": "OK",
+        "end": "TRANSFER_IN_PROGRESS",
+        "open_periods": 1,
+        "at": "destination"
+    },
+    "C2b_1": {
+        "request": "MEMBERSHIP_NOT_ACTIVE",
+        "end": "OK"
+    },
+    "C2b_2": {
+        "request": "MEMBERSHIP_NOT_ACTIVE",
+        "end": "OK"
+    },
+    "C2b_3": {
+        "request": "MEMBERSHIP_NOT_ACTIVE",
+        "end": "OK"
+    }
+}

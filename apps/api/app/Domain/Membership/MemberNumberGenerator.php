@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Membership;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Illuminate\Database\ConnectionInterface;
 use RuntimeException;
 
@@ -17,11 +18,16 @@ use RuntimeException;
  * that never resets on a month or year boundary. A membership can only ever receive one number
  * (member_numbers.membership_id is UNIQUE) - calling this again for the same membership replays
  * the existing number instead of allocating a new one.
+ *
+ * P0.9 / P09-D-F02 (ADR 0020 D02): AA/MM (and issued_year/issued_month) are the Africa/Luanda civil year and month of
+ * the issuing instant, whatever the time zone of the DateTimeImmutable received; issued_at/created_at are stored in
+ * UTC. An approval at 00:30 on 1 October in Luanda (23:30 UTC on 30 September) is MM = 10.
  */
 final class MemberNumberGenerator
 {
     private const SEQUENCE_CODE = 'MEPA_NATIONAL';
     private const MAX_SEQUENCE = 999999;
+    private const NUMBER_TIMEZONE = 'Africa/Luanda';
 
     private ConnectionInterface $db;
 
@@ -65,16 +71,17 @@ final class MemberNumberGenerator
                 throw new RuntimeException('MEMBER_NUMBER_SEQUENCE_EXHAUSTED');
             }
 
-            $year = (int) $issuedAt->format('y');
-            $month = (int) $issuedAt->format('n');
+            $local = $issuedAt->setTimezone(new DateTimeZone(self::NUMBER_TIMEZONE));
+            $year = (int) $local->format('y');
+            $month = (int) $local->format('n');
             $number = sprintf('MEPA%02d%02d%06d', $year, $month, $next);
-            $timestamp = $issuedAt->format('Y-m-d H:i:s.u');
+            $timestamp = $issuedAt->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.u');
 
             $this->db->table('member_numbers')->insert([
                 'membership_id' => $membershipId,
                 'number' => $number,
                 'sequence_value' => $next,
-                'issued_year' => (int) $issuedAt->format('Y'),
+                'issued_year' => (int) $local->format('Y'),
                 'issued_month' => $month,
                 'issued_at' => $timestamp,
                 'origin' => $origin,

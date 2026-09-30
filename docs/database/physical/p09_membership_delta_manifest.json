@@ -1,0 +1,45 @@
+{
+  "phase": "P0.9",
+  "adr": "docs/adr/0020-membership-v1-policy.md",
+  "migrations": [
+    "2026_09_30_000002_p09_add_membership_periods_open_guard.php",
+    "2026_09_30_000003_p09_install_membership_catalog.php"
+  ],
+  "schema_changes": [
+    "ALTER TABLE membership_periods ADD open_flag TINYINT UNSIGNED GENERATED ALWAYS AS (IF(ends_at IS NULL, 1, NULL)) STORED + UNIQUE uq_membership_periods_membership_open (membership_id, open_flag)"
+  ],
+  "generated_columns": {
+    "membership_periods.open_flag": "if(ends_at is null,1,null)"
+  },
+  "unique_keys": {
+    "uq_membership_periods_membership_open": ["membership_id", "open_flag"]
+  },
+  "new_tables": [],
+  "forbidden_columns": [
+    "people.unit_id",
+    "memberships.congregation_id",
+    "memberships.unit_id",
+    "member_numbers.public_id",
+    "transfers.unit_id"
+  ],
+  "unchanged_tables": ["membership_statuses", "memberships", "member_number_sequences", "member_numbers", "legacy_member_numbers", "milestone_types", "ecclesiastical_milestones", "transfers", "workflows", "workflow_instances", "people", "person_unit_contexts"],
+  "controlled_data": [
+    "membership_statuses:SUBMITTED",
+    "membership_statuses:VALIDATED",
+    "membership_statuses:REJECTED",
+    "membership_statuses:WITHDRAWN",
+    "membership_statuses:ACTIVE",
+    "membership_statuses:INACTIVE",
+    "membership_statuses:ENDED",
+    "milestone_types:CONVERSION",
+    "milestone_types:BAPTISM",
+    "permissions:MEMBERSHIP_VIEW",
+    "permissions:MEMBERSHIP_ADMISSION_MANAGE",
+    "permissions:MEMBERSHIP_APPROVE",
+    "permissions:MEMBERSHIP_MANAGE",
+    "permissions:MEMBERSHIP_TRANSFER",
+    "permissions:MEMBERSHIP_LEGACY_MANAGE",
+    "workflows:MEMBERSHIP_TRANSFER",
+    "member_number_sequences:MEPA_NATIONAL"
+  ]
+}

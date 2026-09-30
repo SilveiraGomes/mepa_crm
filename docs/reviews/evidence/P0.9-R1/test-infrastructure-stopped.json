@@ -1,0 +1,11 @@
+{
+  "status": "STOPPED_VERIFIED",
+  "instance_stopped_confirmed": true,
+  "attestation_verified": true,
+  "ownership_verified": true,
+  "graceful_shutdown_sent": true,
+  "fallback_kill_used": false,
+  "datadir_removed": true,
+  "infrastructure_result": "PASS",
+  "notes": ""
+}

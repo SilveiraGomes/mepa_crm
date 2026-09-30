@@ -5,7 +5,7 @@ if (!apiBaseUrl) console.warn('VITE_API_URL não está definida.')
 export type QueryValue = string | number | boolean | null | undefined
 
 export interface ApiErrorBody {
-  error?: { code?: string; message?: string; details?: { fields?: Record<string, string[]> } }
+  error?: { code?: string; message?: string; details?: { fields?: Record<string, string[]>; items?: unknown[] } }
 }
 
 export class ApiError extends Error {
@@ -13,14 +13,17 @@ export class ApiError extends Error {
   readonly code: string
   readonly fields: Record<string, string[]>
   readonly retryAfterSeconds: number | null
+  /** Structured, non-sensitive error details (e.g. the per-item result of a rejected collective approval). */
+  readonly details: { items?: unknown[] } | null
 
-  constructor(status: number, code: string, fields: Record<string, string[]> = {}, retryAfterSeconds: number | null = null) {
+  constructor(status: number, code: string, fields: Record<string, string[]> = {}, retryAfterSeconds: number | null = null, details: { items?: unknown[] } | null = null) {
     super(`API ${status} ${code}`)
     this.name = 'ApiError'
     this.status = status
     this.code = code
     this.fields = fields
     this.retryAfterSeconds = retryAfterSeconds
+    this.details = details
   }
 }
 
@@ -76,6 +79,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       body.error?.code ?? 'UNKNOWN',
       body.error?.details?.fields ?? {},
       Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : null,
+      body.error?.details?.items ? { items: body.error.details.items } : null,
     )
   }
 

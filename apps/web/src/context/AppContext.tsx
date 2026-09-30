@@ -17,6 +17,9 @@ import type { CodeLabel, PhysicalContext, PhysicalUnit } from '../types/physical
 import { filesGet } from '../lib/files/client'
 import { fl } from '../lib/files/endpoints'
 import type { FilesContext } from '../types/files'
+import { membershipGet } from '../lib/membership/client'
+import { mb } from '../lib/membership/endpoints'
+import type { MembershipContext } from '../types/membership'
 
 /** People permissions projected by the API (presentation only; the backend decides every request). */
 export interface PeopleAccess {
@@ -31,6 +34,9 @@ export interface PhysicalAccess { known: boolean; has: (permission: string) => b
 /** Documents/Files permissions projected by the API (presentation only; the backend decides every request). */
 export interface FilesAccess { known: boolean; has: (permission: string) => boolean; context: FilesContext | null }
 
+/** Membership permissions projected by the API (presentation only; the backend decides every request). */
+export interface MembershipAccess { known: boolean; has: (permission: string) => boolean; context: MembershipContext | null; refresh: () => void }
+
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
   session: AuthSession | null
@@ -40,6 +46,7 @@ interface AppValue {
   territorial: TerritorialAccess
   physical: PhysicalAccess
   files: FilesAccess
+  membership: MembershipAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -116,6 +123,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const held = new Set(filesContext.permissions)
     return { known: true, has: (permission) => held.has(permission), context: filesContext }
   }, [filesContext])
+  const [membershipContext, setMembershipContext] = useState<MembershipContext | null | 'none'>(null)
+  const [membershipNonce, setMembershipNonce] = useState(0)
+  useEffect(() => {
+    if (!sessionToken) { setMembershipContext(null); return }
+    const controller = new AbortController()
+    membershipGet<Item<MembershipContext>>(mb.context(), {}, controller.signal).then((result) => setMembershipContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setMembershipContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken, membershipNonce])
+  const membership = useMemo<MembershipAccess>(() => {
+    const refresh = () => setMembershipNonce((value) => value + 1)
+    if (membershipContext === null) return { known: false, has: () => false, context: null, refresh }
+    if (membershipContext === 'none') return { known: true, has: () => false, context: null, refresh }
+    const held = new Set(membershipContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), context: membershipContext, refresh }
+  }, [membershipContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -131,7 +155,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, files, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, files, membership, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\DatabaseV2\MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" tests="5" assertions="186" errors="0" warnings="0" failures="0" skipped="0" time="13.326638">
+    <testcase name="test_s01_open_period_guard_is_physical_and_the_migration_refuses_incompatible_data" class="Tests\DatabaseV2\MembershipVerticalTest" classname="Tests.DatabaseV2.MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" line="24" assertions="14" time="10.387245"/>
+    <testcase name="test_s02_catalog_is_complete_idempotent_role_free_and_never_resets_the_counter" class="Tests\DatabaseV2\MembershipVerticalTest" classname="Tests.DatabaseV2.MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" line="65" assertions="10" time="0.187802"/>
+    <testcase name="test_m01_submission_uses_an_existing_person_and_issues_no_number" class="Tests\DatabaseV2\MembershipVerticalTest" classname="Tests.DatabaseV2.MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" line="86" assertions="52" time="0.607678"/>
+    <testcase name="test_m03_approval_issues_the_official_number_in_the_same_transaction" class="Tests\DatabaseV2\MembershipVerticalTest" classname="Tests.DatabaseV2.MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" line="139" assertions="32" time="0.887733"/>
+    <testcase name="test_m10_m11_transfer_moves_the_congregation_atomically_keeps_the_number_and_history" class="Tests\DatabaseV2\MembershipVerticalTest" classname="Tests.DatabaseV2.MembershipVerticalTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\MembershipVerticalTest.php" line="365" assertions="78" time="1.256180"/>
+  </testsuite>
+</testsuites>

@@ -87,5 +87,16 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('files-download', function (Request $request) {
             return Limit::perMinute(60)->by('files-download|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
         });
+        // P0.9 Membership (ADR 0020 D10): reads, writes, and searches (a lookup by official number or legacy identifier
+        // is limited against enumeration).
+        RateLimiter::for('membership', function (Request $request) {
+            return Limit::perMinute(240)->by('membership|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('membership-write', function (Request $request) {
+            return Limit::perMinute(60)->by('membership-write|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('membership-search', function (Request $request) {
+            return Limit::perMinute(60)->by('membership-search|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
     }
 }

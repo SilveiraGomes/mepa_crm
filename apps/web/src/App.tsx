@@ -15,6 +15,7 @@ const personAreas = () => import('./pages/PersonAreaPages')
 const householdPages = () => import('./pages/HouseholdPages')
 const territorialPages = () => import('./pages/TerritorialPages')
 const physicalPages = () => import('./pages/PhysicalPages')
+const membershipPages = () => import('./pages/MembershipPages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -71,6 +72,13 @@ const DocumentsListPage = named(documentsPages, 'DocumentsListPage')
 const DocumentCreatePage = named(documentsPages, 'DocumentCreatePage')
 const DocumentDetailPage = named(documentsPages, 'DocumentDetailPage')
 const LocationsPage = named(physicalPages, 'LocationsPage')
+const MembersPage = named(membershipPages, 'MembersPage')
+const AdmissionsPage = named(membershipPages, 'AdmissionsPage')
+const CollectiveAdmissionPage = named(membershipPages, 'CollectiveAdmissionPage')
+const MemberDetailPage = named(membershipPages, 'MemberDetailPage')
+const MemberHistoryPage = named(membershipPages, 'MemberHistoryPage')
+const MemberTransfersPage = named(membershipPages, 'MemberTransfersPage')
+const TransfersPage = named(membershipPages, 'TransfersPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -107,6 +115,13 @@ function App() {
       <Route path="/documentos" element={<DocumentsListPage />} />
       <Route path="/documentos/novo" element={<DocumentCreatePage />} />
       <Route path="/documentos/:id" element={<DocumentDetailPage />} />
+      <Route path="/membros" element={<MembersPage />} />
+      <Route path="/membros/admissoes" element={<AdmissionsPage />} />
+      <Route path="/membros/admissoes/colectiva" element={<CollectiveAdmissionPage />} />
+      <Route path="/membros/transferencias" element={<TransfersPage />} />
+      <Route path="/membros/:id" element={<MemberDetailPage />} />
+      <Route path="/membros/:id/historico" element={<MemberHistoryPage />} />
+      <Route path="/membros/:id/transferencias" element={<MemberTransfersPage />} />
       <Route path="/locais" element={<LocationsPage />} />
       <Route path="/locais/novo" element={<LocationCreatePage />} />
       <Route path="/locais/:id" element={<LocationDetailPage />} />

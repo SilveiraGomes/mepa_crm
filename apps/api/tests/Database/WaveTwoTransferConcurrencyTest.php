@@ -234,8 +234,18 @@ final class WaveTwoTransferConcurrencyTest extends TestCase
         $wf = $this->workflowInstance($origin);
         $service = new TransferService($db);
 
+        // P0.9 (P09-D-F01): effectuation is the atomic D06 Efectivação, so the fixture is an ACTIVE membership whose
+        // open period is at the origin and whose transfer reached DESTINATION_ACCEPTED.
+        $active = $this->lookup('membership_statuses', 'ACTIVE');
+        $db->table('memberships')->where('id', $membership)->update(['status_id' => $active]);
+        $db->table('membership_periods')->insert(['membership_id' => $membership, 'congregation_id' => $origin, 'status_id' => $active,
+            'starts_at' => '2025-06-01 00:00:00.000000', 'ends_at' => null, 'created_at' => '2025-06-01 00:00:00.000000']);
         $first = $service->request($membership, $origin, $destB, $wf, new DateTimeImmutable('2026-01-01'));
-        $service->effectuate($first['id'], new DateTimeImmutable('2026-01-15'));
+        $db->table('transfers')->where('id', $first['id'])->update(['status' => 'DESTINATION_ACCEPTED']);
+        $service->effectuate($first['id']);
+        $open = $db->table('membership_periods')->where('membership_id', $membership)->whereNull('ends_at')->get();
+        $this->assertCount(1, $open, 'the effectuation moved the open period (P09-D-F01)');
+        $this->assertSame($destB, (int) $open[0]->congregation_id);
         $second = $service->request($membership, $destB, $destC, $wf, new DateTimeImmutable('2026-06-01'));
 
         $this->assertSame(2, $db->table('transfers')->where('membership_id', $membership)->count(), 'Completed transfer preserved as history');
