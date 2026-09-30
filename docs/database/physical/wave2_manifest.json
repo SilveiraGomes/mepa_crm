@@ -1,6 +1,6 @@
 {
   "phase": "P0.3.2",
-  "catalog_sha256": "237478eba6accf72c150f6268ab22c448f9937bf11b394c9e273b4c71157358e",
+  "catalog_sha256": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
   "tables": [
     "education_types",
     "employment_types",
