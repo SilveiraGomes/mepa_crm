@@ -28,6 +28,9 @@ final class FilesServiceFactory
     // root or ring fails closed on the next request).
     public function runtime(): FilesRuntime
     {
+        // Stack traces of any exception raised while handling file content never carry argument values (original
+        // names, content prefixes): ADR 0019 D03/D12 keep both out of every log.
+        ini_set('zend.exception_ignore_args', '1');
         $settings = (array) config('files', []);
         $forbidden = [public_path(), base_path(), dirname(base_path(), 2)];
         $db = $this->db;

@@ -22,7 +22,9 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        // P0.8 (ADR 0019 D03/D12): Files domain errors are rendered and logged as one structured line (reason, route,
+        // actor) by their renderable; a reported stack trace would carry argument snippets (file names, content).
+        FilesError::class,
     ];
 
     /**
