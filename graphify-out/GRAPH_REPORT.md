@@ -1,29 +1,29 @@
-# Graph Report - mepa-crm  (2026-09-29)
+# Graph Report - mepa-crm  (2026-09-30)
 
 ## Corpus Check
-- 1186 files · ~2,248,064 words
+- 1265 files · ~2,344,741 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 7088 nodes · 13085 edges · 515 communities (274 shown, 126 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 574 edges (avg confidence: 0.85)
+- 7661 nodes · 14386 edges · 595 communities (288 shown, 120 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 674 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `be625df5`
+- Built from commit: `fda69dd3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - document
-- Illuminate\Support\Facades\DB
+- Illuminate\Database\Migrations\Migration
 - laravel_schema_wamp_20260917_180403.sql
 - wave4_schema.sql
 - wave3_schema.sql
 - AcademicPages.tsx
 - PeoplePages.tsx
 - Illuminate\Support\Str
-- academy/client.ts
+- ApiError
 - AcademyQueryRequest
 - notify
 - App.tsx
@@ -39,16 +39,16 @@
 - AcademyError
 - GradeService
 - enrollments table
-- DiscipleshipEnrollmentScope
+- FilesError
 - AcademyRuntime
-- PeopleOutput
+- Illuminate\Http\JsonResponse
 - AcademyPolicy
 - validate-wave2-schema.cjs
 - AcademyEnrollmentContext
 - useApp
 - AcademyOperationsTest
 - DomainError
-- Illuminate\Http\JsonResponse
+- TerritorialController
 - User
 - WaveTwoPhysicalTest
 - test_mysql_instance_attestation.py
@@ -59,7 +59,7 @@
 - wave1_planned_schema.sql
 - P0.3.3 Wave 3 Tables Catalog
 - mysql_exec(statement, timeout, tolerate_timeout) — single centralized failure boundary for all MySQL subprocess calls
-- wave4-m121/qualify.py
+- VerificationError
 - test_cleanup_ownership_and_failure_boundary.py
 - TerritorialService
 - AcademyCollectionResource
@@ -67,14 +67,14 @@
 - P0.4 — Global Completeness Map
 - PhysicalError
 - PeopleAuthority
-- WaveFourEvangelismTemporalBoundaryTest
+- FilesOutput
 - PeoplePersonTest
 - PeopleHttpCase
-- WaveFivePhysicalTest.php
-- TerritorialPages.tsx
+- WaveFivePhysicalTest
+- FilesPages.tsx
 - ADR 0017: Scope, lifecycle e privacidade de People/Families
 - MysqlInstance
-- EndRequest
+- FilesRuntime
 - WaveFourWorkerHarness
 - Reconciliação pós-auditoria P0.2-F
 - P0.3.1 Wave 1 Physical Audit
@@ -93,14 +93,14 @@
 - P0.3.5 A2.1 Focused Remediation
 - validate-wave1-schema.cjs
 - validate-wave5-http-contracts.cjs
-- PeopleBaseController
+- Illuminate\Http\Request
 - EnrollmentService
 - PeopleCrypto
 - AcademyConcurrencyTest
 - scripts/wave4-m121/cleanup.py — cleanup state machine
-- schema_exists
+- cleanup_run
 - validate-territorial-contracts.cjs
-- Illuminate\Database\Connection
+- DateTimeImmutable
 - WaveTwoTransferConcurrencyTest
 - Illuminate\Http\Resources\Json\JsonResource
 - WaveTwoM1IndependentAuditTest
@@ -108,14 +108,14 @@
 - validate-database-docs.cjs
 - P0.3.2-F Independent Wave 2 Reconciliation (Document)
 - AcademyTarget
-- PersonRecords
-- PhysicalRequest
-- PooledWaveFourCase
+- PeopleRuntime
+- Illuminate\Foundation\Http\FormRequest
+- DomainClock
 - TerritorialVerticalTest
 - P0.5-R — Auditoria independente de People / Families
 - test_mysql_instance_lifecycle.py
 - ADR 0018: Physical Locations, Properties, Temples e vínculos Unit ↔ Location — política V1
-- WaveThreeDomainTest
+- InvitationService
 - HouseholdService
 - EvangelismService::run
 - scripts
@@ -123,32 +123,32 @@
 - compilerOptions
 - wave1-catalog.cjs
 - mysql_instance.py
-- ADR 0009: BIGINT Internal PK + Selective ULID public_id
+- P0.2-F Re-auditoria Diferencial
 - PeopleError
-- PeopleRuntime
+- FilesVerticalTest
 - ChildrenService
 - PeopleContextAuthorityTest
 - devDependencies
 - P0.3.3 Wave 3 Implementation Review
 - wave1-validator.test.cjs
-- cleanup_run
+- schema_exists
 - P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)
 - AddressService
 - PropertyService
-- PeopleAddressTest
+- TerritorialActor
 - compilerOptions
 - validate-wave5-schema.cjs
 - P0.5-R2 — Reauditoria independente da autoridade contextual
 - MEPA CRM v1.1.1 — canonical plan/architecture/implementation-rules spec
 - run.php
 - Graphify
-- Handler.php
+- ADR 0019: Documents / Files — política V1 da infraestrutura transversal
 - AcademyActionResource
-- docs/database/01_database_principles.md
+- mepa_crm_v1.1.1.md
 - P0.3.4 Wave 4 Physical Tables
-- member_numbers table
+- Wave 2 Test Suite Execution Summary (section 16)
 - 09_open_database_decisions
-- Illuminate\Http\Request
+- AuthSessionService
 - AcademyAuthorizationTest
 - people.spec.ts
 - generate-wave2-migrations.cjs
@@ -157,9 +157,9 @@
 - probe-people-families-validator.cjs
 - Humanizer
 - ContextRequest
-- PeopleRelationshipTest
-- LinkController
-- AuthSessionContractTest
+- PeopleCatalog
+- PhysicalRequest
+- FilesKeyRing
 - ADR 0012: Wave 3 Token, Policy and Minimal Audit
 - probe_integration_attacks.py
 - WaveFourIndependentAuditTest
@@ -184,15 +184,15 @@
 - plugin.json
 - PhysicalVerticalTest
 - 2014_10_12_000000_create_users_table.php
-- WaveFourChildCheckinBoundaryTest
+- CheckinService
 - WaveFourChildrenSafetyTest
-- event_checkins Table
+- 12 Physical Migration Plan (P0.3.1)
 - P0.3.5-A4-R2 — conclusão independente da evidência da Academia
 - P0.3.5-A4-R3 — atestação final independente da Academia
 - IndependentM11ValidatedTest
 - StepLongLeaseTest
 - probe-auth-validator.cjs
-- TerritorialActor
+- Illuminate\Database\Connection
 - PropertyController
 - P0.3.2-M1.1-R Audit of F-M1R-01
 - PooledWaveFiveCase
@@ -210,7 +210,7 @@
 - RelationshipService
 - PhysicalOutput
 - api.php
-- WaveFivePhysicalTest
+- EventPolicy
 - PooledWaveThreeCase
 - validate-p05-people-schema.cjs
 - Centro Geral opcional e dependência dos Centros
@@ -226,15 +226,14 @@
 - AcademyRequest
 - ProgressController.php
 - AppServiceProvider
-- W1-F01 Materialization (files.owner_department_id → department_instances.id)
-- P0.3.4-M1.1-R gate decision — REJECTED
+- validate-files-contracts.cjs
 - P0.3.5-A3.2 — Remediação de bounded nested collections
 - P0.3.5-A4-R4 — atestação final de reprodutibilidade da Academia
 - probe_rescue_gap_confirm.py
 - WaveFourCheckoutConcurrencyTest
-- WaveThreeCheckinConcurrencyTest
+- FilesHttpCase
 - @playwright/test
-- Unidade organizacional separada de imóvel
+- PhysicalRecords
 - P0.3.4-M1-R gate decision — CONDITIONALLY APPROVED
 - P0.3.5-A3.1 — CRUD Read-Model & HTTP Completeness
 - P0.3.5-A4-R: auditoria final independente do vertical Academia
@@ -244,18 +243,18 @@
 - marketplace.json
 - TempleService
 - scripts
-- mepa_crm_v1.1.1.md
+- MEPA Gestão
 - validator_mutation_proofs.py
 - Catalog and Schema Parity
-- W4R-M1R-01 — stale clock in EvangelismService::run() — RESOLVED
+- P0.3.4-M1.1-R gate decision — REJECTED
 - W4R-04 — Admission flow limit (INFO)
 - P0.6 — Territorial Structure Complete Vertical
 - probe_unhandled_exceptions.py
 - diagnose.py
-- TerritorialHttpCase
+- TerritorialCatalog
 - EventServiceProvider.php
 - MEPA CRM API
-- PeopleExportTest
+- WaveThreeCase
 - Academy Application Layer
 - P0.3.1 Wave 1 Gate
 - Addenda P0.3.4-M1.1-R — final independent audit, REJECTED
@@ -269,14 +268,14 @@
 - P0.3.4-R Auditoria Independente Wave 4
 - probe_toctou_junction.py
 - AuthServiceProvider
-- UserFactory
+- P0.7-R — Auditoria independente de Physical Locations
 - DatabaseSeeder.php
 - WaveFourWorkerHarnessTest
-- Órgãos permanentes e eventos concretos
+- FileStorage
 - ADR-0016: Authentication and session model
 - Child Profiles (data dictionary)
 - DomainAccess::authorizeMany() — shared-lock permission acquisition followed by a single DomainClock sample
-- ChildParticipationSafetyGate — central single policy gate for protected-participant admission
+- P0.8-I — Documents / Files Foundation
 - D-09 Reference Data Part — BLOCKED (grading cutoffs, weights, attempt limits, certification criteria)
 - P0.3.5-A3-R — Re-auditoria independente da HTTP API e CRUD read-model
 - Q: Re-auditar independentemente a A3/A3.1 HTTP API e CRUD read-model
@@ -320,27 +319,36 @@
 - TrimStrings
 - validate-p07-physical-schema.cjs
 - VerifyCsrfToken
+- ChildParticipationSafetyGate
 - PhysicalHttpCase
-- WaveFourCommitAuthorizationTest
+- PersonService
 - physical.spec.ts
 - TestCase
 - P0.6-RF — Territorial Final Attestation
-- PhysicalCatalog
-- PeopleContactTest
+- Closure
+- Handler.php
 - PooledCommitAuthorizationTest
 - P0.6 — Independent Audit
-- WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock
+- PhysicalGuard
+- validate-p08-files-schema.cjs
 - AcademyHttpAuthenticationTest
 - AcademyHttpContractTest
 - run-p07-physical-e2e.py
 - RouteServiceProvider.php
-- AuthSessionContractTest.php
+- WaveTwoConcurrencyTest
 - AdditionalM11Test
 - AdditionalM11ValidatedTest
 - HttpWaveFiveCase
-- AcademyE2EFixtureTest
-- PooledChildCheckinBoundaryTest
-- digest
+- Illuminate\Hashing\BcryptHasher
+- files.spec.ts
+- P0.2 Database Architecture Gate
+- Illuminate\Support\Facades\DB
+- ADR 0009: BIGINT Internal PK + Selective ULID public_id
+- FilesCatalog
+- P0.7-I — Physical Locations / Properties / Temples / Unit ↔ Location Links
+- run-p08-files-e2e.py
+- ExportRequest
+- Períodos efectivos e versões publicadas
 - console.php
 - vite-env.d.ts
 - tsconfig.json
@@ -419,14 +427,14 @@
 ## God Nodes (most connected - your core abstractions)
 1. `document` - 226 edges
 2. `AcademyRuntime` - 83 edges
-3. `AcademyError` - 80 edges
-4. `PeopleError` - 79 edges
-5. `PhysicalError` - 69 edges
-6. `WaveFourCase` - 69 edges
-7. `useApp()` - 67 edges
-8. `DomainClock` - 64 edges
-9. `PhysicalRecords` - 53 edges
-10. `notify()` - 49 edges
+3. `FilesError` - 82 edges
+4. `AcademyError` - 80 edges
+5. `PeopleError` - 79 edges
+6. `useApp()` - 79 edges
+7. `TerritorialActor` - 77 edges
+8. `PhysicalError` - 69 edges
+9. `WaveFourCase` - 69 edges
+10. `DomainClock` - 64 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Audit Graph Query: EvangelismService.progress` --conceptually_related_to--> `DiscipleshipEnrollmentScope`  [AMBIGUOUS]
@@ -488,15 +496,11 @@
 - **Wave 4 single Person identity reused across outreach/discipleship/child domains** — docs_database_physical_p0_3_4_wave4_report_person_reuse_pattern, docs_database_physical_wave4_audit_graph_outreach_contacts_outreach_contacts_table, docs_database_physical_wave4_audit_graph_discipleship_discipleship_enrollments_table, docs_database_physical_wave4_audit_graph_checkin_childrenservice_class [INFERRED 0.85]
 - **ChildrenService authorize-then-audit governance pattern** — docs_database_physical_wave4_audit_graph_checkin_childrenservice_class, docs_database_physical_wave4_audit_graph_checkin_access_method, docs_database_physical_wave4_audit_graph_checkin_authorize_method, docs_database_physical_wave4_audit_graph_checkin_audit_method [INFERRED 0.90]
 
-## Communities (515 total, 126 thin omitted)
+## Communities (595 total, 120 thin omitted)
 
 ### Community 0 - "document"
 Cohesion: 0.01
 Nodes (220): 16 m?dulos oficiais, API REST Laravel, Autoriza??o por escopo, Ledger, Pessoa, PWA React TypeScript Vite, ?rvore organizacional, Visão geral da arquitectura (+212 more)
-
-### Community 1 - "Illuminate\Support\Facades\DB"
-Cohesion: 0.01
-Nodes (6): PeopleCatalog, up(), Illuminate\Database\Migrations\Migration, Illuminate\Routing\Middleware\ThrottleRequests, Illuminate\Support\Facades\DB, Illuminate\Testing\TestResponse
 
 ### Community 2 - "laravel_schema_wamp_20260917_180403.sql"
 Cohesion: 0.02
@@ -511,48 +515,48 @@ Cohesion: 0.02
 Nodes (106): `addresses`, `audiences`, `audit_logs`, `auth_sessions`, `civil_status_types`, `communication_campaigns`, `communication_templates`, `contact_types` (+98 more)
 
 ### Community 5 - "AcademicPages.tsx"
-Cohesion: 0.05
-Nodes (76): academic(), classes(), ActionForm(), Column, DataTable(), Dialog(), EmptyState(), ErrorState() (+68 more)
+Cohesion: 0.04
+Nodes (86): academic(), content(), ActionForm(), Column, DataTable(), Dialog(), EmptyState(), ErrorState() (+78 more)
 
 ### Community 6 - "PeoplePages.tsx"
-Cohesion: 0.05
-Nodes (62): personAreas(), BirthFields(), MinorNotice(), PersonPicker(), PersonStatusBadge(), PersonTabs(), RestrictedNotice(), TABS (+54 more)
+Cohesion: 0.04
+Nodes (99): personAreas(), BirthFields(), MinorNotice(), PersonPicker(), PersonStatusBadge(), PersonTabs(), RestrictedNotice(), TABS (+91 more)
 
 ### Community 7 - "Illuminate\Support\Str"
-Cohesion: 0.07
-Nodes (33): Connection, DateTimeImmutable, Manager, Migrator, WaveThreeCase, WaveThreePhysicalTest, ExampleTest, Fixed session-lived database pool (+25 more)
+Cohesion: 0.06
+Nodes (29): UserFactory, ExampleTest, Fixed session-lived database pool, PHPUnit V2 subclasses (additive-only integration), TRUNCATE-based reset strategy, BEGIN/ROLLBACK transactional reset strategy, Cycle rule (A->B->C->A), general_center_key GENERATED...UNIQUE candidate (+21 more)
 
-### Community 8 - "academy/client.ts"
-Cohesion: 0.08
-Nodes (48): AuthPage, AppProvider(), AppShell(), signOut(), links, peopleLinks, physicalLinks, academyGet() (+40 more)
+### Community 8 - "ApiError"
+Cohesion: 0.07
+Nodes (58): AppProvider(), AppShell(), signOut(), filesLinks, links, peopleLinks, physicalLinks, academyGet() (+50 more)
 
 ### Community 9 - "AcademyQueryRequest"
 Cohesion: 0.13
 Nodes (7): AssessmentQueryController, CatalogQueryController, ClassQueryController, EligibleFileController, AcademyQueryRequest, AcademyReadCollectionResource, Illuminate\Validation\Rule
 
 ### Community 10 - "notify"
-Cohesion: 0.10
-Nodes (56): notify(), useAcademyItem(), useAcademyPage(), useListQuery(), academyPost(), toUiError(), optionsFor(), targetsFor() (+48 more)
+Cohesion: 0.09
+Nodes (58): notify(), useAcademyItem(), useAcademyPage(), useListQuery(), academyPost(), toUiError(), optionsFor(), targetsFor() (+50 more)
 
 ### Community 11 - "App.tsx"
 Cohesion: 0.03
-Nodes (62): AddressesPage, App(), AssessmentPage, AssessmentsPage, AttemptPage, AttemptsPage, AttendancePage, catalog() (+54 more)
+Nodes (73): AddressesPage, App(), AssessmentPage, AssessmentsPage, AttemptPage, AttemptsPage, AttendancePage, AuthPage (+65 more)
 
 ### Community 12 - "AcademicCatalogQueryService"
-Cohesion: 0.09
-Nodes (5): AcademicCatalogQueryService, AssessmentQueryService, DocumentQueryService, AcademyReadModelTest, Illuminate\Database\Query\Builder
+Cohesion: 0.08
+Nodes (6): AcademicCatalogQueryService, AcademyReason, DocumentQueryService, AcademyReadModelTest, Illuminate\Database\Query\Builder, ReflectionClass
 
 ### Community 13 - "enrollments"
 Cohesion: 0.06
 Nodes (50): academic_attendance, academic_units, age_band_rules, assessment_attempts, assessments, Decision: attendance strategy = Option B, audit_logs, certificates (+42 more)
 
 ### Community 14 - "cleanup.py"
-Cohesion: 0.10
-Nodes (42): Force primary cleanup failure while allowing a real rescue DROP., barriers_present(), CleanupInfrastructureError, create_run_root(), diagnostics_snapshot(), drain_connections(), drop_database_verified(), guard_schema() (+34 more)
+Cohesion: 0.12
+Nodes (29): Force primary cleanup failure while allowing a real rescue DROP., barriers_present(), diagnostics_snapshot(), drain_connections(), drop_database_verified(), guard_schema(), kill_orphan_sessions(), mysql_exec() (+21 more)
 
 ### Community 15 - "WaveFourCase"
-Cohesion: 0.10
-Nodes (8): Connection, DateTimeImmutable, Manager, Migrator, WaveFourCase, WaveFourDiscipleshipScopeTest, WaveFourPhysicalTest, ConfigureLateLockTest
+Cohesion: 0.11
+Nodes (7): Connection, DateTimeImmutable, Manager, Migrator, WaveFourCase, WaveFourDiscipleshipScopeTest, WaveFourPhysicalTest
 
 ### Community 16 - "validate-wave5-application-contracts.cjs"
 Cohesion: 0.05
@@ -560,75 +564,75 @@ Nodes (38): a3HttpManifest, a4UiManifest, cfg, checks, codeAll, constants, contr
 
 ### Community 17 - "AcademyRemediationTest"
 Cohesion: 0.11
-Nodes (3): CertificateService, TranscriptService, AcademyRemediationTest
+Nodes (4): CertificateService, CompletionService, TranscriptService, AcademyRemediationTest
 
 ### Community 18 - "composer.json"
 Cohesion: 0.05
 Nodes (41): autoload, autoload-dev, psr-4, psr-4, config, optimize-autoloader, preferred-install, sort-packages (+33 more)
 
 ### Community 19 - "AppContext.tsx"
-Cohesion: 0.07
-Nodes (35): AppContext, AppValue, PeopleAccess, PhysicalAccess, TerritorialAccess, Toast, ACADEMY_PERMISSIONS, AcademyPermission (+27 more)
+Cohesion: 0.08
+Nodes (32): AppContext, AppValue, FilesAccess, PeopleAccess, PhysicalAccess, TerritorialAccess, Toast, Capabilities (+24 more)
 
 ### Community 20 - "_mysql"
-Cohesion: 0.13
-Nodes (41): CompletedProcess, _mysql(), new_schema(), Raised whenever this module cannot positively determine a resource's state…, Raw subprocess boundary. Kept exactly as-is (return type, exceptions) for…, VerificationError, check(), main() (+33 more)
+Cohesion: 0.14
+Nodes (39): CompletedProcess, _mysql(), new_schema(), Raw subprocess boundary. Kept exactly as-is (return type, exceptions) for…, check(), main(), _patch_mysql(), P0.3.4-M1.2.2 sections 15/16/17 -- false-positive guard suite for the cleanup… (+31 more)
 
 ### Community 21 - "AcademyError"
-Cohesion: 0.09
-Nodes (4): AcademyError, AcademyInput, AcademyResourceGuard, ClassQueryService
-
-### Community 22 - "GradeService"
-Cohesion: 0.14
-Nodes (3): CompletionService, GradeService, AcademyAssessmentCertificationTest
+Cohesion: 0.08
+Nodes (5): AcademyError, AcademyInput, AcademyPersonResolver, AssessmentQueryService, ClassQueryService
 
 ### Community 23 - "enrollments table"
 Cohesion: 0.09
 Nodes (38): academic_attendance table, academic_units table, assessment_attempts table, assessments table, certificates table, class_instructors table, class_sessions table, class_sessions partial event reuse (nullable event_session_id, Option B) (+30 more)
 
+### Community 24 - "FilesError"
+Cohesion: 0.07
+Nodes (6): DocumentService, FileClassification, FileContentService, FileRecords, FilesError, FileService
+
 ### Community 25 - "AcademyRuntime"
 Cohesion: 0.06
-Nodes (9): AcademicAttendanceService, AcademyContextQueryService, AcademyRuntime, AssessmentAttemptService, CurriculumService, EligibleFileQueryService, InstructorAssignmentService, DateTimeImmutable (+1 more)
+Nodes (8): AcademicAttendanceService, AcademyContextQueryService, AcademyRuntime, AssessmentAttemptService, CurriculumService, EligibleFileQueryService, DateTimeImmutable, AcademyContractClosureTest
 
-### Community 26 - "PeopleOutput"
+### Community 26 - "Illuminate\Http\JsonResponse"
 Cohesion: 0.05
-Nodes (16): ContactController, HouseholdController, PersonController, PeopleOutput, ContactStoreRequest, ContactUpdateRequest, HouseholdListRequest, HouseholdMemberRequest (+8 more)
+Nodes (24): AddressController, ContactController, HouseholdController, PersonController, RelationshipController, PeopleOutput, AddressStoreRequest, AddressUpdateRequest (+16 more)
 
 ### Community 27 - "AcademyPolicy"
-Cohesion: 0.04
-Nodes (16): AcademicPolicyResolver, AcademyAccess, AcademyAuditWriter, AcademyDecision, AcademyOperation, self, AcademyPolicy, self (+8 more)
+Cohesion: 0.05
+Nodes (10): AcademicPolicyResolver, AcademyAccess, AcademyOperation, self, AcademyPolicy, self, self, AcademyStateMachine (+2 more)
 
 ### Community 28 - "validate-wave2-schema.cjs"
 Cohesion: 0.06
-Nodes (27): CASCADE Audit (0 CASCADE across 74 tables), Drift Comparison via information_schema (STRICT_PARITY_PASS), all, alterStatements, appliedOrder, assigned, capture, catalogHash (+19 more)
+Nodes (32): CASCADE Audit (0 CASCADE across 74 tables), Drift Comparison via information_schema (STRICT_PARITY_PASS), Fresh Migration Path (Caminho A), mepa-wave2-mysql Docker Container, test_validator_flags_w1_f01_regression_if_the_fk_is_ever_removed, Upgrade/Rollback/Remigrate Path (Caminho B), W1-F01 Materialization (files.owner_department_id → department_instances.id), all (+24 more)
 
 ### Community 29 - "AcademyEnrollmentContext"
-Cohesion: 0.14
-Nodes (4): AcademyEnrollmentContext, self, EventParticipationContext, self
+Cohesion: 0.09
+Nodes (6): AcademyEnrollmentContext, self, EventParticipationContext, self, OpaqueRef, PeopleAudit
 
 ### Community 30 - "useApp"
-Cohesion: 0.06
-Nodes (54): physicalPages(), Protected(), useApp(), usePhysicalItem(), usePhysicalPage(), toPhysicalError(), HouseholdCreatePage(), submit() (+46 more)
+Cohesion: 0.08
+Nodes (54): useApp(), usePhysicalItem(), usePhysicalPage(), physicalGet(), physicalPatch(), physicalPost(), physicalPut(), Query (+46 more)
 
 ### Community 31 - "AcademyOperationsTest"
-Cohesion: 0.10
-Nodes (4): AcademicSessionLocationResolver, ClassSessionService, ProgressService, AcademyOperationsTest
+Cohesion: 0.09
+Nodes (5): AcademicSessionLocationResolver, ClassSessionService, InstructorAssignmentService, ProgressService, AcademyOperationsTest
 
 ### Community 32 - "DomainError"
-Cohesion: 0.16
+Cohesion: 0.23
 Nodes (3): DomainError, EvangelismService, DateTimeImmutable
 
-### Community 33 - "Illuminate\Http\JsonResponse"
-Cohesion: 0.11
-Nodes (10): TerritorialReason, TerritorialController, TerritorialCreateRequest, TerritorialLifecycleRequest, TerritorialListRequest, TerritorialMoveRequest, TerritorialRequest, TerritorialUpdateRequest (+2 more)
+### Community 33 - "TerritorialController"
+Cohesion: 0.12
+Nodes (8): TerritorialController, TerritorialCreateRequest, TerritorialLifecycleRequest, TerritorialListRequest, TerritorialMoveRequest, TerritorialRequest, TerritorialUpdateRequest, TerritorialOutput
 
 ### Community 34 - "User"
 Cohesion: 0.27
 Nodes (6): User, Illuminate\Contracts\Auth\MustVerifyEmail, Illuminate\Database\Eloquent\Factories\HasFactory, Illuminate\Foundation\Auth\User, Illuminate\Notifications\Notifiable, Laravel\Sanctum\HasApiTokens
 
 ### Community 35 - "WaveTwoPhysicalTest"
-Cohesion: 0.07
-Nodes (7): MemberNumberGenerator, WaveFourEvangelismTest, Manager, WaveTwoIndependentReconciliationTest, Manager, Migrator, WaveTwoPhysicalTest
+Cohesion: 0.06
+Nodes (18): MemberNumberGenerator, WaveFourEvangelismTest, Manager, WaveTwoIndependentReconciliationTest, Manager, Migrator, WaveTwoPhysicalTest, Número Único Generation Algorithm & Lock Ordering (+10 more)
 
 ### Community 36 - "test_mysql_instance_attestation.py"
 Cohesion: 0.15
@@ -640,7 +644,7 @@ Nodes (5): AttemptController, SessionController, AttemptStoreRequest, SessionSto
 
 ### Community 39 - "Wave 1 Physical Schema Report"
 Cohesion: 0.14
-Nodes (32): people Table, person_documents Table, unit_parent_rules Table, Blind-Index Document Deduplication (F10), legal_documents table, properties table, unit_location_links table, document_versions table (+24 more)
+Nodes (33): people Table, person_documents Table, unit_parent_rules Table, Blind-Index Document Deduplication (F10), legal_documents table, properties table, unit_location_links table, Wave 1 (foundational: Person/territory/storage) (+25 more)
 
 ### Community 40 - "wave1_partial_schema.sql"
 Cohesion: 0.06
@@ -652,23 +656,19 @@ Nodes (31): `addresses`, `civil_status_types`, `contact_types`, `document_versio
 
 ### Community 42 - "P0.3.3 Wave 3 Tables Catalog"
 Cohesion: 0.07
-Nodes (31): audiences (Wave 3 physical table), communication_campaigns (Wave 3 physical table), communication_templates (Wave 3 physical table), credential_classes (Wave 3 physical table), credential_templates (Wave 3 physical table), credential_types (Wave 3 physical table), credentials (Wave 3 physical table), department_activities (Wave 3 physical table) (+23 more)
+Nodes (28): audiences (Wave 3 physical table), communication_campaigns (Wave 3 physical table), communication_templates (Wave 3 physical table), credential_classes (Wave 3 physical table), credential_templates (Wave 3 physical table), credential_types (Wave 3 physical table), credentials (Wave 3 physical table), department_activities (Wave 3 physical table) (+20 more)
 
 ### Community 43 - "mysql_exec(statement, timeout, tolerate_timeout) — single centralized failure boundary for all MySQL subprocess calls"
 Cohesion: 0.07
 Nodes (31): Gate: REJECTED (P0.3.4-M1.2.2-R independent audit), H1 status: PARTIALLY_RESOLVED (database verification), H2 status: PARTIALLY_RESOLVED (barrier verification), M122R-01 — MEDIUM OPEN: unhandled OSError in three _mysql() call sites crashes cleanup_run() without rescue, M122R-02 — MEDIUM OPEN: barrier-candidate correlation by timing not identity, rescue removes without ownership check, barriers_present() — verifies real existence of candidate barrier directories before FILES_REMOVED, H1 HIGH — false database absence (schema_exists ignored returncode), H2 HIGH — false FILES_REMOVED (no barrier existence check performed) (+23 more)
 
-### Community 44 - "wave4-m121/qualify.py"
-Cohesion: 0.14
-Nodes (26): main(), observed(), Independent per-run observations around the executor's unmodified runner., save(), main(), Independent ten-run gate with server-side schema verification., connections_baseline(), group_full_regression() (+18 more)
+### Community 44 - "VerificationError"
+Cohesion: 0.11
+Nodes (30): main(), observed(), Independent per-run observations around the executor's unmodified runner., save(), main(), Re-run every official tests/Database class with an isolated schema., main(), Independent ten-run gate with server-side schema verification. (+22 more)
 
 ### Community 45 - "test_cleanup_ownership_and_failure_boundary.py"
-Cohesion: 0.22
-Nodes (30): check(), f1_oserror_drop_issuance(), f2_oserror_kill(), f3_oserror_diagnostics_snapshot(), f4_timeout_expired(), f5_mysql_non_zero_exit(), f6_rescue_attempted_after_infra_exception(), f7_result_remains_fail() (+22 more)
-
-### Community 46 - "TerritorialService"
-Cohesion: 0.16
-Nodes (4): TerritorialAudit, TerritorialError, TerritorialService, TerritorialServiceFactory
+Cohesion: 0.15
+Nodes (43): CleanupInfrastructureError, create_run_root(), RuntimeError, The underlying command/filesystem layer itself could not complete: a subprocess…, Hard guard (section 10): the schema this call is about to act on must belong to…, The one, deterministic, expected root path for a given run_id. Every ownership…, Create this run's own root + owner marker BEFORE the domain process starts…, The sole authority (section 8/9) for whether `root` may be treated as this… (+35 more)
 
 ### Community 47 - "AcademyCollectionResource"
 Cohesion: 0.15
@@ -682,21 +682,25 @@ Nodes (30): Bounded Child Collections, Contextual Person Search, F-06 Concealmen
 Cohesion: 0.07
 Nodes (29): 1. Scope and method, 2. Executive conclusion, 3. Global invariant audit, 4.1 Foundation and institutional structure, 4.2 Membership, ministry and departments, 4.3 Governance, events and credentials, 4.4 Mission and safeguarding, 4.5 Academy (+21 more)
 
-### Community 50 - "PhysicalError"
-Cohesion: 0.11
-Nodes (3): LinkService, PhysicalError, PhysicalRecords
+### Community 51 - "PeopleAuthority"
+Cohesion: 0.14
+Nodes (4): PeopleActor, PeopleAuthority, PeopleDecision, PeopleGuard
+
+### Community 52 - "FilesOutput"
+Cohesion: 0.06
+Nodes (17): DocumentController, FileController, FilesOutput, StreamedResponse, DocumentCreateRequest, DocumentLifecycleRequest, DocumentListRequest, DocumentOwnerRequest (+9 more)
 
 ### Community 54 - "PeopleHttpCase"
-Cohesion: 0.13
-Nodes (3): PeopleE2EFixtureTest, PeopleHouseholdTest, PeopleHttpCase
-
-### Community 55 - "WaveFivePhysicalTest.php"
 Cohesion: 0.09
-Nodes (27): academic_attendance (Wave5 migration/table), academic_units (Wave5 migration/table), assessment_attempts (Wave5 migration/table), assessments (Wave5 migration/table), certificates (Wave5 migration/table), class_instructors (Wave5 migration/table), class_sessions (Wave5 migration/table), classes (Wave5 migration/table) (+19 more)
+Nodes (4): PeopleAddressTest, PeopleExportTest, PeopleHouseholdTest, PeopleHttpCase
 
-### Community 56 - "TerritorialPages.tsx"
+### Community 55 - "WaveFivePhysicalTest"
+Cohesion: 0.07
+Nodes (28): WaveFivePhysicalTest, academic_attendance (Wave5 migration/table), academic_units (Wave5 migration/table), assessment_attempts (Wave5 migration/table), assessments (Wave5 migration/table), certificates (Wave5 migration/table), class_instructors (Wave5 migration/table), class_sessions (Wave5 migration/table) (+20 more)
+
+### Community 56 - "FilesPages.tsx"
 Cohesion: 0.08
-Nodes (53): LoadState, useCatalogs(), useLoad(), usePeopleItem(), usePeopleList(), usePerson(), useTerritorialItem(), useTerritorialPage() (+45 more)
+Nodes (44): useFilesItem(), useFilesPage(), useFilesUnits(), CONFLICT_MESSAGES, isAbort(), UiErrorKind, UNAVAILABLE_MESSAGE, filesGet() (+36 more)
 
 ### Community 57 - "ADR 0017: Scope, lifecycle e privacidade de People/Families"
 Cohesion: 0.07
@@ -706,9 +710,13 @@ Nodes (27): A. `person_unit_contexts`, ADR 0017: Scope, lifecycle e privacidade 
 Cohesion: 0.10
 Nodes (16): session.json diagnostic register written by start() (port, datadir, pid, started_at, mysqld_path); mysqld.pid remains the authoritative cross-invocation identity source, MysqlInstance, RuntimeError, One dedicated, disposable mysqld instance. Never the app's own server.…, Reads the server-uuid MySQL itself generated into `auto.cnf` during…, True if *a* MySQL-protocol server answers on this instance's host:port right…, Starts mysqld and does not report readiness until SERVER ATTESTATION (design…, Design section 4: persistent metadata that survives between CLI invocations,… (+8 more)
 
-### Community 59 - "EndRequest"
+### Community 59 - "FilesRuntime"
+Cohesion: 0.06
+Nodes (6): ClamdScanner, FileInspector, FilesAudit, FileScanner, FilesRuntime, Normalizer
+
+### Community 60 - "WaveFourWorkerHarness"
 Cohesion: 0.10
-Nodes (7): AddressController, RelationshipController, AddressStoreRequest, AddressUpdateRequest, EndRequest, HistoryRequest, RelationshipStoreRequest
+Nodes (4): WaveFourWorkerHarness, WaveFourCommitAuthorizationTest, WaveFourProgressCommitBoundaryTest, WaveThreeCheckinConcurrencyTest
 
 ### Community 61 - "Reconciliação pós-auditoria P0.2-F"
 Cohesion: 0.12
@@ -730,21 +738,17 @@ Nodes (26): 10. Gate, 11. Próxima acção após decisão, 12. Addendum P0.5-D: 
 Cohesion: 0.18
 Nodes (26): main(), Independent P0.3.4-M1.2.2-R core probes for H1/H2/M1/M2, using techniques…, Confirms subprocess.TimeoutExpired -- the exception type schema_exists()'s…, Two simultaneous cleanup_run() calls, each with its own real barrier directory,…, A REAL held MySQL connection (SELECT SLEEP, not a synthetic session dict) that…, Reconfirm: a session that holds a metadata lock on the schema's tables without…, Independent from the executor's T8 (which delayed the DROP call itself): here…, Inject failure immediately before each of the three confirmable states and… (+18 more)
 
-### Community 66 - "PhysicalRuntime"
-Cohesion: 0.08
-Nodes (4): PhysicalAudit, PhysicalInvariants, PhysicalRef, PhysicalRuntime
-
 ### Community 67 - "ADR 0013: Wave 4 Custody and Rollback"
-Cohesion: 0.09
-Nodes (26): ADR 0013: Wave 4 Custody and Rollback, child_profiles anchor, guardian_authorizations table, WAVE4_DURABLE_DATA_ROLLBACK_BLOCKED guard, child_custody_visits Table, Child Custody Check-in/Check-out Protocol (F07), CheckinService (Events domain, Wave 3), event_attendance (Wave 3 approved physical table) (+18 more)
+Cohesion: 0.08
+Nodes (29): ADR 0013: Wave 4 Custody and Rollback, child_profiles anchor, guardian_authorizations table, WAVE4_DURABLE_DATA_ROLLBACK_BLOCKED guard, child_custody_visits Table, Child Custody Check-in/Check-out Protocol (F07), event_attendance (Wave 3 physical table), event_checkins (Wave 3 physical table) (+21 more)
 
 ### Community 68 - "P0.3.5-A0.1 Academy Decision Gate"
 Cohesion: 0.12
 Nodes (26): ADR-0015 document (Academia scope and location proposals, both decisions closed), 09 Open Database Decisions (canonical abbreviated register), 12 Physical Migration Plan, wave5_manifest.json (design manifest), P0.2_open_decisions_matrix.md, P0.3.5-A0.1 Academy Decision Gate, ADR-0015 — Academia Scope and Location Proposals, ADR-0015 Decision A — Pole/Location in classes (+18 more)
 
 ### Community 69 - "files table"
-Cohesion: 0.10
-Nodes (26): department_instances table, 12 Physical Migration Plan (P0.3.1), files.owner_department_id -> department_instances.id (deferred FK), physical_candidates (generated+UNIQUE/composite FK, not promoted), Wave 1 (foundational: Person/territory/storage), Wave 2 (Membership/departments/security/workflows), Wave 5 (Academia), Wave 6 (Financial) (+18 more)
+Cohesion: 0.20
+Nodes (14): department_instances table, files.owner_department_id -> department_instances.id (deferred FK), P0.3.1 Wave 1 Implementation Report, Graphify shrink guard, CHECK-expression escape parser bug fix, W1-F01 pending departmental FK finding, wave1_partial_schema.sql (partial schema snapshot), wave1_schema.sql (approved snapshot, not emitted) (+6 more)
 
 ### Community 70 - "validate-wave5-ui-contracts.cjs"
 Cohesion: 0.08
@@ -752,7 +756,7 @@ Nodes (20): app, appPath, declaredRoutes, failures, fs, gaps, http, httpEndpoint
 
 ### Community 71 - "validate-physical-contracts.cjs"
 Cohesion: 0.07
-Nodes (20): args, base, cases, ADR-0018, crypto, failures, fs, json (+12 more)
+Nodes (23): args, base, cases, ADR-0018, crypto, digest(), failures, fs (+15 more)
 
 ### Community 73 - "web/package.json"
 Cohesion: 0.10
@@ -774,32 +778,32 @@ Nodes (24): checks(), model(), all, allowDeferred, assigned, capture, catalogHas
 Cohesion: 0.08
 Nodes (22): attendanceService, bulkRequest, catalogQuery, certificateIssue, classDetail, classQuery, curriculumDetail, enrollmentDetail (+14 more)
 
-### Community 78 - "PeopleBaseController"
-Cohesion: 0.18
-Nodes (4): ExportController, PeopleBaseController, PeopleServiceFactory, ExportRequest
+### Community 78 - "Illuminate\Http\Request"
+Cohesion: 0.09
+Nodes (13): TerritorialReason, AuthController, PeopleBaseController, Controller, TrustProxies, PeopleServiceFactory, Illuminate\Contracts\Http\Kernel, Illuminate\Foundation\Auth\Access\AuthorizesRequests (+5 more)
 
 ### Community 80 - "PeopleCrypto"
-Cohesion: 0.10
-Nodes (3): PeopleCrypto, self, PeopleCryptoTest
+Cohesion: 0.08
+Nodes (5): BirthDate, DateTimeImmutable, PeopleCrypto, self, PeopleCryptoTest
 
 ### Community 82 - "scripts/wave4-m121/cleanup.py — cleanup state machine"
 Cohesion: 0.08
 Nodes (24): scripts/wave4-m121/cleanup.py — cleanup state machine, CLEANUP_TIMEOUT_SECONDS=150 — cleanup SLA distinct from functional test timeout, calibrated from observed p99=75.4s, scripts/wave4-m121/diagnose.py — live root-cause reproduction diagnostic script, drop_database_verified() — DROP with real-absence polling verification (never timeout-and-kill assumption), guard_schema() — hard guard against laravel/mysql/information_schema/performance_schema/sys and non-conforming names, Root cause: InnoDB atomic-DDL commit-phase serialization under concurrent host load (not a connection leak), scripts/wave4-m121/qualify.py — qualification battery orchestrator (gate10/full/regression), rescue_cleanup() — best-effort rescue that never launders CLEANUP_FAIL into PASS (+16 more)
 
-### Community 83 - "schema_exists"
-Cohesion: 0.17
-Nodes (21): main(), Re-run every official tests/Database class with an isolated schema., The canonical run identity embedded in a schema name (section 10): the 24-hex…, PRESENT -> True, ABSENT -> False, UNKNOWN -> raises VerificationError. H1 fix…, run_id_of(), schema_exists(), main(), _new_run() (+13 more)
+### Community 83 - "cleanup_run"
+Cohesion: 0.20
+Nodes (19): cleanup_run(), The canonical run identity embedded in a schema name (section 10): the 24-hex…, The full per-run finalization order, as a verified state machine. DOMAIN TEST…, run_id_of(), main(), _new_run(), P0.3.4-M1.2.3 section 20 -- 10 runs with intentional infrastructure failure.…, A genuine mysql client non-zero exit (malformed statement), not a subprocess-… (+11 more)
 
 ### Community 84 - "validate-territorial-contracts.cjs"
 Cohesion: 0.09
-Nodes (21): mutate(), absolute(), base, crypto, digest(), failures, fs, hashesAfter (+13 more)
+Nodes (20): absolute(), base, crypto, digest(), failures, fs, hashesAfter, hashesBefore (+12 more)
 
-### Community 85 - "Illuminate\Database\Connection"
-Cohesion: 0.04
-Nodes (23): AcademyChildSafety, AcademyPersonResolver, CheckinService, DateTimeImmutable, CredentialService, DateTimeImmutable, EventAccess, EventError (+15 more)
+### Community 85 - "DateTimeImmutable"
+Cohesion: 0.11
+Nodes (8): CredentialService, DateTimeImmutable, EventAccess, EventError, DateTimeImmutable, DateTimeImmutable, DateTimeZone, Illuminate\Database\QueryException
 
 ### Community 86 - "WaveTwoTransferConcurrencyTest"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (4): TransferService, Manager, WaveTwoTransferConcurrencyTest, Illuminate\Database\ConnectionInterface
 
 ### Community 87 - "Illuminate\Http\Resources\Json\JsonResource"
@@ -811,24 +815,28 @@ Cohesion: 0.18
 Nodes (7): Manager, Migrator, WaveTwoTransferMigrationSafetyTest, Graphify Lessons (Reflected Memory), TransferService, Graphify Reflect Log, Graphify Query Save Log
 
 ### Community 90 - "validate-database-docs.cjs"
-Cohesion: 0.09
-Nodes (20): P0.2-D01 Identifier Strategy Resolution, CONDITIONALLY APPROVED (original gate conclusion), P0.2 Database Architecture Gate, F-01: unconfirmed MySQL/MariaDB hosting version, F-02: territorial tree cardinality unguarded at DB level, F-03: ledger concurrency untested, Graphify 883→124 shrink-guard incident, P0.2_database_architecture_review.md (referenced) (+12 more)
+Cohesion: 0.17
+Nodes (9): canonical, ct, d, erd, errors, fs, m, path (+1 more)
 
 ### Community 91 - "P0.3.2-F Independent Wave 2 Reconciliation (Document)"
 Cohesion: 0.09
 Nodes (22): MemberNumberGenerator, TRANSFER_ALREADY_IN_PROGRESS (domain error), TRANSFER_INVALID_ORIGIN_DESTINATION (domain error), TransferService, P0.3.2_wave2_audit.md, P0.3.2_wave2_implementation.md, APPROVED FOR WAVE 3 (gate decision), department_instances (four-level territorial reuse) (+14 more)
 
-### Community 93 - "PersonRecords"
-Cohesion: 0.08
-Nodes (5): BirthDate, DateTimeImmutable, ExportService, PersonRecords, PersonService
-
-### Community 94 - "PhysicalRequest"
-Cohesion: 0.08
-Nodes (9): AddressUpdateRequest, LocationCreateRequest, LocationUpdateRequest, PhysicalRequest, PropertyUpdateRequest, TempleCreateRequest, TempleUpdateRequest, Illuminate\Foundation\Http\FormRequest (+1 more)
-
-### Community 95 - "PooledWaveFourCase"
+### Community 92 - "AcademyTarget"
 Cohesion: 0.20
-Nodes (4): PooledProgressCommitBoundaryTest, PooledTemporalAuthorizationTest, Connection, PooledWaveFourCase
+Nodes (3): AcademyResourceGuard, AcademyScopeResolver, AcademyTarget
+
+### Community 93 - "PeopleRuntime"
+Cohesion: 0.11
+Nodes (3): ExportService, PeopleRuntime, PersonRecords
+
+### Community 95 - "DomainClock"
+Cohesion: 0.12
+Nodes (7): DomainClock, WaveFourEvangelismTemporalBoundaryTest, PooledProgressCommitBoundaryTest, PooledTemporalAuthorizationTest, Connection, PooledWaveFourCase, ConfigureLateLockTest
+
+### Community 96 - "TerritorialVerticalTest"
+Cohesion: 0.12
+Nodes (3): TerritorialHttpCase, TerritorialE2EFixtureTest, TerritorialVerticalTest
 
 ### Community 97 - "P0.5-R — Auditoria independente de People / Families"
 Cohesion: 0.09
@@ -844,7 +852,7 @@ Nodes (22): A. `temples` (nova tabela, exactamente o desenho do catálogo), ADR 
 
 ### Community 102 - "EvangelismService::run"
 Cohesion: 0.06
-Nodes (29): CheckinService::scan(), CheckinService::scanAttempt(), CheckinService::scanChild(), ChildParticipationSafetyGate::admit(), ChildParticipationSafetyGate::requireGenericParticipant(), DomainAccess::authorize(), DomainClock::now(), DomainPolicy::require() (+21 more)
+Nodes (28): CheckinService::scan(), CheckinService::scanAttempt(), CheckinService::scanChild(), ChildParticipationSafetyGate::admit(), ChildParticipationSafetyGate::requireGenericParticipant(), DomainAccess::authorize(), DomainPolicy::require(), EvangelismService::access() (+20 more)
 
 ### Community 103 - "scripts"
 Cohesion: 0.10
@@ -866,13 +874,13 @@ Nodes (19): crypto, fs, hash, migrations, path, physical, plan, { root, catalog,
 Cohesion: 0.15
 Nodes (19): assert_server_attestation(), _expected_version_prefix(), ForeignServerError, P0-TI.1 Test Infrastructure V2 -- dedicated MySQL instance lifecycle.…, Best-effort, strictly read-only. Returns None if nothing answers or the query…, Module-level attestation entry point for callers that only have a port (design…, Derives the accepted `@@version` prefix (e.g. "8.4.") from the pinned…, Raised whenever the server actually reachable at a given host:port cannot be… (+11 more)
 
-### Community 108 - "ADR 0009: BIGINT Internal PK + Selective ULID public_id"
-Cohesion: 0.12
-Nodes (20): Centro Geral Optional Rule, D-01 Accepted Note, unit_parent_rules.json as Canonical Source, ADR 0006: Centro Geral Optional, ADR 0009: BIGINT Internal PK + Selective ULID public_id, ADRs 0001–0005 Accepted, 01: Princípios do Banco Mestre, id / public_id / member_number Type Rules (+12 more)
+### Community 108 - "P0.2-F Re-auditoria Diferencial"
+Cohesion: 0.17
+Nodes (12): Centro Geral Optional Rule, unit_parent_rules.json as Canonical Source, ADR 0006: Centro Geral Optional, Territorial Tree Enforcement (F02/D-12), 11_financial_invariants_test_plan.md, unit_parent_rules.json Canonical Manifest, Only D-01 Blocks P0.3 Schema Design, P0.2-F Re-auditoria Diferencial (+4 more)
 
-### Community 110 - "PeopleRuntime"
-Cohesion: 0.09
-Nodes (5): OpaqueRef, PeopleAudit, PeopleDecision, PeopleGuard, PeopleRuntime
+### Community 110 - "FilesVerticalTest"
+Cohesion: 0.06
+Nodes (6): FilesMaintenanceCommand, FilesMaintenance, FilesReason, FilesServiceFactory, FilesVerticalTest, Illuminate\Console\Command
 
 ### Community 113 - "devDependencies"
 Cohesion: 0.10
@@ -886,13 +894,17 @@ Nodes (20): ADR 0009 (referenced, hash-only identifier pattern), ADR 0012 (refer
 Cohesion: 0.15
 Nodes (18): root, compare(), expressionAst(), and(), atom(), comparison(), or(), parseCreate() (+10 more)
 
-### Community 116 - "cleanup_run"
-Cohesion: 0.25
-Nodes (19): cleanup_run(), The full per-run finalization order, as a verified state machine. DOMAIN TEST…, check(), main(), P0.3.4-M1.2.1 section 15/16/19 — cleanup harness scenario tests. Runs against…, Every production qualification run so far has had its DROP succeed on the first…, Section 19: provoke a genuine cleanup failure and confirm the harness does NOT…, A domain step that keeps a connection open for a few seconds past 'finish' (the… (+11 more)
+### Community 116 - "schema_exists"
+Cohesion: 0.26
+Nodes (19): PRESENT -> True, ABSENT -> False, UNKNOWN -> raises VerificationError. H1 fix…, schema_exists(), check(), main(), P0.3.4-M1.2.1 section 15/16/19 — cleanup harness scenario tests. Runs against…, Every production qualification run so far has had its DROP succeed on the first…, Section 19: provoke a genuine cleanup failure and confirm the harness does NOT…, A domain step that keeps a connection open for a few seconds past 'finish' (the… (+11 more)
 
 ### Community 117 - "P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)"
 Cohesion: 0.13
 Nodes (19): ADR-0015 (Academia location default vs event override; class_instructors as granular-authorization provenance table), commit 7f9a7dd (docs(academy): finalize Wave5 design decisions), commit abcb762 (feat(database): implement Wave5 academy physical schema), commit edf0d41 (chore(test): harden mysql test lifecycle and refresh Graphify), model_catalog.json (199-table canonical catalog), P0.3.5_wave5_tables.md, A1R_independent_live_evidence.json, wave5_migrations_manifest.json (+11 more)
+
+### Community 120 - "TerritorialActor"
+Cohesion: 0.11
+Nodes (4): FilesAuthority, FilesConsumers, FilesGuard, TerritorialActor
 
 ### Community 121 - "compilerOptions"
 Cohesion: 0.11
@@ -918,41 +930,41 @@ Nodes (16): PDOStatement, allocate(), cancelSend(), db(), entry(), expect(), loc
 Cohesion: 0.12
 Nodes (18): URL ingestion and folder watcher, Graph exports, Deterministic node identifiers, Extraction confidence and provenance, Absolute source provenance, GitHub cloning and graph merging, Graphify hook and AGENTS integration, Reflection lessons (+10 more)
 
-### Community 127 - "Handler.php"
-Cohesion: 0.33
-Nodes (4): Handler, Illuminate\Foundation\Exceptions\Handler, Illuminate\Validation\ValidationException, Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+### Community 127 - "ADR 0019: Documents / Files — política V1 da infraestrutura transversal"
+Cohesion: 0.06
+Nodes (33): Achados do inventário, ADR 0019: Documents / Files — política V1 da infraestrutura transversal, Antivírus, Catálogo `legal_document_types` V1, Clearance, Compatibilidade com shared hosting e dependências operacionais, Consequências, Contexto (+25 more)
 
 ### Community 128 - "AcademyActionResource"
 Cohesion: 0.08
 Nodes (11): CertificateController, CurriculumController, GradeController, InstructorController, CertificateIssueRequest, CurriculumCourseRequest, GradeRevisionRequest, GradeStoreRequest (+3 more)
 
-### Community 129 - "docs/database/01_database_principles.md"
-Cohesion: 0.13
-Nodes (18): Deduplicacao transversal, Pessoa como entidade central, Relacoes membro aluno participante dirigente, Contador nacional continuo, Número Único de Membro v2, Geracao transaccional, MEPAAAMMSSSSSS, Numero legado (+10 more)
+### Community 129 - "mepa_crm_v1.1.1.md"
+Cohesion: 0.09
+Nodes (30): Contribuir para o MEPA CRM, Governacao arquitectural, Deduplicacao transversal, Pessoa como entidade central, Relacoes membro aluno participante dirigente, Arvore recursiva parent_id, Autorizacao hierarquica, Árvore institucional recursiva (+22 more)
 
 ### Community 130 - "P0.3.4 Wave 4 Physical Tables"
 Cohesion: 0.12
 Nodes (18): person_consents table, courses table, discipleship_steps table, Wave 4 (Children/outreach/attendance), age_band_rules table, child_emergency_contacts table, child_profiles table, decisions table (+10 more)
 
-### Community 131 - "member_numbers table"
-Cohesion: 0.09
-Nodes (23): Número Único Generation Algorithm & Lock Ordering, D-01 Identifier Convention Reconfirmation, F-W2-01: users down() migration column order (cosmetic), F-W2-02: ministerial_class_periods overlap not DB-enforced, legacy_member_numbers table, MemberNumberGenerator::generateFor(), member_numbers table, test_department_definition_reused_across_territorial_levels_without_duplication (+15 more)
+### Community 131 - "Wave 2 Test Suite Execution Summary (section 16)"
+Cohesion: 0.13
+Nodes (16): F-W2-01: users down() migration column order (cosmetic), F-W2-02: ministerial_class_periods overlap not DB-enforced, F-W2-03: Orphaned Graphify chunk (info), Graphify --update Run (Wave 2 files), Orphaned Graphify Chunk File (.graphify_chunk_wave1_docs.json), test_ministerial_history_preserved_across_class_change, Wave 2 Test Suite Execution Summary (section 16), wave2_test_summary.json (+8 more)
 
 ### Community 132 - "09_open_database_decisions"
 Cohesion: 0.14
 Nodes (18): ADR 0009: Public ID Strategy (Accepted, cited), D-01 RESOLVED: BIGINT AUTO_INCREMENT + selective public ULID, D-02: legacy V2 numbering / issuance vs admission dates, D-03: numbering expansion before 999999, D-04: accounting regime/funds/AOA-FX/in-kind, D-05: credential validity/reissue/public QR/templates, D-06: retention/legal hold/data-subject requests/purge/backups, D-07: departments/positions/classes/capacity/progression (+10 more)
 
-### Community 133 - "Illuminate\Http\Request"
-Cohesion: 0.09
-Nodes (13): AuthError, AuthSessionService, AuthController, AuthenticateApiSession, RedirectIfAuthenticated, TrustProxies, Closure, Illuminate\Contracts\Hashing\Hasher (+5 more)
+### Community 133 - "AuthSessionService"
+Cohesion: 0.15
+Nodes (4): AuthError, AuthSessionService, AuthSessionContractTest, Illuminate\Contracts\Hashing\Hasher
 
 ### Community 135 - "people.spec.ts"
 Cohesion: 0.12
 Nodes (10): Actor, apiRoot, AxeRuntime, AxeViolation, evidence, fx, here, resetLimiters() (+2 more)
 
 ### Community 136 - "generate-wave2-migrations.cjs"
-Cohesion: 0.14
-Nodes (11): crypto, fs, hash, migrations, path, physical, stats, tables (+3 more)
+Cohesion: 0.12
+Nodes (14): migration_waves.json, Wave 2 Scope: 43 Tables Across 10 Domains, W1-F01 Materialization (implementation), crypto, fs, hash, migrations, path (+6 more)
 
 ### Community 137 - "wave3-catalog.cjs"
 Cohesion: 0.12
@@ -974,13 +986,21 @@ Nodes (15): Chatbot patterns, Content patterns, Filler and hedging, Full example
 Cohesion: 0.16
 Nodes (3): DocumentQueryController, ContextRequest, AcademyReadResource
 
-### Community 143 - "LinkController"
-Cohesion: 0.14
-Nodes (5): LinkController, LinkCreateRequest, LinkEndRequest, LinkPrimaryRequest, LinkTransferRequest
+### Community 142 - "PeopleCatalog"
+Cohesion: 0.13
+Nodes (4): PeopleCatalog, PeopleReason, up(), PeopleRelationshipTest
+
+### Community 143 - "PhysicalRequest"
+Cohesion: 0.13
+Nodes (7): LinkController, LinkCreateRequest, LinkEndRequest, LinkPrimaryRequest, LinkTransferRequest, PhysicalListRequest, PhysicalRequest
+
+### Community 144 - "FilesKeyRing"
+Cohesion: 0.09
+Nodes (4): FilesKeyRing, self, FileUploadPipeline, Mepaf1
 
 ### Community 145 - "ADR 0012: Wave 3 Token, Policy and Minimal Audit"
-Cohesion: 0.14
-Nodes (15): ADR 0007: Governance versus Events (cited), audit_logs materialized early as Wave 3 physical dependency, Check-in transaction revalidation, CHECKIN_DENIED audit-after-rollback policy, ADR 0012: Wave 3 Token, Policy and Minimal Audit, event_invitees frozen snapshot of event_invitation_lists, F08: durable CHECKIN_DENIED requirement, Check-in idempotency (idempotency_requests + UNIQUE session_id/person_id) (+7 more)
+Cohesion: 0.16
+Nodes (14): ADR 0007: Governance versus Events (cited), audit_logs materialized early as Wave 3 physical dependency, Check-in transaction revalidation, CHECKIN_DENIED audit-after-rollback policy, ADR 0012: Wave 3 Token, Policy and Minimal Audit, event_invitees frozen snapshot of event_invitation_lists, F08: durable CHECKIN_DENIED requirement, Check-in idempotency (idempotency_requests + UNIQUE session_id/person_id) (+6 more)
 
 ### Community 146 - "probe_integration_attacks.py"
 Cohesion: 0.27
@@ -1062,13 +1082,13 @@ Nodes (13): Operation audit trail, Atomic auth_sessions revocation, Backend scop
 Cohesion: 0.15
 Nodes (12): author, name, url, description, homepage, keywords, license, name (+4 more)
 
-### Community 169 - "WaveFourChildCheckinBoundaryTest"
-Cohesion: 0.16
-Nodes (3): WaveFourChildCheckinBoundaryTest, Manager, WaveTwoConcurrencyTest
+### Community 169 - "CheckinService"
+Cohesion: 0.09
+Nodes (12): CheckinService, DateTimeImmutable, WaveFourChildCheckinBoundaryTest, WaveThreeCheckinConcurrencyTest::secondActorFixture(), WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock(), PooledChildCheckinBoundaryTest, Container Stop Log (M1.1 Independent MySQL), Final Server Variables and Lock Status (+4 more)
 
-### Community 171 - "event_checkins Table"
-Cohesion: 0.15
-Nodes (13): CheckinService (Wave 3), event_attendance table, devices Table, event_checkins Table, MANUAL:<unit.public_id> Device Convention (F09), Critical Index Catalog per Query, event_invitations table, messages table (+5 more)
+### Community 171 - "12 Physical Migration Plan (P0.3.1)"
+Cohesion: 0.09
+Nodes (23): CheckinService (Wave 3), event_attendance table, devices Table, event_checkins Table, MANUAL:<unit.public_id> Device Convention (F09), 12 Physical Migration Plan (P0.3.1), event_invitations table, messages table (+15 more)
 
 ### Community 172 - "P0.3.5-A4-R2 — conclusão independente da evidência da Academia"
 Cohesion: 0.15
@@ -1082,21 +1102,25 @@ Nodes (12): Build e validadores, Contagens e gate, E2E real, console e network, 
 Cohesion: 0.18
 Nodes (11): after, before, crypto, digest(), fs, originals, path, paths (+3 more)
 
-### Community 177 - "TerritorialActor"
-Cohesion: 0.09
-Nodes (6): PhysicalAuthority, PhysicalDecision, PhysicalGuard, PhysicalReason, TerritorialActor, TerritorialAuthority
+### Community 177 - "Illuminate\Database\Connection"
+Cohesion: 0.07
+Nodes (10): PhysicalAudit, PhysicalAuthority, PhysicalReason, PhysicalRef, TerritorialAudit, TerritorialAuthority, DiscipleshipEnrollmentScope, TerritorialServiceFactory (+2 more)
 
 ### Community 178 - "PropertyController"
-Cohesion: 0.22
-Nodes (3): PropertyController, OwnershipStatusRequest, PropertyCreateRequest
+Cohesion: 0.19
+Nodes (4): PropertyController, OwnershipStatusRequest, PropertyCreateRequest, PropertyUpdateRequest
 
 ### Community 179 - "P0.3.2-M1.1-R Audit of F-M1R-01"
 Cohesion: 0.18
 Nodes (6): ADR-0004, ADR-0008, ADR-0011, P0.3.2-M1.1-R Audit of F-M1R-01, F-M11R-01 (LOW, report encoding '?' chars), F-M11R-02 (INFO, Graphify literal-query vocabulary)
 
+### Community 180 - "PooledWaveFiveCase"
+Cohesion: 0.09
+Nodes (4): AcademyAuditWriter, AcademyDecision, DatabaseAcademyAudit, PooledWaveFiveCase
+
 ### Community 181 - "UNIQUE(membership_id, open_flag) at-most-one-open-transfer invariant"
-Cohesion: 0.21
-Nodes (11): closed_at DATETIME(6) column evidence (non-generated), M1.1R Manual SQL Evidence, M1.1R schema counts (78 tables, 131 FKs, 0 non-restrict, 57 checks), Sample transfers rows evidencing closed_at/status/lock_version, down() - drop guard columns/key, Fix for F-W2F-01: concurrent incompatible PENDING transfers, Wave 2 M1.1 transfers open-flag guard migration, open_flag generated column (STORED, NULL when closed) (+3 more)
+Cohesion: 0.18
+Nodes (12): closed_at DATETIME(6) column evidence (non-generated), M1.1R Manual SQL Evidence, M1.1R schema counts (78 tables, 131 FKs, 0 non-restrict, 57 checks), Sample transfers rows evidencing closed_at/status/lock_version, down() - drop guard columns/key, Fix for F-W2F-01: concurrent incompatible PENDING transfers, Wave 2 M1.1 transfers open-flag guard migration, open_flag generated column (STORED, NULL when closed) (+4 more)
 
 ### Community 182 - "P0.3.3 Addendum: previous findings tracking & readability"
 Cohesion: 0.21
@@ -1135,12 +1159,16 @@ Cohesion: 0.20
 Nodes (11): cp, crypto, files, fs, newWave5Files, normalize(), protectedPaths, report (+3 more)
 
 ### Community 193 - "PhysicalOutput"
-Cohesion: 0.12
-Nodes (11): LocationController, TempleController, Controller, PhysicalOutput, PhysicalServiceFactory, LifecycleRequest, PhysicalListRequest, Illuminate\Foundation\Auth\Access\AuthorizesRequests (+3 more)
+Cohesion: 0.09
+Nodes (10): LocationController, TempleController, PhysicalOutput, PhysicalServiceFactory, AddressUpdateRequest, LifecycleRequest, LocationCreateRequest, LocationUpdateRequest (+2 more)
 
 ### Community 194 - "api.php"
 Cohesion: 0.15
 Nodes (5): EnrollmentController, EnrollmentStoreRequest, EnrollmentResource, Illuminate\Support\Facades\Route, Illuminate\Support\Facades\Validator
+
+### Community 195 - "EventPolicy"
+Cohesion: 0.09
+Nodes (6): EventPolicy, DomainAccess, DomainClock::now(), DomainPolicy, EvangelismService::now(), Audit Graph Query: DomainClock
 
 ### Community 196 - "PooledWaveThreeCase"
 Cohesion: 0.25
@@ -1152,7 +1180,7 @@ Nodes (10): ADR-0017, orderedTables(), col(), { compare }, expectedModel(), fs, 
 
 ### Community 198 - "Centro Geral opcional e dependência dos Centros"
 Cohesion: 0.18
-Nodes (11): Centro Geral opcional, Centros municipais, Congregacao dependente de Centro, Centro Geral opcional e dependência dos Centros, Reparentamento atomico, Auditoria separada do tempo efectivo, Bloqueio de ancoras existentes, docs/database/09_open_database_decisions.md (+3 more)
+Nodes (11): Centro Geral opcional, Centros municipais, Congregacao dependente de Centro, Centro Geral opcional e dependência dos Centros, Reparentamento atomico, Órgãos permanentes e eventos concretos, events, governance_bodies (+3 more)
 
 ### Community 199 - "Graphify audit query: Wave 4 independent audit gate findings"
 Cohesion: 0.31
@@ -1202,13 +1230,9 @@ Nodes (3): ProgressController, LessonProgressRequest, ResourceProgressRequest
 Cohesion: 0.24
 Nodes (4): AppServiceProvider, BroadcastServiceProvider, Illuminate\Support\Facades\Broadcast, Illuminate\Support\ServiceProvider
 
-### Community 211 - "W1-F01 Materialization (files.owner_department_id → department_instances.id)"
-Cohesion: 0.13
-Nodes (12): F-W2-03: Orphaned Graphify chunk (info), Fresh Migration Path (Caminho A), Graphify --update Run (Wave 2 files), mepa-wave2-mysql Docker Container, Orphaned Graphify Chunk File (.graphify_chunk_wave1_docs.json), test_validator_flags_w1_f01_regression_if_the_fk_is_ever_removed, Upgrade/Rollback/Remigrate Path (Caminho B), W1-F01 Materialization (files.owner_department_id → department_instances.id) (+4 more)
-
-### Community 212 - "P0.3.4-M1.1-R gate decision — REJECTED"
-Cohesion: 0.22
-Nodes (10): D-08 — open institutional decision on crash-durability/production hosting qualification, P0.3.4-M1.1-R independent final audit report, P0.3.4-M1.1-R gate decision — REJECTED, TEST-TIMING-01 — OPEN: failure persists even after pre-created idempotency claims, W4R-M11R-01 HIGH — CONFIGURE stale after FK lock in track()/step() — OPEN, W4R-M11R-02 HIGH — progress() stale authorization after audit FK wait — OPEN, W4R-M11R-03 MEDIUM — collector liveness/cleanup not supervised — OPEN, W4R-M1R-01 — PARTIALLY_RESOLVED (aggregate of the two HIGH residuals) (+2 more)
+### Community 212 - "validate-files-contracts.cjs"
+Cohesion: 0.07
+Nodes (23): args, base, cases, ADR-0019, crypto, digest(), failures, fs (+15 more)
 
 ### Community 213 - "P0.3.5-A3.2 — Remediação de bounded nested collections"
 Cohesion: 0.20
@@ -1222,17 +1246,17 @@ Nodes (9): Ambiente e Test Infrastructure V2, Build e validadores, Cleanup e est
 Cohesion: 0.40
 Nodes (9): gap1_rescue_crashes_on_first_step_no_cleanup_attempted(), gap2_ownership_mismatch_futile_retry_timing(), main(), NovelBug, Exception, Clean, timed, definitive reproduction of the two gaps found by…, sql(), teardown_root() (+1 more)
 
+### Community 217 - "FilesHttpCase"
+Cohesion: 0.10
+Nodes (4): FilesE2EFixtureTest, FilesHttpCase, Illuminate\Http\UploadedFile, Illuminate\Testing\TestResponse
+
 ### Community 218 - "@playwright/test"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (4): evidence, fx, repo, @playwright/test
 
-### Community 219 - "Unidade organizacional separada de imóvel"
-Cohesion: 0.22
-Nodes (9): Arvore recursiva parent_id, Autorizacao hierarquica, Árvore institucional recursiva, Unidade organizacional, Unidade organizacional separada de imóvel, facility_types facilities, physical_locations properties temples, property_documents (+1 more)
-
 ### Community 220 - "P0.3.4-M1-R gate decision — CONDITIONALLY APPROVED"
-Cohesion: 0.31
-Nodes (9): P0.3.4-M1-R independent audit of M1 remediation, P0.3.4-M1-R gate decision — CONDITIONALLY APPROVED, ChildrenService::checkin()/checkout(), DiscipleshipEnrollmentScope — resolves enrollment's true owning unit from audit_logs provenance, P0.3.4-M1 security remediation report, W4R-01 HIGH — generic check-in bypasses child safety — RESOLVED, W4R-02 MEDIUM — discipleship enrollment missing origin-unit boundary — RESOLVED, W4R-03 MEDIUM — clock sampled before sensitive lock wait — RESOLVED (+1 more)
+Cohesion: 0.23
+Nodes (12): P0.3.4-M1-R independent audit of M1 remediation, P0.3.4-M1-R gate decision — CONDITIONALLY APPROVED, CheckinService::scanAttempt()/scan() — generic Wave 3 event check-in writer, ChildParticipationSafetyGate — central single policy gate for protected-participant admission, ChildrenService::checkin()/checkout(), P0.3.4-M1 security remediation report, ChildParticipationSafetyGate::requireGenericParticipant() — blocks generic check-in for any Pessoa with child_profiles, W4R-01 HIGH — generic check-in bypasses child safety — RESOLVED (+4 more)
 
 ### Community 221 - "P0.3.5-A3.1 — CRUD Read-Model & HTTP Completeness"
 Cohesion: 0.22
@@ -1262,9 +1286,9 @@ Nodes (7): description, name, owner, name, url, plugins, $schema
 Cohesion: 0.25
 Nodes (8): scripts, build, dev, lint, preview, test, test:a11y, test:e2e
 
-### Community 229 - "mepa_crm_v1.1.1.md"
-Cohesion: 0.25
-Nodes (8): Contribuir para o MEPA CRM, Governacao arquitectural, mepa_crm_v1.1.1.md, API REST /api/v1, MEPA Gestão, Pessoa central, React TypeScript Vite PWA, Shared hosting
+### Community 229 - "MEPA Gestão"
+Cohesion: 0.40
+Nodes (5): API REST /api/v1, MEPA Gestão, Pessoa central, React TypeScript Vite PWA, Shared hosting
 
 ### Community 230 - "validator_mutation_proofs.py"
 Cohesion: 0.36
@@ -1274,9 +1298,9 @@ Nodes (6): main(), move_to_unused(), P0.3.5-A2.1 / A2R-04 -- proof that the appl
 Cohesion: 0.25
 Nodes (8): Database Documentation Validation, Wave 5 Strict Schema Parity, P0.3.5 A1.1 Independent Re-audit, Catalog and Schema Parity, Server Attestation Gate, Attested MySQL Lifecycle, Session-scoped Pool Isolation, Test Instance Attestation and Catalog Sync Remediation
 
-### Community 232 - "W4R-M1R-01 — stale clock in EvangelismService::run() — RESOLVED"
-Cohesion: 0.25
-Nodes (8): D-11 — open institutional decision on discipleship_enrollments provenance/owner_unit_id, P0.3.4-M1.1 temporal remediation report, TEST-TIMING-01 — wall-clock race fixed via deterministic barrier + idempotency row pre-creation — RESOLVED, W4R-M1R-01 — stale clock in EvangelismService::run() — RESOLVED, WaveFourEvangelismTemporalBoundaryTest (6 tests/102 assertions), WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock, 5-second wall-clock window test reclassified as pre-existing Wave3 harness-design flake (50% failure even isolated), W4R-M1R-01 (new finding) — MEDIUM OPEN: EvangelismService::run() same clock-defect class as W4R-03
+### Community 232 - "P0.3.4-M1.1-R gate decision — REJECTED"
+Cohesion: 0.15
+Nodes (15): P0.3.4-M1.1-R independent final audit report, P0.3.4-M1.1-R gate decision — REJECTED, TEST-TIMING-01 — OPEN: failure persists even after pre-created idempotency claims, W4R-M11R-01 HIGH — CONFIGURE stale after FK lock in track()/step() — OPEN, W4R-M11R-02 HIGH — progress() stale authorization after audit FK wait — OPEN, W4R-M11R-03 MEDIUM — collector liveness/cleanup not supervised — OPEN, W4R-M1R-01 — PARTIALLY_RESOLVED (aggregate of the two HIGH residuals), D-11 — open institutional decision on discipleship_enrollments provenance/owner_unit_id (+7 more)
 
 ### Community 233 - "W4R-04 — Admission flow limit (INFO)"
 Cohesion: 0.25
@@ -1294,10 +1318,6 @@ Nodes (7): main(), probe_diagnostics_snapshot_oserror(), probe_drop_issuance_ose
 Cohesion: 0.50
 Nodes (7): kill_thread(), main(), mysql_exec(), P0.3.4-M1.2.1 root-cause diagnostic (read-only against test-owned schemas). For…, run_one(), sessions_for_schema(), snapshot()
 
-### Community 237 - "TerritorialHttpCase"
-Cohesion: 0.14
-Nodes (4): TerritorialCatalog, up(), TerritorialHttpCase, TerritorialE2EFixtureTest
-
 ### Community 238 - "EventServiceProvider.php"
 Cohesion: 0.29
 Nodes (5): EventServiceProvider, Illuminate\Auth\Events\Registered, Illuminate\Auth\Listeners\SendEmailVerificationNotification, Illuminate\Foundation\Support\Providers\EventServiceProvider, Illuminate\Support\Facades\Event
@@ -1305,6 +1325,10 @@ Nodes (5): EventServiceProvider, Illuminate\Auth\Events\Registered, Illuminate\A
 ### Community 239 - "MEPA CRM API"
 Cohesion: 0.29
 Nodes (7): MEPA CRM API, GET /api/v1/health, mepa_crm_v1.0.1.md, MEPA Gestão Web, Fundacao PWA, Contratos funcionais API, API
+
+### Community 240 - "WaveThreeCase"
+Cohesion: 0.19
+Nodes (6): Connection, DateTimeImmutable, Manager, Migrator, WaveThreeCase, WaveThreePhysicalTest
 
 ### Community 241 - "Academy Application Layer"
 Cohesion: 0.29
@@ -1358,13 +1382,13 @@ Nodes (5): main(), make_junction(), Path, Independent P0.3.4-M1.2.3-R probe: TOC
 Cohesion: 0.40
 Nodes (3): AuthServiceProvider, Illuminate\Foundation\Support\Providers\AuthServiceProvider, Illuminate\Support\Facades\Gate
 
+### Community 254 - "P0.7-R — Auditoria independente de Physical Locations"
+Cohesion: 0.11
+Nodes (18): 10. Source documents, 11. P07-I-01, P07-I-02 e P07-I-03, 12. Testes, mutações e regressões, 13. Visual e E2E browser, 14. Build e validadores, 15. Graphify, 16. Findings e gate ADR-0014, 17. Gate final (+10 more)
+
 ### Community 255 - "DatabaseSeeder.php"
 Cohesion: 0.50
 Nodes (3): DatabaseSeeder, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Seeder
-
-### Community 257 - "Órgãos permanentes e eventos concretos"
-Cohesion: 0.40
-Nodes (5): Órgãos permanentes e eventos concretos, events, governance_bodies, governance_sessions, Lista de convocados congelada versionada
 
 ### Community 258 - "ADR-0016: Authentication and session model"
 Cohesion: 0.40
@@ -1378,9 +1402,9 @@ Nodes (5): Child Profiles (data dictionary), Graphify audit query: Child Profile
 Cohesion: 0.40
 Nodes (5): DomainAccess::authorizeMany() — shared-lock permission acquisition followed by a single DomainClock sample, DomainClock::now($db) — UTC_TIMESTAMP(6) authoritative decisive clock on the same transactional connection, EvangelismService — writer boundary for campaign/contact/followup/decision/track/step/enroll/integrate/progress/history, W4R-M11R-01 status: RESOLVED (track/step commit authorization boundary), W4R-M11R-01 — track/step checked DISCIPLESHIP_CONFIGURE before blocking audit insert (RESOLVED)
 
-### Community 261 - "ChildParticipationSafetyGate — central single policy gate for protected-participant admission"
-Cohesion: 0.40
-Nodes (5): CheckinService::scanAttempt()/scan() — generic Wave 3 event check-in writer, ChildParticipationSafetyGate — central single policy gate for protected-participant admission, ChildParticipationSafetyGate::requireGenericParticipant() — blocks generic check-in for any Pessoa with child_profiles, Crianças e Adolescentes — guardian, emergency contacts, pickup authorization, consent, check-in/check-out, age-band transition by recommendation only, reinforced permissions, Eventos, Cultos e Presenças — events/event_sessions/registrations/attendance/checkins; total count, nominal check-in, QR
+### Community 261 - "P0.8-I — Documents / Files Foundation"
+Cohesion: 0.12
+Nodes (16): 10. Auditoria, 11. UI, 12. Verificação, 13. Achados, 14. Reprodução, 1. P08-D-F01 (primeiro, antes de qualquer writer), 2. Catálogo (Commit 1), 3. Classificação (+8 more)
 
 ### Community 262 - "D-09 Reference Data Part — BLOCKED (grading cutoffs, weights, attempt limits, certification criteria)"
 Cohesion: 0.40
@@ -1467,8 +1491,8 @@ Cohesion: 0.50
 Nodes (4): Identifier Strategy Alternatives Considered, BIGINT UNSIGNED AUTO_INCREMENT Internal PK, public_id UNIQUE Collision Retry / Idempotent Replay, ULID CHAR(26) ascii_bin public_id
 
 ### Community 285 - "EvangelismService::run() — provisional + decisive post-lock authorization wrapper"
-Cohesion: 0.67
-Nodes (4): DomainClock::now($this->db) — DB-authoritative UTC_TIMESTAMP(6) clock, EvangelismService::run() — provisional + decisive post-lock authorization wrapper, Query: P0.3.4-M1.1-R Graphify inventory of temporal writers and boundaries, Evangelismo e Discipulado — Contacto→Visitante→Acompanhamento→Interessado→Decisão→Discipulado→Baptismo→Integração→Membro; outreach_campaigns/outreach_contacts/followups/discipleship_tracks/discipleship_steps/decisions/integration_events
+Cohesion: 0.25
+Nodes (9): D-08 — open institutional decision on crash-durability/production hosting qualification, DomainClock::now($this->db) — DB-authoritative UTC_TIMESTAMP(6) clock, EvangelismService::run() — provisional + decisive post-lock authorization wrapper, D-11 — open decision: discipleship_enrollments catalog/owner_unit_id column not yet approved, DiscipleshipEnrollmentScope — resolves enrollment's true owning unit from audit_logs provenance, Query: P0.3.4-M1.1-R Graphify inventory of temporal writers and boundaries, Auditoria — audit_logs: user, timestamp, IP/session, entity, action, before/after, reason, origin; critical logs not deletable via common UI, D-02–D-12 — open institutional decisions repeatedly referenced as intact/blocked across Wave4 audits; not individually enumerated by number in this v1.1.1 text itself (+1 more)
 
 ### Community 286 - "W4R-M11R-03 status: RESOLVED (WaveFourWorkerHarness supervision/cleanup)"
 Cohesion: 0.50
@@ -1526,6 +1550,14 @@ Nodes (3): Arquitectura P0.2 proposta, Constraints de agregado, docs/database
 Cohesion: 0.14
 Nodes (11): ADR-0018, details, { execFileSync }, forbidden, fs, json, outputIndex, path (+3 more)
 
+### Community 305 - "ChildParticipationSafetyGate"
+Cohesion: 0.20
+Nodes (3): AcademyChildSafety, ChildParticipationSafetyGate, Audit Graph Query: ChildParticipationSafetyGate
+
+### Community 306 - "PhysicalHttpCase"
+Cohesion: 0.10
+Nodes (4): PhysicalCatalog, up(), PhysicalE2EFixtureTest, PhysicalHttpCase
+
 ### Community 308 - "physical.spec.ts"
 Cohesion: 0.18
 Nodes (7): apiRoot, checks, evidence, fx, LayoutCheck, repo, support
@@ -1538,13 +1570,21 @@ Nodes (5): ExampleTest, HealthEndpointTest, TestCase, Illuminate\Foundation\Test
 Cohesion: 0.20
 Nodes (9): 1. Proveniência, 2. Verificação focal, 3. Concorrência, 4. Regressão, 5. Validadores, 6. Evidência herdada (verificada, não repetida), 7. Gate, P0.6-RF — Territorial Final Attestation (+1 more)
 
+### Community 311 - "Closure"
+Cohesion: 0.23
+Nodes (5): AuthenticateApiSession, RedirectIfAuthenticated, Closure, Illuminate\Support\Facades\Auth, Symfony\Component\HttpFoundation\Response
+
+### Community 313 - "Handler.php"
+Cohesion: 0.13
+Nodes (6): Handler, PeopleContactTest, Illuminate\Foundation\Exceptions\Handler, Illuminate\Support\Facades\Log, Illuminate\Validation\ValidationException, Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+
 ### Community 316 - "P0.6 — Independent Audit"
 Cohesion: 0.25
 Nodes (7): Final decision, Final decision, Final remediation, First decision — REJECTED, P0.6 — Independent Audit, Remediation, Second decision — REJECTED
 
-### Community 318 - "WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock"
-Cohesion: 0.33
-Nodes (7): WaveThreeCheckinConcurrencyTest::secondActorFixture(), WaveThreeCheckinConcurrencyTest::test_same_person_different_sessions_do_not_share_a_checkin_lock(), Container Stop Log (M1.1 Independent MySQL), Final Server Variables and Lock Status, Deterministic Barrier-File Completion Signal (TEST-TIMING-01 fix), InnoDB Gap-Lock Index-Neighborhood False Contention, Final InnoDB Metrics Snapshot
+### Community 319 - "validate-p08-files-schema.cjs"
+Cohesion: 0.15
+Nodes (10): ADR-0019, details, { execFileSync }, fs, json, outputIndex, path, result (+2 more)
 
 ### Community 323 - "run-p07-physical-e2e.py"
 Cohesion: 0.48
@@ -1554,9 +1594,33 @@ Nodes (6): last_json(), main(), P0.7-I Physical Locations end-to-end runner (Tes
 Cohesion: 0.40
 Nodes (3): RouteServiceProvider, Illuminate\Cache\RateLimiting\Limit, Illuminate\Foundation\Support\Providers\RouteServiceProvider
 
-### Community 349 - "digest"
-Cohesion: 0.67
-Nodes (3): digest(), hashesAfter, hashesBefore
+### Community 330 - "Illuminate\Hashing\BcryptHasher"
+Cohesion: 0.29
+Nodes (3): AcademyE2EFixtureTest, PeopleE2EFixtureTest, Illuminate\Hashing\BcryptHasher
+
+### Community 331 - "files.spec.ts"
+Cohesion: 0.17
+Nodes (7): apiRoot, checks, evidence, fx, LayoutCheck, repo, support
+
+### Community 332 - "P0.2 Database Architecture Gate"
+Cohesion: 0.20
+Nodes (11): P0.2-D01 Identifier Strategy Resolution, CONDITIONALLY APPROVED (original gate conclusion), P0.2 Database Architecture Gate, F-01: unconfirmed MySQL/MariaDB hosting version, F-02: territorial tree cardinality unguarded at DB level, F-03: ledger concurrency untested, Graphify 883→124 shrink-guard incident, P0.2_database_architecture_review.md (referenced) (+3 more)
+
+### Community 345 - "ADR 0009: BIGINT Internal PK + Selective ULID public_id"
+Cohesion: 0.28
+Nodes (9): D-01 Accepted Note, ADR 0009: BIGINT Internal PK + Selective ULID public_id, ADRs 0001–0005 Accepted, 01: Princípios do Banco Mestre, id / public_id / member_number Type Rules, 02: Dicionário Mestre de Dados (199 Tables), Critical Index Catalog per Query, public_id Index Payload/Cost Analysis (+1 more)
+
+### Community 349 - "P0.7-I — Physical Locations / Properties / Temples / Unit ↔ Location Links"
+Cohesion: 0.22
+Nodes (8): 1. Schema e catálogo (Commit 1), 2. Autoridade, 3. Operações, 4. Verificação, 5. Achados, 6. Reprodução, P0.7-I — Physical Locations / Properties / Temples / Unit ↔ Location Links, Resultado
+
+### Community 351 - "run-p08-files-e2e.py"
+Cohesion: 0.48
+Nodes (6): last_json(), main(), P0.8-I Documents/Files end-to-end runner (Test Infrastructure V2). Sequence…, run(), summary_line(), wait_http()
+
+### Community 354 - "Períodos efectivos e versões publicadas"
+Cohesion: 0.40
+Nodes (5): Auditoria separada do tempo efectivo, Bloqueio de ancoras existentes, Períodos efectivos e versões publicadas, Intervalos semiabertos starts_at ends_at, Versoes publicadas imutaveis
 
 ### Community 401 - "P0.2-F 16 Synthetic Test Evidence"
 Cohesion: 0.67
@@ -1579,7 +1643,7 @@ Cohesion: 0.67
 Nodes (3): changed(), git(), gitGrep()
 
 ### Community 467 - "WaveFiveCase"
-Cohesion: 0.29
+Cohesion: 0.26
 Nodes (5): Connection, DateTimeImmutable, Manager, Migrator, WaveFiveCase
 
 ### Community 535 - "p05-people-mutation-probes.py"
@@ -1599,9 +1663,9 @@ Nodes (5): main(), phpunit(), Path, P0.5-I negative probes (section 21) + P0.5-R
   docs/database/physical/wave4_m11_audit/graph_save_result.txt · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **1833 isolated node(s):** `$schema`, `name`, `name`, `url`, `description` (+1828 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3325 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **126 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1953 isolated node(s):** `$schema`, `name`, `name`, `url`, `description` (+1948 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3560 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **120 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
@@ -1622,7 +1686,7 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Graphify Lessons (Reflected Memory)` and `Graphify Query Save Log`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `document` connect `document` to `09_open_database_decisions`, `mepa_crm_v1.1.1.md`, `Política de segurança`, `Humanizer skill prompt`, `P0.3.1 Wave 1 Physical Audit`, `run.php`, `Graphify`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)` connect `P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)` to `Finding A1R-01 (HIGH, EVIDENCE): start() reports false STARTED on port collision with wrong-engine service`, `P0.3.5-A0.1 Academy Decision Gate`, `MysqlInstance`, `validate-wave5-schema.cjs`, `Illuminate\Support\Str`, `mysql_instance.py`, `WaveFivePhysicalTest.php`, `P0.3.5-A1.0 Pre-Audit Evidence Hygiene (report)`, `validate-database-docs.cjs`, `validate-wave5-contracts.cjs`?**
-  _High betweenness centrality (0.070) - this node is a cross-community bridge._
+- **Why does `P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)` connect `P0.3.5-A1-R Independent Audit of Wave5 Physical Schema (report)` to `Finding A1R-01 (HIGH, EVIDENCE): start() reports false STARTED on port collision with wrong-engine service`, `P0.3.5-A0.1 Academy Decision Gate`, `MysqlInstance`, `validate-wave5-schema.cjs`, `Illuminate\Support\Str`, `mysql_instance.py`, `WaveFivePhysicalTest`, `P0.3.5-A1.0 Pre-Audit Evidence Hygiene (report)`, `validate-database-docs.cjs`, `validate-wave5-contracts.cjs`?**
+  _High betweenness centrality (0.167) - this node is a cross-community bridge._
+- **Why does `file()` connect `notify` to `FilesPages.tsx`, `validate-wave5-schema.cjs`?**
+  _High betweenness centrality (0.100) - this node is a cross-community bridge._

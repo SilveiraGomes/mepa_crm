@@ -1,0 +1,374 @@
+{
+  "status": "PASS",
+  "checks": {
+    "S01_closed_ordered_classification": true,
+    "S02_unknown_classification_fails_closed": true,
+    "S03_private_disk_no_url": true,
+    "S04_random_storage_key": true,
+    "S05_output_guard": true,
+    "S06_mepaf1_secretstream": true,
+    "S07_no_plaintext_fallback": true,
+    "S08_integrity_before_stream": true,
+    "S09_final_gate_verifies_object": true,
+    "S10_quota_locked": true,
+    "S11_f06_concealment": true,
+    "S12_permission_before_target": true,
+    "S13_consumer_fail_closed": true,
+    "S14_no_purge_operation": true,
+    "S15_quarantine_not_downloadable": true,
+    "S16_version_monotonic_locked": true,
+    "S17_dedup_same_unit_authorized": true,
+    "S18_audit_forbidden_keys": true,
+    "S19_routes_match_contract_bidirectionally": true,
+    "S20_requests_never_accept_internal_ids": true,
+    "S21_p08_d_f01_public_id_only": true,
+    "S22_catalog_nine_plus_eight_no_roles": true,
+    "S23_keyring_outside_code": true,
+    "S24_ui_section_and_routes": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "filter": "test_f01_|test_f07_|test_f08_|test_f13_|test_f15_|test_f16_|test_f18_|test_f19_storage|test_f20_|test_f21_|test_context_",
+      "exit_code": 0,
+      "seconds": 17.4,
+      "summary": "OK (11 tests, 804 assertions)",
+      "failure_head": ""
+    },
+    {
+      "id": "M1",
+      "description": "unknown classification treated permissively (mapped to the default)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileClassification.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S02_unknown_classification_fails_closed"
+      ],
+      "filter": "test_f08_",
+      "exit_code": 1,
+      "seconds": 8.8,
+      "summary": "Tests: 1, Assertions: 20, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f08_insufficient_clearance_is_concealed_and_unknown_classification_fails_closed | SECRET | Failed asserting that an array contains 201."
+    },
+    {
+      "id": "M2",
+      "description": "storage_key exposed in the file projection (and removed from the output guard)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileRecords.php",
+        "apps/api/app/Http/Files/FilesOutput.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S05_output_guard"
+      ],
+      "filter": "test_f01_",
+      "exit_code": 1,
+      "seconds": 8.7,
+      "summary": "Tests: 1, Assertions: 35, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f01_valid_pdf_upload_becomes_available_encrypted_in_private_storage | storage internal exposed: storage_key | Failed asserting that an array does not contain 'storage_key'."
+    },
+    {
+      "id": "M3",
+      "description": "direct public URL on the private disk",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/config/filesystems.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S03_private_disk_no_url"
+      ],
+      "filter": "test_context_",
+      "exit_code": 1,
+      "seconds": 8.7,
+      "summary": "Tests: 1, Assertions: 301, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_context_and_output_never_expose_storage_internals | Failed asserting that 'http://localhost/files' is null. | "
+    },
+    {
+      "id": "M4",
+      "description": "scope bypass: owner unit coverage no longer checked",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileRecords.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [],
+      "filter": "test_f07_",
+      "exit_code": 1,
+      "seconds": 8.9,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f07_wrong_scope_malformed_and_unknown_are_the_same_concealed_404 | Expected response status code [404] but received 200. | Failed asserting that 404 is identical to 200."
+    },
+    {
+      "id": "M5",
+      "description": "classification bypass: clearance no longer checked",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileRecords.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [],
+      "filter": "test_f08_",
+      "exit_code": 1,
+      "seconds": 9.9,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f08_insufficient_clearance_is_concealed_and_unknown_classification_fails_closed | Expected response status code [404] but received 200. | Failed asserting that 404 is identical to 200."
+    },
+    {
+      "id": "M6",
+      "description": "QUARANTINED downloadable",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileRecords.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S15_quarantine_not_downloadable"
+      ],
+      "filter": "test_f19_storage",
+      "exit_code": 1,
+      "seconds": 8.7,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f19_storage_and_database_fault_windows_leave_no_broken_available_state | Expected response status code [404] but received 503. | Failed asserting that 404 is identical to 503."
+    },
+    {
+      "id": "M7",
+      "description": "plaintext fallback: content stored unencrypted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileUploadPipeline.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S07_no_plaintext_fallback"
+      ],
+      "filter": "test_f01_",
+      "exit_code": 1,
+      "seconds": 8.7,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f01_valid_pdf_upload_becomes_available_encrypted_in_private_storage | Expected response status code [201] but received 422. | Failed asserting that 201 is identical to 422."
+    },
+    {
+      "id": "M8",
+      "description": "integrity check removed before streaming",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileContentService.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S08_integrity_before_stream"
+      ],
+      "filter": "test_f13_",
+      "exit_code": 1,
+      "seconds": 8.9,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f13_tampered_or_truncated_ciphertext_fails_closed | Expected response status code [503] but received 200. | Failed asserting that 503 is identical to 200."
+    },
+    {
+      "id": "M9",
+      "description": "source_document PK accepted by the Academy request",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Http/Requests/Academy/InstructorAssignRequest.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S21_p08_d_f01_public_id_only"
+      ],
+      "filter": "test_f18_",
+      "exit_code": 1,
+      "seconds": 8.6,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f18_academy_source_document_is_referenced_by_public_id_only | Expected response status code [422] but received 201. | Failed asserting that 422 is identical to 201."
+    },
+    {
+      "id": "M10",
+      "description": "consumer authority bypass: consumers without an adapter allowed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FilesConsumers.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S13_consumer_fail_closed"
+      ],
+      "filter": "test_f21_",
+      "exit_code": 1,
+      "seconds": 30.5,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f21_consumer_without_adapter_or_unauthorized_is_denied | Expected response status code [404] but received 200. | Failed asserting that 404 is identical to 200."
+    },
+    {
+      "id": "M11",
+      "description": "version overwrite: the current version row is repointed instead of a new version",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/DocumentService.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S16_version_monotonic_locked"
+      ],
+      "filter": "test_f15_",
+      "exit_code": 1,
+      "seconds": 12.5,
+      "summary": "Tests: 1, Assertions: 98, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f15_version_replacement_preserves_the_previous_version | Failed asserting that 1 is identical to 2. | "
+    },
+    {
+      "id": "M12",
+      "description": "quota lock removed (no unit lock, no national lock, snapshot reads)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileUploadPipeline.php",
+        "apps/api/app/Domain/Files/FilesRuntime.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S10_quota_locked"
+      ],
+      "filter": "test_f20_",
+      "exit_code": 1,
+      "seconds": 10.2,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f20_concurrent_uploads_never_exceed_the_unit_quota | Failed asserting that two arrays are identical. | --- Expected"
+    },
+    {
+      "id": "M13",
+      "description": "AVAILABLE despite a missing object (final gate no longer verifies the stored object)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileUploadPipeline.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S09_final_gate_verifies_object"
+      ],
+      "filter": "test_f19_storage",
+      "exit_code": 1,
+      "seconds": 8.9,
+      "summary": "Tests: 1, Assertions: 23, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f19_storage_and_database_fault_windows_leave_no_broken_available_state | Expected response status code [422] but received 201. | Failed asserting that 422 is identical to 201."
+    },
+    {
+      "id": "M14",
+      "description": "cross-unit dedup leak: warning on any checksum match, without re-authorizing the existing file",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Files/FileService.php"
+      ],
+      "detected": true,
+      "detected_by_tests": true,
+      "detected_by_structural_checks": [
+        "S17_dedup_same_unit_authorized"
+      ],
+      "filter": "test_f16_",
+      "exit_code": 1,
+      "seconds": 8.8,
+      "summary": "Tests: 1, Assertions: 10, Failures: 1.",
+      "failure_head": "1) Tests\\DatabaseV2\\FilesVerticalTest::test_f16_same_checksum_never_merges_nor_leaks_across_units | Failed asserting that two arrays are identical. | --- Expected"
+    }
+  ],
+  "probes_passed": 14,
+  "source_hashes_before": {
+    "classification": "0b94b39577e8dfd78fc4779f2b3f9118549efa35733feb1d974f51d85957ae64",
+    "records": "2af8c55a65ae0dbdf0af1f7780819393b72fdab57feb76292db32e50f2855c35",
+    "consumers": "39226aa71109a9d9d2ee1f321fb588b4c0ba4018197aa7c5e28b0f7d0f6ecc1e",
+    "pipeline": "32b0c264ff8bcc9883f2aa331fd608714acf9a04d217b77e8195b87beac26bfa",
+    "content": "567039f59e9fbc2b40fa90dce2afa8d2614bad1a992f2257ba35f437d73d2f79",
+    "service": "1bb1e20633b8a61add67b7e9b98d503e037a9b2d955b6d4ec5399d499224ac95",
+    "documents": "ab331b7c08f5ae095c21a7438197c25f127314123812d346ae16a0c7e5cb7487",
+    "runtime": "7ee22637d59593bfd822a3fe8ae0204c1b9d3e0f8b06ce84c59f146bc7dbe5ed",
+    "mepaf": "ec5798b388fb2235fe37b1ce6c113a4682d63829854afad143cb3a4f4b55ff53",
+    "storage": "8b1c922db32df098d1d667bdae36d1640ee4c678e8db96bc7598a2a75eb77ed2",
+    "ring": "b63d55171197254945ce0bca020e3c9ccc461c123673874660910398f0934fb9",
+    "inspector": "5dc029cdaa44cee5bdf9c60bd0be35458de16df977058e0215d62c94da59a03c",
+    "audit": "0ec0a16bd844ecaec11ef7d7487da3ffeaeee78b741cbb3806668801d9efb387",
+    "authority": "eeb186ece70669d663ccf60e1526c1b39d74d1c47c01bffc36266c49ad1fb9e7",
+    "catalog": "e6177bd5bc400c0e757bc81a096d1dc00c8d11673cd006e6d5fd2b580e726b29",
+    "maintenance": "c59647e886ffe48ce6798dc5eb5c07213152fb188bb6bb41ab8260b832095336",
+    "factory": "5cbeba6427068eebfcb4a439d63849804af79439fca2af8f3403134400ac198f",
+    "output": "4b12ad502ad1e92acab7404fed1858777cb7f40359bad05244c430ed74b825c1",
+    "handler": "a49f5495a948bf369393d965f430d2c8c1e81c12de7baa9beb3bc879210e4afa",
+    "routes": "6c9eea73cb4bbf619062ccdf0959c627ca2157994c59b4d258be4d3b37e3aac6",
+    "filesystems": "bfef724244b2bdf677d8c7e2470b42e5606d3c1cc239f34611b79bf50690b59c",
+    "config": "8cb90c8cf763c783e48d8c09243e4b804e438fc7b24560c70cd704f1ce5d5950",
+    "instructorRequest": "0bff128e99e70bb74bc18abfa0c0027560ed45ef89c82b57ab1dae6ee0d0c7c6",
+    "academyGuard": "7994a8af222b080456dd0d3b2cf2eaa27915ffb08b17f0a4473e884c63357b13",
+    "contracts": "a382a25b3449a4aef39efca92502106088e6c522c4a0b4cee727014cdd328a2f",
+    "manifest": "b4515e13118a5eb463562eec47f1942698f75c474d3f4ab638610cfa0b20e3f5",
+    "app": "f20571508ef58cc10a336a5231377a6503ee41af59bfb98ea1001d3eff96649c",
+    "shell": "6a1bab98d040103aaca9d0700f46d5910d92191e2f55cb7e66d678bab3a670bc",
+    "pages": "69634a37cfb9c73e5cb4b792ff30a1b0305ab59d5f54d9ce099c5a244a6d2a16",
+    "docPages": "da5ad1c8d965ae6654f0a4294d418c6314f18d540250473559b8811da56467f5",
+    "client": "b3b2667c595a29b23bf566ef217966806ceaf6473799a23be437b48022fe2c71"
+  },
+  "source_hashes_after": {
+    "classification": "0b94b39577e8dfd78fc4779f2b3f9118549efa35733feb1d974f51d85957ae64",
+    "records": "2af8c55a65ae0dbdf0af1f7780819393b72fdab57feb76292db32e50f2855c35",
+    "consumers": "39226aa71109a9d9d2ee1f321fb588b4c0ba4018197aa7c5e28b0f7d0f6ecc1e",
+    "pipeline": "32b0c264ff8bcc9883f2aa331fd608714acf9a04d217b77e8195b87beac26bfa",
+    "content": "567039f59e9fbc2b40fa90dce2afa8d2614bad1a992f2257ba35f437d73d2f79",
+    "service": "1bb1e20633b8a61add67b7e9b98d503e037a9b2d955b6d4ec5399d499224ac95",
+    "documents": "ab331b7c08f5ae095c21a7438197c25f127314123812d346ae16a0c7e5cb7487",
+    "runtime": "7ee22637d59593bfd822a3fe8ae0204c1b9d3e0f8b06ce84c59f146bc7dbe5ed",
+    "mepaf": "ec5798b388fb2235fe37b1ce6c113a4682d63829854afad143cb3a4f4b55ff53",
+    "storage": "8b1c922db32df098d1d667bdae36d1640ee4c678e8db96bc7598a2a75eb77ed2",
+    "ring": "b63d55171197254945ce0bca020e3c9ccc461c123673874660910398f0934fb9",
+    "inspector": "5dc029cdaa44cee5bdf9c60bd0be35458de16df977058e0215d62c94da59a03c",
+    "audit": "0ec0a16bd844ecaec11ef7d7487da3ffeaeee78b741cbb3806668801d9efb387",
+    "authority": "eeb186ece70669d663ccf60e1526c1b39d74d1c47c01bffc36266c49ad1fb9e7",
+    "catalog": "e6177bd5bc400c0e757bc81a096d1dc00c8d11673cd006e6d5fd2b580e726b29",
+    "maintenance": "c59647e886ffe48ce6798dc5eb5c07213152fb188bb6bb41ab8260b832095336",
+    "factory": "5cbeba6427068eebfcb4a439d63849804af79439fca2af8f3403134400ac198f",
+    "output": "4b12ad502ad1e92acab7404fed1858777cb7f40359bad05244c430ed74b825c1",
+    "handler": "a49f5495a948bf369393d965f430d2c8c1e81c12de7baa9beb3bc879210e4afa",
+    "routes": "6c9eea73cb4bbf619062ccdf0959c627ca2157994c59b4d258be4d3b37e3aac6",
+    "filesystems": "bfef724244b2bdf677d8c7e2470b42e5606d3c1cc239f34611b79bf50690b59c",
+    "config": "8cb90c8cf763c783e48d8c09243e4b804e438fc7b24560c70cd704f1ce5d5950",
+    "instructorRequest": "0bff128e99e70bb74bc18abfa0c0027560ed45ef89c82b57ab1dae6ee0d0c7c6",
+    "academyGuard": "7994a8af222b080456dd0d3b2cf2eaa27915ffb08b17f0a4473e884c63357b13",
+    "contracts": "a382a25b3449a4aef39efca92502106088e6c522c4a0b4cee727014cdd328a2f",
+    "manifest": "b4515e13118a5eb463562eec47f1942698f75c474d3f4ab638610cfa0b20e3f5",
+    "app": "f20571508ef58cc10a336a5231377a6503ee41af59bfb98ea1001d3eff96649c",
+    "shell": "6a1bab98d040103aaca9d0700f46d5910d92191e2f55cb7e66d678bab3a670bc",
+    "pages": "69634a37cfb9c73e5cb4b792ff30a1b0305ab59d5f54d9ce099c5a244a6d2a16",
+    "docPages": "da5ad1c8d965ae6654f0a4294d418c6314f18d540250473559b8811da56467f5",
+    "client": "b3b2667c595a29b23bf566ef217966806ceaf6473799a23be437b48022fe2c71"
+  },
+  "source_restored_byte_for_byte": true
+}

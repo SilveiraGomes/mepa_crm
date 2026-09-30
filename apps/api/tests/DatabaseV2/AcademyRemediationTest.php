@@ -466,6 +466,22 @@ final class AcademyRemediationTest extends PooledWaveFiveCase
         $svc->assign($manager['user'], $manager['session'], $w['class'], $this->row('people'), null, null, null, $own);
     }
 
+    // P0.8: a file the Files foundation classified CONFIDENTIAL / HIGHLY_SENSITIVE is never reachable from Academy
+    // (no attach, not listed as eligible) until the Academy consumer adapter exists (ADR 0019 D10).
+    public function test_p08_sensitive_files_are_not_reachable_from_academy(): void
+    {
+        $w = $this->certificateWorld();
+        $c = $w['certifier'];
+        $svc = new CertificateService($this->rt());
+        foreach (['CONFIDENTIAL', 'HIGHLY_SENSITIVE'] as $classification) {
+            $sensitive = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE', 'classification' => $classification]);
+            $this->denied(AcademyReason::FILE_NOT_AVAILABLE, fn () => $svc->issue($c['user'], $c['session'], $w['student']['id'], $sensitive));
+            $eligible = (new \App\Domain\Academy\AcademyResourceGuard($this->db()))->eligibleFiles(new \App\Domain\Academy\AcademyTarget([$w['unit']]), []);
+            self::assertNotContains((string) $this->db()->table('files')->where('id', $sensitive)->value('public_id'), array_column($eligible['items'], 'public_id'));
+        }
+        self::assertSame(0, $this->certificates($w['student']['id']));
+    }
+
     // R3.5
     public function test_r3_5_claiming_unit_a_in_the_payload_does_not_make_a_unit_b_file_usable(): void
     {

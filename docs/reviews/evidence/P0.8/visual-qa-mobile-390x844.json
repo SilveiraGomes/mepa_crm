@@ -1,0 +1,41 @@
+{
+  "project": "mobile-390x844",
+  "checks": [
+    {
+      "screen": "files-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "upload",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "file-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "versions",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "new-version-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "sensitive-download-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    }
+  ]
+}
