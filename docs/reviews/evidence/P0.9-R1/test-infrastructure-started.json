@@ -1,0 +1,12 @@
+{
+  "status": "STARTED_VERIFIED",
+  "port": 33058,
+  "datadir": "C:\\\\Users\\\\silve\\\\AppData\\\\Local\\\\Temp\\\\mepa-test-mysql\\\\844fbd2250ba\\\\data\\\\",
+  "session_id": "844fbd2250ba",
+  "pid": 35920,
+  "version": "8.4.7",
+  "version_comment": "MySQL Community Server - GPL",
+  "server_uuid": "8d0f39fd-bcc6-11f1-8f59-842afd0b4147",
+  "pid_file": "C:\\\\Users\\\\silve\\\\AppData\\\\Local\\\\Temp\\\\mepa-test-mysql\\\\844fbd2250ba\\\\data\\\\mysqld.pid",
+  "notes": ""
+}

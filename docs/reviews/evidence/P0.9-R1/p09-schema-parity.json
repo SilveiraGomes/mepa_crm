@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "mode": "INFORMATION_SCHEMA_VS_MODEL_CATALOG_AND_CONTROLLED_DATA",
+  "schema_changes": 1,
+  "details": {
+    "database": "mepa_wave5_test_844fbd22_pool_01",
+    "comparison": "BIDIRECTIONAL",
+    "compared_tables": 11,
+    "compared_columns": 99,
+    "compared_indexes": 55,
+    "compared_foreign_keys": 23,
+    "missing_or_mismatched": [],
+    "unexpected": [],
+    "approved_deltas": {
+      "columns": [
+        "transfers:closed_at:YES:datetime(6)",
+        "transfers:open_flag:YES:tinyint unsigned",
+        "membership_periods:open_flag:YES:tinyint unsigned"
+      ],
+      "indexes": [
+        "transfers:uq_transfers_membership_open:membership_id",
+        "transfers:uq_transfers_membership_open:open_flag",
+        "membership_periods:uq_membership_periods_membership_open:membership_id",
+        "membership_periods:uq_membership_periods_membership_open:open_flag"
+      ]
+    },
+    "open_period_guard": {
+      "generated_stored": true,
+      "unique": true
+    },
+    "forbidden_columns_present": [],
+    "check_constraints": [
+      "membership_periods.ck_membership_periods_period",
+      "transfers.ck_transfers_origin_destination"
+    ],
+    "unexpected_check_constraints": [],
+    "controlled_rows": [
+      "member_number_sequences:MEPA_NATIONAL",
+      "membership_statuses:ACTIVE",
+      "membership_statuses:ENDED",
+      "membership_statuses:INACTIVE",
+      "membership_statuses:REJECTED",
+      "membership_statuses:SUBMITTED",
+      "membership_statuses:VALIDATED",
+      "membership_statuses:WITHDRAWN",
+      "milestone_types:BAPTISM",
+      "milestone_types:CONVERSION",
+      "permissions:MEMBERSHIP_ADMISSION_MANAGE",
+      "permissions:MEMBERSHIP_APPROVE",
+      "permissions:MEMBERSHIP_LEGACY_MANAGE",
+      "permissions:MEMBERSHIP_MANAGE",
+      "permissions:MEMBERSHIP_TRANSFER",
+      "permissions:MEMBERSHIP_VIEW",
+      "workflows:MEMBERSHIP_TRANSFER"
+    ],
+    "controlled_rows_expected": 17,
+    "roles_with_membership_permissions": 0,
+    "counter": {
+      "last_value": 0,
+      "max_issued_sequence": 0,
+      "consistent": true
+    },
+    "memberships_with_more_than_one_open_period": 0,
+    "manifest_schema_changes": [
+      "ALTER TABLE membership_periods ADD open_flag TINYINT UNSIGNED GENERATED ALWAYS AS (IF(ends_at IS NULL, 1, NULL)) STORED + UNIQUE uq_membership_periods_membership_open (membership_id, open_flag)"
+    ]
+  }
+}

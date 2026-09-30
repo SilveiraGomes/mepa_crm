@@ -1,0 +1,82 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Wave Two Physical (Tests\Database\WaveTwoPhysical)
+ ✔ Migrate rollback and remigrate
+ ✔ Person exists independently of membership
+ ✔ Legacy member number coexists without becoming identifier
+ ✔ Transfer preserves person and member number with history
+ ✔ Ministerial history preserved across class change
+ ✔ Department definition reused across territorial levels without duplication
+ ✔ Vacant post representable and appointment fills then reverts
+ ✔ Named queries for department directors
+ ✔ Member number unique constraints are physical not only application
+ ✔ Member number generator replay rollback and boundaries
+ ✘ Information schema matches union catalog
+   │
+   │ {
+   │   "mode": "INFORMATION_SCHEMA",
+   │   "engine": "8.4.7",
+   │   "physical_execution": true,
+   │   "tables": 74,
+   │   "columns": 629,
+   │   "foreign_keys": 131,
+   │   "checks": 57,
+   │   "cascade_count": 0,
+   │   "w1_f01": {
+   │     "status": "MATERIALIZED",
+   │     "verified": true
+   │   },
+   │   "status": "DRIFT_DETECTED",
+   │   "errors": [
+   │     {
+   │       "path": "manifest.catalog_sha256",
+   │       "error": "Approved catalogue changed since generation"
+   │     }
+   │   ]
+   │ }
+   │
+   │ Failed asserting that 1 is identical to 0.
+   │
+   │ C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveTwoPhysicalTest.php:509
+   │
+
+ ↩ Validator flags w1 f01 regression if the fk is ever removed
+
+Time: 00:18.201, Memory: 12.00 MB
+
+Summary of non-successful tests:
+
+Wave Two Physical (Tests\Database\WaveTwoPhysical)
+ ✘ Information schema matches union catalog
+   │
+   │ {
+   │   "mode": "INFORMATION_SCHEMA",
+   │   "engine": "8.4.7",
+   │   "physical_execution": true,
+   │   "tables": 74,
+   │   "columns": 629,
+   │   "foreign_keys": 131,
+   │   "checks": 57,
+   │   "cascade_count": 0,
+   │   "w1_f01": {
+   │     "status": "MATERIALIZED",
+   │     "verified": true
+   │   },
+   │   "status": "DRIFT_DETECTED",
+   │   "errors": [
+   │     {
+   │       "path": "manifest.catalog_sha256",
+   │       "error": "Approved catalogue changed since generation"
+   │     }
+   │   ]
+   │ }
+   │
+   │ Failed asserting that 1 is identical to 0.
+   │
+   │ C:\wamp64\www\mepa-crm\apps\api\tests\Database\WaveTwoPhysicalTest.php:509
+   │
+
+ ↩ Validator flags w1 f01 regression if the fk is ever removed
+
+FAILURES!
+Tests: 12, Assertions: 223, Failures: 1, Skipped: 1.

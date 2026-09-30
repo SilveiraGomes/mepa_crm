@@ -1,0 +1,19 @@
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
+
+Wave Two Physical (Tests\Database\WaveTwoPhysical)
+ ✔ Migrate rollback and remigrate
+ ✔ Person exists independently of membership
+ ✔ Legacy member number coexists without becoming identifier
+ ✔ Transfer preserves person and member number with history
+ ✔ Ministerial history preserved across class change
+ ✔ Department definition reused across territorial levels without duplication
+ ✔ Vacant post representable and appointment fills then reverts
+ ✔ Named queries for department directors
+ ✔ Member number unique constraints are physical not only application
+ ✔ Member number generator replay rollback and boundaries
+ ✔ Information schema matches union catalog
+ ✔ Validator flags w1 f01 regression if the fk is ever removed
+
+Time: 00:15.795, Memory: 12.00 MB
+
+OK (12 tests, 232 assertions)
