@@ -15,5 +15,7 @@ class TrimStrings extends Middleware
         'current_password',
         'password',
         'password_confirmation',
+        // P0.9 (ADR 0020 D07): a legacy member identifier is preserved exactly as received.
+        'raw_number',
     ];
 }

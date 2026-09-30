@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
 use App\Domain\Files\FilesError;
+use App\Domain\Membership\MembershipError;
+use App\Domain\Membership\MembershipReason;
 use App\Domain\People\PeopleError;
 use App\Domain\Physical\PhysicalError;
 use App\Domain\Territorial\TerritorialError;
@@ -148,6 +150,44 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/files', 'api/v1/files/*', 'api/v1/documents', 'api/v1/documents/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        // P0.9 Membership (ADR-0020 D10). F-06: unknown, malformed and out-of-scope memberships, transfers, candidacies,
+        // milestones, legacy identifiers and source documents share one byte-identical response.
+        $this->renderable(function (MembershipError $e, Request $request) {
+            if (!$request->is('api/v1/memberships', 'api/v1/memberships/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('membership_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match (true) {
+                $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                $e->reason === 'REASON_REQUIRED' => [422, 'REASON_REQUIRED', 'A reason is required for this operation.'],
+                $e->reason === 'COLLECTIVE_REJECTED' => [409, 'COLLECTIVE_APPROVAL_REJECTED', 'No membership was approved: the list contains items that cannot be approved.'],
+                in_array($e->reason, MembershipReason::CONFLICTS, true) => [409, $e->reason, 'The request conflicts with the current resource state.'],
+                $e->reason === 'NUMBER_UNAVAILABLE' => [503, 'MEMBER_NUMBER_UNAVAILABLE', 'The official member number cannot be issued at the moment.'],
+                $e->reason === 'CONFIG_MISSING' => [503, 'MEMBERSHIP_NOT_CONFIGURED', 'The Membership configuration is not available.'],
+                default => [409, 'CONFLICT', 'The operation could not be completed.'],
+            };
+            Log::notice('membership_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            if ($e->items !== []) {
+                $body['details'] = ['items' => $e->items];
+            }
+            return response()->json(['error' => $body], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/memberships', 'api/v1/memberships/*')) {
                 return null;
             }
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);

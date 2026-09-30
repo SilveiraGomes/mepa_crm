@@ -22,6 +22,11 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
 use App\Http\Controllers\Api\V1\Files\DocumentController;
 use App\Http\Controllers\Api\V1\Files\FileController;
+use App\Http\Controllers\Api\V1\Membership\AdmissionController;
+use App\Http\Controllers\Api\V1\Membership\MemberLifecycleController;
+use App\Http\Controllers\Api\V1\Membership\MembershipController;
+use App\Http\Controllers\Api\V1\Membership\MembershipRecordController;
+use App\Http\Controllers\Api\V1\Membership\MembershipTransferController;
 use App\Http\Controllers\Api\V1\Physical\LinkController;
 use App\Http\Controllers\Api\V1\Physical\LocationController;
 use App\Http\Controllers\Api\V1\Physical\PropertyController;
@@ -98,6 +103,41 @@ Route::prefix('v1')->group(function (): void {
 
     // P0.7 Physical Locations / Properties / Temples / Unit <-> Location links (ADR-0018). Every target is a public_id
     // (links: an opaque ref under their location); no generic status or visibility endpoint; no anonymous route.
+    // P0.9 Membership (ADR-0020). Literal paths precede {membership}; every target is a public_id (memberships,
+    // transfers) or a natural key under a membership public_id (legacy identifier, milestone type). The official number
+    // is a search term, never a route key. No generic status endpoint; no anonymous route.
+    Route::prefix('memberships')->middleware(['api.auth', 'throttle:membership'])->group(function (): void {
+        Route::get('context', [MembershipController::class, 'context']);
+        Route::get('/', [MembershipController::class, 'index'])->middleware('throttle:membership-search');
+        Route::post('admissions', [AdmissionController::class, 'submit'])->middleware('throttle:membership-write');
+        Route::post('admissions/collective-approval', [AdmissionController::class, 'collective'])->middleware('throttle:membership-write');
+        Route::get('transfers', [MembershipController::class, 'allTransfers']);
+        Route::get('transfers/{transfer}', [MembershipController::class, 'transfer']);
+        Route::post('transfers/{transfer}/validate-origin', [MembershipTransferController::class, 'validateOrigin'])->middleware('throttle:membership-write');
+        Route::post('transfers/{transfer}/accept', [MembershipTransferController::class, 'accept'])->middleware('throttle:membership-write');
+        Route::post('transfers/{transfer}/reject', [MembershipTransferController::class, 'reject'])->middleware('throttle:membership-write');
+        Route::post('transfers/{transfer}/complete', [MembershipTransferController::class, 'complete'])->middleware('throttle:membership-write');
+        Route::post('transfers/{transfer}/cancel', [MembershipTransferController::class, 'cancel'])->middleware('throttle:membership-write');
+        Route::get('{membership}', [MembershipController::class, 'show']);
+        Route::get('{membership}/periods', [MembershipController::class, 'periods']);
+        Route::get('{membership}/transfers', [MembershipController::class, 'transfers']);
+        Route::post('{membership}/transfers', [MembershipTransferController::class, 'store'])->middleware('throttle:membership-write');
+        Route::post('{membership}/validate', [AdmissionController::class, 'validateCandidacy'])->middleware('throttle:membership-write');
+        Route::post('{membership}/withdraw', [AdmissionController::class, 'withdraw'])->middleware('throttle:membership-write');
+        Route::post('{membership}/reject', [AdmissionController::class, 'reject'])->middleware('throttle:membership-write');
+        Route::post('{membership}/approve', [AdmissionController::class, 'approve'])->middleware('throttle:membership-write');
+        Route::post('{membership}/inactivate', [MemberLifecycleController::class, 'inactivate'])->middleware('throttle:membership-write');
+        Route::post('{membership}/reactivate', [MemberLifecycleController::class, 'reactivate'])->middleware('throttle:membership-write');
+        Route::post('{membership}/end', [MemberLifecycleController::class, 'end'])->middleware('throttle:membership-write');
+        Route::post('{membership}/readmit', [MemberLifecycleController::class, 'readmit'])->middleware('throttle:membership-write');
+        Route::get('{membership}/legacy-identifiers', [MembershipRecordController::class, 'legacy']);
+        Route::post('{membership}/legacy-identifiers', [MembershipRecordController::class, 'registerLegacy'])->middleware('throttle:membership-write');
+        Route::post('{membership}/legacy-identifiers/revoke', [MembershipRecordController::class, 'revokeLegacy'])->middleware('throttle:membership-write');
+        Route::get('{membership}/milestones', [MembershipRecordController::class, 'milestones']);
+        Route::post('{membership}/milestones', [MembershipRecordController::class, 'recordMilestone'])->middleware('throttle:membership-write');
+        Route::post('{membership}/milestones/{type}/correct', [MembershipRecordController::class, 'correctMilestone'])->middleware('throttle:membership-write');
+    });
+
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {
         Route::get('context', [LocationController::class, 'context']);
         Route::get('locations', [LocationController::class, 'index']);
