@@ -98,5 +98,12 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('membership-search', function (Request $request) {
             return Limit::perMinute(60)->by('membership-search|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
         });
+        // P0.10 Finance (ADR 0021): reads and writes (stage postings, contributions).
+        RateLimiter::for('finance', function (Request $request) {
+            return Limit::perMinute(240)->by('finance|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('finance-write', function (Request $request) {
+            return Limit::perMinute(60)->by('finance-write|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
     }
 }

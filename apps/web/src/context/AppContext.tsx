@@ -20,6 +20,9 @@ import type { FilesContext } from '../types/files'
 import { membershipGet } from '../lib/membership/client'
 import { mb } from '../lib/membership/endpoints'
 import type { MembershipContext } from '../types/membership'
+import { financeGet } from '../lib/finance/client'
+import { fin } from '../lib/finance/endpoints'
+import type { FinanceContext } from '../types/finance'
 
 /** People permissions projected by the API (presentation only; the backend decides every request). */
 export interface PeopleAccess {
@@ -37,6 +40,9 @@ export interface FilesAccess { known: boolean; has: (permission: string) => bool
 /** Membership permissions projected by the API (presentation only; the backend decides every request). */
 export interface MembershipAccess { known: boolean; has: (permission: string) => boolean; context: MembershipContext | null; refresh: () => void }
 
+/** Finance permissions, units and accounts projected by the API (presentation only; the backend decides every request). */
+export interface FinanceAccess { known: boolean; has: (permission: string) => boolean; context: FinanceContext | null; refresh: () => void }
+
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
   session: AuthSession | null
@@ -47,6 +53,7 @@ interface AppValue {
   physical: PhysicalAccess
   files: FilesAccess
   membership: MembershipAccess
+  finance: FinanceAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -140,6 +147,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const held = new Set(membershipContext.permissions)
     return { known: true, has: (permission) => held.has(permission), context: membershipContext, refresh }
   }, [membershipContext])
+  const [financeContext, setFinanceContext] = useState<FinanceContext | null | 'none'>(null)
+  const [financeNonce, setFinanceNonce] = useState(0)
+  useEffect(() => {
+    if (!sessionToken) { setFinanceContext(null); return }
+    const controller = new AbortController()
+    financeGet<Item<FinanceContext>>(fin.context(), {}, controller.signal).then((result) => setFinanceContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setFinanceContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken, financeNonce])
+  const finance = useMemo<FinanceAccess>(() => {
+    const refresh = () => setFinanceNonce((value) => value + 1)
+    if (financeContext === null) return { known: false, has: () => false, context: null, refresh }
+    if (financeContext === 'none') return { known: true, has: () => false, context: null, refresh }
+    const held = new Set(financeContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), context: financeContext, refresh }
+  }, [financeContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -155,7 +179,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, files, membership, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, files, membership, finance, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}

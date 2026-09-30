@@ -1,0 +1,29 @@
+/* P0.10-F1B Finanças. Mobile-first; colours only through tokens.css. */
+.finance-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+.finance-tabs a.btn--primary, .finance-tabs a.btn--primary:visited { color: var(--text-on-primary); }
+.finance-filters { display: grid; gap: var(--space-3); align-items: end; }
+.finance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-width: 0; }
+.finance-amount { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.finance-unit { overflow-wrap: anywhere; }
+.finance-badges { display: inline-flex; flex-wrap: wrap; gap: var(--space-1); }
+.finance-summary, .finance-custody { display: grid; gap: var(--space-3); margin: 0; }
+.finance-summary > div, .finance-custody > div { min-width: 0; }
+.finance-summary dd { overflow-wrap: anywhere; margin: 0; }
+.finance-custody > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-subtle); }
+.finance-custody dd { margin: 0; }
+.finance-reason { overflow-wrap: anywhere; }
+.finance-picked { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.finance-results { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.finance-results > li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); min-width: 0; }
+.finance-timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.finance-timeline__item { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); min-width: 0; overflow-wrap: anywhere; }
+.finance-input-amount { font-variant-numeric: tabular-nums; }
+@media (width >= 48rem) {
+  .finance-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .finance-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (width < 30rem) {
+  .finance-actions { width: 100%; }
+  .page-header__actions .finance-actions > .btn { flex: 1 1 100%; justify-content: center; }
+  .finance-tabs > .btn { flex: 1 1 calc(50% - var(--space-2)); justify-content: center; }
+}

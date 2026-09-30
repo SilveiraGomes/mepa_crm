@@ -482,6 +482,25 @@ final class LedgerPostingService
 
     // ---- locks, idempotency, helpers -------------------------------------------------------------------------------
 
+    /**
+     * First step of the Finance lock order for a subledger operation (F1B transfers, contributions): the MONTH period of
+     * $date locked FOR SHARE and the unit close checked FOR SHARE, BEFORE the subledger document is locked.
+     */
+    public function lockPostingPeriod(int $unitId, string $date): object
+    {
+        $period = $this->monthFor($date);
+        $this->lockPeriodForUnit((int) $period->id, $unitId);
+        return $period;
+    }
+
+    /** Non-locking: is the MONTH of $date open nationally and for $unitId? (used to pick a deferred posting date). */
+    public function isPostingOpen(int $unitId, string $date): bool
+    {
+        $period = $this->db->table('accounting_periods')->where('code', substr($date, 0, 7))->first();
+        return $period !== null && $period->period_kind === FinanceCatalog::PERIOD_MONTH && $period->status === FinanceCatalog::PERIOD_OPEN
+            && !$this->unitClosed((int) $period->id, $unitId);
+    }
+
     private function lockPeriodForUnit(int $periodId, int $unitId): void
     {
         $period = $this->db->table('accounting_periods')->where('id', $periodId)->sharedLock()->first();

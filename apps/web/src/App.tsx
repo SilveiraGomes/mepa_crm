@@ -16,6 +16,7 @@ const householdPages = () => import('./pages/HouseholdPages')
 const territorialPages = () => import('./pages/TerritorialPages')
 const physicalPages = () => import('./pages/PhysicalPages')
 const membershipPages = () => import('./pages/MembershipPages')
+const financePages = () => import('./pages/FinancePages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -79,6 +80,12 @@ const MemberDetailPage = named(membershipPages, 'MemberDetailPage')
 const MemberHistoryPage = named(membershipPages, 'MemberHistoryPage')
 const MemberTransfersPage = named(membershipPages, 'MemberTransfersPage')
 const TransfersPage = named(membershipPages, 'TransfersPage')
+const SentTransfersPage = named(financePages, 'SentTransfersPage')
+const ReceivedTransfersPage = named(financePages, 'ReceivedTransfersPage')
+const InTransitPage = named(financePages, 'InTransitPage')
+const TransferCreatePage = named(financePages, 'TransferCreatePage')
+const TransferDetailPage = named(financePages, 'TransferDetailPage')
+const CustodyPage = named(financePages, 'CustodyPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -115,6 +122,13 @@ function App() {
       <Route path="/documentos" element={<DocumentsListPage />} />
       <Route path="/documentos/novo" element={<DocumentCreatePage />} />
       <Route path="/documentos/:id" element={<DocumentDetailPage />} />
+      <Route path="/financas" element={<Navigate to="/financas/transferencias" replace />} />
+      <Route path="/financas/transferencias" element={<SentTransfersPage />} />
+      <Route path="/financas/transferencias/recebidas" element={<ReceivedTransfersPage />} />
+      <Route path="/financas/transferencias/em-transito" element={<InTransitPage />} />
+      <Route path="/financas/transferencias/nova" element={<TransferCreatePage />} />
+      <Route path="/financas/transferencias/:id" element={<TransferDetailPage />} />
+      <Route path="/financas/posicao" element={<CustodyPage />} />
       <Route path="/membros" element={<MembersPage />} />
       <Route path="/membros/admissoes" element={<AdmissionsPage />} />
       <Route path="/membros/admissoes/colectiva" element={<CollectiveAdmissionPage />} />

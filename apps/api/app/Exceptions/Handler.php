@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
 use App\Domain\Files\FilesError;
+use App\Domain\Finance\FinanceError;
 use App\Domain\Membership\MembershipError;
 use App\Domain\Membership\MembershipReason;
 use App\Domain\People\PeopleError;
@@ -150,6 +151,44 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/files', 'api/v1/files/*', 'api/v1/documents', 'api/v1/documents/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        // P0.10 Finance (ADR-0021 D20). F-06: unknown, malformed and out-of-scope transfers, contributions, units,
+        // accounts and supporting documents are the same byte-identical 404; permission (403) is decided before any
+        // target is resolved. Domain codes are stable and never carry internal ids.
+        $this->renderable(function (FinanceError $e, Request $request) {
+            if (!$request->is('api/v1/finance', 'api/v1/finance/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('finance_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match (true) {
+                $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_LIMIT', 'AMOUNT_NOT_POSITIVE', 'ENTRY_DATE_IN_FUTURE', 'ENTRY_DATE_INVALID', 'REASON_REQUIRED', 'INTERNAL_COUNTERPARTY', 'VALUATION_DOCUMENT_REQUIRED'], true) => [422, $e->reason, 'The request data is invalid.'],
+                $e->reason === 'CONFIG_MISSING' => [503, 'FINANCE_NOT_CONFIGURED', 'The Finance configuration is not available.'],
+                $e->reason === 'BUSY' => [503, 'FINANCE_BUSY', 'The operation could not be completed now; nothing was changed.'],
+                in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
+                default => [409, $e->reason, 'The request conflicts with the current resource state.'],
+            };
+            Log::notice('finance_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            if ($e->reason === 'RECONCILIATION_MISMATCH') {
+                $body['details'] = ['mismatches' => $e->items];
+            }
+            return response()->json(['error' => $body], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/finance', 'api/v1/finance/*')) {
                 return null;
             }
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);

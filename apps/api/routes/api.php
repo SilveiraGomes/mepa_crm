@@ -22,6 +22,9 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
 use App\Http\Controllers\Api\V1\Files\DocumentController;
 use App\Http\Controllers\Api\V1\Files\FileController;
+use App\Http\Controllers\Api\V1\Finance\ContributionController;
+use App\Http\Controllers\Api\V1\Finance\FinanceController;
+use App\Http\Controllers\Api\V1\Finance\FinanceTransferController;
 use App\Http\Controllers\Api\V1\Membership\AdmissionController;
 use App\Http\Controllers\Api\V1\Membership\MemberLifecycleController;
 use App\Http\Controllers\Api\V1\Membership\MembershipController;
@@ -136,6 +139,28 @@ Route::prefix('v1')->group(function (): void {
         Route::get('{membership}/milestones', [MembershipRecordController::class, 'milestones']);
         Route::post('{membership}/milestones', [MembershipRecordController::class, 'recordMilestone'])->middleware('throttle:membership-write');
         Route::post('{membership}/milestones/{type}/correct', [MembershipRecordController::class, 'correctMilestone'])->middleware('throttle:membership-write');
+    });
+
+    // P0.10-F1B Finance (ADR 0021 + D-04A): interunit transfers, fund custody, contributions. Targets are public ids;
+    // explicit stage endpoints only (no generic status PATCH); collections paginated (max 100).
+    Route::prefix('finance')->middleware(['api.auth', 'throttle:finance'])->group(function (): void {
+        Route::get('context', [FinanceController::class, 'context']);
+        Route::get('units', [FinanceController::class, 'units']);
+        Route::get('transfers', [FinanceController::class, 'transfers']);
+        Route::post('transfers', [FinanceTransferController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('transfers/{transfer}', [FinanceController::class, 'transfer']);
+        Route::post('transfers/{transfer}/send', [FinanceTransferController::class, 'send'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/receive', [FinanceTransferController::class, 'receive'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/cancel', [FinanceTransferController::class, 'cancel'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/reverse-send', [FinanceTransferController::class, 'reverseSend'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/reconcile', [FinanceTransferController::class, 'reconcile'])->middleware('throttle:finance-write');
+        Route::get('units/{unit}/custody', [FinanceController::class, 'custody']);
+        Route::get('units/{unit}/subtree-transfers', [FinanceController::class, 'subtree']);
+        Route::get('contributions', [FinanceController::class, 'contributions']);
+        Route::post('contributions', [ContributionController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('contributions/{contribution}', [FinanceController::class, 'contribution']);
+        Route::post('contributions/{contribution}/valuation', [ContributionController::class, 'valuate'])->middleware('throttle:finance-write');
+        Route::post('contributions/{contribution}/approve-valuation', [ContributionController::class, 'approve'])->middleware('throttle:finance-write');
     });
 
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {
