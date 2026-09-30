@@ -1,0 +1,189 @@
+{
+  "runner": "scripts/run-p010-finance-f1a.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 12.9,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33026,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\5a3e25c29814\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"5a3e25c29814\",\n  \"pid\": 43272,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"34040fd5-bcf0-11f1-acd8-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\5a3e25c29814\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33026",
+      "rc": 0,
+      "seconds": 40.9,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_5a3e25c2_pool_01\",\n    \"mepa_wave4_test_5a3e25c2_pool_02\",\n    \"mepa_wave3_test_5a3e25c2_pool_01\",\n    \"mepa_wave5_test_5a3e25c2_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_5a3e25c2_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_5a3e25c2_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_5a3e25c2_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_5a3e25c2_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 187,\n      \"tables\": 175\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33026",
+      "rc": 0,
+      "seconds": 8.8,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at": "2026-09-30T17:58:46+0100",
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_5a3e25c2_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_5a3e25c2_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_5a3e25c2_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_5a3e25c2_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 187,
+      "tables": 175
+    }
+  },
+  "schema_parity": {
+    "p010": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p09": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p08": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p07": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p06": {
+      "rc": 0,
+      "status": "PASS"
+    }
+  },
+  "finance_phpunit": {
+    "rc": 0,
+    "summary": "OK (26 tests, 611 assertions)",
+    "seconds": 19.8
+  },
+  "wave2_regressions": {
+    "WaveTwoConcurrencyTest": {
+      "rc": 0,
+      "summary": "OK (4 tests, 59 assertions)"
+    },
+    "WaveTwoPhysicalTest": {
+      "rc": 0,
+      "summary": "OK (12 tests, 232 assertions)"
+    },
+    "WaveTwoIndependentReconciliationTest": {
+      "rc": 0,
+      "summary": "OK (11 tests, 44 assertions)"
+    },
+    "WaveTwoTransferConcurrencyTest": {
+      "rc": 0,
+      "summary": "OK (10 tests, 70 assertions)"
+    },
+    "WaveTwoM1IndependentAuditTest": {
+      "rc": 0,
+      "summary": "OK (10 tests, 110 assertions)"
+    }
+  },
+  "regressions": {
+    "membership": {
+      "rc": 0,
+      "summary": "OK (29 tests, 1427 assertions)"
+    },
+    "people_context": {
+      "rc": 0,
+      "summary": "OK (8 tests, 220 assertions)"
+    },
+    "people_person": {
+      "rc": 0,
+      "summary": "OK (15 tests, 1354 assertions)"
+    },
+    "territorial": {
+      "rc": 0,
+      "summary": "OK (13 tests, 151 assertions)"
+    },
+    "files": {
+      "rc": 0,
+      "summary": "OK (27 tests, 1550 assertions)"
+    },
+    "physical": {
+      "rc": 0,
+      "summary": "OK (21 tests, 875 assertions)"
+    },
+    "academy_remediation": {
+      "rc": 0,
+      "summary": "OK (24 tests, 118 assertions)"
+    },
+    "academy_http": {
+      "rc": 0,
+      "summary": "OK (5 tests, 35 assertions)"
+    }
+  },
+  "validators": {
+    "finance_contracts": {
+      "rc": 0,
+      "tail": "a0\",\n    \"lines\": \"57ab4796573991015c6b8edacfdf1e81d87badf6d57d7906781e57a903d5f3c9\",\n    \"budgets\": \"07f2ddcb7e31afcb18600bb2f0d6ed2cb3e461dfd040a55702c1105df3cff401\",\n    \"installer\": \"3bd438961730aa6624becc1f4f2bee9bbdecba668780a02e3e5198e462ff6c5b\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "membership_contracts": {
+      "rc": 0,
+      "tail": "3c3b\",\n    \"shell\": \"ca800aa6009b987f337c4add5bfa79a8369800bccbad037d49076c53af2abf4f\",\n    \"pages\": \"e6c7e339dadbf486e95e5c1389c908c919a24350fdf17d96978830160970c155\",\n    \"endpoints\": \"2cb8d0870d6c2eff7e4b03564bd96da1c851bd1d8aa5ccaa01246ff7cca742ec\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "files_contracts": {
+      "rc": 0,
+      "tail": "bf4f\",\n    \"pages\": \"69634a37cfb9c73e5cb4b792ff30a1b0305ab59d5f54d9ce099c5a244a6d2a16\",\n    \"docPages\": \"da5ad1c8d965ae6654f0a4294d418c6314f18d540250473559b8811da56467f5\",\n    \"client\": \"b3b2667c595a29b23bf566ef217966806ceaf6473799a23be437b48022fe2c71\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "physical_contracts": {
+      "rc": 0,
+      "tail": "3c3b\",\n    \"shell\": \"ca800aa6009b987f337c4add5bfa79a8369800bccbad037d49076c53af2abf4f\",\n    \"pages\": \"a21e8b0ea1fca7336e2eedd5afa05fff2a42ac93a2cefdd24ecc5f39a746b3af\",\n    \"patrimony\": \"eb76414a7917044f41d65b9a1b532e56462d72c4dc00d546bc7b237afa31b37a\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "territorial_contracts": {
+      "rc": 0,
+      "tail": "dfb5c22\",\n    \"rules\": \"bf244e91b4c8282b5c2cf0053fe9c9176671a50b3f21dd996d6f234520063b7e\",\n    \"contracts\": \"42462dd703ca29af84b9511746b423717bf0c71ba4c924dcbbc3c355e142c4db\",\n    \"ui\": \"cf0de4321725895a17d67efba008e10058ed562663a09b9c6e4fed8e6bb282d5\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "http_contracts": {
+      "rc": 0,
+      "tail": "HTTP_CONTRACTS_PASS 828 checks 66 endpoints"
+    },
+    "ui_contracts": {
+      "rc": 0,
+      "tail": "UI_CONTRACTS_PASS 530 checks; 34 screens; 25 actions; 0 contract-gapped actions"
+    },
+    "auth_contracts": {
+      "rc": 0,
+      "tail": "AUTH_CONTRACTS_PASS 20 checks; MEPA_LOCAL_AUTH_V1; refresh NOT_APPLICABLE"
+    },
+    "application_contracts": {
+      "rc": 0,
+      "tail": "{\n  status: 'APPLICATION_CONTRACTS_PASS',\n  checks: 1513,\n  failed: 0,\n  operations: 65,\n  command_operations: 30,\n  read_operations: 35,\n  d09_reviewed_false_positives: 17\n}"
+    },
+    "people_families_contracts": {
+      "rc": 0,
+      "tail": "{\n  \"validator\": \"MEPA_PEOPLE_FAMILIES_IMPLEMENTATION_V1\",\n  \"status\": \"PASS\",\n  \"endpoints\": 33,\n  \"errors\": []\n}"
+    },
+    "wave5_schema_static": {
+      "rc": 0,
+      "tail": "ically parsed, vs. model_catalog.json + wave5_manifest.json (design authority) + wave5_migrations_manifest.json (execution authority)\",\n  \"tables\": 25,\n  \"columns\": 215,\n  \"foreign_keys\": 52,\n  \"checks\": 21,\n  \"unique\": 32,\n  \"public_id\": 8,\n  \"cascade\": 0,\n  \"unexpected_drift\": 0,\n  \"errors\": []\n}"
+    },
+    "database_docs": {
+      "rc": 0,
+      "tail": "{\n  \"tables\": 199,\n  \"columns\": 1753,\n  \"fks\": 440,\n  \"master_relations\": 440,\n  \"local_links\": \"checked\",\n  \"identifier_strategy\": \"ACCEPTED\",\n  \"public_id_entities\": 54,\n  \"errors\": []\n}"
+    }
+  },
+  "tracked_rewrites_restored": true,
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-09-30T18:11:29+0100"
+}

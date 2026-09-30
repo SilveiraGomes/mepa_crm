@@ -1,0 +1,21 @@
+{
+    "C1b": {
+        "statuses": [
+            "OK",
+            "STALE_WRITE"
+        ],
+        "numbers_issued": 1
+    },
+    "C1c": {
+        "collective": "COLLECTIVE_REJECTED",
+        "individual": "OK",
+        "numbers_issued": 1
+    },
+    "C1d": {
+        "statuses": [
+            "COLLECTIVE_REJECTED",
+            "OK"
+        ],
+        "numbers_issued": 3
+    }
+}

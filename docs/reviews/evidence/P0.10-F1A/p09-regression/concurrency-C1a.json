@@ -1,0 +1,29 @@
+{
+    "N2": {
+        "workers": 2,
+        "ok": 2,
+        "distinct_numbers": 2,
+        "first": 27,
+        "last": 28,
+        "counter_after": 28,
+        "duplicates": 0
+    },
+    "N10": {
+        "workers": 10,
+        "ok": 10,
+        "distinct_numbers": 10,
+        "first": 29,
+        "last": 38,
+        "counter_after": 38,
+        "duplicates": 0
+    },
+    "N30": {
+        "workers": 30,
+        "ok": 30,
+        "distinct_numbers": 30,
+        "first": 39,
+        "last": 68,
+        "counter_after": 68,
+        "duplicates": 0
+    }
+}
