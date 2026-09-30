@@ -22118,7 +22118,7 @@
           "default": "nenhum",
           "pk": false,
           "fk": null,
-          "description": "ASSET, LIABILITY, EQUITY, INCOME, EXPENSE",
+          "description": "ASSET, LIABILITY, EQUITY, INCOME, EXPENSE, INTERUNIT_CONTROL (ADR 0021 D-04A: contas técnicas de balanço de controlo interunidades)",
           "example": "EXEMPLO",
           "sensitivity": "Confidencial",
           "unique": [],

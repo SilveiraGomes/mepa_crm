@@ -1,0 +1,15 @@
+{
+  "old_hash": "9da2b2f72bb74fd1b655961775a5647efce65368c4246c2ec9879cc53c757158",
+  "new_hash": "e3d8479a51a65e48d14824d8577e9a32d93df9d21adfc3f0291498ef47f970de",
+  "changed_tables": [
+    "chart_of_accounts"
+  ],
+  "wave2_generator_byte_identical": true,
+  "manifests": {
+    "wave1_manifest.json": "UNTOUCHED (already stale before F1A: 237478eba6ac..., P09-R1-T01)",
+    "wave2_manifest.json": "REFRESHED",
+    "wave3_manifest.json": "UNTOUCHED (already stale before F1A: 237478eba6ac..., P09-R1-T01)",
+    "wave4_manifest.json": "UNTOUCHED (already stale before F1A: 237478eba6ac..., P09-R1-T01)",
+    "wave5_migrations_manifest.json": "REFRESHED"
+  }
+}

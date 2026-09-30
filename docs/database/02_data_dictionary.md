@@ -3138,7 +3138,7 @@ Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem publ
 | parent_id | BIGINT UNSIGNED | sim | NULL | não | chart_of_accounts.id | — | ix_chart_of_accounts_parent_id | parent id | 123 | Confidencial |
 | code | VARCHAR(64) | não | nenhum | não | — | uq_chart_of_accounts_code | — | code | CAT_EXEMPLO | Confidencial |
 | name | VARCHAR(191) | não | nenhum | não | — | — | — | name | Designacao de exemplo | Confidencial |
-| account_kind | VARCHAR(64) | não | nenhum | não | — | — | — | ASSET, LIABILITY, EQUITY, INCOME, EXPENSE | EXEMPLO | Confidencial |
+| account_kind | VARCHAR(64) | não | nenhum | não | — | — | — | ASSET, LIABILITY, EQUITY, INCOME, EXPENSE, INTERUNIT_CONTROL (ADR 0021 D-04A: contas técnicas de balanço de controlo interunidades) | EXEMPLO | Confidencial |
 | normal_side | VARCHAR(64) | não | nenhum | não | — | — | — | DEBIT ou CREDIT | EXEMPLO | Confidencial |
 | postable | TINYINT UNSIGNED | não | nenhum | não | — | — | — | postable | 1 | Confidencial |
 | status | VARCHAR(64) | não | nenhum | não | — | — | — | status | DRAFT | Confidencial |
