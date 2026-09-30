@@ -6,6 +6,8 @@
 
 **Fase:** P0.10-D (preflight + decision freeze). Baseline `a3d7c5f3405c5c17ee5783251f1cf32068a7cc13` = `main` = `origin/main` (Academia, People/Families, Territorial, Physical Locations, Documents/Files e Membership integrados e publicados). Branch `p010-finance-payroll`, criado directamente desse commit com working tree limpo.
 
+**Adenda:** D-04A (P0.10-D1, 2026-09-30) — origem, aplicação, custódia e consolidação de fundos; contas de controlo interunidades; investimento capitalizável; gate de produção de payroll. Os pontos de D08/D09/D10/D15/D16/D21/D26 que ela ajusta estão marcados "(D-04A)".
+
 **Refina, sem reabrir:** ADR 0005 (ledger com partidas dobradas; transferências internas não duplicam receita), §15–§20, §33 e §44 de `mepa_crm_v1.1.1.md`, `04_database_constraints.md` (ledger), `11_financial_invariants_test_plan.md`, ADR 0009 (public_id), ADR 0017 (People), ADR 0018/0020 (TerritorialAuthority), ADR 0019 (Files).
 
 ## Contexto
@@ -105,7 +107,7 @@ As decisões institucionais marcadas **[DI]** abaixo foram tomadas pelo respons�
 | Orçamento | Sim |
 | Payroll (FIN-PAYROLL-01) | Sim |
 | `obligation_rules`, `obligations` (quotas previstas/vencidas §18), `contribution_allocations` | **Diferidos**. As tabelas **não** são criadas nesta fase. `receivables.obligation_id` fica sempre NULL na V1. |
-| Empréstimos (módulo), activos fixos/depreciação, FX, fundos restritos múltiplos | Diferidos (não bloqueantes) |
+| Empréstimos (módulo), registo de activos fixos/depreciação, FX, fundos restritos múltiplos | Diferidos (não bloqueantes). A capitalização ao custo existe na V1 (D-04A.12); só o registo por bem e a depreciação são diferidos |
 
 ## D06: contas financeiras
 
@@ -173,19 +175,20 @@ Nova coluna `system_role` (VARCHAR(64) NULL, UNIQUE). Estas contas são instalad
 | `CASH` | ASSET | Controlo de todas as contas caixa (detalhe por `financial_account_id`) |
 | `BANK` | ASSET | Controlo de todas as contas bancárias |
 | `RECEIVABLES` | ASSET | Recebíveis |
-| `IN_KIND_ASSETS` | ASSET | Contrapartida de bens em espécie valorizados enquanto não consumidos. Se a valorização indicar rubrica de consumo (material, investimento), o débito vai directamente ao gasto dessa rubrica |
+| `IN_KIND_ASSETS` | ASSET | Contrapartida de bens em espécie valorizados enquanto não consumidos. Se a valorização indicar uma rubrica (material, investimento), o débito vai à conta de controlo dessa rubrica: gasto, ou `FIXED_ASSETS` se capitalizável (D-04A) |
+| `FIXED_ASSETS` | ASSET | Bens adquiridos classificados como investimento capitalizável (D-04A.12), ao custo; sem depreciação na V1 |
 | `PAYABLES` | LIABILITY | Fornecedores/pagáveis |
 | `PAYROLL_NET_PAYABLE` | LIABILITY | Salários líquidos a pagar |
 | `PAYROLL_WITHHOLDINGS` | LIABILITY | Retenções ao empregado (INSS trabalhador, IRT…) |
 | `PAYROLL_EMPLOYER_CHARGES` | LIABILITY | Encargos da entidade a pagar (INSS entidade…) |
 | `LOANS_PAYABLE` | LIABILITY | Só saldos iniciais e amortizações de empréstimos existentes (§16.10: principal não é gasto) |
 | `OPENING_NET_ASSETS` | EQUITY | Contrapartida de saldos iniciais |
-| `INTERNAL_TRANSFERS_OUT` | EQUITY | Transferências internas enviadas (D10) |
-| `INTERNAL_TRANSFERS_IN` | EQUITY | Transferências internas recebidas (D10) |
+| `INTERUNIT_CLEARING_OUT` | INTERUNIT_CONTROL | Controlo interunidades — fundos internos enviados (D10, D-04A). Conta técnica de balanço; nunca receita, gasto nem equity |
+| `INTERUNIT_CLEARING_IN` | INTERUNIT_CONTROL | Controlo interunidades — fundos internos recebidos (D10, D-04A). Conta técnica de balanço; nunca receita, gasto nem equity |
 | `OPERATING_INCOME` | INCOME | Receitas §16.1 |
 | `NON_OPERATING_INCOME` | INCOME | Entradas §16.10 |
 | `OPERATING_EXPENSE` | EXPENSE | §16.2–16.6 |
-| `INVESTMENT_EXPENSE` | EXPENSE | §16.7–16.9 [DI D09] |
+| `INVESTMENT_EXPENSE` | EXPENSE | §16.7 e §16.9 [DI D09]; §16.8 só quando a rubrica não é capitalizável (D-04A.12) |
 | `NON_OPERATING_EXPENSE` | EXPENSE | Saídas §16.10 que são gasto (juros de mora…) |
 
 Resultado acumulado não é conta: é derivado (Σ INCOME − Σ EXPENSE). Fecho anual com apuramento de resultado é diferido (não bloqueante).
@@ -199,9 +202,9 @@ Resultado acumulado não é conta: é derivado (Σ INCOME − Σ EXPENSE). Fecho
 | `OPERATING_REVENUE` | REVENUE | OPERATING_INCOME | Receitas |
 | `COST_OF_SALES` | EXPENSE | OPERATING_EXPENSE | Custos com produtos e serviços |
 | `ADMINISTRATIVE_EXPENSE` / `FINANCIAL_EXPENSE` / `PERSONNEL_EXPENSE` / `MATERIALS_EXPENSE` | EXPENSE | OPERATING_EXPENSE | Despesas |
-| `INVESTMENT` | INVESTMENT | INVESTMENT_EXPENSE | **Investimentos** (após resultado operacional; sem capitalização nem depreciação na V1) [DI] |
+| `INVESTMENT` | INVESTMENT | INVESTMENT_EXPENSE ou `FIXED_ASSETS` conforme a rubrica (D-04A.12) | **Investimentos** (após resultado operacional) quando consumidos; aquisição capitalizada fica fora do resultado (memo). Sem depreciação na V1 [DI] |
 | `NON_OPERATING_INCOME` / `NON_OPERATING_EXPENSE` | — | NON_OPERATING_* | Não operacionais |
-| `INTERNAL_TRANSFER` | TRANSFER | INTERNAL_TRANSFERS_* | Fora do resultado (memo) |
+| `INTERNAL_TRANSFER` | TRANSFER | INTERUNIT_CLEARING_* | Fora do resultado (memo) |
 | `BALANCE_SHEET` | — | LOANS_PAYABLE etc. | Fora do resultado (fluxo de caixa) |
 
 - **RETURN/ROI** = rubrica `REV_INVESTMENT_RETURN` (§16.1), natureza `OPERATING_REVENUE`, linha própria no DRE.
@@ -220,7 +223,7 @@ Resultado acumulado não é conta: é derivado (Σ INCOME − Σ EXPENSE). Fecho
 | 16.8 | `INV_AST_IT` · `INV_AST_INFRASTRUCTURE` · `INV_AST_FURNITURE` · `INV_AST_ELECTRICAL` · `INV_AST_UNIFORMS` · `INV_AST_UTENSILS` · `INV_AST_OTHER` |
 | 16.9 | `INV_DEV_CONSULTING` · `INV_DEV_TRAINING` · `INV_DEV_BUSINESS` · `INV_DEV_REFRESH` · `INV_DEV_OTHER` |
 | 16.10 | `NOP_IN_USED_EQUIPMENT` · `NOP_IN_OTHER` · `NOP_OUT_LATE_INTEREST` · `NOP_OUT_OTHER` · `BS_LOAN_PRINCIPAL` (natureza `BALANCE_SHEET`) · `BS_PAST_DEBTS` (liquidação de payables antigos; `BALANCE_SHEET`) |
-| Transferências | `TRF_REMITTANCE` Remessa · `TRF_BUDGET_QUOTA` Quota orçamental entre unidades · `TRF_OTHER` |
+| Transferências (finalidade, D-04A.6) | `TRF_REMITTANCE` Remessa regular · `TRF_BUDGET_QUOTA` Quota orçamental entre unidades · `TRF_SPECIAL_CONTRIBUTION` Contribuição especial · `TRF_SUPPORT` Apoio · `TRF_PROJECT` Transferência de projecto · `TRF_OTHER` Outra |
 
 - **"Arrendamento" (pendência P0-FIN) não é instalado** até classificação; entretanto usa-se `ADM_OTHER`. `classification_status` ∈ {`APPROVED`, `PENDING_REVIEW`}.
 - **Regra de origem:** se a contraparte é uma unidade MEPA, a operação **tem de ser** `internal_transfers`. `payables`/`receivables`/`contributions` recusam `financial_parties` do tipo `UNIT` (`422 INTERNAL_COUNTERPARTY`). `REV_BUDGET_QUOTAS`/`REV_DEPARTMENT_QUOTAS` como receita só existem com contraparte externa ou Pessoa; quota paga por uma unidade é `TRF_BUDGET_QUOTA`.
@@ -238,15 +241,15 @@ Uma entry `ACCOUNT_TRANSFER`: Dr conta destino / Cr conta origem, ambas da mesma
 
 | Etapa | Unidade | Débito | Crédito | Quem |
 |---|---|---|---|---|
-| `SEND` | Origem O | `INTERNAL_TRANSFERS_OUT` (contraparte D) | Caixa/Banco O | `FINANCE_TRANSFER` + `FINANCE_POST` sobre O |
-| `RECEIVE` | Destino D | Caixa/Banco D | `INTERNAL_TRANSFERS_IN` (contraparte O) | `FINANCE_TRANSFER` + `FINANCE_POST` sobre D |
-| `REVERSE_SEND` | Origem O | Caixa/Banco O | `INTERNAL_TRANSFERS_OUT` | Só antes de `RECEIVE`; motivo obrigatório |
+| `SEND` | Origem O | `INTERUNIT_CLEARING_OUT` (contraparte D) | Caixa/Banco O | `FINANCE_TRANSFER` + `FINANCE_POST` sobre O |
+| `RECEIVE` | Destino D | Caixa/Banco D | `INTERUNIT_CLEARING_IN` (contraparte O) | `FINANCE_TRANSFER` + `FINANCE_POST` sobre D |
+| `REVERSE_SEND` | Origem O | Caixa/Banco O | `INTERUNIT_CLEARING_OUT` | Só antes de `RECEIVE`; motivo obrigatório |
 
 - **Cada etapa só toca uma unidade**: cada unidade fecha o seu período sem depender da outra.
 - Estados V1: `DRAFT → SENT → RECEIVED`; `DRAFT → CANCELLED`; `SENT → CANCELLED` (com `REVERSE_SEND`: devolução/recusa). `RECEIVED` é final; corrige-se com nova transferência em sentido inverso. `AUTHORIZED` e `RECONCILED` do catálogo **não** são usados: a autorização é a publicação do SEND, e a recepção exige montante igual (a conciliação é automática por par).
 - `RECEIVE` recebe exactamente `amount`. Tarifa bancária é despesa `FIN_BANK_FEES` separada de quem a suporta.
 - `transfer_postings` `UNIQUE (transfer_id, posting_stage)` garante SEND/RECEIVE únicos; `posting_stage` CHECK ∈ {`SEND`,`RECEIVE`,`REVERSE_SEND`}.
-- `journal_lines.counterparty_unit_id` (novo, NULL) é **obrigatório** nas linhas de `INTERNAL_TRANSFERS_*` e proibido nas outras.
+- `journal_lines.counterparty_unit_id` (novo, NULL) é **obrigatório** nas linhas de `INTERUNIT_CLEARING_*` e proibido nas outras.
 - Datas: `RECEIVE.entry_date` = data real de recepção, ≥ data do SEND. Se o período dessa data está fechado para D, publica-se na primeira data de período aberto de D e guarda-se `received_at` real.
 - Destino: qualquer unidade `ACTIVE`. A regra "só para cima" não é imposta sem fonte institucional.
 
@@ -316,8 +319,8 @@ Para qualquer perímetro S e intervalo P:
 | Entry | Unidade | Dr | Cr |
 |---|---|---|---|
 | REVENUE | C | Caixa C 100 | OPERATING_INCOME (`REV_TITHES`) 100 |
-| TRANSFER_SEND | C | INTERNAL_TRANSFERS_OUT (cp M) 80 | Caixa C 80 |
-| TRANSFER_RECEIVE | M | Caixa M 80 | INTERNAL_TRANSFERS_IN (cp C) 80 |
+| TRANSFER_SEND | C | INTERUNIT_CLEARING_OUT (cp M) 80 | Caixa C 80 |
+| TRANSFER_RECEIVE | M | Caixa M 80 | INTERUNIT_CLEARING_IN (cp C) 80 |
 
 Own C: receita externa 100; resultado 100; transferências enviadas 80; caixa 20. Own M: receita 0; transferências recebidas 80; caixa 80. **Cons M: receita 100 (não 180)**; par eliminado; caixa 100.
 
@@ -335,7 +338,7 @@ Estrutura (§17), para `own` e `cons`, por mês/trimestre/semestre/ano:
 2. − Custos com produtos e serviços
 3. − Despesas (administrativas, financeiras, com pessoal, materiais e equipamentos)
 4. **= Resultado operacional**
-5. − Investimentos (comunicação, bens materiais, desenvolvimento)
+5. − Investimentos consumidos (comunicação, desenvolvimento, bens materiais não capitalizáveis); aquisições capitalizadas em `FIXED_ASSETS` só em memo (D-04A.12)
 6. ± Não operacionais
 7. **= Excedente / Défice (resultado económico)**
 8. Memo, fora do resultado: transferências internas recebidas/enviadas (own) ou para/de fora do perímetro (cons); trânsito interno; contribuições em espécie não valorizadas (contagem).
@@ -372,7 +375,7 @@ Obrigatórias: `finance.entry_created`, `.entry_submitted`, `.entry_posted`, `.e
 
 ## D21: relatórios V1
 
-Todos em mês/trimestre/semestre/ano, `own` e (quando aplicável) `cons`: diário (entries do período), razão por conta de controlo e por conta financeira, resumo de receitas, resumo de despesas, movimento por conta caixa/banco, orçamento vs real, DRE own, DRE consolidado, reconciliação de transferências (enviadas/recebidas/em trânsito com idade), reconciliação bancária/caixa, saldos de fecho, payables/receivables em aberto, contribuições em espécie não valorizadas, resumo de payroll (agregado, D28).
+Os oito relatórios obrigatórios por unidade estão em D-04A.9 e prevalecem sobre esta lista. Todos em mês/trimestre/semestre/ano, `own` e (quando aplicável) `cons`: diário (entries do período), razão por conta de controlo e por conta financeira, resumo de receitas, resumo de despesas, movimento por conta caixa/banco, orçamento vs real, DRE own, DRE consolidado, reconciliação de transferências (enviadas/recebidas/em trânsito com idade), reconciliação bancária/caixa, saldos de fecho, payables/receivables em aberto, contribuições em espécie não valorizadas, resumo de payroll (agregado, D28).
 
 Export CSV e impressão (HTML imprimível/PDF servidor quando existir) respeitam scope, classificação e `FINANCE_REPORT`; export é auditado (`finance.export`). Detalhe identificado de contribuintes exige `FINANCE_CONTRIBUTOR_VIEW`; detalhe salarial nunca aparece em relatórios Finance.
 
@@ -412,7 +415,7 @@ vínculo → compensação vigente → regras aprovadas → run (unidade × mês
 
 - `payroll_runs`: `public_id`, `employing_unit_id`, `period_id` (MONTH de serviço), `run_kind` ∈ {`REGULAR`, `HOLIDAY_SUBSIDY`, `THIRTEENTH`, `ADJUSTMENT`}, `sequence`, `status` ∈ {`DRAFT`, `CALCULATED`, `APPROVED`, `POSTED`, `PAID`, `CANCELLED`, `REVERSED`}, `input_hash BINARY(32)`, totais (bruto, deduções, encargos, líquido, headcount), `calculated_by/at`, `approved_by/at`, `posted_by/at`, `lock_version`. UNIQUE `(employing_unit_id, period_id, run_kind, sequence)`; um `REGULAR` por unidade/mês não cancelado (coluna gerada + UNIQUE).
 - `payroll_run_lines`: `run_id`, `employment_id`, `component_type_id`, `base_amount`, `rate`, `amount`, `source` ∈ {`FIXED`, `RULE`, `MANUAL`}, `rule_id`. Imutáveis a partir de `APPROVED`.
-- **Calcular** (`PAYROLL_MANAGE`): lê vínculos activos no mês e compensações/regras vigentes sob lock partilhado; grava linhas e `input_hash` (hash canónico das compensações e regras usadas). Recalcular só em `CALCULATED`/`DRAFT`.
+- **Calcular** (`PAYROLL_MANAGE`): lê vínculos activos no mês e compensações/regras vigentes sob lock partilhado; grava linhas e `input_hash` (hash canónico de todos os inputs; cobertura mínima em D-04A.14). Recalcular só em `CALCULATED`/`DRAFT`.
 - **Aprovar** (`PAYROLL_APPROVE`, **≠ quem calculou**): recalcula o `input_hash` sob lock; se diferente → `409 STALE_CALCULATION` (C5). Aprovado é **imutável**.
 - **Postar** (`PAYROLL_POST` **e** `FINANCE_POST` sobre a unidade): D27.
 - **Pagar** (`PAYROLL_POST` + `FINANCE_POST`): entry `PAYROLL_PAYMENT` Dr `PAYROLL_NET_PAYABLE` / Cr caixa/banco (uma ou várias contas da unidade, total = líquido). Remessa de retenções/encargos a INSS/fisco = `LIABILITY_PAYMENT` separado, com documento.
@@ -490,7 +493,7 @@ Operações compostas exigem permissions cumulativas (transferência: `FINANCE_T
 |---|---|
 | `currencies` | + `minor_units` TINYINT (CHECK 0..4) |
 | `accounting_periods` | + `code` UNIQUE, + `period_kind` CHECK (MONTH/YEAR); CHECK status (OPEN/CLOSED), `ends_on ≥ starts_on` |
-| `chart_of_accounts` | + `system_role` UNIQUE NULL; CHECK account_kind/normal_side |
+| `chart_of_accounts` | + `system_role` UNIQUE NULL; CHECK account_kind (ASSET/LIABILITY/EQUITY/INCOME/EXPENSE/`INTERUNIT_CONTROL`, D-04A.4)/normal_side |
 | `funds` | — |
 | `financial_categories` | + `economic_nature` CHECK; CHECK `classification_status` |
 | `accounts` | + `public_id` UNIQUE, + `opened_on`, + `closed_on`; CHECK kind CASH/BANK, status OPEN/CLOSED |
@@ -547,11 +550,301 @@ Finanças                       RH / Payroll
 
 Mobile-first (formulários de receita/despesa/transferência e confirmação de recepção em telemóvel); relatórios densos (DRE consolidado, razão, orçamento vs real) com experiência desktop mais rica e tabela com scroll horizontal controlado no mobile. `/api/` continua `NetworkOnly` no PWA; nada financeiro em cache offline.
 
+## D-04A — Origem, Aplicação, Custódia e Consolidação de Fundos
+
+**Fase:** P0.10-D1, 2026-09-30, sobre `f69e96b`. Adenda normativa decidida pelo responsável do projecto. Não cria tabelas nem colunas, não muda a contagem de D32 (35), não cria migrations nem permissions e não redefine o payroll. Fixa invariantes de prestação de contas. Onde toca D08/D09/D10/D15/D16/D21/D26, esses pontos foram ajustados no texto acima e marcados "(D-04A)". Os únicos ajustes de vocabulário são:
+
+- a classe de conta `INTERUNIT_CONTROL`, que substitui a classificação EQUITY das contas de transferência;
+- o papel `FIXED_ASSETS`, para o investimento capitalizável;
+- três rubricas de finalidade de transferência.
+
+Todos são linhas de catálogo ou valores de CHECK já previstos em D32.
+
+### D-04A.1 Gestão por unidade
+
+Cada `organizational_unit` é uma **unidade autónoma de responsabilidade e prestação de contas**: Direcção Geral, Regional, Provincial, Municipal, Centro Geral, Centro e Congregação, sem excepção. Para qualquer unidade U e intervalo P, o sistema demonstra a partir do ledger `POSTED` (nunca de colunas de saldo):
+
+| | Elemento | Fonte |
+|---|---|---|
+| a | Saldo inicial | Σ linhas CASH/BANK de U antes de P |
+| b | Fundos recebidos externamente | Entradas CASH/BANK de U cuja contrapartida não é transferência interna (receita, contribuição, cobrança de recebível, ingresso não operacional, ajustamento) |
+| c | Fundos internos recebidos | Entries `TRANSFER_RECEIVE` de U |
+| d | Origem institucional dos fundos internos | `internal_transfers.origin_unit_id` / `journal_lines.counterparty_unit_id` |
+| e | Aplicações/gastos próprios | Saídas CASH/BANK de U cuja contrapartida não é transferência interna (gasto, investimento, pagamento de passivo, saída não operacional, ajustamento) |
+| f | Fundos enviados a outras unidades | Entries `TRANSFER_SEND` de U líquidas de `TRANSFER_REVERSE_SEND` |
+| g | Destino institucional dos fundos enviados | `internal_transfers.destination_unit_id` / `counterparty_unit_id` |
+| h | Saldo final sob gestão | Σ linhas CASH/BANK de U até ao fim de P |
+
+Identidade obrigatória (teste): **a + b + c − e − f = h**, com `ACCOUNT_TRANSFER` (D10 caso A) neutro porque ambos os lados são contas da mesma unidade. A decomposição fina de b e e está em D-04A.10.
+
+### D-04A.2 Resultado económico ≠ movimento de fundos
+
+Duas dimensões distintas, sempre apresentadas separadas:
+
+| Dimensão | Conteúdo | Contas |
+|---|---|---|
+| **A. Resultado económico** | Receita, gasto, investimento consumido, não operacionais, excedente/défice | `INCOME`/`EXPENSE` (D08) |
+| **B. Movimento de fundos sob gestão** | Recebimentos internos, remessas internas, transferências, saldo administrado (custódia) | CASH/BANK + `INTERUNIT_CONTROL` |
+
+Uma transferência interna MEPA **não cria receita económica, não cria despesa económica e não é investimento**. Representa **mudança de custódia/gestão** de fundos já reconhecidos economicamente, uma única vez, na unidade que os recebeu de fora (I6).
+
+### D-04A.3 Exemplo normativo (teste obrigatório F-D)
+
+A Congregação C recebe 100 000 Kz externos, envia 60 000 Kz ao Centro X, e o Centro X envia 40 000 Kz ao Município M. Todas as transferências foram recebidas. Não houve outros movimentos.
+
+| Relatório | Linhas | Resultado económico | Saldo sob gestão |
+|---|---|---|---|
+| Own C | Receita externa +100 000 · Fundos remetidos ao Centro X −60 000 | +100 000 | 40 000 |
+| Own X | Fundos recebidos da Congregação C +60 000 · Fundos remetidos ao Município M −40 000 | 0 | 20 000 |
+| Own M | Fundos recebidos do Centro X +40 000 | 0 | 40 000 |
+| **Cons M** (C, X ∈ subárvore de M) | Receita económica externa 100 000 · receita interna adicional 0 · transferências eliminadas (par t1, par t2) | **+100 000** | 40 000 + 20 000 + 40 000 = **100 000** |
+
+**Nunca** 160 000, 200 000 ou qualquer outra soma repetida do mesmo fundo, nem na receita nem nas disponibilidades. Os relatórios own são exactos para prestação de contas de cada gestor. O consolidado é exacto para a economia do perímetro. Os dois coexistem sem contradição, porque a transferência nunca entra na dimensão A.
+
+### D-04A.4 Contas de controlo interunidades (substitui "EQUITY" em D08)
+
+- As contas de transferência são **contas técnicas de balanço** da nova classe `chart_of_accounts.account_kind = 'INTERUNIT_CONTROL'`, com os papéis `INTERUNIT_CLEARING_OUT` (normal DEBIT) e `INTERUNIT_CLEARING_IN` (normal CREDIT).
+- Não são receita, gasto nem equity. Nenhuma unidade usa equity como classificação económica artificial para movimentar fundos entre gestores. `OPENING_NET_ASSETS` continua a ser a única conta EQUITY.
+- **SEND afecta só a unidade origem; RECEIVE afecta só a unidade destino.** Cada etapa é uma entry equilibrada própria (D07), com uma única unidade.
+
+Semântica (os nomes exactos das contas são configuráveis no plano; o exemplo **não** é um plano de contas nacional):
+
+| Etapa | Unidade | Débito | Crédito |
+|---|---|---|---|
+| SEND 80 | Origem | Interunit clearing — enviados (`INTERUNIT_CLEARING_OUT`, cp = destino) 80 | Caixa/Banco da origem 80 |
+| RECEIVE 80 | Destino | Caixa/Banco do destino 80 | Interunit clearing — recebidos (`INTERUNIT_CLEARING_IN`, cp = origem) 80 |
+
+Apresentação no balanço own:
+
+- a secção **"Posição interunidades"** mostra IN − OUT por contraparte;
+- vem depois dos activos, passivos e património líquido e fora deles;
+- a equação de custódia é: disponibilidades + outros activos − passivos = saldos iniciais + resultado acumulado + posição interunidades líquida.
+
+Se se somar a posição interunidades de todas as unidades nacionais, o resultado é −(fundos em trânsito): o trânsito é o único resíduo legítimo.
+
+### D-04A.5 Rastreabilidade
+
+Cada transferência interunidades preserva:
+
+| Elemento | Onde |
+|---|---|
+| Identificador externo | `internal_transfers.public_id` |
+| Origem / destino | `origin_unit_id`, `destination_unit_id` (D10) |
+| Montante | `amount` (DECIMAL, AOA) |
+| Finalidade | `category_id`, que é uma rubrica de natureza `INTERNAL_TRANSFER` (D-04A.6). **Obrigatória** a partir do SEND |
+| Envio / recepção | `sent_at`, `received_at` (catálogo) e `entry_date` das entries das etapas |
+| Estado | `status` (D10) |
+| Estado de reconciliação | `reconciled_at` = `received_at` na recepção (montante igual, D10). Projecção derivada: `PENDING` (SENT sem RECEIVE), `MATCHED` (RECEIVED), `RETURNED` (REVERSE_SEND), `NOT_APPLICABLE` (DRAFT/CANCELLED antes de envio) |
+| Contas origem / destino | `origin_account_id`; `destination_account_id` preenchida só na recepção, e nunca visível à origem (D10) |
+| Etapas contabilísticas | `transfer_postings (transfer_id, posting_stage, entry_id)` |
+| Correlação | Um `correlation_id` por etapa, partilhado pelo audit, pelo `idempotency_requests` e pela entry (D19). O `transfer.public_id` liga as etapas entre si |
+| Documento de suporte | `internal_transfers.document_id` (comprovativo de envio) e `financial_documents` de cada entry (comprovativo de recepção) |
+
+A unidade receptora vê sempre qual unidade enviou: o nome e o `public_id` da unidade origem, a finalidade, o montante e a data de envio. A unidade remetente vê sempre para onde enviou e se já foi recebido. Nenhuma das duas vê as contas financeiras da outra.
+
+### D-04A.6 Finalidade da transferência
+
+A finalidade é a rubrica `category_id` já existente no catálogo, sem coluna nova. Os nomes já existentes (`TRF_REMITTANCE`, `TRF_BUDGET_QUOTA`, `TRF_OTHER`) mantêm-se e acrescentam-se três:
+
+| Conceito pedido | Código canónico | Classe no DOAF |
+|---|---|---|
+| Remessa regular | `TRF_REMITTANCE` (existente) | Remessas regulares |
+| REGULAR_QUOTA | `TRF_BUDGET_QUOTA` (existente) | Remessas regulares |
+| SPECIAL_CONTRIBUTION | `TRF_SPECIAL_CONTRIBUTION` (novo) | Transferências internas enviadas/recebidas |
+| SUPPORT | `TRF_SUPPORT` (novo) | Transferências internas enviadas/recebidas |
+| PROJECT_TRANSFER | `TRF_PROJECT` (novo) | Transferências internas enviadas/recebidas |
+| OTHER | `TRF_OTHER` (existente) | Transferências internas enviadas/recebidas |
+
+- Os códigos são estáveis. Os nomes estão sujeitos à validação do contabilista, que não bloqueia.
+- Todas estas rubricas têm natureza `INTERNAL_TRANSFER` e conta de controlo `INTERUNIT_CLEARING_*`. Nunca têm natureza `REVENUE`, `EXPENSE` ou `INVESTMENT`, e o installer recusa outra natureza.
+- Na recepção, a finalidade é herdada do SEND e não é reclassificável pelo destino.
+
+### D-04A.7 Fecho independente e fundos em trânsito
+
+Preserva D10/D12:
+
+- o SEND pertence exclusivamente ao período da origem;
+- o RECEIVE pertence exclusivamente ao período do destino;
+- a origem fecha o seu mês depois do SEND sem depender do destino;
+- o destino reconhece a sua etapa quando o RECEIVE ocorre, no primeiro período aberto seu se a data real cair num mês já fechado.
+
+Enquanto não houver RECEIVE, o valor é **fundo interno em trânsito / por reconciliar**:
+
+- no own da origem: enviado, com estado `PENDING`;
+- no own do destino: nada, excepto a lista "a receber em trânsito", informativa e sem valor contabilístico;
+- no consolidado que contém a origem: activo "fundos internos em trânsito" (I4);
+- em todos os casos, no relatório de reconciliação interunidades, com idade.
+
+### D-04A.8 Consolidação, DRE e perímetro
+
+1. **Efeito económico líquido nulo.** Se origem e destino pertencem ao perímetro S, o efeito da transferência em Revenue, Expense e Economic Result é 0. É exacto por construção, porque nenhuma linha de transferência toca `INCOME`/`EXPENSE` (I1).
+2. **Visibilidade mantida.** A transferência continua visível para prestação de contas, tesouraria, reconciliação, posição de custódia e auditoria.
+3. **DRE consolidada = Σ resultados económicos own** das unidades do perímetro (I2). Como as transferências internas nunca entram em receita ou gasto, **não há eliminação na DRE**. Aparecem só em memo.
+4. **A eliminação por `transfer_id` aplica-se às visões consolidadas de:**
+   - balanço;
+   - contas de controlo interunidades;
+   - posição de fundos;
+   - tesouraria;
+   - reconciliação;
+   - transferências internas.
+
+   Um par OUT/IN com as duas pontas em S é anulado. Um OUT sem IN à data final passa a "fundos internos em trânsito".
+5. **Perímetro** = a árvore organizacional vigente na data final do período (D15). Exemplo: com Congregação → Centro → Município todos no perímetro Municipal, os movimentos entre eles são mudança interna de custódia. Se só uma ponta está no perímetro, a entrada ou saída aparece como "fundos internos recebidos de / remetidos para fora do perímetro", na secção de posição interunidades e no DOAF consolidado. Nunca é convertida em receita ou despesa económica.
+
+### D-04A.9 Relatórios obrigatórios por unidade
+
+Prevalecem sobre D21, que continua válido para os restantes relatórios. Todos existem para qualquer unidade, em **mês, trimestre, semestre e ano** (trimestre e semestre são intervalos de meses, D12), com export auditado (`finance.export`):
+
+1. **Resultado Económico Próprio** — DRE own (D16), transferências em memo.
+2. **Origem e Aplicação de Fundos** — D-04A.10.
+3. **Fundos Internos Recebidos** — por unidade de origem (nome, `public_id`, relação superior/subordinada/outra), finalidade, montante, datas de envio e recepção.
+4. **Fundos Internos Enviados** — por unidade de destino, finalidade, montante, estado (`PENDING`/`MATCHED`/`RETURNED`) e datas.
+5. **Reconciliação Interunidades** — pares enviado↔recebido, em trânsito com idade, devoluções.
+6. **Saldos de Caixa/Banco** — por conta financeira: inicial, entradas, saídas, final.
+7. **Budget vs Actual** — D13.
+8. **Consolidado da Subárvore**, quando autorizado (`FINANCE_CONSOLIDATED_VIEW`, D17): DRE consolidada, DOAF consolidado, posição interunidades com eliminação e trânsito.
+
+### D-04A.10 Demonstrativo de Origem e Aplicação de Fundos (DOAF)
+
+É obrigatório por unidade e período, own e consolidado. A base são os fundos sob gestão, isto é, as contas financeiras CASH/BANK da unidade (D06). Cada linha CASH/BANK de uma entry `POSTED` é classificada pelo `entry_kind` e pelas linhas de contrapartida da mesma entry:
+
+| ORIGENS | Classificação |
+|---|---|
+| Saldo inicial | Σ CASH/BANK antes do período |
+| Receitas externas próprias | `REVENUE`, `CONTRIBUTION`, e `SETTLEMENT` de recebíveis cuja receita é operacional |
+| Fundos recebidos de unidades subordinadas | `TRANSFER_RECEIVE` cuja origem é descendente de U (árvore à data final) |
+| Fundos recebidos de unidades superiores | `TRANSFER_RECEIVE` cuja origem é antepassado de U |
+| Outras transferências internas autorizadas | `TRANSFER_RECEIVE` de unidade que não é antepassada nem descendente |
+| Outros ingressos classificados | Não operacionais, principal de empréstimo recebido, `ADJUSTMENT` a favor |
+
+| APLICAÇÕES | Classificação |
+|---|---|
+| Gastos operacionais | `EXPENSE` imediato em rubricas `COST_OF_SALES`/`*_EXPENSE`, excepto os apoios |
+| Investimentos | Apenas rubricas de natureza `INVESTMENT`: consumidas (gasto) ou capitalizadas (`FIXED_ASSETS`) |
+| Pagamentos | `SETTLEMENT` de payables, `PAYROLL_PAYMENT`, `LIABILITY_PAYMENT`, amortização de empréstimo |
+| Apoios | Rubricas de assistência e apoio (V1: `PER_SOCIAL_ASSISTANCE`; o mapeamento é do relatório, validado pelo contabilista) |
+| Transferências internas enviadas | `TRANSFER_SEND` com finalidade diferente de regular, líquido de `REVERSE_SEND` |
+| Remessas regulares | `TRANSFER_SEND` com `TRF_REMITTANCE`/`TRF_BUDGET_QUOTA`, líquido de `REVERSE_SEND` |
+| Outras aplicações | Saídas não operacionais, `ADJUSTMENT` contra |
+| Saldo final | Σ CASH/BANK no fim do período |
+
+Regras:
+
+- **Total das origens = total das aplicações** (teste obrigatório).
+- `ACCOUNT_TRANSFER` é excluído, porque é neutro dentro da unidade.
+- Um `REVERSAL` reduz a classe da entry que estorna, no período do estorno.
+- Entries sem linha CASH/BANK (accrual de payables/receivables, `PAYROLL_ACCRUAL`, valorização em espécie) não entram no DOAF. Aparecem na DRE, e as contribuições em espécie aparecem também em memo.
+- Numa entry com uma linha CASH/BANK e várias contrapartidas, o valor é repartido pelos montantes exactos de cada contrapartida.
+- Numa entry com várias linhas de caixa e várias contrapartidas (só `ADJUSTMENT`), o valor vai a "outros".
+- No DOAF **consolidado**:
+  - as origens e aplicações internas entre unidades de S são eliminadas por `transfer_id`;
+  - as que atravessam a fronteira de S aparecem como "recebidos de / remetidos para fora do perímetro";
+  - o trânsito aparece como linha própria antes do saldo final.
+- A consulta é SQL directa sobre o ledger, num único snapshot (D16).
+
+### D-04A.11 Fungibilidade — sem falsa rastreabilidade
+
+Para fundos comuns (fundo `GENERAL`, o único da V1) o sistema **não afirma** que uma entrada específica financiou uma despesa específica. Pode demonstrar "recebemos X destas origens" e "aplicámos Y nestes destinos", lado a lado (DOAF). Nenhum relatório, ecrã ou export usa formulações como "financiado por" ou "pago com a oferta de".
+
+Um vínculo directo origem → aplicação só pode existir com uma relação explícita e aprovada:
+
+- fundo restrito (`fund_id` ≠ `GENERAL`; diferido);
+- projecto (diferido);
+- contribuição destinada a fundo restrito (diferida);
+- allocation explícita (`contribution_allocations`, diferida).
+
+A finalidade `TRF_PROJECT`/`TRF_SUPPORT` de uma transferência é **intenção declarada pelo remetente**, não prova de aplicação, e não cria vínculo. `settlement_allocations` liga pagamento a dívida (liquidação), não fonte de financiamento. Na V1, portanto, nenhum vínculo origem→aplicação é apresentado.
+
+### D-04A.12 Investimento ≠ gasto
+
+- **INVESTMENT não implica EXPENSE.**
+- Aquisição de activo: Dr `FIXED_ASSETS` / Cr Caixa/Banco. O impacto imediato na DRE é 0. A aquisição aparece no DOAF (aplicações → investimentos) e em memo da DRE.
+- Cada rubrica de natureza `INVESTMENT` aponta, pelo `ledger_account_id` já existente, ou para `FIXED_ASSETS` (capitalizável) ou para `INVESTMENT_EXPENSE` (consumido: secção "Investimentos" da DRE, D16).
+- Instalação V1:
+  - §16.8 Bens materiais (`INV_AST_*`) → `FIXED_ASSETS`;
+  - §16.7 Comunicação e §16.9 Desenvolvimento → `INVESTMENT_EXPENSE`.
+- O contabilista pode remapear rubrica a rubrica sem migration. O remapeamento só afecta lançamentos futuros; os postados não mudam.
+- A V1 não tem depreciação nem registo por bem (D05). O activo fica ao custo até existir módulo próprio, sem impacto futuro implícito na DRE.
+- Rendimento ou retorno é classificado pela sua natureza económica: `REV_INVESTMENT_RETURN` (receita operacional, linha própria) ou não operacional.
+- Isto ajusta, sem o reabrir, o D09 [DI]: a secção "Investimentos" do resultado mantém-se para o investimento consumido.
+
+### D-04A.13 Partidas dobradas, contas e accrual — confirmações
+
+- **Journal `POSTED` exige** (D07, verificado sob lock):
+  - Σ débito = Σ crédito, em DECIMAL exacto;
+  - cada linha com exactamente um lado > 0 e total da entry > 0;
+  - moeda AOA;
+  - todas as linhas com `unit_id` = unidade da entry, e `counterparty_unit_id` só nas linhas `INTERUNIT_CLEARING_*`;
+  - período nacional `OPEN` e sem fecho da unidade;
+  - contas `ACTIVE`: conta financeira `OPEN` e conta do plano activa e postável;
+  - precisão ≤ 2 casas.
+- **Depois de `POSTED`, header e `journal_lines` são imutáveis.** A correcção faz-se só por `REVERSAL` + lançamento correcto (D11).
+- **Conta financeira ≠ conta do plano:**
+  - a conta financeira (`accounts`: CASH/BANK) é o instrumento operacional da unidade;
+  - a conta do plano (`chart_of_accounts`) é a classe contabilística: Asset, Liability, Equity, Revenue, Expense, Interunit Control, Payable/Receivable, Fixed Assets;
+  - uma linha de caixa tem as duas (`ledger_account_id` = CASH/BANK, `financial_account_id` = a conta);
+  - o saldo da conta financeira continua derivado do ledger `POSTED` (D06).
+- **Accrual** (D01):
+  - a receita pode ser reconhecida antes do recebimento (`receivables`);
+  - a despesa pode ser reconhecida antes do pagamento (`payables`, `PAYROLL_*_PAYABLE`);
+  - Finance não depende exclusivamente de Caixa/Banco;
+  - por isso a DRE (acréscimo) e o DOAF (fundos) podem divergir legitimamente, e ambos são obrigatórios.
+
+### D-04A.14 Payroll — agregação e `input_hash`
+
+- O detalhe do payroll permanece no subledger RH. Finance recebe só o posting agregado por rubrica e conta (D27).
+- Posting idempotente: um `payroll_run` nunca cria dois journals equivalentes. A garantia vem de `payroll_postings` UNIQUE `(run_id, stage)` + UNIQUE `entry_id` + `idempotency_requests` + lock do run.
+- O `input_hash` (SHA-256 sobre serialização canónica ordenada) cobre **todos** os inputs relevantes:
+  - o conjunto de vínculos elegíveis e os seus campos (`public_id`, unidade, tipo, datas, estado);
+  - as compensações vigentes (tipo, montante, vigência), incluindo salário base, componentes, subsídios, 13.º e benefícios;
+  - as versões das regras estatutárias usadas (id, vigência, taxa, bases de incidência, escalões completos);
+  - o período de serviço e o `run_kind`/`sequence`;
+  - a configuração de arredondamento e escala (D02).
+
+  Qualquer alteração a um destes inputs muda o hash e provoca `409 STALE_CALCULATION` na aprovação (C5). Há um teste por classe de input.
+
+### D-04A.15 Gate de produção do payroll
+
+**PAYROLL ENGINE READY ≠ PAYROLL PRODUCTION ENABLED.**
+
+- **Engine ready:** o código, o schema e os testes (incluindo concorrência) estão completos. Os testes usam regras sintéticas criadas pelo fixture, nunca pelos installers.
+- **Production enabled:** a flag de configuração `payroll.production_enabled` fica **false por omissão**. Não é coluna nem permission. Com a flag false:
+  - o cálculo é permitido para validação;
+  - `APPROVE`, `POST` e `PAY` são recusados com `409 PAYROLL_PRODUCTION_DISABLED` (fail-closed).
+- Independentemente da flag, um componente de método `RATE_RULE`/`BRACKET_RULE` sem regra `APPROVED` vigente no mês **recusa o cálculo** com `422 PAYROLL_RULE_MISSING`. Nunca é calculado como zero.
+- A flag só é ligada depois de uma checklist operacional documentada:
+  - aplicabilidade à MEPA de INSS (trabalhador e entidade), IRT, 13.º salário, subsídio de férias, pensões e benefícios de terceira idade, com a decisão "não aplicável" também documentada;
+  - regras aprovadas com documento `PAYROLL_RULE_SOURCE` para cada componente aplicável.
+- **Nenhuma taxa é semeada, fictícia ou de exemplo.**
+
+### D-04A.16 Âmbito e testes acrescentados
+
+Esta adenda:
+
+- **não** cria tabelas, colunas, migrations, permissions nem roles;
+- **não** muda as 35 tabelas de D32 nem redefine o payroll;
+- **não** reabre D01–D30, salvo os ajustes marcados "(D-04A)", que foram pedidos expressamente.
+
+O vocabulário do catálogo canónico (`model_catalog.json`, `account_kind` sem `INTERUNIT_CONTROL`) é actualizado na fase de schema do Finance Core, não aqui.
+
+Testes obrigatórios acrescentados ao plano de implementação:
+
+- F-D (D-04A.3), own e consolidado;
+- identidade a+b+c−e−f=h e origens = aplicações, own e consolidado;
+- DOAF consolidado com fronteira de perímetro e com trânsito;
+- soma nacional da posição interunidades = −trânsito;
+- aquisição capitalizável com DRE 0 e DOAF "investimentos";
+- ausência de vínculo origem→aplicação em fundo `GENERAL`;
+- `input_hash` sensível a cada classe de input;
+- gate `PAYROLL_PRODUCTION_DISABLED` e `PAYROLL_RULE_MISSING`;
+- o installer recusa rubrica de transferência com natureza que não seja `INTERNAL_TRANSFER`.
+
 ## Consequências
 
 - Finance deixa de ter decisões em aberto que afectem o schema ou a contabilização V1.
 - O regime de acréscimo aumenta o Finance Core (payables/receivables/settlements); quotas/obrigações continuam fora.
-- Consolidação é exacta por construção (I1–I6) e testável com F-A/F-B/F-C.
+- Consolidação é exacta por construção (I1–I6) e testável com F-A/F-B/F-C/F-D.
+- Cada unidade presta contas em duas dimensões separadas: o resultado económico (DRE) e a custódia de fundos (DOAF e posição interunidades) (D-04A).
 - O protótipo P0.2-F continua evidência de mecanismos (locks, idempotência, estorno), mas a contabilização de transferências da V1 é a deste ADR (fluxo nominal por etapa numa só unidade), e não o par interunidades do protótipo.
 
 ## Decisões remanescentes (não bloqueantes para implementar)
@@ -563,6 +856,8 @@ Mobile-first (formulários de receita/despesa/transferência e confirmação de 
 5. Quotas/obrigações §18 (vertical posterior).
 6. Portal: o empregado ver o próprio recibo.
 7. Regra institucional de destinos permitidos de transferência (hoje: qualquer unidade activa).
+8. Validação pelo contabilista do mapeamento DOAF ("apoios"), das rubricas capitalizáveis §16.8 e dos nomes das finalidades de transferência (D-04A); códigos estáveis.
+9. Checklist de activação `payroll.production_enabled` (D-04A.15) — bloqueia produção salarial, não o código.
 
 ## Referências
 

@@ -35,3 +35,8 @@ Pessoal, Remunerações e Encargos: verificar antes do encerramento final de P4 
 ## P0.10-D — D-04 e FIN-PAYROLL-01 (2026-09-30)
 
 ADR 0021 Accepted. D-04 fica **decidida para a V1** pelo responsável do projecto: partidas dobradas, regime de acréscimo, AOA mono-moeda com 2 casas, transferências internas como fluxo nominal eliminado por `transfer_id`, em espécie só no DRE após valorização aprovada, investimentos como secção do resultado sem capitalização, fundo único `GENERAL`, plano estrutural mínimo. Continuam abertos e **não bloqueantes para implementação**: nomes do plano/rubricas pelo contabilista, "Arrendamento", FX, fundos restritos, empréstimos e activos fixos. FIN-PAYROLL-01 tem âmbito aprovado (ADR 0021 D22–D29); valores oficiais INSS/IRT e aplicabilidade de 13.º, subsídio de férias, pensões e terceira idade são configuração obrigatória **antes do primeiro processamento em produção**, nunca codificada.
+
+
+## P0.10-D1 — D-04A (2026-09-30)
+
+D-04A (adenda interna do ADR 0021) fixa a prestação de contas por unidade: resultado económico separado da custódia de fundos, Demonstrativo de Origem e Aplicação de Fundos, contas de controlo interunidades (classe INTERUNIT_CONTROL, nunca equity/receita/gasto), finalidade de transferência, regra de fungibilidade, investimento capitalizável (bens materiais §16.8 passam a activo, sem impacto na DRE; o resto do investimento continua na secção do resultado) e gate de produção do payroll. Sem novas tabelas, colunas, migrations ou permissions; D-04 continua decidido para V1.
