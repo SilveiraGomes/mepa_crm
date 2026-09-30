@@ -1,0 +1,108 @@
+{
+  "phase": "P0.9-I",
+  "adr": "docs/adr/0020-membership-v1-policy.md",
+  "base_path": "/api/v1/memberships",
+  "authentication": "api.auth (Bearer session); no anonymous route",
+  "rate_limiters": { "membership": "240/min per user (all routes)", "membership-write": "60/min per user (writes)", "membership-search": "60/min per user (list/search)" },
+  "endpoints": [
+    "GET /api/v1/memberships/",
+    "GET /api/v1/memberships/context",
+    "POST /api/v1/memberships/admissions",
+    "POST /api/v1/memberships/admissions/collective-approval",
+    "GET /api/v1/memberships/transfers",
+    "GET /api/v1/memberships/transfers/{transfer}",
+    "POST /api/v1/memberships/transfers/{transfer}/validate-origin",
+    "POST /api/v1/memberships/transfers/{transfer}/accept",
+    "POST /api/v1/memberships/transfers/{transfer}/reject",
+    "POST /api/v1/memberships/transfers/{transfer}/complete",
+    "POST /api/v1/memberships/transfers/{transfer}/cancel",
+    "GET /api/v1/memberships/{membership}",
+    "GET /api/v1/memberships/{membership}/periods",
+    "GET /api/v1/memberships/{membership}/transfers",
+    "POST /api/v1/memberships/{membership}/transfers",
+    "POST /api/v1/memberships/{membership}/validate",
+    "POST /api/v1/memberships/{membership}/withdraw",
+    "POST /api/v1/memberships/{membership}/reject",
+    "POST /api/v1/memberships/{membership}/approve",
+    "POST /api/v1/memberships/{membership}/inactivate",
+    "POST /api/v1/memberships/{membership}/reactivate",
+    "POST /api/v1/memberships/{membership}/end",
+    "POST /api/v1/memberships/{membership}/readmit",
+    "GET /api/v1/memberships/{membership}/legacy-identifiers",
+    "POST /api/v1/memberships/{membership}/legacy-identifiers",
+    "POST /api/v1/memberships/{membership}/legacy-identifiers/revoke",
+    "GET /api/v1/memberships/{membership}/milestones",
+    "POST /api/v1/memberships/{membership}/milestones",
+    "POST /api/v1/memberships/{membership}/milestones/{type}/correct"
+  ],
+  "identity": {
+    "route_keys": ["memberships.public_id", "transfers.public_id"],
+    "natural_keys": { "legacy_identifier": ["membership public_id", "source_system", "normalized_number"], "milestone": ["membership public_id", "type"] },
+    "never_a_route_key": ["member_numbers.number", "any primary key"],
+    "response_forbidden_fields": ["id", "*_id except *public_id", "sequence_value"],
+    "person_root": "Membership consumes an existing Person (person_public_id); it never creates a Person and never writes people.unit_id or person_unit_contexts"
+  },
+  "permissions": {
+    "data_type": "MEMBERSHIP",
+    "maximum_classification": "RESTRICTED",
+    "codes": {
+      "MEMBERSHIP_VIEW": "list, search (name, official number, legacy), detail, periods, milestones, legacy identifiers, visible transfers",
+      "MEMBERSHIP_ADMISSION_MANAGE": "submit, validate, withdraw, re-submit",
+      "MEMBERSHIP_APPROVE": "approve (individual or collective) -> number; reject; readmit",
+      "MEMBERSHIP_MANAGE": "inactivate, reactivate, end; record and correct milestones",
+      "MEMBERSHIP_TRANSFER": "transfer stages per side",
+      "MEMBERSHIP_LEGACY_MANAGE": "register and revoke legacy identifiers"
+    },
+    "roles_created": 0,
+    "rule": "permission + active UNIT scope covering the Congregation of the OPEN period (TerritorialAuthority data_type MEMBERSHIP); permission never grants scope; public_id/URI never grants anything"
+  },
+  "statuses": {
+    "membership": ["SUBMITTED", "VALIDATED", "REJECTED", "WITHDRAWN", "ACTIVE", "INACTIVE", "ENDED"],
+    "member_states": ["ACTIVE", "INACTIVE"],
+    "transitions": [
+      "- -> SUBMITTED (ADMISSION_MANAGE)", "SUBMITTED -> VALIDATED (ADMISSION_MANAGE)", "SUBMITTED|VALIDATED -> WITHDRAWN (ADMISSION_MANAGE)",
+      "VALIDATED -> REJECTED (APPROVE)", "VALIDATED -> ACTIVE + number (APPROVE)", "REJECTED|WITHDRAWN -> SUBMITTED same row (ADMISSION_MANAGE)",
+      "ACTIVE -> INACTIVE (MANAGE)", "INACTIVE -> ACTIVE (MANAGE)", "ACTIVE|INACTIVE -> ENDED reason (MANAGE)", "ENDED -> ACTIVE same number, reason (APPROVE)"
+    ],
+    "transfer": ["REQUESTED", "ORIGIN_VALIDATED", "DESTINATION_ACCEPTED", "COMPLETED", "REJECTED", "CANCELLED"],
+    "legacy": ["ACTIVE", "CONFLICT", "REVOKED"],
+    "milestone_types": ["CONVERSION", "BAPTISM"],
+    "date_precisions": ["EXACT", "MONTH", "YEAR", "UNKNOWN"]
+  },
+  "member_number": {
+    "format": "MEPAAAMMSSSSSS",
+    "pattern": "^MEPA\\d{2}(0[1-9]|1[0-2])\\d{6}$",
+    "aa_mm": "Africa/Luanda civil year/month of the approval instant that issues it; issued_at stored in UTC",
+    "ssssss": "national continuous counter MEPA_NATIONAL, never reset, never recycled, 999999 fails closed",
+    "issued_only_by": "the approval transaction (individual = collective list of one)",
+    "immutable_across": ["inactivation", "reactivation", "end", "readmission", "transfer", "death"]
+  },
+  "collective_approval": { "max_items": 200, "atomicity": "all-or-nothing, one transaction", "lock_order": "Persons then memberships by ascending id, counter last", "number_order": "list order", "audit": "one row per membership, one shared correlation_id", "rejection": "409 COLLECTIVE_APPROVAL_REJECTED with details.items [{index, public_id, code}]" },
+  "periods": { "invariant": "exactly one open period per membership (uq_membership_periods_membership_open); memberships.status_id = open period status; contiguous history; commit-time recheck" },
+  "transfers": {
+    "stage_authority": { "request": "origin OR destination", "validate-origin": "origin", "accept": "destination", "reject": "origin while REQUESTED, destination while ORIGIN_VALIDATED", "complete": "destination", "cancel": "origin OR destination" },
+    "completion": "atomic: re-validate DESTINATION_ACCEPTED, Person, ACTIVE membership, origin = open period, ACTIVE destination; close origin period at T, open destination period at T, close transfer, complete workflow; member_numbers untouched; replay = no-op",
+    "blocks": ["new transfer -> 409 TRANSFER_IN_PROGRESS", "inactivate -> 409 TRANSFER_IN_PROGRESS", "end -> 409 TRANSFER_IN_PROGRESS"],
+    "visibility": "both parties see the transfer row, also after completion; the membership follows the open period"
+  },
+  "documents": { "field": "source_document", "type": "legal_documents public_id (string)", "optional": true, "authority": "Membership decision first, then FilesConsumers::documentAuthority (DOCUMENTS_VIEW + scope over owner unit + clearance + ACTIVE)", "failure": "concealed 404", "numeric_id": "source_document_id is an unknown field -> 422", "projection": "public_id only with Files authority, otherwise has_document" },
+  "errors": {
+    "404": "RESOURCE_NOT_FOUND, byte-identical for unknown, malformed, out-of-scope, wrong Congregation, transfer outside authority, document failures",
+    "403": "FORBIDDEN: permission not held anywhere (decided before resolving the target)",
+    "409": ["STALE_WRITE", "TRANSITION_NOT_ALLOWED", "MEMBERSHIP_EXISTS", "MEMBERSHIP_NOT_ACTIVE", "PERSON_DECEASED", "PERSON_NOT_OPERATIONAL", "CONGREGATION_NOT_ACTIVE", "TRANSFER_IN_PROGRESS", "LEGACY_ID_EXISTS", "LEGACY_ID_REQUIRED", "MILESTONE_EXISTS", "COLLECTIVE_APPROVAL_REJECTED"],
+    "422": ["VALIDATION_ERROR", "REASON_REQUIRED"],
+    "503": ["MEMBER_NUMBER_UNAVAILABLE", "MEMBERSHIP_NOT_CONFIGURED"]
+  },
+  "search": { "terms": ["person name", "official number (case/space insensitive)", "legacy identifier (normalized)"], "scope": "SQL filter over covered units before pagination", "out_of_scope": "empty list identical to not existing", "audit": "membership.lookup for official-number / legacy lookups (kind, term, scoped result count)" },
+  "pagination": { "default": 50, "max": 100, "over_max": 422 },
+  "audit": {
+    "source": "P09_MEMBERSHIP",
+    "unit": "the authorizing unit; other units as public ids in metadata",
+    "events": ["membership.submitted", "membership.validated", "membership.withdrawn", "membership.rejected", "membership.approved", "membership.inactivated", "membership.reactivated", "membership.ended", "membership.readmitted", "membership.lookup", "membership_transfer.requested", "membership_transfer.origin_validated", "membership_transfer.accepted", "membership_transfer.completed", "membership_transfer.rejected", "membership_transfer.cancelled", "legacy_identifier.registered", "legacy_identifier.conflict_flagged", "legacy_identifier.revoked", "milestone.recorded", "milestone.corrected"],
+    "forbidden_metadata": ["People data (names, birth, contacts, address)", "document titles", "primary keys as external identity"]
+  },
+  "ui": {
+    "routes": ["/membros", "/membros/admissoes", "/membros/admissoes/colectiva", "/membros/transferencias", "/membros/:id", "/membros/:id/historico", "/membros/:id/transferencias"],
+    "principle": "hiding a button is usability only; the backend decides every request"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "project": "desktop-1440x900",
+  "checks": [
+    {
+      "screen": "members-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "admission",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "approve-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "collective-admission",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "collective-result",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "member-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "history",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "transfer",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "transfer-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "transfers",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    }
+  ]
+}

@@ -14,6 +14,9 @@ const path = require('path')
 const root = path.resolve(__dirname, '..')
 const outputIndex = process.argv.indexOf('--output')
 const output = outputIndex >= 0 ? process.argv[outputIndex + 1] : null
+// --schema-only: structure, guard and controlled rows only (for a pool that already holds test fixtures: roles seeded by
+// tests legitimately carry MEMBERSHIP permissions there). The default mode is for a freshly migrated pool.
+const schemaOnly = process.argv.includes('--schema-only')
 const selectedTables = ['membership_statuses', 'memberships', 'membership_periods', 'member_number_sequences', 'member_numbers', 'legacy_member_numbers', 'milestone_types', 'ecclesiastical_milestones', 'transfers', 'workflows', 'workflow_instances']
 const approvedColumnDeltas = [
   'transfers:closed_at:YES:datetime(6)',
@@ -98,7 +101,7 @@ try {
   const counterOk = counter.length === 1 && Number(counter[0][0]) === Number(counter[0][1])
   const duplicateOpen = Number(mysqlRows('SELECT COUNT(*) FROM (SELECT membership_id FROM membership_periods WHERE ends_at IS NULL GROUP BY membership_id HAVING COUNT(*)>1) x')[0][0])
   if (!controlledOk || missing.length || unexpected.length || forbiddenPresent.length || extraChecks.length || !guardOk
-    || JSON.stringify(guardUnique) !== JSON.stringify(['0']) || roleGrants !== 0 || !counterOk || duplicateOpen !== 0
+    || JSON.stringify(guardUnique) !== JSON.stringify(['0']) || (!schemaOnly && roleGrants !== 0) || !counterOk || duplicateOpen !== 0
     || manifest.schema_changes.length !== 1 || manifest.new_tables.length !== 0) status = 'FAIL'
   details = {
     database: mysqlRows('SELECT DATABASE()')[0][0],
