@@ -1,0 +1,22 @@
+{
+    "reverse": {
+        "status": "OK",
+        "result": {
+            "replayed": false
+        },
+        "pid": 40004,
+        "ms": 244
+    },
+    "receive": {
+        "status": "TRANSITION_NOT_ALLOWED",
+        "items": [],
+        "pid": 27912,
+        "ms": 116
+    },
+    "wait": {
+        "object": "internal_transfers",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

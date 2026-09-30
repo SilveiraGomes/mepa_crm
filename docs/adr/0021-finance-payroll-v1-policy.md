@@ -634,7 +634,7 @@ Cada transferência interunidades preserva:
 | Finalidade | `category_id`, que é uma rubrica de natureza `INTERNAL_TRANSFER` (D-04A.6). **Obrigatória** a partir do SEND |
 | Envio / recepção | `sent_at`, `received_at` (catálogo) e `entry_date` das entries das etapas |
 | Estado | `status` (D10) |
-| Estado de reconciliação | `reconciled_at` = `received_at` na recepção (montante igual, D10). Projecção derivada: `PENDING` (SENT sem RECEIVE), `MATCHED` (RECEIVED), `RETURNED` (REVERSE_SEND), `NOT_APPLICABLE` (DRAFT/CANCELLED antes de envio) |
+| Estado de reconciliação | `reconciled_at` = `received_at` na recepção (montante igual, D10). Projecção derivada: `PENDING` (SENT sem RECEIVE), `MATCHED` (RECEIVED), `RETURNED` (REVERSE_SEND), `NOT_APPLICABLE` (DRAFT/CANCELLED antes de envio). **Refinado por F1B-D1** (`docs/reviews/P0.10_F1B_interunit_transfers_custody.md` §2): a reconciliação é um passo explícito, feito com `FINANCE_RECONCILE` depois do RECEIVE, que verifica o par SEND↔RECEIVE. As projecções passam a ser `NOT_APPLICABLE`, `IN_TRANSIT`, `AWAITING_RECONCILIATION`, `RECONCILED` e `RETURNED`. Nenhum estado novo é guardado |
 | Contas origem / destino | `origin_account_id`; `destination_account_id` preenchida só na recepção, e nunca visível à origem (D10) |
 | Etapas contabilísticas | `transfer_postings (transfer_id, posting_stage, entry_id)` |
 | Correlação | Um `correlation_id` por etapa, partilhado pelo audit, pelo `idempotency_requests` e pela entry (D19). O `transfer.public_id` liga as etapas entre si |

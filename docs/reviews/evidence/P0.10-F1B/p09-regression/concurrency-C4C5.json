@@ -1,0 +1,44 @@
+{
+    "C4_1": [
+        "MEMBERSHIP_EXISTS",
+        "OK"
+    ],
+    "C4_2": [
+        "MEMBERSHIP_EXISTS",
+        "OK"
+    ],
+    "C4_3": [
+        "MEMBERSHIP_EXISTS",
+        "OK"
+    ],
+    "C5_1": {
+        "statuses": [
+            "OK",
+            "OK"
+        ],
+        "rows": [
+            "CONFLICT",
+            "CONFLICT"
+        ]
+    },
+    "C5_2": {
+        "statuses": [
+            "OK",
+            "OK"
+        ],
+        "rows": [
+            "CONFLICT",
+            "CONFLICT"
+        ]
+    },
+    "C5_3": {
+        "statuses": [
+            "OK",
+            "OK"
+        ],
+        "rows": [
+            "CONFLICT",
+            "CONFLICT"
+        ]
+    }
+}

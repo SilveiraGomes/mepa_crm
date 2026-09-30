@@ -1,5 +1,5 @@
 {
-  "phase": "P0.10-F1A",
+  "phase": "P0.10-F1A + P0.10-F1B",
   "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
   "addendum": "D-04A",
   "scope": "Finance Core physical foundation and accounting contracts. No API, UI, reports, consolidation engine, DOAF, transfer/payable workflows or Payroll (F1B/F1C/F1D/F2).",
@@ -11,40 +11,162 @@
     "money": "apps/api/app/Domain/Finance/Money.php"
   },
   "authorization": "Not in F1A domain calls. The F1B application layer must authorize with TerritorialAuthority(data_type=FINANCE) and the D31 permissions BEFORE calling these services (permission before target resolution, F-06).",
-  "money": { "storage": "DECIMAL(19,4)", "business_scale": 2, "over_scale": "REJECT AMOUNT_SCALE (never rounded)", "float": "forbidden (TypeError / no FLOAT or DOUBLE column)", "limit": "999999999999.99", "currency": "AOA only" },
-  "lock_order": ["accounting_periods FOR SHARE (closes: FOR UPDATE)", "accounting_period_unit_closes FOR SHARE", "journal_entries header FOR UPDATE", "accounts FOR SHARE by id", "idempotency_requests claim"],
-  "entry_lifecycle": { "states": ["DRAFT", "SUBMITTED", "POSTED", "DISCARDED"], "transitions": ["DRAFT->SUBMITTED", "SUBMITTED->DRAFT", "DRAFT|SUBMITTED->POSTED", "DRAFT|SUBMITTED->DISCARDED"], "posted": "immutable; correction by REVERSAL only", "subledger_entries": "born POSTED inside the subledger transaction" },
+  "money": {
+    "storage": "DECIMAL(19,4)",
+    "business_scale": 2,
+    "over_scale": "REJECT AMOUNT_SCALE (never rounded)",
+    "float": "forbidden (TypeError / no FLOAT or DOUBLE column)",
+    "limit": "999999999999.99",
+    "currency": "AOA only"
+  },
+  "lock_order": [
+    "accounting_periods FOR SHARE (closes: FOR UPDATE)",
+    "accounting_period_unit_closes FOR SHARE",
+    "journal_entries header FOR UPDATE",
+    "accounts FOR SHARE by id",
+    "idempotency_requests claim"
+  ],
+  "entry_lifecycle": {
+    "states": [
+      "DRAFT",
+      "SUBMITTED",
+      "POSTED",
+      "DISCARDED"
+    ],
+    "transitions": [
+      "DRAFT->SUBMITTED",
+      "SUBMITTED->DRAFT",
+      "DRAFT|SUBMITTED->POSTED",
+      "DRAFT|SUBMITTED->DISCARDED"
+    ],
+    "posted": "immutable; correction by REVERSAL only",
+    "subledger_entries": "born POSTED inside the subledger transaction"
+  },
   "accounting_contracts": {
-    "J01": { "name": "balanced posting", "test": "test_j01_balanced_posting_is_published_once_with_audit_and_provenance", "rule": "DRAFT->SUBMITTED->POSTED once; idempotent replay returns the same entry; different payload = IDEMPOTENCY_CONFLICT; audit on the owner unit" },
-    "J02": { "name": "unbalanced posting denied", "test": "test_j02_unbalanced_or_degenerate_entries_never_reach_posted", "rule": "UNBALANCED / TOO_FEW_LINES / AMOUNT_NOT_POSITIVE; a failed subledger posting leaves no header, line or claim; CHECK ck_journal_lines_one_side" },
-    "J03": { "name": "posted immutable", "test": "test_j03_posted_header_and_lines_are_immutable_through_every_service_path", "rule": "every service path refuses a POSTED entry; header and lines byte-identical; only DRAFT lines are replaceable" },
-    "J04": { "name": "reversal contract", "test": "test_j04_reversal_is_the_exact_inverse_once_with_reason_in_an_open_period", "rule": "exact inverse, reason, OPEN period of the same unit, UNIQUE reversal_of_id, no reversal of a reversal, SUBLEDGER_OWNED" },
-    "J05": { "name": "accrual revenue", "test": "test_j05_accrual_revenue_is_recognised_before_the_cash_arrives", "rule": "RECEIVABLE_RECOGNITION Dr RECEIVABLES / Cr INCOME (result, no cash) then SETTLEMENT Dr CASH / Cr RECEIVABLES (cash, no result)" },
-    "J06": { "name": "accrual expense", "test": "test_j06_accrual_expense_is_recognised_before_it_is_paid", "rule": "PAYABLE_RECOGNITION Dr EXPENSE / Cr PAYABLES then SETTLEMENT Dr PAYABLES / Cr CASH" },
-    "J07": { "name": "cash/bank balance derived", "test": "test_j07_cash_and_bank_balances_are_derived_from_posted_lines_only", "rule": "no balance column; balance = SUM POSTED lines; drafts never count; financial account posts to its own control account" },
-    "J08": { "name": "fixed-asset investment", "test": "test_j08_capitalizable_investment_has_zero_immediate_result_and_the_mapping_is_configurable", "rule": "Dr FIXED_ASSETS / Cr CASH|PAYABLES, immediate result 0; rubric mapping configurable, posted lines unchanged" },
-    "J09": { "name": "consumed investment", "test": "test_j09_consumed_investment_stays_in_the_result_as_investment", "rule": "§16.7/§16.9 -> INVESTMENT_EXPENSE (result); §16.8 -> FIXED_ASSETS; never 'every INVESTMENT = EXPENSE'" },
-    "J10": { "name": "SEND no P&L", "test": "test_j10_send_touches_only_the_origin_and_never_the_result", "rule": "Dr INTERUNIT_CLEARING_OUT (counterparty, purpose) / Cr CASH|BANK of the origin only; TRANSFER_TOUCHES_RESULT; INTERUNIT_ONLY_BY_TRANSFER" },
-    "J11": { "name": "RECEIVE no P&L", "test": "test_j11_receive_touches_only_the_destination_and_never_the_result", "rule": "Dr CASH|BANK / Cr INTERUNIT_CLEARING_IN of the destination only; one RECEIVE per transfer (UNIQUE)" },
-    "J12": { "name": "in-transit state", "test": "test_j12_in_transit_is_a_consistent_state_and_the_normative_example_never_duplicates_revenue", "rule": "SEND without RECEIVE is consistent (CHECK), shows as in transit, no result; D-04A.3 example: perimeter revenue 100 000, never 160 000 / 200 000" },
-    "J13": { "name": "owner unit", "test": "test_j13_every_operational_row_has_an_explicit_indexed_owner_unit_never_a_department", "rule": "owner unit NOT NULL + indexed; line unit = entry unit and account owned by the line unit (composite FKs); no department owner" },
-    "J14": { "name": "closed-period posting denied", "test": "test_j14_closed_periods_refuse_postings_units_close_independently_and_the_national_close_is_final", "rule": "unit close refuses postings/drafts of that unit only; reopen segregated; national close lists open units and is irreversible" },
-    "J15": { "name": "money precision", "test": "test_j15_money_is_exact_two_decimals_never_rounded_never_float", "rule": "> 2 decimals rejected, float TypeError, CHECK ck_journal_lines_scale / limit, exact 0.10 + 0.20" },
-    "J16": { "name": "AOA-only", "test": "test_j16_only_aoa_is_installed_and_any_other_currency_is_refused", "rule": "only AOA installed; any other entry or account currency CURRENCY_NOT_SUPPORTED" }
+    "J01": {
+      "name": "balanced posting",
+      "test": "test_j01_balanced_posting_is_published_once_with_audit_and_provenance",
+      "rule": "DRAFT->SUBMITTED->POSTED once; idempotent replay returns the same entry; different payload = IDEMPOTENCY_CONFLICT; audit on the owner unit"
+    },
+    "J02": {
+      "name": "unbalanced posting denied",
+      "test": "test_j02_unbalanced_or_degenerate_entries_never_reach_posted",
+      "rule": "UNBALANCED / TOO_FEW_LINES / AMOUNT_NOT_POSITIVE; a failed subledger posting leaves no header, line or claim; CHECK ck_journal_lines_one_side"
+    },
+    "J03": {
+      "name": "posted immutable",
+      "test": "test_j03_posted_header_and_lines_are_immutable_through_every_service_path",
+      "rule": "every service path refuses a POSTED entry; header and lines byte-identical; only DRAFT lines are replaceable"
+    },
+    "J04": {
+      "name": "reversal contract",
+      "test": "test_j04_reversal_is_the_exact_inverse_once_with_reason_in_an_open_period",
+      "rule": "exact inverse, reason, OPEN period of the same unit, UNIQUE reversal_of_id, no reversal of a reversal, SUBLEDGER_OWNED"
+    },
+    "J05": {
+      "name": "accrual revenue",
+      "test": "test_j05_accrual_revenue_is_recognised_before_the_cash_arrives",
+      "rule": "RECEIVABLE_RECOGNITION Dr RECEIVABLES / Cr INCOME (result, no cash) then SETTLEMENT Dr CASH / Cr RECEIVABLES (cash, no result)"
+    },
+    "J06": {
+      "name": "accrual expense",
+      "test": "test_j06_accrual_expense_is_recognised_before_it_is_paid",
+      "rule": "PAYABLE_RECOGNITION Dr EXPENSE / Cr PAYABLES then SETTLEMENT Dr PAYABLES / Cr CASH"
+    },
+    "J07": {
+      "name": "cash/bank balance derived",
+      "test": "test_j07_cash_and_bank_balances_are_derived_from_posted_lines_only",
+      "rule": "no balance column; balance = SUM POSTED lines; drafts never count; financial account posts to its own control account"
+    },
+    "J08": {
+      "name": "fixed-asset investment",
+      "test": "test_j08_capitalizable_investment_has_zero_immediate_result_and_the_mapping_is_configurable",
+      "rule": "Dr FIXED_ASSETS / Cr CASH|PAYABLES, immediate result 0; rubric mapping configurable, posted lines unchanged"
+    },
+    "J09": {
+      "name": "consumed investment",
+      "test": "test_j09_consumed_investment_stays_in_the_result_as_investment",
+      "rule": "§16.7/§16.9 -> INVESTMENT_EXPENSE (result); §16.8 -> FIXED_ASSETS; never 'every INVESTMENT = EXPENSE'"
+    },
+    "J10": {
+      "name": "SEND no P&L",
+      "test": "test_j10_send_touches_only_the_origin_and_never_the_result",
+      "rule": "Dr INTERUNIT_CLEARING_OUT (counterparty, purpose) / Cr CASH|BANK of the origin only; TRANSFER_TOUCHES_RESULT; INTERUNIT_ONLY_BY_TRANSFER"
+    },
+    "J11": {
+      "name": "RECEIVE no P&L",
+      "test": "test_j11_receive_touches_only_the_destination_and_never_the_result",
+      "rule": "Dr CASH|BANK / Cr INTERUNIT_CLEARING_IN of the destination only; one RECEIVE per transfer (UNIQUE)"
+    },
+    "J12": {
+      "name": "in-transit state",
+      "test": "test_j12_in_transit_is_a_consistent_state_and_the_normative_example_never_duplicates_revenue",
+      "rule": "SEND without RECEIVE is consistent (CHECK), shows as in transit, no result; D-04A.3 example: perimeter revenue 100 000, never 160 000 / 200 000"
+    },
+    "J13": {
+      "name": "owner unit",
+      "test": "test_j13_every_operational_row_has_an_explicit_indexed_owner_unit_never_a_department",
+      "rule": "owner unit NOT NULL + indexed; line unit = entry unit and account owned by the line unit (composite FKs); no department owner"
+    },
+    "J14": {
+      "name": "closed-period posting denied",
+      "test": "test_j14_closed_periods_refuse_postings_units_close_independently_and_the_national_close_is_final",
+      "rule": "unit close refuses postings/drafts of that unit only; reopen segregated; national close lists open units and is irreversible"
+    },
+    "J15": {
+      "name": "money precision",
+      "test": "test_j15_money_is_exact_two_decimals_never_rounded_never_float",
+      "rule": "> 2 decimals rejected, float TypeError, CHECK ck_journal_lines_scale / limit, exact 0.10 + 0.20"
+    },
+    "J16": {
+      "name": "AOA-only",
+      "test": "test_j16_only_aoa_is_installed_and_any_other_currency_is_refused",
+      "rule": "only AOA installed; any other entry or account currency CURRENCY_NOT_SUPPORTED"
+    }
   },
   "schema_contracts": {
-    "S01": { "name": "fresh migration", "test": "test_s01_fresh_migration_materializes_exactly_the_f1a_tables_and_rollback_is_safe" },
-    "S02": { "name": "catalog idempotency", "test": "test_s02_catalog_is_complete_idempotent_role_free_and_refuses_conflicting_meaning" },
-    "S03": { "name": "public IDs / constraints", "test": "test_s03_public_ids_are_ulid_char26_ascii_bin_unique_and_generated" },
-    "S04": { "name": "FK parity", "test": "test_s04_foreign_keys_match_the_manifest_restrict_bigint_and_zero_cascade" },
-    "S05": { "name": "CHECK parity", "test": "test_s05_check_constraints_match_the_manifest_and_money_is_decimal_19_4" },
-    "S06": { "name": "one approved budget version", "test": "test_s06_at_most_one_approved_budget_version_and_approver_differs_from_submitter" },
-    "S07": { "name": "unit-close uniqueness", "test": "test_s07_unit_close_is_unique_per_period_and_unit_and_reopen_is_segregated" }
+    "S01": {
+      "name": "fresh migration",
+      "test": "test_s01_fresh_migration_materializes_exactly_the_f1a_tables_and_rollback_is_safe"
+    },
+    "S02": {
+      "name": "catalog idempotency",
+      "test": "test_s02_catalog_is_complete_idempotent_role_free_and_refuses_conflicting_meaning"
+    },
+    "S03": {
+      "name": "public IDs / constraints",
+      "test": "test_s03_public_ids_are_ulid_char26_ascii_bin_unique_and_generated"
+    },
+    "S04": {
+      "name": "FK parity",
+      "test": "test_s04_foreign_keys_match_the_manifest_restrict_bigint_and_zero_cascade"
+    },
+    "S05": {
+      "name": "CHECK parity",
+      "test": "test_s05_check_constraints_match_the_manifest_and_money_is_decimal_19_4"
+    },
+    "S06": {
+      "name": "one approved budget version",
+      "test": "test_s06_at_most_one_approved_budget_version_and_approver_differs_from_submitter"
+    },
+    "S07": {
+      "name": "unit-close uniqueness",
+      "test": "test_s07_unit_close_is_unique_per_period_and_unit_and_reopen_is_segregated"
+    }
   },
   "concurrency": {
-    "C1": { "test": "test_c1_two_processes_posting_the_same_entry_publish_it_once_and_a_replayed_subledger_entry_is_one_entry", "rule": "two processes post the same entry: one OK, one ALREADY_POSTED; same idempotency key: one entry" },
-    "C3A": { "test": "test_c3a_close_first_a_waiting_posting_is_refused_and_leaves_nothing", "rule": "deterministic: CLOSE holds the period lock, POST observed in LOCK WAIT on accounting_periods; CLOSE OK, POST PERIOD_CLOSED, 0 header/line/claim, unit CLOSED, later posting refused" },
-    "C3B": { "test": "test_c3b_posting_first_the_close_waits_for_its_commit_and_then_closes", "rule": "deterministic: POST holds the period share lock, CLOSE observed in LOCK WAIT on accounting_periods; POST OK then CLOSE OK; entry POSTED before closed_at, balanced, later posting refused" }
+    "C1": {
+      "test": "test_c1_two_processes_posting_the_same_entry_publish_it_once_and_a_replayed_subledger_entry_is_one_entry",
+      "rule": "two processes post the same entry: one OK, one ALREADY_POSTED; same idempotency key: one entry"
+    },
+    "C3A": {
+      "test": "test_c3a_close_first_a_waiting_posting_is_refused_and_leaves_nothing",
+      "rule": "deterministic: CLOSE holds the period lock, POST observed in LOCK WAIT on accounting_periods; CLOSE OK, POST PERIOD_CLOSED, 0 header/line/claim, unit CLOSED, later posting refused"
+    },
+    "C3B": {
+      "test": "test_c3b_posting_first_the_close_waits_for_its_commit_and_then_closes",
+      "rule": "deterministic: POST holds the period share lock, CLOSE observed in LOCK WAIT on accounting_periods; POST OK then CLOSE OK; entry POSTED before closed_at, balanced, later posting refused"
+    }
   },
   "mutation_probes": {
     "M1": "remove the balanced-journal guard",
@@ -61,5 +183,123 @@
     "M12": "second APPROVED budget allowed (approved guard removed)"
   },
   "schema_parity": "scripts/validate-p010-finance-schema.cjs",
-  "manifest": "docs/database/physical/p010_finance_delta_manifest.json"
+  "manifest": "docs/database/physical/p010_finance_delta_manifest.json",
+  "f1b_contracts": {
+    "scope": "Interunit transfers (request/send/receive/cancel/reverse-send/reconcile), fund custody read model, subtree perimeter base, contributions (external origin), Territorial authority FINANCE, API + UI. Not F1B: bank statements/reconciliation (F1C), budget workflow, consolidated DRE, full DOAF (F1D), Payroll/HR (F2).",
+    "decision_F1B_D1": "Interunit reconciliation is an explicit FINANCE_RECONCILE step after RECEIVE (refines ADR 0021 D10 / D-04A.5 which made it automatic): migration 2026_09_30_100024 only relaxes ck_internal_transfers_received and adds ck_internal_transfers_reconciled; no state, table or column is added.",
+    "transfer_states": {
+      "stored": [
+        "DRAFT",
+        "SENT",
+        "RECEIVED",
+        "CANCELLED"
+      ],
+      "derived_reconciliation_state": [
+        "NOT_APPLICABLE",
+        "IN_TRANSIT",
+        "AWAITING_RECONCILIATION",
+        "RECONCILED",
+        "RETURNED"
+      ],
+      "transitions": {
+        "request": "-> DRAFT (origin, FINANCE_TRANSFER)",
+        "send": "DRAFT -> SENT (origin, FINANCE_TRANSFER+FINANCE_POST, TRANSFER_SEND Dr INTERUNIT_CLEARING_OUT / Cr CASH|BANK)",
+        "receive": "SENT -> RECEIVED (destination, FINANCE_TRANSFER+FINANCE_POST, TRANSFER_RECEIVE Dr CASH|BANK / Cr INTERUNIT_CLEARING_IN, amount = SEND amount)",
+        "cancel": "DRAFT -> CANCELLED (origin, reason)",
+        "reverse_send": "SENT -> CANCELLED (origin, REVERSE_SEND, only before RECEIVE)",
+        "reconcile": "RECEIVED: reconciled_at once (origin or destination, FINANCE_RECONCILE, SEND <-> transfer <-> RECEIVE verified)"
+      }
+    },
+    "custody_identity": "opening + external received + internal received - external applications - internal sent (net of REVERSE_SEND) = closing (CASH/BANK POSTED lines of the unit)",
+    "perimeter_classes": [
+      "INTERNAL_TO_PERIMETER",
+      "OUT_OF_PERIMETER",
+      "INTO_PERIMETER"
+    ],
+    "economic_effect_of_transfers": "0.00 always (I1)",
+    "tests": {
+      "T01": "test_t01_external_contribution_is_recorded_once_and_is_the_only_revenue_path",
+      "T02": "test_t02_transfer_request_creates_a_draft_with_purpose_and_no_accounting_effect",
+      "T03": "test_t03_t04_send_posts_one_origin_entry_on_interunit_clearing_and_never_the_result",
+      "T04": "test_t03_t04_send_posts_one_origin_entry_on_interunit_clearing_and_never_the_result",
+      "T05": "test_t05_in_transit_is_visible_to_both_sides_with_age_and_never_as_result",
+      "T06": "test_t06_t07_t08_receive_posts_one_destination_entry_equal_to_the_send_and_never_the_result",
+      "T07": "test_t06_t07_t08_receive_posts_one_destination_entry_equal_to_the_send_and_never_the_result",
+      "T08": "test_t06_t07_t08_receive_posts_one_destination_entry_equal_to_the_send_and_never_the_result",
+      "T09": "test_t09_a_bank_fee_is_a_separate_expense_and_never_reduces_the_receive",
+      "T10": "test_t10_t11_origin_closes_after_send_and_the_destination_receives_in_a_later_open_period",
+      "T11": "test_t10_t11_origin_closes_after_send_and_the_destination_receives_in_a_later_open_period",
+      "T12": "test_t12_t13_a_second_send_or_receive_is_an_idempotent_no_op_never_a_second_effect",
+      "T13": "test_t12_t13_a_second_send_or_receive_is_an_idempotent_no_op_never_a_second_effect",
+      "T14": "test_t14_t15_wrong_scope_sides_malformed_and_nonexistent_are_the_same_concealed_404",
+      "T15": "test_t14_t15_wrong_scope_sides_malformed_and_nonexistent_are_the_same_concealed_404",
+      "T16": "test_t16_supporting_documents_are_public_ids_with_cumulative_files_authority",
+      "T17": "test_t17_t18_custody_shows_where_received_funds_came_from_and_where_sent_funds_went",
+      "T18": "test_t17_t18_custody_shows_where_received_funds_came_from_and_where_sent_funds_went",
+      "T19": "test_t19_the_normative_example_100_60_40_never_duplicates_revenue",
+      "T20": "test_t20_t21_subtree_view_classifies_the_perimeter_and_the_economic_effect_is_always_zero",
+      "T21": "test_t20_t21_subtree_view_classifies_the_perimeter_and_the_economic_effect_is_always_zero",
+      "T22": "test_t22_interunit_reconciliation_verifies_send_transfer_receive_and_stamps_once",
+      "T23": "test_t23_c2_two_processes_receiving_the_same_transfer_produce_one_receive",
+      "T24": "test_t24_c7_two_concurrent_reconciliations_reconcile_once",
+      "T25": "test_t25_c9_receive_first_then_reverse_send_is_refused",
+      "T26": "test_t26_c9_reverse_first_then_receive_is_refused_and_the_origin_gets_its_funds_back",
+      "T27": "PLAYWRIGHT",
+      "T28": "test_t28_retries_are_idempotent_and_collections_are_bounded"
+    },
+    "concurrency": {
+      "C2": "test_t23_c2_two_processes_receiving_the_same_transfer_produce_one_receive",
+      "C7": "test_t24_c7_two_concurrent_reconciliations_reconcile_once",
+      "C9_receive_first": "test_t25_c9_receive_first_then_reverse_send_is_refused",
+      "C9_reverse_first": "test_t26_c9_reverse_first_then_receive_is_refused_and_the_origin_gets_its_funds_back",
+      "period_close_interaction": "test_period_close_serialises_with_send_in_the_origin_and_with_receive_in_the_destination"
+    },
+    "mutation_probes": {
+      "M1": "SEND classified as revenue",
+      "M2": "RECEIVE classified as revenue",
+      "M3": "SEND clearing as EQUITY instead of INTERUNIT_CONTROL",
+      "M4": "RECEIVE amount differs",
+      "M5": "duplicate SEND",
+      "M6": "duplicate RECEIVE",
+      "M7": "wrong source scope",
+      "M8": "wrong destination scope",
+      "M9": "F-06 oracle",
+      "M10": "reconciliation without RECEIVE",
+      "M11": "reverse SEND after RECEIVE",
+      "M12": "transfer mutates the original external revenue",
+      "M13": "source_document PK accepted",
+      "M14": "unbounded transfer list"
+    },
+    "validator": "scripts/validate-finance-transfer-contracts.cjs",
+    "f1a_subledger_states_review": {
+      "receivables": {
+        "states": [
+          "PENDING",
+          "RECOGNIZED",
+          "SETTLED",
+          "CANCELLED"
+        ],
+        "verdict": "CONFIRMED_FOR_F1C",
+        "note": "partial settlement is derived from settlement_allocations (never stored); RECOGNIZED/SETTLED require recognition_entry_id (CHECK)"
+      },
+      "payables": {
+        "states": [
+          "PENDING",
+          "RECOGNIZED",
+          "SETTLED",
+          "CANCELLED"
+        ],
+        "verdict": "CONFIRMED_FOR_F1C",
+        "note": "same as receivables; document + workflow instance mandatory (catalog NOT NULL); an approval step, if the institution wants one, lives in the workflow instance, not in a new state"
+      },
+      "settlements": {
+        "states": [
+          "POSTED",
+          "CANCELLED"
+        ],
+        "verdict": "CONFIRMED_FOR_F1C",
+        "note": "a settlement is born POSTED with its entry (D07); cancellation = the subledger reversal flow; no migration needed"
+      }
+    }
+  }
 }

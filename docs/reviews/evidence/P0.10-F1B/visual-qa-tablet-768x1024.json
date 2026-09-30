@@ -1,0 +1,59 @@
+{
+  "project": "tablet-768x1024",
+  "checks": [
+    {
+      "screen": "transfers-sent",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "transfers-received",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "in-transit",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "received-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "reconcile-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "new-transfer",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "sent-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "receive-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "custody",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    }
+  ]
+}
