@@ -15,6 +15,7 @@ import type { PersonSummary } from '../types/people'
 import type { CollectiveResult, LegacyIdentifier, MembershipDetail, MembershipPeriod, MembershipStatus, MembershipSummary, MembershipTransfer, Milestone, Precision, TransferAction } from '../types/membership'
 
 const TONE: Record<string, string> = { ACTIVE: ' badge--info', VALIDATED: ' badge--info', INACTIVE: ' badge--warning', ENDED: ' badge--warning', REJECTED: ' badge--danger', WITHDRAWN: '', SUBMITTED: '', COMPLETED: ' badge--info', CANCELLED: '', CONFLICT: ' badge--danger', REVOKED: ' badge--warning' }
+const PERSON_STATUS: Record<string, string> = { ACTIVE: 'Activa', INACTIVE: 'Inactiva', DECEASED: 'Falecida' }
 const PRECISION_LABEL: Record<Precision, string> = { EXACT: 'Data exacta', MONTH: 'Mês e ano', YEAR: 'Só o ano', UNKNOWN: 'Desconhecida' }
 
 export function MemberBadge({ value, label }: { value: string; label?: string }) {
@@ -136,7 +137,7 @@ function PersonPicker({ onPick }: { onPick: (person: PersonSummary | null) => vo
   return <div className="stack">
     <Field label="Pessoa existente" name="person-search" required hint="A Pessoa é criada primeiro em Pessoas. A Membresia nunca cria Pessoas."><input className="input" id="person-search" value={term} onChange={(event) => setTerm(event.target.value)} autoComplete="off" maxLength={100} placeholder="Nome da pessoa" /></Field>
     {error && <ErrorState error={error} />}
-    {results.length > 0 && <ul className="person-list" aria-label="Pessoas encontradas">{results.map((person) => <li key={person.public_id} className="person-list__item"><div className="person-list__main"><strong>{person.display_name}</strong><span className="muted">{person.status}</span></div><div className="person-list__actions"><button className="btn btn--secondary btn--sm" type="button" onClick={() => { setPicked(person); onPick(person) }}>Seleccionar</button></div></li>)}</ul>}
+    {results.length > 0 && <ul className="person-list" aria-label="Pessoas encontradas">{results.map((person) => <li key={person.public_id} className="person-list__item"><div className="person-list__main"><strong>{person.display_name}</strong><span className="muted">{PERSON_STATUS[person.status] ?? person.status}</span></div><div className="person-list__actions"><button className="btn btn--secondary btn--sm" type="button" onClick={() => { setPicked(person); onPick(person) }}>Seleccionar</button></div></li>)}</ul>}
   </div>
 }
 
@@ -317,7 +318,7 @@ export function MemberDetailPage() {
       <div className="dl__item"><dt>Aprovação</dt><dd>{m.approved_at ? formatDateTime(m.approved_at) : '—'}</dd></div>
       <div className="dl__item"><dt>Origem</dt><dd>{m.origin === 'LEGACY_IMPORT' ? 'Regularização de membro histórico' : 'Admissão'}</dd></div>
       <div className="dl__item"><dt>Documento</dt><dd>{m.source_document ? <span className="mono">{m.source_document.public_id}</span> : m.has_document ? 'Documento associado (sem acesso)' : 'Nenhum'}</dd></div>
-      <div className="dl__item"><dt>Pessoa</dt><dd>{m.person.protected_minor ? 'Menor protegido' : m.person.status}</dd></div>
+      <div className="dl__item"><dt>Pessoa</dt><dd>{PERSON_STATUS[m.person.status] ?? m.person.status}{m.person.protected_minor ? ' · menor protegido' : ''}</dd></div>
     </dl></section>
     <LegacySection member={m} onChanged={result.reload} />
     <MilestonesSection member={m} />

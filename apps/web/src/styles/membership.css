@@ -32,3 +32,4 @@
   .member-actions { width: 100%; }
   .page-header__actions .member-actions > .btn { flex: 1 1 calc(50% - var(--space-2)); justify-content: center; }
 }
+.member-tabs a.btn--primary, .member-tabs a.btn--primary:visited { color: var(--text-on-primary); }
