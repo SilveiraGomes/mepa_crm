@@ -1,0 +1,28 @@
+{
+  "phase": "P0.8",
+  "adr": "docs/adr/0019-documents-files-v1-policy.md",
+  "migrations": [
+    "2026_09_30_000001_p08_install_files_catalog.php"
+  ],
+  "schema_changes": [],
+  "unchanged_tables": ["files", "legal_document_types", "legal_documents", "document_versions", "person_documents", "person_files", "event_documents"],
+  "controlled_data": [
+    "permissions:FILES_VIEW",
+    "permissions:FILES_UPLOAD",
+    "permissions:FILES_DOWNLOAD",
+    "permissions:FILES_MANAGE",
+    "permissions:FILES_CONFIDENTIAL_ACCESS",
+    "permissions:FILES_HIGHLY_SENSITIVE_ACCESS",
+    "permissions:DOCUMENTS_VIEW",
+    "permissions:DOCUMENTS_MANAGE",
+    "permissions:DOCUMENTS_VERSION_MANAGE",
+    "legal_document_types:MINUTES",
+    "legal_document_types:RESOLUTION",
+    "legal_document_types:APPOINTMENT",
+    "legal_document_types:CORRESPONDENCE",
+    "legal_document_types:CONTRACT",
+    "legal_document_types:PROPERTY_TITLE",
+    "legal_document_types:CONSENT",
+    "legal_document_types:OTHER"
+  ]
+}

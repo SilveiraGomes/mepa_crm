@@ -436,26 +436,50 @@ final class AcademyRemediationTest extends PooledWaveFiveCase
         $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->issue($both['user'], $both['session'], $w['student']['id'], $foreign));
     }
 
-    // R3.4
+    // R3.4 (+ P08-D-F01: the source document is referenced by its public_id only, resolved after authority)
     public function test_r3_4_a_source_document_of_another_unit_is_refused_and_nothing_is_created(): void
     {
         $w = $this->world();
         $manager = $this->actor($w['unit'], ['ACADEMY_MANAGE']);
         $type = $this->row('legal_document_types');
-        $foreign = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $this->world()['unit']]);
-        $own = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $w['unit']]);
+        $foreign = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $this->world()['unit'], 'status' => 'ACTIVE']);
+        $own = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $w['unit'], 'status' => 'ACTIVE']);
+        $archived = $this->row('legal_documents', ['document_type_id' => $type, 'owner_unit_id' => $w['unit'], 'status' => 'ARCHIVED']);
+        $pub = fn (int $id): string => (string) $this->db()->table('legal_documents')->where('id', $id)->value('public_id');
         $person = $this->row('people');
         $svc = new InstructorAssignmentService($this->rt());
-        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->assign($manager['user'], $manager['session'], $w['class'], $person, null, null, 'nomeação', $foreign));
+        $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->assign($manager['user'], $manager['session'], $w['class'], $person, null, null, 'nomeação', $pub($foreign)));
         self::assertSame(0, (int) $this->db()->table('instructors')->where('person_id', $person)->count(), 'no orphan instructor profile');
         self::assertSame(0, (int) $this->db()->table('class_instructors')->where('class_id', $w['class'])->count());
-        // A document of the class's own unit, no document at all, and an unknown document.
-        $ok = $svc->assign($manager['user'], $manager['session'], $w['class'], $person, null, null, 'nomeação', $own);
+        // A document of the class's own unit, no document at all, and an unknown / malformed / numeric / archived
+        // document: the last four converge on the same concealed reason (no existence or ownership oracle).
+        $ok = $svc->assign($manager['user'], $manager['session'], $w['class'], $person, null, null, 'nomeação', $pub($own));
         self::assertSame($own, (int) $this->db()->table('class_instructors')->where('id', $ok['assignment_id'])->value('source_document_id'));
         $other = $this->row('people');
         self::assertNull($this->db()->table('class_instructors')->where('id', $svc->assign($manager['user'], $manager['session'], $w['class'], $other)['assignment_id'])->value('source_document_id'));
-        $third = $this->row('people');
-        $this->denied(AcademyReason::REFERENCE_NOT_FOUND, fn () => $svc->assign($manager['user'], $manager['session'], $w['class'], $third, null, null, null, 987654321));
+        foreach (['01ARZ3NDEKTSV4RRFFQ69G5FAV', 'not-a-ulid', (string) $own, $pub($archived)] as $reference) {
+            $third = $this->row('people');
+            $this->denied(AcademyReason::OUT_OF_SCOPE, fn () => $svc->assign($manager['user'], $manager['session'], $w['class'], $third, null, null, null, $reference));
+        }
+        // The internal key itself is not even a valid argument any more.
+        $this->expectException(\TypeError::class);
+        $svc->assign($manager['user'], $manager['session'], $w['class'], $this->row('people'), null, null, null, $own);
+    }
+
+    // P0.8: a file the Files foundation classified CONFIDENTIAL / HIGHLY_SENSITIVE is never reachable from Academy
+    // (no attach, not listed as eligible) until the Academy consumer adapter exists (ADR 0019 D10).
+    public function test_p08_sensitive_files_are_not_reachable_from_academy(): void
+    {
+        $w = $this->certificateWorld();
+        $c = $w['certifier'];
+        $svc = new CertificateService($this->rt());
+        foreach (['CONFIDENTIAL', 'HIGHLY_SENSITIVE'] as $classification) {
+            $sensitive = $this->row('files', ['owner_unit_id' => $w['unit'], 'status' => 'AVAILABLE', 'classification' => $classification]);
+            $this->denied(AcademyReason::FILE_NOT_AVAILABLE, fn () => $svc->issue($c['user'], $c['session'], $w['student']['id'], $sensitive));
+            $eligible = (new \App\Domain\Academy\AcademyResourceGuard($this->db()))->eligibleFiles(new \App\Domain\Academy\AcademyTarget([$w['unit']]), []);
+            self::assertNotContains((string) $this->db()->table('files')->where('id', $sensitive)->value('public_id'), array_column($eligible['items'], 'public_id'));
+        }
+        self::assertSame(0, $this->certificates($w['student']['id']));
     }
 
     // R3.5

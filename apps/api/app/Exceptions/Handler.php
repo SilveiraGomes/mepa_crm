@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
+use App\Domain\Files\FilesError;
 use App\Domain\People\PeopleError;
 use App\Domain\Physical\PhysicalError;
 use App\Domain\Territorial\TerritorialError;
@@ -21,7 +22,9 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
-        //
+        // P0.8 (ADR 0019 D03/D12): Files domain errors are rendered and logged as one structured line (reason, route,
+        // actor) by their renderable; a reported stack trace would carry argument snippets (file names, content).
+        FilesError::class,
     ];
 
     /**
@@ -103,6 +106,51 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/territorial', 'api/v1/territorial/*')) return null;
             return response()->json(['error'=>['code'=>'VALIDATION_ERROR','message'=>'The request data is invalid.','details'=>['fields'=>$e->errors()]]],422);
+        });
+
+        // P0.8 Documents/Files (ADR-0019 D04, F-06). Unknown, malformed, out-of-scope, above-clearance, consumer-unauthorized,
+        // QUARANTINED, TOMBSTONE (without FILES_MANAGE) and PURGED targets share ONE byte-identical 404; no classification,
+        // status or existence oracle. Storage/crypto failures are 503 without any detail.
+        $this->renderable(function (FilesError $e, Request $request) {
+            if (!$request->is('api/v1/files', 'api/v1/files/*', 'api/v1/documents', 'api/v1/documents/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('files_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404, ['Cache-Control' => 'no-store, private']);
+            }
+            [$status, $code, $message] = match ($e->reason) {
+                'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                'CLEARANCE_REQUIRED' => [403, 'CLEARANCE_REQUIRED', 'Your clearance does not allow this classification.'],
+                'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                'REASON_REQUIRED' => [422, 'REASON_REQUIRED', 'A reason is required for this operation.'],
+                'CLASSIFICATION_INVALID' => [422, 'CLASSIFICATION_INVALID', 'The classification is not a valid value.'],
+                'FILE_EMPTY', 'FILE_TOO_LARGE', 'FILE_NAME_INVALID', 'FILE_TYPE_NOT_ALLOWED', 'FILE_CONTENT_REJECTED' => [422, $e->reason, 'The file was not accepted.'],
+                'QUOTA_EXCEEDED' => [422, 'FILES_QUOTA_EXCEEDED', 'The storage quota does not allow this file.'],
+                'FILE_IN_USE', 'STALE_WRITE', 'TRANSITION_NOT_ALLOWED', 'DOCUMENT_ARCHIVED', 'CLASSIFICATION_BELOW_FLOOR' => [409, $e->reason, 'The request conflicts with the current resource state.'],
+                'STORAGE_UNAVAILABLE' => [503, 'FILES_STORAGE_UNAVAILABLE', 'File storage is temporarily unavailable.'],
+                'SCANNER_UNAVAILABLE' => [503, 'FILES_SCANNER_UNAVAILABLE', 'File inspection is temporarily unavailable.'],
+                'CONTENT_UNAVAILABLE', 'CRYPTO_UNAVAILABLE', 'INTEGRITY_FAILURE' => [503, 'FILE_CONTENT_UNAVAILABLE', 'The file content is temporarily unavailable.'],
+                'CONFIG_MISSING' => [503, 'FILES_NOT_CONFIGURED', 'The Documents/Files configuration is not available.'],
+                default => [409, 'CONFLICT', 'The operation could not be completed.'],
+            };
+            Log::notice('files_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            $safe = array_intersect_key($e->details, array_flip(['reason_code', 'file_public_id', 'status']));
+            if ($safe !== []) {
+                $body['details'] = ($body['details'] ?? []) + $safe;
+            }
+            return response()->json(['error' => $body], $status, ['Cache-Control' => 'no-store, private']);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/files', 'api/v1/files/*', 'api/v1/documents', 'api/v1/documents/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
         });
 
         // P0.7 Physical Locations (ADR-0018). F-06: unknown, malformed, out-of-scope and unlinked (no active vigente

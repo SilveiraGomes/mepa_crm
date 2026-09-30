@@ -1,0 +1,13 @@
+{
+    "racers": 5,
+    "quota_bytes": 25592,
+    "file_bytes": 12791,
+    "statuses": [
+        "OK",
+        "OK",
+        "QUOTA_EXCEEDED",
+        "QUOTA_EXCEEDED",
+        "QUOTA_EXCEEDED"
+    ],
+    "used_bytes": 25582
+}

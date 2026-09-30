@@ -15,7 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // P0.8 Documents/Files (ADR 0019, Cron per ADR 0004): quarantine reconciliation and integrity sampling.
+        $schedule->command('files:maintain reconcile')->everyFiveMinutes()->withoutOverlapping();
+        $schedule->command('files:maintain verify --sample=20')->daily()->withoutOverlapping();
     }
 
     /**

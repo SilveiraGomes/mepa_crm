@@ -20,6 +20,8 @@ use App\Http\Controllers\Api\V1\Academy\AcademyContextController;
 use App\Http\Controllers\Api\V1\Academy\EligibleFileController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
+use App\Http\Controllers\Api\V1\Files\DocumentController;
+use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\Physical\LinkController;
 use App\Http\Controllers\Api\V1\Physical\LocationController;
 use App\Http\Controllers\Api\V1\Physical\PropertyController;
@@ -67,6 +69,31 @@ Route::prefix('v1')->group(function (): void {
         Route::get('units/{unit}/path', [TerritorialController::class, 'path']);
         Route::post('units/{unit}/move', [TerritorialController::class, 'move'])->middleware('throttle:10,1');
         Route::post('units/{unit}/lifecycle', [TerritorialController::class, 'lifecycle'])->middleware('throttle:10,1');
+    });
+
+    // P0.8 Documents / Files (ADR-0019). Every target is a public_id; content is served only by the authorized
+    // .../content endpoints (no public or signed URL, no Range); no generic status, purge or delete endpoint.
+    Route::prefix('files')->middleware(['api.auth', 'throttle:files'])->group(function (): void {
+        Route::get('context', [FileController::class, 'context']);
+        Route::get('/', [FileController::class, 'index']);
+        Route::post('/', [FileController::class, 'store'])->middleware('throttle:files-upload');
+        Route::get('{file}', [FileController::class, 'show']);
+        Route::get('{file}/content', [FileController::class, 'content'])->middleware('throttle:files-download');
+        Route::post('{file}/tombstone', [FileController::class, 'tombstone'])->middleware('throttle:files-write');
+        Route::post('{file}/restore', [FileController::class, 'restore'])->middleware('throttle:files-write');
+        Route::post('{file}/classification', [FileController::class, 'classification'])->middleware('throttle:files-write');
+        Route::post('{file}/owner', [FileController::class, 'owner'])->middleware('throttle:files-write');
+    });
+    Route::prefix('documents')->middleware(['api.auth', 'throttle:files'])->group(function (): void {
+        Route::get('/', [DocumentController::class, 'index']);
+        Route::post('/', [DocumentController::class, 'store'])->middleware('throttle:files-upload');
+        Route::get('{document}', [DocumentController::class, 'show']);
+        Route::patch('{document}', [DocumentController::class, 'update'])->middleware('throttle:files-write');
+        Route::post('{document}/versions', [DocumentController::class, 'version'])->middleware('throttle:files-upload');
+        Route::get('{document}/versions/{version}/content', [DocumentController::class, 'content'])->middleware('throttle:files-download');
+        Route::post('{document}/archive', [DocumentController::class, 'archive'])->middleware('throttle:files-write');
+        Route::post('{document}/restore', [DocumentController::class, 'restore'])->middleware('throttle:files-write');
+        Route::post('{document}/owner', [DocumentController::class, 'owner'])->middleware('throttle:files-write');
     });
 
     // P0.7 Physical Locations / Properties / Temples / Unit <-> Location links (ADR-0018). Every target is a public_id

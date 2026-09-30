@@ -19,14 +19,14 @@ final class InstructorAssignmentService
     {
     }
 
-    public function assign(int $actor, int $session, int $classId, int|string $personRef, ?DateTimeImmutable $startsAt = null, ?DateTimeImmutable $endsAt = null, ?string $reason = null, ?int $sourceDocumentId = null, ?string $overrideReason = null, ?array $claimed = null): array
+    public function assign(int $actor, int $session, int $classId, int|string $personRef, ?DateTimeImmutable $startsAt = null, ?DateTimeImmutable $endsAt = null, ?string $reason = null, ?string $sourceDocument = null, ?string $overrideReason = null, ?array $claimed = null): array
     {
         return $this->rt->write(
             'instructor.assign',
             $actor,
             $session,
             fn () => $this->rt->scope->forClass($classId, 'update'),
-            function (AcademyDecision $decision, AcademyTarget $target) use ($personRef, $startsAt, $endsAt, $reason, $sourceDocumentId) {
+            function (AcademyDecision $decision, AcademyTarget $target) use ($personRef, $startsAt, $endsAt, $reason, $sourceDocument) {
                 $person = $this->rt->people->resolve($personRef);
                 $this->rt->db->table('people')->where('id', $person)->lockForUpdate()->first();
                 $this->rt->people->assertEligible($person);
@@ -34,9 +34,8 @@ final class InstructorAssignmentService
                 if ($endsAt !== null && $endsAt <= $start) {
                     throw new AcademyError(AcademyReason::INVALID_INPUT, ['field' => 'period']);
                 }
-                if ($sourceDocumentId !== null) {
-                    $this->rt->resources->legalDocument($target, $sourceDocumentId);
-                }
+                // P08-D-F01: resolved from its public_id only now, after the class authority was decided.
+                $sourceDocumentId = $sourceDocument === null ? null : (int) $this->rt->resources->legalDocument($target, $sourceDocument)->id;
                 $instructor = $this->rt->db->table('instructors')->where('person_id', $person)->lockForUpdate()->first();
                 $now = AcademyRuntime::ts($this->rt->now());
                 if (!$instructor) {

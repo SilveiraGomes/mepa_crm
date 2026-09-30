@@ -1,0 +1,174 @@
+{
+  "phase": "P0.8-I",
+  "baseline": "c280c499f126d8eea6cd1a8f75bb962ddee42cc1",
+  "commits": {
+    "catalog_f01": "bebde94",
+    "implementation": "c7a2cd7",
+    "log_fix": "fda69dd"
+  },
+  "infrastructure": {
+    "start": "STARTED_VERIFIED",
+    "stop": "STOPPED_VERIFIED"
+  },
+  "schema_parity": {
+    "p08": "PASS",
+    "p07": "PASS",
+    "p06": "PASS"
+  },
+  "files_phpunit": "OK (27 tests, 1550 assertions)",
+  "playwright": {
+    "expected": 12,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "mutation_probes": {
+    "status": "PASS",
+    "detected": 14,
+    "total": 14,
+    "restored_byte_for_byte": true
+  },
+  "structural_checks": {
+    "S01_closed_ordered_classification": true,
+    "S02_unknown_classification_fails_closed": true,
+    "S03_private_disk_no_url": true,
+    "S04_random_storage_key": true,
+    "S05_output_guard": true,
+    "S06_mepaf1_secretstream": true,
+    "S07_no_plaintext_fallback": true,
+    "S08_integrity_before_stream": true,
+    "S09_final_gate_verifies_object": true,
+    "S10_quota_locked": true,
+    "S11_f06_concealment": true,
+    "S12_permission_before_target": true,
+    "S13_consumer_fail_closed": true,
+    "S14_no_purge_operation": true,
+    "S15_quarantine_not_downloadable": true,
+    "S16_version_monotonic_locked": true,
+    "S17_dedup_same_unit_authorized": true,
+    "S18_audit_forbidden_keys": true,
+    "S19_routes_match_contract_bidirectionally": true,
+    "S20_requests_never_accept_internal_ids": true,
+    "S21_p08_d_f01_public_id_only": true,
+    "S22_catalog_nine_plus_eight_no_roles": true,
+    "S23_keyring_outside_code": true,
+    "S24_ui_section_and_routes": true
+  },
+  "regressions": {
+    "physical": "OK (21 tests, 875 assertions)",
+    "territorial": "OK (13 tests, 151 assertions)",
+    "people_context": "OK (8 tests, 220 assertions)",
+    "people_person": "OK (15 tests, 1354 assertions)",
+    "academy_remediation": "OK (24 tests, 118 assertions)",
+    "academy_contract": "OK (4 tests, 21 assertions)",
+    "academy_certification": "OK (16 tests, 141 assertions)",
+    "academy_http": "OK (5 tests, 35 assertions)"
+  },
+  "validators": {
+    "files_contracts": "PASS",
+    "physical_contracts": "PASS",
+    "territorial_contracts": "PASS",
+    "http_contracts": "PASS",
+    "ui_contracts": "PASS",
+    "auth_contracts": "PASS",
+    "application_contracts": "PASS",
+    "people_families_contracts": "PASS",
+    "database_docs": "PASS"
+  },
+  "web": {
+    "tests": true,
+    "lint": true,
+    "build": true,
+    "pwa": true
+  },
+  "concurrency_F20": {
+    "racers": 5,
+    "quota_bytes": 25592,
+    "file_bytes": 12791,
+    "statuses": [
+      "OK",
+      "OK",
+      "QUOTA_EXCEEDED",
+      "QUOTA_EXCEEDED",
+      "QUOTA_EXCEEDED"
+    ],
+    "used_bytes": 25582
+  },
+  "visual_qa": {
+    "desktop-1440x900": {
+      "screens": [
+        "file-detail",
+        "files-list",
+        "new-version-dialog",
+        "sensitive-download-dialog",
+        "upload",
+        "versions"
+      ],
+      "overflow": 0,
+      "clipped": 0,
+      "dialog_outside": 0
+    },
+    "laptop-1366x768": {
+      "screens": [
+        "file-detail",
+        "files-list",
+        "new-version-dialog",
+        "sensitive-download-dialog",
+        "upload",
+        "versions"
+      ],
+      "overflow": 0,
+      "clipped": 0,
+      "dialog_outside": 0
+    },
+    "mobile-390x844": {
+      "screens": [
+        "file-detail",
+        "files-list",
+        "new-version-dialog",
+        "sensitive-download-dialog",
+        "upload",
+        "versions"
+      ],
+      "overflow": 0,
+      "clipped": 0,
+      "dialog_outside": 0
+    },
+    "tablet-768x1024": {
+      "screens": [
+        "file-detail",
+        "files-list",
+        "new-version-dialog",
+        "sensitive-download-dialog",
+        "upload",
+        "versions"
+      ],
+      "overflow": 0,
+      "clipped": 0,
+      "dialog_outside": 0
+    }
+  },
+  "log_scan": {
+    "bytes_scanned": 3895253,
+    "leaks": []
+  },
+  "storage_scan": {
+    "objects": 8,
+    "non_mepaf1_or_plaintext": []
+  },
+  "cleanup": {
+    "private_root_removed": true,
+    "keyring_removed": true,
+    "sandbox_removed": true
+  },
+  "isolation": {
+    "storage_root_inside_repository": false,
+    "keyring_inside_repository": false,
+    "location": "OS temp directory"
+  },
+  "blockers": {
+    "PRODUCT": 0,
+    "EVIDENCE": 0,
+    "TEST_INFRA": 0
+  }
+}

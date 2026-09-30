@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Academy;
 
+use App\Domain\Files\FileClassification;
+use App\Domain\Files\FilesCatalog;
 use Illuminate\Database\Connection;
 
 // Existence of a file or legal document is not the right to use it. Before an Academy object
@@ -25,6 +27,8 @@ use Illuminate\Database\Connection;
 // The rows are read FOR SHARE so the ownership/availability that was checked cannot change before commit.
 final class AcademyResourceGuard
 {
+    private const SENSITIVE = [FileClassification::CONFIDENTIAL, FileClassification::HIGHLY_SENSITIVE];
+
     public function __construct(private Connection $db)
     {
     }
@@ -42,16 +46,26 @@ final class AcademyResourceGuard
         if ($file->status !== 'AVAILABLE' || $file->deleted_at !== null || $file->purged_at !== null) {
             throw new AcademyError(AcademyReason::FILE_NOT_AVAILABLE, ['file_id' => $fileId]);
         }
+        // P0.8 (ADR 0019 D01): until the Academy consumer adapter (clearance + CONFIDENTIAL floor) is integrated, a file
+        // the Files foundation classified CONFIDENTIAL or HIGHLY_SENSITIVE is never reachable from Academy.
+        if (in_array($file->classification, self::SENSITIVE, true)) {
+            throw new AcademyError(AcademyReason::FILE_NOT_AVAILABLE, ['file_id' => $fileId]);
+        }
         return $file;
     }
 
-    public function legalDocument(AcademyTarget $target, int $documentId): object
+    /**
+     * P08-D-F01 (ADR 0019 D04/D10): a legal document is referenced by its public_id only, resolved here AFTER the
+     * operation's authority was decided. Unknown, malformed, foreign-unit and non-ACTIVE documents all raise the same
+     * OUT_OF_SCOPE (concealed 404 at HTTP), so the reference is never an existence or ownership oracle.
+     */
+    public function legalDocument(AcademyTarget $target, string $publicId): object
     {
-        $document = $this->db->table('legal_documents')->where('id', $documentId)->sharedLock()->first();
-        if (!$document) {
-            throw new AcademyError(AcademyReason::REFERENCE_NOT_FOUND, ['entity' => 'legal_documents']);
+        $document = preg_match(FilesCatalog::PUBLIC_ID_PATTERN, $publicId) === 1
+            ? $this->db->table('legal_documents')->where('public_id', $publicId)->sharedLock()->first() : null;
+        if (!$document || !in_array((int) $document->owner_unit_id, $target->unitIds, true) || $document->status !== FilesCatalog::DOCUMENT_ACTIVE) {
+            throw new AcademyError(AcademyReason::OUT_OF_SCOPE, ['entity' => 'legal_documents']);
         }
-        $this->assertOwnedByTarget($target, (int) $document->owner_unit_id, 'legal_documents');
         return $document;
     }
 
@@ -59,7 +73,7 @@ final class AcademyResourceGuard
     {
         [$page, $perPage] = AcademyInput::page((int) ($input['page'] ?? 1), (int) ($input['per_page'] ?? 50));
         $query = $this->db->table('files')->whereIn('owner_unit_id', $target->unitIds)->whereNull('owner_department_id')
-            ->where('status', 'AVAILABLE')->whereNull('deleted_at')->whereNull('purged_at');
+            ->where('status', 'AVAILABLE')->whereNull('deleted_at')->whereNull('purged_at')->whereNotIn('classification', self::SENSITIVE);
         if (!empty($input['search'])) {
             $needle = '%' . addcslashes(trim((string) $input['search']), '%_\\') . '%';
             $query->where('original_name', 'like', $needle);
