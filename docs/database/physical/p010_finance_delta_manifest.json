@@ -1,5 +1,5 @@
 {
-  "phase": "P0.10-F1A",
+  "phase": "P0.10-F1A+F1B",
   "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
   "addendum": "D-04A",
   "migrations": [
@@ -24,7 +24,9 @@
     "2026_09_30_100019_p010_create_settlement_allocations.php",
     "2026_09_30_100020_p010_create_budgets.php",
     "2026_09_30_100021_p010_create_budget_lines.php",
-    "2026_09_30_100022_p010_install_finance_catalog.php"
+    "2026_09_30_100022_p010_install_finance_catalog.php",
+    "2026_09_30_100023_p010_create_contributions.php",
+    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php"
   ],
   "planned_table_count": 35,
   "plan": {
@@ -70,12 +72,11 @@
     "settlements",
     "settlement_allocations",
     "budgets",
-    "budget_lines"
+    "budget_lines",
+    "contributions"
   ],
   "deferred_finance_tables": {
-    "F1B": [
-      "contributions"
-    ],
+    "F1B": [],
     "F1C": [
       "bank_statements",
       "bank_statement_lines",
@@ -113,6 +114,9 @@
       ]
     }
   },
+  "schema_changes": [
+    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php: ALTER TABLE internal_transfers DROP CHECK `ck_internal_transfers_received`, ADD CONSTRAINT `ck_internal_transfers_received` CHECK ((`status` = 'RECEIVED') = (`received_at` IS NOT NULL) AND (`status` = 'RECEIVED') = (`destination_account_id` IS NOT NULL)), ADD CONSTRAINT `ck_internal_transfers_reconciled` CHECK (`reconciled_at` IS NULL OR (`status` = 'RECEIVED' AND `reconciled_at` >= `received_at`))"
+  ],
   "column_deltas": [
     "currencies:minor_units:NO:tinyint unsigned",
     "chart_of_accounts:system_role:YES:varchar(64)",
@@ -133,7 +137,11 @@
     "internal_transfers:cancel_reason:YES:text",
     "budgets:submitted_by:YES:bigint unsigned",
     "budgets:reviewed_by:YES:bigint unsigned",
-    "budgets:approved_guard:YES:tinyint unsigned"
+    "budgets:approved_guard:YES:tinyint unsigned",
+    "contributions:valuation_status:YES:varchar(64)",
+    "contributions:valued_by:YES:bigint unsigned",
+    "contributions:valuation_approved_by:YES:bigint unsigned",
+    "contributions:valuation_document_id:YES:bigint unsigned"
   ],
   "column_changes": [
     "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
@@ -154,7 +162,10 @@
     "internal_transfers:ix_internal_transfers_destination_unit_id_account_id:destination_unit_id,destination_account_id",
     "budgets:uq_budgets_unit_id_period_id_fund_id_approved:unit_id,period_id,fund_id,approved_guard",
     "budgets:ix_budgets_submitted_by:submitted_by",
-    "budgets:ix_budgets_reviewed_by:reviewed_by"
+    "budgets:ix_budgets_reviewed_by:reviewed_by",
+    "contributions:ix_contributions_valued_by:valued_by",
+    "contributions:ix_contributions_valuation_approved_by:valuation_approved_by",
+    "contributions:ix_contributions_valuation_document_id:valuation_document_id"
   ],
   "index_removals": [
     "journal_entries:ix_journal_entries_reversal_of_id:reversal_of_id"
@@ -170,7 +181,10 @@
     "internal_transfers:fk_internal_transfers_origin_unit_account:origin_unit_id,origin_account_id->accounts.unit_id,id",
     "internal_transfers:fk_internal_transfers_destination_unit_account:destination_unit_id,destination_account_id->accounts.unit_id,id",
     "budgets:fk_budgets_submitted_by:submitted_by->users.id",
-    "budgets:fk_budgets_reviewed_by:reviewed_by->users.id"
+    "budgets:fk_budgets_reviewed_by:reviewed_by->users.id",
+    "contributions:fk_contributions_valued_by:valued_by->users.id",
+    "contributions:fk_contributions_valuation_approved_by:valuation_approved_by->users.id",
+    "contributions:fk_contributions_valuation_document_id:valuation_document_id->legal_documents.id"
   ],
   "fk_deferred": [
     "receivables:obligation_id->obligations.id"
@@ -243,7 +257,8 @@
       "ck_internal_transfers_sent",
       "ck_internal_transfers_received",
       "ck_internal_transfers_received_after_sent",
-      "ck_internal_transfers_cancelled"
+      "ck_internal_transfers_cancelled",
+      "ck_internal_transfers_reconciled"
     ],
     "transfer_postings": [
       "ck_transfer_postings_posting_stage"
@@ -277,10 +292,23 @@
     "budget_lines": [
       "ck_budget_lines_requested_amount",
       "ck_budget_lines_approved_amount"
+    ],
+    "contributions": [
+      "ck_contributions_contribution_kind",
+      "ck_contributions_identification_kind",
+      "ck_contributions_identified_party",
+      "ck_contributions_status",
+      "ck_contributions_kind_xor",
+      "ck_contributions_valuation_status",
+      "ck_contributions_valuation",
+      "ck_contributions_amount",
+      "ck_contributions_valuation_amount"
     ]
   },
   "money_columns_decimal_19_4": true,
   "forbidden_columns": [
+    "contributions.department_id",
+    "internal_transfers.reconciliation_status",
     "accounts.balance",
     "accounts.current_balance",
     "accounts.available_balance",

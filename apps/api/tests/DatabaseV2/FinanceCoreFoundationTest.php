@@ -26,7 +26,7 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
 {
     private const P010_TABLES = ['currencies', 'funds', 'chart_of_accounts', 'financial_categories', 'accounting_periods', 'accounts', 'bank_account_details',
         'cash_registers', 'financial_parties', 'journal_entries', 'journal_lines', 'financial_documents', 'accounting_period_unit_closes', 'internal_transfers',
-        'transfer_postings', 'receivables', 'payables', 'settlements', 'settlement_allocations', 'budgets', 'budget_lines'];
+        'transfer_postings', 'receivables', 'payables', 'settlements', 'settlement_allocations', 'budgets', 'budget_lines', 'contributions'];
 
     public static function setUpBeforeClass(): void
     {
@@ -45,7 +45,7 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         foreach (self::P010_TABLES as $table) {
             $this->assertTrue($this->db()->getSchemaBuilder()->hasTable($table), $table);
         }
-        foreach (['contributions', 'bank_statements', 'bank_statement_lines', 'reconciliations', 'reconciliation_matches', 'obligation_rules', 'obligations',
+        foreach (['bank_statements', 'bank_statement_lines', 'reconciliations', 'reconciliation_matches', 'obligation_rules', 'obligations',
             'contribution_allocations', ...$manifest['plan']['payroll_tables_reserved_f2']] as $absent) {
             $this->assertFalse($this->db()->getSchemaBuilder()->hasTable($absent), $absent . ' must not exist in F1A');
         }
@@ -166,7 +166,7 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         $tables = "'" . implode("','", self::P010_TABLES) . "'";
         $this->assertSame([], $this->db()->select("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ($tables) AND DATA_TYPE IN ('float','double','real')"), 'no FLOAT/DOUBLE');
         $money = $this->db()->select("SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME) c, COLUMN_TYPE t FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ($tables) AND DATA_TYPE = 'decimal'");
-        $this->assertCount(9, $money, 'debit, credit, 5 subledger amounts, 2 budget amounts (F1A tables)');
+        $this->assertCount(11, $money, 'debit, credit, 5 subledger amounts, 2 budget amounts, 2 contribution amounts (F1A + F1B tables)');
         foreach ($money as $col) {
             $this->assertSame('decimal(19,4)', $col->t, $col->c);
         }

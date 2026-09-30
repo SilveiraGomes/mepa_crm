@@ -37,6 +37,28 @@ final class FinanceCatalog
         'FINANCE_REPORT', 'FINANCE_CONSOLIDATED_VIEW', 'FINANCE_CONTRIBUTOR_VIEW', 'FINANCE_PAYROLL_SUMMARY_VIEW', 'FINANCE_CATALOG_MANAGE',
     ];
     public const PERMISSION_CLASSIFICATION = 'CONFIDENTIAL';
+    public const PERMISSION_VIEW = 'FINANCE_VIEW';
+    public const PERMISSION_MANAGE = 'FINANCE_MANAGE';
+    public const PERMISSION_POST = 'FINANCE_POST';
+    public const PERMISSION_TRANSFER = 'FINANCE_TRANSFER';
+    public const PERMISSION_RECONCILE = 'FINANCE_RECONCILE';
+    public const PERMISSION_REPORT = 'FINANCE_REPORT';
+    public const PERMISSION_CONSOLIDATED_VIEW = 'FINANCE_CONSOLIDATED_VIEW';
+    public const PERMISSION_CONTRIBUTOR_VIEW = 'FINANCE_CONTRIBUTOR_VIEW';
+
+    /**
+     * F1B derived (never stored) states of a transfer. The stored status stays the ADR's DRAFT/SENT/RECEIVED/CANCELLED;
+     * these are projections: IN_TRANSIT = SENT without RECEIVE; AWAITING_RECONCILIATION = RECEIVED, reconciled_at NULL;
+     * RECONCILED = reconciled_at set (F1B-D1); RETURNED = CANCELLED after a REVERSE_SEND; NOT_APPLICABLE = never sent.
+     */
+    public const RECONCILIATION_STATES = ['NOT_APPLICABLE', 'IN_TRANSIT', 'AWAITING_RECONCILIATION', 'RECONCILED', 'RETURNED'];
+    /** D-04A.8 / F1B §19 perimeter classification of a transfer relative to a subtree (economic effect always 0). */
+    public const PERIMETER_CLASSES = ['INTERNAL_TO_PERIMETER', 'OUT_OF_PERIMETER', 'INTO_PERIMETER'];
+    public const CONTRIBUTION_KINDS = ['MONETARY', 'IN_KIND'];
+    public const IDENTIFICATION_KINDS = ['IDENTIFIED', 'ANONYMOUS', 'AGGREGATED'];
+    public const VALUATION_STATES = ['UNVALUED', 'VALUED', 'APPROVED'];
+    /** Economic natures a contribution (always an EXTERNAL origin) may carry; INTERNAL_TRANSFER never (D09). */
+    public const CONTRIBUTION_NATURES = ['OPERATING_REVENUE', 'NON_OPERATING_INCOME'];
 
     // ---- D08 + D-04A structural chart: system_role => [class, normal side, name] ------------------------------------
     public const ASSET = 'ASSET';

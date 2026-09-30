@@ -117,7 +117,15 @@ try {
   for (const file of manifest.migrations) {
     const text = fs.readFileSync(path.join(migDir, file), 'utf8')
     const model = parseMigration(text)
-    if (!model) { if (!/FinanceCatalog::install/.test(text)) errors.push(`migration ${file}: no CREATE TABLE and not the installer`); continue }
+    if (!model) {
+      // An ALTER migration (F1B-D1) contributes the CHECK names it adds in up(); anything else must be the installer.
+      const up = text.split('public function down')[0]
+      const alters = [...up.matchAll(/ALTER TABLE `(\w+)`([\s\S]*?)\nSQL/g)]
+      if (alters.length === 0 && !/FinanceCatalog::install/.test(text)) errors.push(`migration ${file}: no CREATE/ALTER TABLE and not the installer`)
+      if (alters.length > 0 && (!/P010_PRECONDITION_FAILED/.test(text) || !/P010_ROLLBACK_REFUSED/.test(text) || /CASCADE|FLOAT|DOUBLE|ADD COLUMN|DROP COLUMN|CREATE TABLE/i.test(text))) errors.push(`migration ${file}: ALTER must be CHECK-only with explicit precondition and safe rollback`)
+      for (const [, table, body] of alters) for (const [, name] of body.matchAll(/ADD CONSTRAINT `(\w+)` CHECK/g)) stat.checks.add(`${table}:${name}`)
+      continue
+    }
     staticTables.push(model.table)
     if (!/P010_PRECONDITION_FAILED/.test(text) || !/P010_ROLLBACK_REFUSED/.test(text) || !/getDriverName\(\) !== 'mysql'/.test(text)) errors.push(`migration ${file}: missing explicit precondition / safe rollback`)
     if (/CASCADE|SET NULL|FLOAT|DOUBLE/i.test(text.replace(/SET NULL DEFAULT/g, ''))) errors.push(`migration ${file}: CASCADE / SET NULL / FLOAT / DOUBLE`)
@@ -147,7 +155,7 @@ try {
   if (planned !== 35 || phased !== 35 || manifest.planned_table_count !== 35) errors.push(`35-table plan broken: planned=${planned} phased=${phased}`)
   const forbiddenStatic = manifest.forbidden_columns.filter((fc) => { const [t, c] = fc.split('.'); return [...stat.columns].some((v) => v.startsWith(`${t}:${c}:`)) })
   if (forbiddenStatic.length) errors.push(`forbidden columns in migrations: ${forbiddenStatic}`)
-  const money = [...stat.columns].filter((v) => /:(amount|debit|credit|requested_amount|approved_amount)$/.test(v.split(':').slice(0, 2).join(':')))
+  const money = [...stat.columns].filter((v) => /:(amount|debit|credit|requested_amount|approved_amount|valuation_amount)$/.test(v.split(':').slice(0, 2).join(':')))
   if (money.some((v) => !v.endsWith(':decimal(19,4)'))) errors.push('money column not DECIMAL(19,4)')
   const generatedOk = JSON.stringify(Object.keys(stat.generated)) === JSON.stringify(Object.keys(manifest.generated_columns))
 

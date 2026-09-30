@@ -54,7 +54,7 @@ function checks(f) {
       && (f.catalog.match(/'INV_AST_\w+' => \['[^']+', 'INVESTMENT', 'FIXED_ASSETS'\]/g) || []).length === 7 && ['TRF_REMITTANCE', 'TRF_BUDGET_QUOTA', 'TRF_SPECIAL_CONTRIBUTION', 'TRF_SUPPORT', 'TRF_PROJECT', 'TRF_OTHER'].every((c) => f.catalog.includes(`'${c}' => [`)),
     F09_national_close_irreversible: !/reopenNational|function reopen\w*National/.test(f.periods) && /lockForUpdate/.test(f.periods),
     F10_contract_maps_existing_tests: Object.keys(contract.accounting_contracts).length === 16 && Object.keys(contract.schema_contracts).length === 7 && Object.keys(contract.mutation_probes).length === 12 && declaredTests.every((t) => testNames.has(t)),
-    F11_manifest_pool_and_plan: /p010_finance_delta_manifest\.json/.test(f.pool) && manifest.migrations.length === 22 && manifest.materialized_tables_f1a.length === 21 && manifest.planned_table_count === 35 && manifest.migrations.every((m) => fs.existsSync(path.join(root, M, m))),
+    F11_manifest_pool_and_plan: /p010_finance_delta_manifest\.json/.test(f.pool) && manifest.migrations.length === 24 && manifest.materialized_tables_f1a.length === 22 && manifest.planned_table_count === 35 && manifest.migrations.every((m) => fs.existsSync(path.join(root, M, m))),
     F12_worker_isolated: /mepa_wave5_test_\[a-z0-9_\]\+/.test(f.worker) && /WAVE5_ALLOW_SYNTHETIC/.test(f.worker) && /READY/.test(f.worker),
   }
 }
@@ -71,7 +71,8 @@ const base = checks(read())
 const failures = Object.entries(base).filter(([, ok]) => !ok).map(([name]) => name)
 
 function mutate(key, fn) {
-  const source = originals[key].toString('utf8')
+  // Anchors are written with \n: normalise CRLF working copies first (the byte-for-byte restore uses the originals).
+  const source = originals[key].toString('utf8').replace(/\r\n/g, '\n')
   const changed = fn(source)
   if (changed === source) throw new Error(`mutation of ${key} did not alter its target`)
   fs.writeFileSync(abs(key), changed)
