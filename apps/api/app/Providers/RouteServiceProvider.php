@@ -73,5 +73,19 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('physical-sensitive', function (Request $request) {
             return Limit::perMinute(30)->by('physical-sensitive|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
         });
+        // P0.8 Documents/Files (ADR 0019 D02): files-upload 20/min and files-download 60/min per actor, plus own read
+        // and write buckets.
+        RateLimiter::for('files', function (Request $request) {
+            return Limit::perMinute(240)->by('files|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('files-write', function (Request $request) {
+            return Limit::perMinute(60)->by('files-write|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('files-upload', function (Request $request) {
+            return Limit::perMinute(20)->by('files-upload|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
+        RateLimiter::for('files-download', function (Request $request) {
+            return Limit::perMinute(60)->by('files-download|' . ($request->user()?->getAuthIdentifier() ?? $request->ip()));
+        });
     }
 }

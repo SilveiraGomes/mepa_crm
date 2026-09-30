@@ -15,6 +15,8 @@ const personAreas = () => import('./pages/PersonAreaPages')
 const householdPages = () => import('./pages/HouseholdPages')
 const territorialPages = () => import('./pages/TerritorialPages')
 const physicalPages = () => import('./pages/PhysicalPages')
+const filesPages = () => import('./pages/FilesPages')
+const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
 
 function named<T extends ComponentType<Record<string, never>>>(load: () => Promise<Record<string, unknown>>, name: string) {
@@ -62,6 +64,12 @@ const TerritorialTreePage = named(territorialPages, 'TerritorialTreePage')
 const TerritorialListPage = named(territorialPages, 'TerritorialListPage')
 const TerritorialDetailPage = named(territorialPages, 'TerritorialDetailPage')
 const TerritorialFormPage = named(territorialPages, 'TerritorialFormPage')
+const FilesListPage = named(filesPages, 'FilesListPage')
+const FileUploadPage = named(filesPages, 'FileUploadPage')
+const FileDetailPage = named(filesPages, 'FileDetailPage')
+const DocumentsListPage = named(documentsPages, 'DocumentsListPage')
+const DocumentCreatePage = named(documentsPages, 'DocumentCreatePage')
+const DocumentDetailPage = named(documentsPages, 'DocumentDetailPage')
 const LocationsPage = named(physicalPages, 'LocationsPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
@@ -93,6 +101,12 @@ function App() {
       <Route path="/estrutura-territorial/nova" element={<TerritorialFormPage />} />
       <Route path="/estrutura-territorial/:id" element={<TerritorialDetailPage />} />
       <Route path="/estrutura-territorial/:id/editar" element={<TerritorialFormPage />} />
+      <Route path="/ficheiros" element={<FilesListPage />} />
+      <Route path="/ficheiros/carregar" element={<FileUploadPage />} />
+      <Route path="/ficheiros/:id" element={<FileDetailPage />} />
+      <Route path="/documentos" element={<DocumentsListPage />} />
+      <Route path="/documentos/novo" element={<DocumentCreatePage />} />
+      <Route path="/documentos/:id" element={<DocumentDetailPage />} />
       <Route path="/locais" element={<LocationsPage />} />
       <Route path="/locais/novo" element={<LocationCreatePage />} />
       <Route path="/locais/:id" element={<LocationDetailPage />} />

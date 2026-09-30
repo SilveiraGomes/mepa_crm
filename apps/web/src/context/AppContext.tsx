@@ -14,6 +14,9 @@ import type { TerritorialContext } from '../types/territorial'
 import { physicalGet } from '../lib/physical/client'
 import { ph } from '../lib/physical/endpoints'
 import type { CodeLabel, PhysicalContext, PhysicalUnit } from '../types/physical'
+import { filesGet } from '../lib/files/client'
+import { fl } from '../lib/files/endpoints'
+import type { FilesContext } from '../types/files'
 
 /** People permissions projected by the API (presentation only; the backend decides every request). */
 export interface PeopleAccess {
@@ -25,6 +28,9 @@ export interface TerritorialAccess { known: boolean; has: (permission: string) =
 /** Physical permissions projected by the API (presentation only; the backend decides every request). */
 export interface PhysicalAccess { known: boolean; has: (permission: string) => boolean; units: PhysicalUnit[]; occupationTypes: PhysicalContext['occupation_types']; ownershipStatuses: CodeLabel[] }
 
+/** Documents/Files permissions projected by the API (presentation only; the backend decides every request). */
+export interface FilesAccess { known: boolean; has: (permission: string) => boolean; context: FilesContext | null }
+
 interface Toast { id: number; message: string; tone: 'success' | 'danger' }
 interface AppValue {
   session: AuthSession | null
@@ -33,6 +39,7 @@ interface AppValue {
   people: PeopleAccess
   territorial: TerritorialAccess
   physical: PhysicalAccess
+  files: FilesAccess
   notify: (message: string, tone?: Toast['tone']) => void
 }
 
@@ -94,6 +101,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const held = new Set(physicalContext.permissions)
     return { known: true, has: (permission) => held.has(permission), units: physicalContext.units, occupationTypes: physicalContext.occupation_types, ownershipStatuses: physicalContext.ownership_statuses }
   }, [physicalContext])
+  const [filesContext, setFilesContext] = useState<FilesContext | null | 'none'>(null)
+  useEffect(() => {
+    if (!sessionToken) { setFilesContext(null); return }
+    const controller = new AbortController()
+    filesGet<Item<FilesContext>>(fl.context(), {}, controller.signal).then((result) => setFilesContext(result.data), (error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setFilesContext('none')
+    })
+    return () => controller.abort()
+  }, [sessionToken])
+  const files = useMemo<FilesAccess>(() => {
+    if (filesContext === null) return { known: false, has: () => false, context: null }
+    if (filesContext === 'none') return { known: true, has: () => false, context: null }
+    const held = new Set(filesContext.permissions)
+    return { known: true, has: (permission) => held.has(permission), context: filesContext }
+  }, [filesContext])
   const capabilities = useMemo(() => capabilitiesFor(session ? { permissions: academyContext?.permissions } : null), [academyContext, session])
   const vocabulary = useMemo<Vocabulary>(() => academyContext ? {
     'enrollment.transitions': academyContext.vocabulary.transitions.enrollment.map((item) => ({ value: item.to, label: item.to, from: item.from })),
@@ -109,7 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, notify }}>
+    <AppContext.Provider value={{ session, capabilities, vocabulary, people, territorial, physical, files, notify }}>
       {children}
       <div className="toasts" aria-live="polite" aria-atomic="true">
         {toasts.map((toast) => <div key={toast.id} className={`toast${toast.tone === 'danger' ? ' toast--danger' : ''}`}><span>{toast.message}</span></div>)}

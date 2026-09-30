@@ -42,6 +42,15 @@ return [
             'visibility' => 'public',
         ],
 
+        // P0.8 (ADR 0019 D02): private, encrypted-only object store of Documents/Files. No `url`, no public
+        // visibility, never linked into public/: content is served only by the authorized API endpoint.
+        'files_private' => [
+            'driver' => 'local',
+            'root' => env('FILES_STORAGE_ROOT'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
