@@ -18,6 +18,7 @@ const physicalPages = () => import('./pages/PhysicalPages')
 const membershipPages = () => import('./pages/MembershipPages')
 const financePages = () => import('./pages/FinancePages')
 const financeCorePages = () => import('./pages/FinanceCorePages')
+const financeReportingPages = () => import('./pages/FinanceReportingPages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -105,6 +106,10 @@ const FinanceBudgetsPage = named(financeCorePages, 'BudgetsPage')
 const FinanceBudgetCreatePage = named(financeCorePages, 'BudgetCreatePage')
 const FinanceBudgetDetailPage = named(financeCorePages, 'BudgetDetailPage')
 const FinancePeriodsPage = named(financeCorePages, 'PeriodsPage')
+const FinanceDashboardPage = named(financeReportingPages, 'FinanceDashboardPage')
+const FinanceReportsPage = named(financeReportingPages, 'FinanceReportsPage')
+const FinanceContributionsPage = named(financeReportingPages, 'ContributionsPage')
+const FinanceContributionDetailPage = named(financeReportingPages, 'ContributionDetailPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -141,7 +146,10 @@ function App() {
       <Route path="/documentos" element={<DocumentsListPage />} />
       <Route path="/documentos/novo" element={<DocumentCreatePage />} />
       <Route path="/documentos/:id" element={<DocumentDetailPage />} />
-      <Route path="/financas" element={<Navigate to="/financas/transferencias" replace />} />
+      <Route path="/financas" element={<FinanceDashboardPage />} />
+      <Route path="/financas/relatorios" element={<FinanceReportsPage />} />
+      <Route path="/financas/contribuicoes" element={<FinanceContributionsPage />} />
+      <Route path="/financas/contribuicoes/:id" element={<FinanceContributionDetailPage />} />
       <Route path="/financas/transferencias" element={<SentTransfersPage />} />
       <Route path="/financas/transferencias/recebidas" element={<ReceivedTransfersPage />} />
       <Route path="/financas/transferencias/em-transito" element={<InTransitPage />} />

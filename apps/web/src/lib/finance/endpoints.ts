@@ -10,6 +10,12 @@ export const fin = {
   stage: (id: string, stage: 'send' | 'receive' | 'cancel' | 'reverse-send' | 'reconcile') => `${transfer(id)}/${stage}`,
   custody: (unit: string) => `finance/units/${seg(unit)}/custody`,
   subtree: (unit: string) => `finance/units/${seg(unit)}/subtree-transfers`,
+  contributions: () => 'finance/contributions',
+  contribution: (id: string) => `finance/contributions/${seg(id)}`,
+  dashboard: () => 'finance/dashboard',
+  reports: () => 'finance/reports',
+  report: (code: string) => `finance/reports/${seg(code)}`,
+  reportExport: (code: string) => `finance/reports/${seg(code)}/export`,
   // P0.10-F1C: explicit transition endpoints only; collections are paginated by the server.
   accounts: () => 'finance/accounts',
   account: (id: string) => `finance/accounts/${seg(id)}`,

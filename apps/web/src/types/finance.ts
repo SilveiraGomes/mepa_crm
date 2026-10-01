@@ -272,3 +272,12 @@ export interface PeriodMonth {
   actions: ('close' | 'reopen' | 'national_close')[]
 }
 export interface PeriodList { unit: UnitRef; year: string; national_closer: boolean; items: PeriodMonth[] }
+
+// ---- P0.10-F1D reporting/consolidation -------------------------------------------------------------------------------
+export type ReportView = 'OWN' | 'CONSOLIDATED'
+export type ReportPeriodKind = 'MONTH' | 'QUARTER' | 'SEMESTER' | 'YEAR'
+export interface ContributionSummary { public_id: string; origin: 'EXTERNAL'; unit: UnitRef; kind: 'MONETARY' | 'IN_KIND'; identification: string; category: { code: string; label: string }; amount: string | null; valuation_status: string | null; valuation_amount: string | null; description: string | null; received_at: string; status: string; entry: string | null; party: { kind: string; person: string | null; name: string | null } | null }
+export interface ContributionDetail extends ContributionSummary { lock_version: number; document: { public_id: string | null } | null }
+export interface DreReport { basis: string; revenue: string; expenses: string; economic_result: string; investments_consumed: string; investments_capitalized: string; investment_returns: string; internal_transfer_effect: string; revenue_lines: { category: CategoryRef; amount: string }[]; expense_lines: { category: CategoryRef; amount: string }[] }
+export interface DoafReport { basis: string; opening_balance: string; external_funds_received: string; internal_funds_received: string; external_applications: string; internal_funds_sent: string; funds_in_transit_under_custody: string; treasury_closing: string; closing_balance: string; total_origins: string; total_applications: string; balanced: boolean; identity: string; internal_transfers_eliminated: boolean }
+export interface FinanceReport { institution: string; report_type: string; report_name: string; view: ReportView; unit: UnitRef; period: { kind: string; label: string; from: string; to: string }; generated_at: string; perimeter_units: number; parameters_hash: string; dre?: DreReport; doaf?: DoafReport; dashboard?: { revenue: string; expenses: string; economic_result: string; internal_received: string; internal_sent: string; in_transit: string; cash_bank_position: string; receivables: string; payables: string; budget_execution: { approved: string; actual: string } }; drill_down?: { unit: UnitRef; own_result: string; funds_received: string; funds_sent: string; closing_balance: string }[] }
