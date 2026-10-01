@@ -55,13 +55,19 @@ final class FinanceReportingService
             throw new FinanceError('TARGET_NOT_FOUND', [], ['entity' => 'finance_reports']);
         }
         return $this->rt->snapshot($user, $session, function (FinanceGuard $guard, TerritorialActor $actor) use ($type, $in, $auditAction): array {
-            [$unit, $unitMeta] = $this->unit($in['unit'] ?? null);
-            [$from, $to, $kind, $period] = $this->period($in);
+            // F-06 (F1D-P01): the permission is decided before the target is resolved, so the answer never depends on
+            // whether the unit exists.
+            $guard->requires(FinanceCatalog::PERMISSION_REPORT);
             $forcedConsolidated = str_starts_with($type, 'CONSOLIDATED_');
             $view = $forcedConsolidated ? 'CONSOLIDATED' : strtoupper((string) ($in['view'] ?? 'OWN'));
             if (!in_array($view, ['OWN', 'CONSOLIDATED'], true)) {
                 throw new FinanceError('INVALID_INPUT', [], ['field' => 'view']);
             }
+            if ($view === 'CONSOLIDATED') {
+                $guard->requires(FinanceCatalog::PERMISSION_CONSOLIDATED_VIEW);
+            }
+            [$unit, $unitMeta] = $this->unit($in['unit'] ?? null);
+            [$from, $to, $kind, $period] = $this->period($in);
             $guard->unit(FinanceCatalog::PERMISSION_REPORT, $unit);
             $units = [$unit];
             if ($view === 'CONSOLIDATED') {
@@ -211,22 +217,31 @@ final class FinanceReportingService
             'totals' => ['approved' => Money::format($plan), 'actual' => Money::format($actual)]];
     }
 
+    /** Open items at the report end (F1D-P02): recognised by a POSTED entry dated <= $to, outstanding as of $to > 0. */
     private function subledger(string $table, array $units, string $to): array
     {
-        $fk = $table === 'receivables' ? 'receivable_id' : 'payable_id';
-        return $this->rt->db->table($table . ' as d')->join('organizational_units as u', 'u.id', '=', 'd.unit_id')->whereIn('d.unit_id', $units)->whereIn('d.status', ['RECOGNIZED', 'SETTLED'])->where('d.due_on', '<=', $to)
-            ->select(['d.public_id', 'd.amount', 'd.due_on', 'd.status', 'u.public_id as unit_public', 'u.name as unit_name'])
-            ->selectRaw("(SELECT COALESCE(SUM(sa.amount),0) FROM settlement_allocations sa JOIN settlements s ON s.id=sa.settlement_id WHERE sa.$fk=d.id AND s.status='POSTED') AS settled")
+        return $this->openItems($table, $units, $to)->join('organizational_units as u', 'u.id', '=', 'd.unit_id')
+            ->select(['d.public_id', 'd.amount', 'd.due_on', 'd.status', 'u.public_id as unit_public', 'u.name as unit_name'])->selectRaw($this->settledAsOf($table) . ' AS settled', [$to])
             ->orderBy('d.due_on')->limit(100)->get()->map(static function (object $r): array { $amount = Money::fromDecimal((string) $r->amount); $settled = Money::fromDecimal((string) $r->settled);
                 return ['public_id' => (string) $r->public_id, 'unit' => ['public_id' => (string) $r->unit_public, 'name' => (string) $r->unit_name], 'due_on' => (string) $r->due_on, 'status' => (string) $r->status, 'amount' => Money::format($amount), 'outstanding' => Money::format($amount - $settled)]; })->all();
     }
 
     private function subledgerTotal(string $table, array $units, string $to): int
     {
-        $fk = $table === 'receivables' ? 'receivable_id' : 'payable_id';
-        $row = $this->rt->db->table($table . ' as d')->whereIn('d.unit_id', $units)->whereIn('d.status', ['RECOGNIZED', 'SETTLED'])->where('d.due_on', '<=', $to)
-            ->selectRaw("COALESCE(SUM(d.amount - (SELECT COALESCE(SUM(sa.amount),0) FROM settlement_allocations sa JOIN settlements s ON s.id=sa.settlement_id WHERE sa.$fk=d.id AND s.status='POSTED')),0) AS outstanding")->first();
+        $row = $this->openItems($table, $units, $to)->selectRaw('COALESCE(SUM(d.amount - ' . $this->settledAsOf($table) . '),0) AS outstanding', [$to])->first();
         return Money::fromDecimal((string) ($row->outstanding ?? '0'));
+    }
+
+    private function openItems(string $table, array $units, string $to): Builder
+    {
+        return $this->rt->db->table($table . ' as d')->join('journal_entries as re', 're.id', '=', 'd.recognition_entry_id')->whereIn('d.unit_id', $units)->whereIn('d.status', ['RECOGNIZED', 'SETTLED'])
+            ->where('re.status', FinanceCatalog::POSTED)->where('re.entry_date', '<=', $to)->whereRaw('d.amount - ' . $this->settledAsOf($table) . ' > 0', [$to]);
+    }
+
+    private function settledAsOf(string $table): string
+    {
+        $fk = $table === 'receivables' ? 'receivable_id' : 'payable_id';
+        return "(SELECT COALESCE(SUM(sa.amount),0) FROM settlement_allocations sa JOIN settlements s ON s.id=sa.settlement_id JOIN journal_entries se ON se.id=s.entry_id WHERE sa.$fk=d.id AND s.status='POSTED' AND se.status='POSTED' AND se.entry_date <= ?)";
     }
 
     private function interunit(array $units, string $to): array
@@ -240,7 +255,7 @@ final class FinanceReportingService
     private function reconciliation(array $units, string $to): array
     {
         $rows = $this->rt->db->table('internal_transfers as t')->join('organizational_units as o', 'o.id', '=', 't.origin_unit_id')->join('organizational_units as d', 'd.id', '=', 't.destination_unit_id')
-            ->where(fn ($q) => $q->whereIn('t.origin_unit_id', $units)->orWhereIn('t.destination_unit_id', $units))->whereRaw('DATE(t.created_at) <= ?', [$to])->orderByDesc('t.id')->limit(100)
+            ->where(fn ($q) => $q->whereIn('t.origin_unit_id', $units)->orWhereIn('t.destination_unit_id', $units))->whereRaw('DATE(COALESCE(t.sent_at, t.created_at)) <= ?', [$to])->orderByDesc('t.id')->limit(100)
             ->get(['t.public_id', 't.amount', 't.status', 't.sent_at', 't.received_at', 't.reconciled_at', 'o.public_id as origin_public', 'o.name as origin_name', 'd.public_id as destination_public', 'd.name as destination_name']);
         return $rows->map(static fn (object $r): array => ['transfer' => (string) $r->public_id, 'origin' => ['public_id' => (string) $r->origin_public, 'name' => (string) $r->origin_name], 'destination' => ['public_id' => (string) $r->destination_public, 'name' => (string) $r->destination_name],
             'amount' => Money::format(Money::fromDecimal((string) $r->amount)), 'status' => (string) $r->status, 'sent_at' => $r->sent_at, 'received_at' => $r->received_at, 'reconciled' => $r->reconciled_at !== null])->all();
