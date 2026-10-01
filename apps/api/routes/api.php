@@ -189,6 +189,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('reconciliations/{reconciliation}/matches', [FinanceCoreController::class, 'match'])->middleware('throttle:finance-write');
         Route::post('reconciliations/{reconciliation}/unmatch', [FinanceCoreController::class, 'unmatch'])->middleware('throttle:finance-write');
         Route::post('reconciliations/{reconciliation}/close', [FinanceCoreController::class, 'closeReconciliation'])->middleware('throttle:finance-write');
+        Route::post('reconciliations/{reconciliation}/adjustments', [FinanceCoreController::class, 'adjustReconciliation'])->middleware('throttle:finance-write');
         Route::get('budgets', [FinanceCoreController::class, 'budgets']);
         Route::post('budgets', [FinanceCoreController::class, 'createBudget'])->middleware('throttle:finance-write');
         Route::get('budgets/{budget}', [FinanceCoreController::class, 'budget']);

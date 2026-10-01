@@ -20,15 +20,17 @@ use LogicException;
  *    MONTH period OPEN nationally and not CLOSED for the unit, entry_date inside the period and not in the future
  *    (Africa/Luanda), ledger accounts ACTIVE + postable, financial accounts OPEN, owned by the unit and posting to their
  *    CASH/BANK control account, rubric <-> control account coherence, kind shape (SHAPES) and I1 (transfer stages never
- *    touch INCOME/EXPENSE; INTERUNIT_CONTROL only moves through transfer stages);
+ *    touch INCOME/EXPENSE; INTERUNIT_CONTROL only moves through transfer stages) and FIN-D10: no CASH/BANK financial
+ *    account may end with a negative canonical balance (V1 has no overdraft / credit facility);
  *  - POSTED is immutable: no method updates or deletes a POSTED header or any of its lines; lines can only be replaced
  *    while the header is DRAFT under its row lock. Correction = REVERSAL (exact inverse, reason, open period, at most one
  *    per entry: UNIQUE reversal_of_id). Subledger entries are reversed only by their own flow (SUBLEDGER_OWNED).
  * Physical backstops (CHECK / UNIQUE / composite FK) are in the P0.10 migrations; there are no triggers (04_database_constraints).
  *
  * Lock order (extends 04_database_constraints): national period FOR SHARE -> unit close FOR SHARE -> header FOR UPDATE ->
- * financial accounts FOR SHARE by id (their OPEN status decided on that locking read) -> idempotency claim. Period closes
- * take the period FOR UPDATE (FinancePeriods); an account close takes the account FOR UPDATE (FinanceAccountService).
+ * financial accounts FOR UPDATE by id (their OPEN status and, FIN-D10, their canonical balance decided on locking reads)
+ * -> idempotency claim. Period closes take the period FOR UPDATE (FinancePeriods); an account close takes the account
+ * FOR UPDATE (FinanceAccountService).
  * Authorization (TerritorialAuthority FINANCE) is the application layer's job (F1B) and must run before these calls.
  */
 final class LedgerPostingService
@@ -500,10 +502,37 @@ final class LedgerPostingService
         if ($debit <= 0 || (int) $sql->positive !== 1) {
             throw new FinanceError('ENTRY_TOTAL_NOT_POSITIVE');
         }
+        $this->assertNoOverdraft($entryId, $lines);
         if (in_array($entry->entry_kind, FinanceCatalog::REVERSING_KINDS, true)) {
             $this->assertReversal($entry, $lines, $ownFlowReversal);
         } elseif ($entry->reversal_of_id !== null) {
             throw new FinanceError('REVERSAL_TARGET_INVALID');
+        }
+    }
+
+    /**
+     * FIN-D10 (ADR 0021): CASH and BANK never go negative in V1. For every financial account this entry REDUCES, the
+     * canonical balance (POSTED lines, latest committed: locking read) minus the outgoing amount must stay >= 0, else
+     * INSUFFICIENT_FUNDS. Applies to every kind (payments, settlements, SEND, reversals, transfers between accounts...);
+     * every financial account of the entry is already held FOR UPDATE (lockOpenAccounts), so two postings serialise.
+     */
+    private function assertNoOverdraft(int $entryId, array $lines): void
+    {
+        $net = [];
+        foreach ($lines as $line) {
+            if ($line->financial_account_id !== null && in_array($line->role, FinanceCatalog::TREASURY_ROLES, true)) {
+                $id = (int) $line->financial_account_id;
+                $net[$id] = ($net[$id] ?? 0) + Money::fromDecimal($line->debit) - Money::fromDecimal($line->credit);
+            }
+        }
+        foreach ($net as $account => $delta) {
+            if ($delta >= 0) {
+                continue;
+            }
+            $row = $this->db->selectOne("SELECT COALESCE(SUM(l.debit) - SUM(l.credit), 0) AS b FROM journal_lines l JOIN journal_entries e ON e.id = l.entry_id WHERE l.financial_account_id = ? AND e.status = 'POSTED' AND e.id <> ? FOR SHARE", [$account, $entryId]);
+            if (Money::fromDecimal((string) $row->b) + $delta < 0) {
+                throw new FinanceError('INSUFFICIENT_FUNDS');
+            }
         }
     }
 
@@ -584,8 +613,9 @@ final class LedgerPostingService
     }
 
     /**
-     * Financial accounts FOR SHARE by id, and their status decided on that LOCKING read (F1C): an account close takes
-     * the row FOR UPDATE, so a posting that waited for it must see CLOSED, never the OPEN of an older snapshot.
+     * Financial accounts FOR UPDATE by id, and their status decided on that LOCKING read (F1C): an account close takes
+     * the row FOR UPDATE, so a posting that waited for it must see CLOSED, never the OPEN of an older snapshot. FOR UPDATE
+     * (not SHARE) also serialises every posting of the same account for the FIN-D10 balance check.
      */
     private function lockOpenAccounts(array $ids): void
     {
@@ -594,7 +624,7 @@ final class LedgerPostingService
         if ($ids === []) {
             return;
         }
-        foreach ($this->db->table('accounts')->whereIn('id', $ids)->orderBy('id')->sharedLock()->get(['id', 'status']) as $account) {
+        foreach ($this->db->table('accounts')->whereIn('id', $ids)->orderBy('id')->lockForUpdate()->get(['id', 'status']) as $account) {
             if ($account->status !== 'OPEN') {
                 throw new FinanceError('FINANCIAL_ACCOUNT_CLOSED');
             }

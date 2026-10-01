@@ -117,7 +117,8 @@ As decisões institucionais marcadas **[DI]** abaixo foram tomadas pelo respons�
 - **Saldo inicial** = um lançamento `OPENING_BALANCE` (Dr conta / Cr `OPENING_NET_ASSETS`) na abertura. Nunca uma coluna.
 - **Fonte canónica do saldo:** `SUM(debit) − SUM(credit)` das `journal_lines` com `financial_account_id = conta` cujo cabeçalho está `POSTED`, até à data. **Nenhuma coluna de saldo mutável existe.** Snapshots de fecho, se vierem, são derivados e verificáveis, nunca fonte.
 - Fechar conta exige saldo zero e nenhum rascunho/submissão pendente; reabrir não existe (abre-se outra conta).
-- Reconciliação: `BANK` contra extracto; `CASH` contra contagem física (reconciliação sem `statement_id`, com `counted_balance`).
+- **Saldo nunca negativo (FIN-D10, abaixo):** nenhuma publicação pode deixar uma conta `CASH`/`BANK` com saldo negativo.
+- Reconciliação: `BANK` contra extracto; `CASH` contra contagem física (reconciliação sem `statement_id`, com `counted_balance`). Um período fechado não impede a reconciliação (FIN-D11, abaixo).
 
 ## D07: movimento financeiro
 
@@ -858,6 +859,26 @@ Testes obrigatórios acrescentados ao plano de implementação:
 7. Regra institucional de destinos permitidos de transferência (hoje: qualquer unidade activa).
 8. Validação pelo contabilista do mapeamento DOAF ("apoios"), das rubricas capitalizáveis §16.8 e dos nomes das finalidades de transferência (D-04A); códigos estáveis.
 9. Checklist de activação `payroll.production_enabled` (D-04A.15) — bloqueia produção salarial, não o código.
+10. ~~Saldo não negativo de caixa/banco~~ — **decidido em FIN-D10** (2026-10-01).
+11. ~~Reconciliação bancária num mês fechado~~ — **decidido em FIN-D11** (2026-10-01).
+
+## FIN-D10 — saldo negativo de CASH/BANK (decidido em P0.10-F1C, 2026-10-01)
+
+1. `CASH` e `BANK` não podem ter saldo contabilístico negativo na V1 (não há descoberto, linha de crédito nem financiamento equivalente).
+2. Qualquer publicação que credite/reduza uma conta financeira calcula, sob lock e imediatamente antes de `POSTED`: `saldo canónico POSTED actual − valor de saída ≥ 0` (saldo derivado do razão, D06).
+3. Se falhar: `INSUFFICIENT_FUNDS`.
+4. Aplica-se a pagamentos, liquidações, SEND interunidades, estornos que retirem fundos e qualquer outra publicação que reduza `CASH`/`BANK` (implementação: o gate de publicação, para todos os tipos de lançamento, com a conta FOR UPDATE).
+5. Recebíveis e pagáveis reconhecem-se sem disponibilidade (regime de acréscimo): a falta de caixa impede o pagamento, não o reconhecimento.
+6. Descoberto/facilidade de crédito fica fora da V1; uma implementação futura terá representação explícita, nunca um saldo negativo permitido.
+
+## FIN-D11 — reconciliação de períodos fechados (decidido em P0.10-F1C, 2026-10-01)
+
+1. O fecho contabilístico (da unidade ou nacional, mesmo irreversível) **não** impede a reconciliação bancária de movimentos já existentes no período fechado.
+2. A reconciliação pode associar linhas de extracto e lançamentos `POSTED`, calcular diferenças, registar `counted_balance`, concluir o trabalho conforme o contrato e auditar quem reconciliou e quando.
+3. A reconciliação não pode alterar lançamentos `POSTED`, criar lançamentos retroactivos no período fechado, mudar valores ou datas contabilísticas, nem alterar o saldo fechado.
+4. Uma diferença que exija contabilidade é lançada (ajuste/estorno) no primeiro período `OPEN` permitido, com referência ao extracto/reconciliação de origem; o período fechado fica intacto.
+5. Qualquer auto-lançamento futuro durante a reconciliação respeita o período `OPEN` e nunca publica retroactivamente.
+O fecho congela a contabilidade; não congela a auditoria nem a reconciliação.
 
 ## Referências
 

@@ -28,6 +28,7 @@ use App\Http\Requests\Finance\PageRequest;
 use App\Http\Requests\Finance\PeriodListRequest;
 use App\Http\Requests\Finance\PeriodReopenRequest;
 use App\Http\Requests\Finance\PeriodUnitRequest;
+use App\Http\Requests\Finance\ReconciliationAdjustmentRequest;
 use App\Http\Requests\Finance\ReconciliationCreateRequest;
 use App\Http\Requests\Finance\ReconciliationListRequest;
 use App\Http\Requests\Finance\ReconciliationMatchRequest;
@@ -145,6 +146,17 @@ final class FinanceCoreController extends Controller
         [$u, $s] = $this->ids($r);
         $res = $this->bank()->unmatch($u, $s, $reconciliation, $r->validated());
         return $this->done($res['replayed'], fn () => $this->q()->reconciliation($u, $s, $reconciliation));
+    }
+
+    /** FIN-D11.4: posts the difference in the first OPEN period; meta carries the new entry and its date. */
+    public function adjustReconciliation(ReconciliationAdjustmentRequest $r, string $reconciliation): JsonResponse
+    {
+        [$u, $s] = $this->ids($r);
+        $res = $this->bank()->adjust($u, $s, $this->key($r), $reconciliation, $r->validated());
+        $detail = $this->q()->reconciliation($u, $s, $reconciliation);
+        FinanceOutput::assertSafe($detail);
+        return response()->json(['data' => $detail, 'meta' => ['replayed' => $res['replayed'], 'adjustment_entry' => $res['public_id'], 'posted_on' => $res['posted_on']]],
+            $res['replayed'] ? 200 : 201, ['Cache-Control' => 'no-store, private']);
     }
 
     public function closeReconciliation(LockVersionRequest $r, string $reconciliation): JsonResponse

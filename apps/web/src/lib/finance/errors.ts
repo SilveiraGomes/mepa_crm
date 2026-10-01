@@ -4,7 +4,7 @@ import { toUiError, type UiError } from '../academy/errors'
 const FINANCE_CONFLICTS: Record<string, string> = {
   TRANSITION_NOT_ALLOWED: 'Esta operação não é permitida no estado actual da transferência.',
   STALE_WRITE: 'A transferência foi alterada por outro utilizador. Actualize os dados antes de tentar novamente.',
-  INSUFFICIENT_FUNDS: 'A conta de origem não tem saldo suficiente para este envio.',
+  INSUFFICIENT_FUNDS: 'A conta não tem saldo suficiente: caixa e banco nunca ficam negativos.',
   AMOUNT_MISMATCH: 'O valor recebido tem de ser exactamente igual ao valor enviado. Tarifas bancárias são registadas à parte.',
   ALREADY_RECEIVED: 'A transferência já foi recebida pelo destino e não pode ser devolvida isoladamente.',
   PERIOD_CLOSED: 'O período contabilístico desta data está fechado para a unidade.',
@@ -42,6 +42,8 @@ const FINANCE_CONFLICTS: Record<string, string> = {
   PERIOD_HAS_PENDING_ENTRIES: 'Existem lançamentos por publicar neste mês.',
   PERIOD_NOT_CLOSED: 'O mês não está fechado para esta unidade.',
   UNITS_NOT_CLOSED: 'Há unidades com movimentos que ainda não fecharam o mês.',
+  NOTHING_TO_ADJUST: 'Esta linha já está totalmente reconciliada: não há diferença a registar.',
+  ALREADY_ADJUSTED: 'A diferença desta linha já foi registada.',
 }
 
 const FINANCE_VALIDATION: Record<string, string> = {

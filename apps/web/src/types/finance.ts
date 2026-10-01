@@ -218,7 +218,7 @@ export interface ReconciliationDetail extends ReconciliationSummary {
   ledger_lines: LedgerBankLine[]
   matches: { statement_line: number; entry: string; entry_line: number; amount: string }[]
   summary: ReconciliationSummaryFigures
-  actions: ('match' | 'unmatch' | 'close')[]
+  actions: ('match' | 'unmatch' | 'close' | 'adjust')[]
 }
 
 export type BudgetStatus = 'DRAFT' | 'SUBMITTED' | 'REVIEWED' | 'APPROVED' | 'SUPERSEDED' | 'CLOSED' | 'CANCELLED'

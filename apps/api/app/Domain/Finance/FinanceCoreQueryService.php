@@ -245,7 +245,8 @@ final class FinanceCoreQueryService
             return $this->reconciliationItem($r) + ['lock_version' => (int) $r->lock_version, 'statement_lines' => $statementLines, 'ledger_lines' => $ledgerItems, 'matches' => $matches,
                 'summary' => ['statement_lines' => count($statementLines), 'matched' => $counts['MATCHED'], 'partially_matched' => $counts['PARTIALLY_MATCHED'], 'unmatched' => $counts['UNMATCHED'],
                     'statement_closing_balance' => Money::format($closing), 'ledger_balance_at_period_end' => Money::format($ledgerBalance), 'difference' => Money::format($closing - $ledgerBalance)],
-                'actions' => $r->status === 'OPEN' && $canReconcile ? ['match', 'unmatch', 'close'] : []];
+                'actions' => $r->status === 'OPEN' && $canReconcile ? array_values(array_filter(['match', 'unmatch', 'close',
+                    $this->rt->authority->holdsOn($actor, FinanceCatalog::PERMISSION_MANAGE, (int) $r->unit_id) && $this->rt->authority->holdsOn($actor, FinanceCatalog::PERMISSION_POST, (int) $r->unit_id) ? 'adjust' : null])) : []];
         });
     }
 

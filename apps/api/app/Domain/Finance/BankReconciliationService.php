@@ -24,15 +24,19 @@ use Illuminate\Support\Str;
  *                      Σ matched <= |statement line| and Σ matched <= journal line amount across every reconciliation:
  *                      no value is reconciled twice (C7 / BC1).
  *   close              OPEN -> CLOSED (approved_by, closed_at): an immutable version.
- * Reconciliation never writes the ledger. Post-close policy is not defined by the ADR (F1C NEEDS_DECISION): until it is,
- * reconciliation writes are refused (PERIOD_CLOSED) when the month is closed nationally or for the unit.
- * Lock order: period (+ unit close) FOR SHARE -> reconciliation FOR UPDATE -> statement line FOR UPDATE -> journal line
- * FOR UPDATE; sums are LOCKING reads.
+ *   adjust             FIN-D11.4: the unmatched remainder of a statement line posted as EXPENSE (money out) or REVENUE
+ *                      (money in) in the FIRST OPEN period >= the line date (never into a closed month), referencing the
+ *                      bank statement document and the reconciliation; at most once per statement line.
+ * FIN-D11 (ADR 0021): a closed period (unit or national) does NOT block reconciliation, which only relates facts that
+ * already exist and never writes, changes or back-dates the ledger; only the adjustment posts, in an OPEN period.
+ * Lock order: reconciliation FOR UPDATE -> statement line FOR UPDATE -> journal line FOR UPDATE; sums are LOCKING reads
+ * (adjust: period of the posting date FOR SHARE first, then the same order, then the ledger's own locks).
  */
 final class BankReconciliationService extends FinanceOperation
 {
     public const OP_STATEMENT = 'FINANCE_BANK_STATEMENT_IMPORT';
     public const OP_RECONCILIATION = 'FINANCE_RECONCILIATION_OPEN';
+    public const OP_ADJUST = 'FINANCE_RECONCILIATION_ADJUST';
     public const MAX_LINES = 500;
 
     /** @return array{public_id: string, replayed: bool} */
@@ -129,7 +133,6 @@ final class BankReconciliationService extends FinanceOperation
             $unit = (int) $peek->unit_id;
             $this->preauthorize($actor, [FinanceCatalog::PERMISSION_RECONCILE], $unit);
             $period = $this->month($in['period'] ?? null);
-            $this->ledger->lockPostingPeriod($unit, (string) $period->starts_on);
             $account = $this->lockRow('accounts', (int) $peek->id);
             $decision = $guard->unit(FinanceCatalog::PERMISSION_RECONCILE, $unit);
             if ($account->account_kind !== 'BANK') {
@@ -241,16 +244,102 @@ final class BankReconciliationService extends FinanceOperation
         });
     }
 
+    /**
+     * FIN-D11.4 adjustment of a difference found by the reconciliation. The closed period stays intact: the entry is dated
+     * on the line date when that month is OPEN for the unit, otherwise on the first day of the first later OPEN month
+     * (never in the future). FIN-D10 applies (a bank fee cannot overdraw the account).
+     * @return array{public_id: string, replayed: bool, posted_on: string}
+     */
+    public function adjust(int $user, int $session, string $clientKey, string $publicId, array $in): array
+    {
+        return $this->rt->write($user, $session, function (FinanceGuard $guard, TerritorialActor $actor) use ($clientKey, $publicId, $in): array {
+            $permissions = [FinanceCatalog::PERMISSION_RECONCILE, FinanceCatalog::PERMISSION_MANAGE, FinanceCatalog::PERMISSION_POST];
+            $guard->requires(...$permissions);
+            $hash = $this->payloadHash(self::OP_ADJUST, ['reconciliation' => $publicId] + $in);
+            if (($replay = $this->prior($actor, self::OP_ADJUST, $clientKey, $hash)) !== null) {
+                return ['public_id' => $replay, 'replayed' => true, 'posted_on' => (string) $this->rt->db->table('journal_entries')->where('public_id', $replay)->value('entry_date')];
+            }
+            $peek = $this->byPublicId('reconciliations', $publicId);
+            $account = $this->rt->db->table('accounts')->where('id', $peek->account_id)->first();
+            $unit = (int) $account->unit_id;
+            $this->preauthorize($actor, $permissions, $unit);
+            $lineNumber = filter_var($in['statement_line'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            $peekLine = $lineNumber === false ? null : $this->rt->db->table('bank_statement_lines')->where('statement_id', $peek->statement_id)->where('line_number', $lineNumber)->first();
+            if ($peekLine === null) {
+                throw new FinanceError('INVALID_INPUT', [], ['field' => 'statement_line']);
+            }
+            $postOn = $this->postingDate($unit, (string) $peekLine->occurred_on);
+            $this->ledger->lockPostingPeriod($unit, $postOn);
+            $reconciliation = $this->lockRow('reconciliations', (int) $peek->id);
+            $decision = $guard->all($permissions, $unit);
+            if ($reconciliation->status !== 'OPEN') {
+                throw new FinanceError('RECONCILIATION_CLOSED');
+            }
+            $line = $this->lockRow('bank_statement_lines', (int) $peekLine->id);
+            $signed = Money::fromDecimal((string) $line->amount_signed);
+            $remaining = abs($signed) - $this->matched('statement_line_id', (int) $line->id);
+            if ($remaining <= 0) {
+                throw new FinanceError('NOTHING_TO_ADJUST');
+            }
+            $statement = $this->rt->db->table('bank_statements')->where('id', $line->statement_id)->first();
+            $marker = 'Ajuste de reconciliação · extracto ' . $statement->public_id . ' linha ' . $line->line_number;
+            if ($this->rt->db->table('journal_entries')->where('unit_id', $unit)->where('status', FinanceCatalog::POSTED)->where('description', 'like', $marker . ' %')->sharedLock()->exists()) {
+                throw new FinanceError('ALREADY_ADJUSTED');
+            }
+            $category = $this->category($in['category'] ?? null, $signed < 0 ? FinanceCatalog::PAYABLE_NATURES : FinanceCatalog::RECEIVABLE_NATURES);
+            $document = $this->rt->db->table('document_versions')->where('file_id', $statement->file_id)->orderByDesc('version')->value('document_id');
+
+            $claim = $this->claim($actor, self::OP_ADJUST, $clientKey, $hash);
+            if ($claim['replay'] !== null) {
+                return ['public_id' => $claim['replay'], 'replayed' => true, 'posted_on' => (string) $this->rt->db->table('journal_entries')->where('public_id', $claim['replay'])->value('entry_date')];
+            }
+            $money = Money::format($remaining);
+            $bank = ['account' => 'BANK', 'financial_account_id' => (int) $account->id];
+            $economic = ['ledger_account_id' => (int) $category->ledger_account_id, 'category' => (string) $category->code];
+            $draft = $this->ledger->createDraft($actor->user, 'RA-' . $reconciliation->public_id . '-' . $line->line_number, [
+                'unit_id' => $unit, 'entry_kind' => $signed < 0 ? 'EXPENSE' : 'REVENUE', 'entry_date' => $postOn,
+                'description' => $marker . ' (reconciliação ' . $reconciliation->public_id . ')', 'document_id' => $document === null ? null : (int) $document,
+                'lines' => $signed < 0 ? [$economic + ['debit' => $money], $bank + ['credit' => $money]] : [$bank + ['debit' => $money], $economic + ['credit' => $money]],
+            ]);
+            $this->ledger->post($actor->user, $draft['public_id'], 0);
+            $this->complete($claim['id'], $draft['public_id']);
+            FinanceAudit::write($this->rt->db, $actor->user, 'finance.reconciliation_adjustment_posted', 'reconciliations', (int) $reconciliation->id, $decision->unit, FinanceAudit::correlation(), [
+                'reconciliation' => (string) $reconciliation->public_id, 'statement' => (string) $statement->public_id, 'statement_line' => (int) $line->line_number,
+                'entry' => $draft['public_id'], 'posted_on' => $postOn, 'category' => (string) $category->code,
+            ], null, $actor->session);
+            return ['public_id' => $draft['public_id'], 'replayed' => false, 'posted_on' => $postOn];
+        });
+    }
+
     // ---- helpers ------------------------------------------------------------------------------------------------------
 
-    /** Reconciliation resolved, scope pre-authorised on its account unit, period locked, row locked FOR UPDATE. */
+    /** The line date when its month is OPEN for the unit, else day 1 of the first later OPEN month (never the future). */
+    private function postingDate(int $unit, string $date): string
+    {
+        if ($this->ledger->isPostingOpen($unit, $date)) {
+            return $date;
+        }
+        $today = $this->rt->today();
+        $cursor = new \DateTimeImmutable(substr($date, 0, 7) . '-01', new \DateTimeZone('UTC'));
+        for ($i = 0; $i < 24; $i++) {
+            $cursor = $cursor->modify('+1 month');
+            $candidate = $cursor->format('Y-m-d');
+            if ($candidate > $today) {
+                break;
+            }
+            if ($this->ledger->isPostingOpen($unit, $candidate)) {
+                return $candidate;
+            }
+        }
+        throw new FinanceError('PERIOD_CLOSED');
+    }
+
+    /** Reconciliation resolved, scope pre-authorised on its account unit, row locked FOR UPDATE (FIN-D11: no period check). */
     private function target(TerritorialActor $actor, string $publicId): array
     {
         $peek = $this->byPublicId('reconciliations', $publicId);
         $unit = (int) $this->rt->db->table('accounts')->where('id', $peek->account_id)->value('unit_id');
         $this->preauthorize($actor, [FinanceCatalog::PERMISSION_RECONCILE], $unit);
-        $period = $this->rt->db->table('accounting_periods')->where('id', $peek->period_id)->first();
-        $this->ledger->lockPostingPeriod($unit, (string) $period->starts_on);
         return [$this->lockRow('reconciliations', (int) $peek->id), $unit];
     }
 

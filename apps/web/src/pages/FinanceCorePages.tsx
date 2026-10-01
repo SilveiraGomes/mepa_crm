@@ -419,14 +419,14 @@ export function StatementCreatePage() {
   </>
 }
 
-function StatementLinesTable({ lines, here = false, onMatch }: { lines: StatementLine[]; here?: boolean; onMatch?: (line: StatementLine) => void }) {
+function StatementLinesTable({ lines, here = false, onMatch, onAdjust }: { lines: StatementLine[]; here?: boolean; onMatch?: (line: StatementLine) => void; onAdjust?: (line: StatementLine) => void }) {
   // Five columns at most: the reconciliation workspace stays inside a tablet viewport (the action sits with the state).
   return <DataTable rows={lines} rowKey={(row) => row.line_number} columns={[
     { key: 'line', label: 'Linha', render: (row) => `${row.line_number} · ${formatDate(row.occurred_on)}` },
     { key: 'description', label: 'Descrição', render: (row) => <span className="finance-unit">{row.description}</span> },
     { key: 'amount', label: 'Valor', render: (row) => <span className="finance-amount">{formatKz(row.amount)}</span> },
     { key: 'matched', label: here ? 'Reconciliado aqui' : 'Reconciliado', render: (row) => <span className="finance-amount">{formatKz(here ? row.matched_here ?? '0.00' : row.matched_total)}</span> },
-    { key: 'state', label: 'Estado', render: (row) => <span className="finance-actions"><MatchBadge state={row.state} />{onMatch && row.state !== 'MATCHED' && <button className="btn btn--secondary btn--sm" type="button" onClick={() => onMatch(row)}>Corresponder</button>}</span> },
+    { key: 'state', label: 'Estado', render: (row) => <span className="finance-actions"><MatchBadge state={row.state} />{onMatch && row.state !== 'MATCHED' && <button className="btn btn--secondary btn--sm" type="button" onClick={() => onMatch(row)}>Corresponder</button>}{onAdjust && row.state !== 'MATCHED' && <button className="btn btn--ghost btn--sm" type="button" onClick={() => onAdjust(row)}>Registar diferença</button>}</span> },
   ]} />
 }
 
@@ -490,7 +490,8 @@ export function ReconciliationDetailPage() {
   const { id = '' } = useParams()
   const { notify } = useApp()
   const result = useFinanceItem<ReconciliationDetail>(fin.reconciliation(id))
-  const step = useStep<'match' | 'close'>()
+  const { finance } = useApp()
+  const step = useStep<'match' | 'close' | 'adjust'>()
   const [line, setLine] = useState<StatementLine | null>(null)
   const r = result.data
   if (result.loading && !r) return <LoadingState />
@@ -513,6 +514,14 @@ export function ReconciliationDetailPage() {
     event.preventDefault()
     void step.run(() => financePost(fin.reconciliationStep(rec.public_id, 'close'), { lock_version: rec.lock_version }), () => { notify('Reconciliação fechada.'); result.reload() })
   }
+  function adjust(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!line) return
+    const category = text(new FormData(event.currentTarget), 'category')
+    void step.run(() => financePost(fin.reconciliationStep(rec.public_id, 'adjustments'), { statement_line: line.line_number, category }, newIdempotencyKey()),
+      () => { notify('Diferença registada no primeiro período aberto.'); result.reload() })
+  }
+  const adjustCategories: Rubric[] = (line?.direction === 'OUT' ? finance.context?.payable_categories : finance.context?.receivable_categories) ?? []
   return <>
     <PageHeader title={`Reconciliação ${r.account.name} · ${r.period}`} description="Cada valor só pode ser reconciliado uma vez. Linhas por reconciliar ficam visíveis como diferenças." back={{ to: '/financas/reconciliacao', label: 'Reconciliação' }}
       actions={r.actions.includes('close') ? <button className="btn btn--secondary" type="button" onClick={() => step.open('close')}>Fechar reconciliação</button> : undefined} />
@@ -520,7 +529,7 @@ export function ReconciliationDetailPage() {
     <Summary rows={[['Estado', <Badge key="s" label={r.status === 'OPEN' ? 'Aberta' : 'Fechada'} tone={r.status === 'OPEN' ? ' badge--warning' : ' badge--info'} />], ['Versão', r.version],
       ['Linhas reconciliadas', `${r.summary.matched} de ${r.summary.statement_lines}`], ['Parciais', r.summary.partially_matched], ['Por reconciliar', r.summary.unmatched],
       ['Saldo do extracto', formatKz(r.summary.statement_closing_balance)], ['Saldo contabilístico no fim do mês', formatKz(r.summary.ledger_balance_at_period_end)], ['Diferença', <strong key="d">{formatKz(r.summary.difference)}</strong>]]} />
-    <section className="card stack"><h2>Linhas do extracto</h2><StatementLinesTable lines={r.statement_lines} here onMatch={open ? (item) => { setLine(item); step.open('match') } : undefined} /></section>
+    <section className="card stack"><h2>Linhas do extracto</h2><StatementLinesTable lines={r.statement_lines} here onMatch={open ? (item) => { setLine(item); step.open('match') } : undefined} onAdjust={open && r.actions.includes('adjust') ? (item) => { setLine(item); step.open('adjust') } : undefined} /></section>
     <section className="card stack"><h2>Correspondências desta reconciliação</h2>
       {r.matches.length === 0 ? <p className="muted">Ainda sem correspondências.</p> : <DataTable rows={r.matches} rowKey={(row) => `${row.statement_line}-${row.entry}-${row.entry_line}`} columns={[
         { key: 'line', label: 'Linha', render: (row) => row.statement_line },
@@ -541,6 +550,10 @@ export function ReconciliationDetailPage() {
       {line && <p>Linha {line.line_number}: {line.description} · {formatKz(line.amount)}. Já reconciliado: {formatKz(line.matched_total)}.</p>}
       <Field label="Movimento contabilístico" name="ledger" required><select className="select" id="ledger" name="ledger" required><option value="">Seleccione</option>{candidates.map((item) => <option key={`${item.entry}#${item.entry_line}`} value={`${item.entry}#${item.entry_line}`}>{formatDate(item.entry_date)} · {item.description} · {formatKz(item.amount)}</option>)}</select></Field>
       <Field label="Valor a reconciliar (Kz)" name="amount" required error={step.error?.fields.amount}><input className="input finance-input-amount" id="amount" name="amount" required inputMode="decimal" pattern="\d{1,12}([.,]\d{1,2})?" autoComplete="off" /></Field>
+    </StepDialog>
+    <StepDialog open={step.pending === 'adjust'} title="Registar diferença" submit="Registar diferença" busy={step.busy} error={step.error} onClose={step.close} onSubmit={adjust}>
+      {line && <p>Linha {line.line_number}: {line.description} · {formatKz(line.amount)}. A parte por reconciliar é lançada como {line.direction === 'OUT' ? 'gasto' : 'receita'} no primeiro período aberto; um mês fechado nunca é alterado.</p>}
+      <Field label="Rubrica" name="category" required error={step.error?.fields.category}><select className="select" id="category" name="category" required><option value="">Seleccione</option>{adjustCategories.map((item) => <option key={item.code} value={item.code}>{item.label}</option>)}</select></Field>
     </StepDialog>
     <StepDialog open={step.pending === 'close'} title="Fechar reconciliação" submit="Fechar reconciliação" busy={step.busy} error={step.error} onClose={step.close} onSubmit={close}>
       <p>A versão fechada fica imutável. Diferenças por reconciliar ficam registadas e podem ser tratadas numa nova versão.</p>
