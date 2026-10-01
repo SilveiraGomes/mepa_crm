@@ -1,5 +1,5 @@
 {
-  "phase": "P0.10-F1A+F1B",
+  "phase": "P0.10-F1A+F1B+F1C",
   "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
   "addendum": "D-04A",
   "migrations": [
@@ -26,7 +26,11 @@
     "2026_09_30_100021_p010_create_budget_lines.php",
     "2026_09_30_100022_p010_install_finance_catalog.php",
     "2026_09_30_100023_p010_create_contributions.php",
-    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php"
+    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php",
+    "2026_09_30_100025_p010_create_bank_statements.php",
+    "2026_09_30_100026_p010_create_bank_statement_lines.php",
+    "2026_09_30_100027_p010_create_reconciliations.php",
+    "2026_09_30_100028_p010_create_reconciliation_matches.php"
   ],
   "planned_table_count": 35,
   "plan": {
@@ -73,16 +77,15 @@
     "settlement_allocations",
     "budgets",
     "budget_lines",
-    "contributions"
+    "contributions",
+    "bank_statements",
+    "bank_statement_lines",
+    "reconciliations",
+    "reconciliation_matches"
   ],
   "deferred_finance_tables": {
     "F1B": [],
-    "F1C": [
-      "bank_statements",
-      "bank_statement_lines",
-      "reconciliations",
-      "reconciliation_matches"
-    ]
+    "F1C": []
   },
   "new_tables": {
     "accounting_period_unit_closes": {
@@ -141,7 +144,8 @@
     "contributions:valuation_status:YES:varchar(64)",
     "contributions:valued_by:YES:bigint unsigned",
     "contributions:valuation_approved_by:YES:bigint unsigned",
-    "contributions:valuation_document_id:YES:bigint unsigned"
+    "contributions:valuation_document_id:YES:bigint unsigned",
+    "reconciliations:counted_balance:YES:decimal(19,4)"
   ],
   "column_changes": [
     "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
@@ -303,6 +307,25 @@
       "ck_contributions_valuation",
       "ck_contributions_amount",
       "ck_contributions_valuation_amount"
+    ],
+    "bank_statements": [
+      "ck_bank_statements_range",
+      "ck_bank_statements_balances"
+    ],
+    "bank_statement_lines": [
+      "ck_bank_statement_lines_line_number",
+      "ck_bank_statement_lines_amount",
+      "ck_bank_statement_lines_description"
+    ],
+    "reconciliations": [
+      "ck_reconciliations_status",
+      "ck_reconciliations_version",
+      "ck_reconciliations_closed",
+      "ck_reconciliations_source",
+      "ck_reconciliations_counted_balance"
+    ],
+    "reconciliation_matches": [
+      "ck_reconciliation_matches_amount"
     ]
   },
   "money_columns_decimal_19_4": true,
@@ -317,7 +340,11 @@
     "accounts.department_id",
     "budgets.department_id",
     "internal_transfers.department_id",
-    "journal_entries.total_amount"
+    "journal_entries.total_amount",
+    "bank_statement_lines.journal_entry_id",
+    "bank_statement_lines.journal_line_id",
+    "reconciliations.department_id",
+    "bank_statements.unit_id"
   ],
   "controlled_data_counts": {
     "currencies": 1,
