@@ -28,6 +28,7 @@ use Illuminate\Database\QueryException;
  *   5. COMMIT-TIME RECHECK, locks held: actor/session and every recorded decision re-read FOR SHARE, the Files
  *      authority of every referenced supporting document re-evaluated FOR SHARE.
  * read(): no transaction, one authorization pass.
+ * snapshot(): one REPEATABLE READ consistent snapshot for multi-query reports (ADR 0021 C8).
  */
 final class FinanceRuntime
 {
@@ -106,6 +107,30 @@ final class FinanceRuntime
         try {
             $actor = $this->authority->actor($user, $session);
             return $work(new FinanceGuard($this->authority, $actor), $actor);
+        } catch (QueryException $e) {
+            throw $this->translate($e);
+        }
+    }
+
+    /**
+     * A report is intentionally read inside one database snapshot.  The isolation level is set for this transaction
+     * only; the first actor read establishes the snapshot before perimeter and ledger queries are evaluated.  Audit
+     * rows may be appended in the same transaction without changing the snapshot seen by consistent reads.
+     */
+    public function snapshot(int $user, int $session, callable $work): mixed
+    {
+        try {
+            $this->db->statement('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+            $this->db->beginTransaction();
+            try {
+                $actor = $this->authority->actor($user, $session);
+                $result = $work(new FinanceGuard($this->authority, $actor), $actor);
+                $this->db->commit();
+                return $result;
+            } catch (\Throwable $e) {
+                $this->db->rollBack();
+                throw $e;
+            }
         } catch (QueryException $e) {
             throw $this->translate($e);
         }

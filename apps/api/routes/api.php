@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\V1\Finance\ContributionController;
 use App\Http\Controllers\Api\V1\Finance\FinanceController;
 use App\Http\Controllers\Api\V1\Finance\FinanceCoreController;
 use App\Http\Controllers\Api\V1\Finance\FinanceTransferController;
+use App\Http\Controllers\Api\V1\Finance\FinanceReportingController;
 use App\Http\Controllers\Api\V1\Membership\AdmissionController;
 use App\Http\Controllers\Api\V1\Membership\MemberLifecycleController;
 use App\Http\Controllers\Api\V1\Membership\MembershipController;
@@ -205,6 +206,11 @@ Route::prefix('v1')->group(function (): void {
         Route::post('periods/{period}/close', [FinanceCoreController::class, 'closePeriod'])->middleware('throttle:finance-write');
         Route::post('periods/{period}/reopen', [FinanceCoreController::class, 'reopenPeriod'])->middleware('throttle:finance-write');
         Route::post('periods/{period}/national-close', [FinanceCoreController::class, 'closePeriodNationally'])->middleware('throttle:finance-write');
+        // P0.10-F1D: bounded, snapshot-consistent reporting. All targets are public ids in the query string.
+        Route::get('dashboard', [FinanceReportingController::class, 'dashboard']);
+        Route::get('reports', [FinanceReportingController::class, 'index']);
+        Route::get('reports/{report}', [FinanceReportingController::class, 'show']);
+        Route::get('reports/{report}/export', [FinanceReportingController::class, 'export'])->middleware('throttle:finance');
     });
 
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {
