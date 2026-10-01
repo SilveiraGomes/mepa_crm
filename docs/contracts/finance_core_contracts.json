@@ -1,5 +1,5 @@
 {
-  "phase": "P0.10-F1A + P0.10-F1B",
+  "phase": "P0.10-F1A+F1B+F1C",
   "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
   "addendum": "D-04A",
   "scope": "Finance Core physical foundation and accounting contracts. No API, UI, reports, consolidation engine, DOAF, transfer/payable workflows or Payroll (F1B/F1C/F1D/F2).",
@@ -300,6 +300,249 @@
         "verdict": "CONFIRMED_FOR_F1C",
         "note": "a settlement is born POSTED with its entry (D07); cancellation = the subledger reversal flow; no migration needed"
       }
+    }
+  },
+  "f1c_contracts": {
+    "scope": "Accrual subledgers (receivables, payables, settlements, cancellation), financial accounts lifecycle, bank statements, bank reconciliation, budget workflow, accounting period close / reopen / national close, actual vs budget foundation, Territorial authority FINANCE, API + UI. Not F1C: consolidated DRE, DOAF, final reports / exports / dashboards (F1D), Payroll / HR (F2).",
+    "tables": {
+      "finance_physical": 26,
+      "finance_approved": 26,
+      "payroll_physical": 0,
+      "payroll_planned": 9,
+      "materialized_in_f1c": [
+        "bank_statements",
+        "bank_statement_lines",
+        "reconciliations",
+        "reconciliation_matches"
+      ],
+      "delta": "reconciliations.counted_balance (ADR 0021 D32)"
+    },
+    "subledger_states": {
+      "receivables": {
+        "stored": [
+          "PENDING",
+          "RECOGNIZED",
+          "SETTLED",
+          "CANCELLED"
+        ],
+        "v1_transitions": {
+          "recognize": "-> RECOGNIZED (RECEIVABLE_RECOGNITION Dr RECEIVABLES / Cr revenue rubric, no cash)",
+          "settle": "RECOGNIZED -> RECOGNIZED | SETTLED when outstanding = 0",
+          "cancel_settlement": "SETTLED -> RECOGNIZED",
+          "cancel": "RECOGNIZED (no POSTED settlement) -> CANCELLED (REVERSAL of the recognition)"
+        },
+        "pending": "reserved: D07 subledger entries are born POSTED and the subledger row has no rubric column, so V1 recognises in the creating transaction",
+        "verdict": "CONFIRMED_NO_DDL"
+      },
+      "payables": {
+        "stored": [
+          "PENDING",
+          "RECOGNIZED",
+          "SETTLED",
+          "CANCELLED"
+        ],
+        "v1_transitions": {
+          "recognize": "-> RECOGNIZED (PAYABLE_RECOGNITION Dr rubric control account EXPENSE | FIXED_ASSETS / Cr PAYABLES, no cash; document mandatory)",
+          "settle": "RECOGNIZED -> RECOGNIZED | SETTLED",
+          "cancel_settlement": "SETTLED -> RECOGNIZED",
+          "cancel": "RECOGNIZED (no POSTED settlement) -> CANCELLED"
+        },
+        "pending": "reserved (same reason)",
+        "verdict": "CONFIRMED_NO_DDL"
+      },
+      "settlements": {
+        "stored": [
+          "POSTED",
+          "CANCELLED"
+        ],
+        "v1_transitions": {
+          "settle": "-> POSTED (SETTLEMENT Dr CASH|BANK / Cr RECEIVABLES or Dr PAYABLES / Cr CASH|BANK)",
+          "cancel": "POSTED -> CANCELLED (own-flow REVERSAL of the settlement entry, reason, open period)"
+        },
+        "verdict": "CONFIRMED_NO_DDL"
+      },
+      "outstanding": "amount - SUM(allocations of POSTED settlements), derived, decided on a locking read with the receivable / payable row FOR UPDATE"
+    },
+    "accrual": {
+      "revenue_recognised_once": "at recognition; a settlement never touches INCOME / EXPENSE (SETTLEMENT shape has none)",
+      "non_receivable_rubrics": [
+        "REV_TITHES",
+        "REV_SELECTIVE_TITHES",
+        "REV_OFFERINGS",
+        "REV_RAISED_OFFERINGS",
+        "REV_SPECIAL_OFFERINGS",
+        "REV_DONATIONS",
+        "REV_IN_KIND"
+      ],
+      "non_receivable_basis": "ADR 0021 D01.2 (tithes, offerings and donations recognised when received; in kind has its own D04 flow)",
+      "capitalised_acquisition": "payable debit = the rubric control account (FIXED_ASSETS for INV_AST_*), D-04A.12"
+    },
+    "own_flow_reversal": "LedgerPostingService::postSubledgerReversal: REVERSAL entry (journal CHECK) whose target kind is SETTLEMENT | PAYABLE_RECOGNITION | RECEIVABLE_RECOGNITION; the generic reverse() still refuses subledger entries (SUBLEDGER_OWNED)",
+    "financial_accounts": {
+      "open": "FINANCE_ACCOUNT_MANAGE (+ FINANCE_POST with an opening balance); CASH -> cash_registers with a People-visible custodian; BANK -> bank_account_details with the number encrypted (Files key ring, ADR 0019 D06), last 4 shown",
+      "opening_balance": "OPENING_BALANCE entry Dr CASH|BANK / Cr OPENING_NET_ASSETS (D06), never a column",
+      "canonical_balance": "SUM(debit) - SUM(credit) of POSTED journal lines (LedgerQueries)",
+      "close": "D06: canonical balance zero + no DRAFT / SUBMITTED entry on the account (locking reads, account FOR UPDATE); no reopen",
+      "closed_account": "refuses every posting (FINANCIAL_ACCOUNT_CLOSED decided on a locking read); history and balance stay readable"
+    },
+    "non_negative_cash_bank": {
+      "status": "DECIDED",
+      "id": "FIN-D10",
+      "rule": "CASH and BANK never negative in V1: every posting that reduces a financial account checks, with the account FOR UPDATE and a locking read of the canonical balance, current_posted_balance - outgoing_amount >= 0, else INSUFFICIENT_FUNDS (payments, settlements, SEND, reversals, account transfers, any other posting)",
+      "accrual": "receivables / payables are recognised without available funds; only the payment needs funds",
+      "overdraft": "out of V1; a future facility needs an explicit representation, never a negative balance",
+      "enforced_in": "LedgerPostingService::assertNoOverdraft (the posting gate, every entry kind)"
+    },
+    "bank_statements": {
+      "ingestion": "manual / structured V1, header + all lines in one transaction, never edited",
+      "document": "Files document of type BANK_STATEMENT owned by the account unit (public id only), file_id = its latest version; source_hash = the file content SHA-256, UNIQUE per account",
+      "coherence": "opening + SUM(lines) = closing; every line inside the statement range; amount_signed <> 0",
+      "never_a_journal_line": true
+    },
+    "bank_reconciliation": {
+      "states": [
+        "OPEN",
+        "CLOSED"
+      ],
+      "versions": "one OPEN version per (account, MONTH period); version = previous + 1",
+      "match_cardinality": "partial and many-to-many (reconciliation_matches.matched_amount)",
+      "invariants": "same unit and BANK account, journal entry POSTED and dated up to the period end, money in <-> debit / money out <-> credit, SUM(matched) <= |statement line| and <= journal line across EVERY reconciliation",
+      "derived_line_state": [
+        "UNMATCHED",
+        "PARTIALLY_MATCHED",
+        "MATCHED"
+      ],
+      "post_close_policy": {
+        "status": "DECIDED",
+        "id": "FIN-D11",
+        "rule": "a closed period (unit or irreversible national close) does not block reconciliation of existing facts: open / match / unmatch / close a reconciliation, never write, change or back-date the ledger",
+        "adjustment": "POST reconciliations/{r}/adjustments posts the unmatched remainder of a statement line (EXPENSE out / REVENUE in) in the first OPEN period >= the line date, document = the bank statement, description + audit reference the statement, line and reconciliation; once per statement line (ALREADY_ADJUSTED)"
+      },
+      "lock_order": "reconciliation FOR UPDATE -> statement line FOR UPDATE -> journal line FOR UPDATE (adjust: period of the posting date FOR SHARE first, then the ledger locks)"
+    },
+    "budget": {
+      "states": [
+        "DRAFT",
+        "SUBMITTED",
+        "REVIEWED",
+        "APPROVED",
+        "SUPERSEDED",
+        "CLOSED",
+        "CANCELLED"
+      ],
+      "segregation": "approver != submitter (service SEGREGATION_REQUIRED + CHECK ck_budgets_segregation)",
+      "one_approved": "approved_guard + UNIQUE; every version of (unit, year, fund) locked FOR UPDATE in id order before deciding; older than the approved one -> BUDGET_VERSION_OUTDATED; newer supersedes in the same transaction",
+      "revision": "new DRAFT version copied from the APPROVED one; nothing overwritten",
+      "actual_vs_budget": "POSTED journal lines of unit / fund / rubric, YTD from 1 January; variance = actual - budget; variance % NULL when budget = 0",
+      "not_in_f1c": "APPROVED -> CLOSED at year end; monthly phasing (D13 deferred)"
+    },
+    "periods": {
+      "unit_close": "FINANCE_PERIOD_CLOSE on the unit; no DRAFT / SUBMITTED entries of the unit in the month",
+      "reopen": "FINANCE_PERIOD_REOPEN, reason, reopener != closer, only while the month is nationally OPEN; the close row keeps closed_at / closed_by",
+      "national_close": "FINANCE_PERIOD_CLOSE through a scope covering the national root (single ACTIVE GENERAL_DIRECTION without parent); every unit with POSTED lines closed; irreversible (no reopen exists)"
+    },
+    "tests": {
+      "A01": "test_a01_receivable_is_recognised_as_revenue_without_cash",
+      "A02": "test_a02_settling_a_receivable_moves_cash_against_the_receivable_only",
+      "A03": "test_a03_partial_receivable_settlements_until_settled",
+      "A04": "test_a04_over_settlement_is_denied",
+      "A05": "test_a05_payable_is_recognised_as_expense_without_cash_with_its_document",
+      "A06": "test_a06_a_capitalisable_acquisition_debits_fixed_assets_never_expense",
+      "A07": "test_a07_settling_a_payable_pays_from_cash",
+      "A08": "test_a08_payment_never_duplicates_the_expense",
+      "A09": "test_a09_settlement_cancellation_is_an_own_flow_reversal_and_restores_the_outstanding",
+      "A10": "test_a10_c10_concurrent_settlements_never_exceed_the_outstanding",
+      "B01": "test_b01_bank_statement_is_imported_once_with_its_file_and_balances",
+      "B02": "test_b02_statement_lines_preserve_the_bank_fact_and_are_never_edited",
+      "B03": "test_b03_a_statement_line_is_not_a_journal_line",
+      "B04": "test_b04_a_valid_bank_match_and_its_refusals",
+      "B05": "test_b05_the_same_value_is_never_reconciled_twice",
+      "B06": "test_b06_partial_and_many_to_one_matches_are_supported",
+      "B07": "test_b07_reconciliation_of_another_unit_is_concealed",
+      "B08": "test_b08_bc1_two_reconciliations_racing_for_the_same_statement_value",
+      "U01": "test_u01_open_financial_accounts_cash_with_custodian_and_bank_with_encrypted_number",
+      "U02": "test_u02_opening_balance_is_a_journal_entry_and_the_balance_is_derived",
+      "U03": "test_u03_closing_an_account_requires_a_zero_balance_and_nothing_pending",
+      "U04": "test_u04_a_closed_account_rejects_every_new_posting",
+      "G01": "test_g01_budget_draft_with_rubric_lines_never_touches_the_ledger",
+      "G02": "test_g02_submit_freezes_the_lines",
+      "G03": "test_g03_review_and_return_are_explicit_transitions",
+      "G04": "test_g04_approval_by_a_different_actor",
+      "G05": "test_g05_the_submitter_can_never_approve",
+      "G06": "test_g06_c4_concurrent_approvals_leave_one_approved_version",
+      "G07": "test_g07_a_revision_is_a_new_version_and_supersedes_the_approved_one",
+      "G08": "test_g08_actual_versus_budget_comes_only_from_posted_ledger_lines",
+      "P01": "test_p01_unit_period_close_blocks_postings_of_that_unit",
+      "P02": "test_p02_closing_one_unit_never_closes_another",
+      "P03": "test_p03_reopen_needs_a_reason_and_a_different_actor_and_keeps_the_history",
+      "P04": "test_p04_the_closer_can_never_reopen",
+      "P05": "test_p05_national_close_needs_the_national_root_authority_and_is_irreversible",
+      "P06": "test_p06_pc1_close_versus_accrual_posting_in_both_orders",
+      "N01": "test_n01_no_posting_may_leave_cash_negative",
+      "N02": "test_n02_settlements_and_their_cancellation_cannot_leave_bank_negative",
+      "N03": "test_n03_two_concurrent_payments_cannot_overdraw_the_account",
+      "N04": "test_n04_accrual_recognition_needs_no_available_cash",
+      "N05": "test_n05_a_closed_month_can_still_be_reconciled",
+      "N06": "test_n06_reconciling_a_closed_month_never_touches_the_ledger",
+      "N07": "test_n07_a_difference_found_in_a_closed_month_is_never_posted_into_it",
+      "N08": "test_n08_a_reconciliation_adjustment_posts_once_in_an_open_period_and_references_its_origin"
+    },
+    "additional_tests": {
+      "PC2": "test_p07_pc2_a_national_close_waiting_for_a_posting_sees_it_and_refuses",
+      "F06_and_bounds": "test_f06_every_f1c_resource_is_concealed_out_of_scope_and_lists_are_bounded"
+    },
+    "concurrency": {
+      "C10": "test_a10_c10_concurrent_settlements_never_exceed_the_outstanding",
+      "BC1": "test_b08_bc1_two_reconciliations_racing_for_the_same_statement_value",
+      "C4": "test_g06_c4_concurrent_approvals_leave_one_approved_version",
+      "PC1": "test_p06_pc1_close_versus_accrual_posting_in_both_orders",
+      "PC2": "test_p07_pc2_a_national_close_waiting_for_a_posting_sees_it_and_refuses",
+      "N03_overdraft": "test_n03_two_concurrent_payments_cannot_overdraw_the_account"
+    },
+    "mutation_probes": {
+      "M1": "receivable settlement recreates Revenue",
+      "M2": "payable settlement recreates Expense",
+      "M3": "over-settlement accepted",
+      "M4": "fixed asset forced to Expense",
+      "M5": "mutable / non-canonical financial balance",
+      "M6": "posting into a closed financial account",
+      "M7": "bank line treated as journal automatically",
+      "M8": "double bank match",
+      "M9": "budget submitter can approve",
+      "M10": "two approved budget versions",
+      "M11": "approved budget overwritten",
+      "M12": "actual read from non-POSTED",
+      "M13": "period close bypass",
+      "M14": "reopen by same closer",
+      "M15": "national close reopened",
+      "M16": "source_document PK accepted"
+    },
+    "e2e": {
+      "config": "apps/web/playwright.finance-core.config.ts",
+      "spec": "apps/web/tests/e2e/finance-core.spec.ts",
+      "regression": "apps/web/tests/e2e/finance.spec.ts (F1B)",
+      "viewports": [
+        "desktop-1440x900",
+        "laptop-1366x768",
+        "tablet-768x1024",
+        "mobile-390x844"
+      ]
+    },
+    "validator": "scripts/validate-finance-core-f1c-contracts.cjs",
+    "runner": "scripts/run-p010-finance-f1c.py",
+    "product_findings": {
+      "F1C-P01": "posting gate decided a financial account OPEN status on a snapshot read (a posting waiting for an account close could commit into the closed account): now a locking read in LedgerPostingService::lockOpenAccounts; fixed before commit",
+      "F1C-P02": "national close decided \"units with lines not closed\" on a snapshot read after the period lock wait (could close a month over an unclosed unit): locking reads in FinancePeriods; reproduced by PC2 without the fix; fixed before commit"
+    },
+    "additional_mutation_probes": {
+      "M17": "FIN-D10 overdraft check removed",
+      "M18": "FIN-D11 closed period blocks reconciliation again",
+      "M19": "FIN-D11 adjustment back-dated into the closed month"
+    },
+    "decisions": {
+      "F1C-D1": "PENDING reserved: V1 creates RECOGNIZED directly in the accounting operation (the subledger rows keep no rubric before recognition; no artificial draft)",
+      "FIN-D10": "no negative CASH/BANK (decided 2026-10-01, ADR 0021)",
+      "FIN-D11": "reconciliation of closed periods allowed without touching the ledger (decided 2026-10-01, ADR 0021)"
     }
   }
 }

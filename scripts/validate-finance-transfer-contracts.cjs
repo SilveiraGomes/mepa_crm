@@ -39,7 +39,8 @@ function methodBody(text, name) {
 function checks(f) {
   const contract = JSON.parse(f.contracts)
   const block = f.routes.slice(f.routes.indexOf("Route::prefix('finance')"), f.routes.indexOf("Route::prefix('physical')"))
-  const routes = [...block.matchAll(/Route::(get|post|patch|put|delete)\('([^']+)'/g)].map(([, m, u]) => `${m.toUpperCase()} ${u}`)
+  // F1B routes are the transfer / custody / contribution endpoints (F1C adds its own, validated by the F1C validator).
+  const routes = [...block.matchAll(/Route::(get|post|patch|put|delete)\('([^']+)'/g)].map(([, m, u]) => `${m.toUpperCase()} ${u}`).filter((r) => /^(GET|POST|PATCH|PUT|DELETE) (context|units|transfers|contributions)/.test(r))
   const requests = fs.readdirSync(requestsDir).map((file) => fs.readFileSync(path.join(requestsDir, file), 'utf8'))
   const stages = ['request', 'send', 'receive', 'cancel', 'reverseSend', 'reconcile']
   const firstStatementRequires = stages.every((m) => /->write\(\$user, \$session, function \([^)]*\)[^{]*\{\s*\n\s*\$guard->requires\(/.test(methodBody(f.transfers, m)))

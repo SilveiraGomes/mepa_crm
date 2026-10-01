@@ -26,7 +26,8 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
 {
     private const P010_TABLES = ['currencies', 'funds', 'chart_of_accounts', 'financial_categories', 'accounting_periods', 'accounts', 'bank_account_details',
         'cash_registers', 'financial_parties', 'journal_entries', 'journal_lines', 'financial_documents', 'accounting_period_unit_closes', 'internal_transfers',
-        'transfer_postings', 'receivables', 'payables', 'settlements', 'settlement_allocations', 'budgets', 'budget_lines', 'contributions'];
+        'transfer_postings', 'receivables', 'payables', 'settlements', 'settlement_allocations', 'budgets', 'budget_lines', 'contributions',
+        'bank_statements', 'bank_statement_lines', 'reconciliations', 'reconciliation_matches'];
 
     public static function setUpBeforeClass(): void
     {
@@ -45,9 +46,9 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         foreach (self::P010_TABLES as $table) {
             $this->assertTrue($this->db()->getSchemaBuilder()->hasTable($table), $table);
         }
-        foreach (['bank_statements', 'bank_statement_lines', 'reconciliations', 'reconciliation_matches', 'obligation_rules', 'obligations',
-            'contribution_allocations', ...$manifest['plan']['payroll_tables_reserved_f2']] as $absent) {
-            $this->assertFalse($this->db()->getSchemaBuilder()->hasTable($absent), $absent . ' must not exist in F1A');
+        // F1C materialised the last four Finance tables (26/26); the tables not created in V1 and Payroll stay absent.
+        foreach (['obligation_rules', 'obligations', 'contribution_allocations', ...$manifest['plan']['payroll_tables_reserved_f2']] as $absent) {
+            $this->assertFalse($this->db()->getSchemaBuilder()->hasTable($absent), $absent . ' must not exist');
         }
         $this->assertSame(35, $manifest['planned_table_count']);
         $this->assertSame(35, 28 - count($manifest['plan']['catalog_tables_not_created_v1']) + count($manifest['plan']['new_finance_tables']) + count($manifest['plan']['payroll_tables_reserved_f2']));
@@ -166,7 +167,7 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         $tables = "'" . implode("','", self::P010_TABLES) . "'";
         $this->assertSame([], $this->db()->select("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ($tables) AND DATA_TYPE IN ('float','double','real')"), 'no FLOAT/DOUBLE');
         $money = $this->db()->select("SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME) c, COLUMN_TYPE t FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ($tables) AND DATA_TYPE = 'decimal'");
-        $this->assertCount(11, $money, 'debit, credit, 5 subledger amounts, 2 budget amounts, 2 contribution amounts (F1A + F1B tables)');
+        $this->assertCount(16, $money, 'debit, credit, 5 subledger amounts, 2 budget amounts, 2 contribution amounts, 2 statement balances, statement line, counted balance, matched amount (F1A + F1B + F1C)');
         foreach ($money as $col) {
             $this->assertSame('decimal(19,4)', $col->t, $col->c);
         }
@@ -326,6 +327,8 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         $this->refused('CANNOT_REVERSE_REVERSAL', fn () => $svc->reverse($w['u1'], $this->key(), $reversal['public_id'], 'x', '2026-03-03'));
         $draft = $svc->createDraft($w['u1'], $this->key(), $this->revenueInput($w['c'], $w['cashC'], '1.00', '2026-03-03'));
         $this->refused('ENTRY_NOT_POSTED', fn () => $svc->reverse($w['u1'], $this->key(), $draft['public_id'], 'x', '2026-03-03'));
+        // FIN-D10: the SEND needs funds (cash is 0 after the reversal).
+        $svc->post($w['u1'], $svc->createDraft($w['u1'], $this->key(), $this->revenueInput($w['c'], $w['cashC'], '10.00', '2026-03-03'))['public_id'], 0);
         $send = $this->send($w, '10.00', '2026-03-03');
         $this->refused('SUBLEDGER_OWNED', fn () => $svc->reverse($w['u1'], $this->key(), $send['entry']['public_id'], 'x', '2026-03-04'));
         // Physical: one reversal per entry (UNIQUE) and REVERSAL <=> reversal_of_id <=> reason (CHECK).
@@ -727,6 +730,8 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
     {
         $w = $this->finWorld();
         $period = (int) $this->db()->table('accounting_periods')->where('code', '2026-09')->value('id');
+        // FIN-D10: fund the cash outside September (the SEND needs 2.00; September must hold only the SEND).
+        $this->ledger()->post($w['u1'], $this->ledger()->createDraft($w['u1'], $this->key(), $this->revenueInput($w['c'], $w['cashC'], '2.00', '2026-08-31'))['public_id'], 0);
         [$post, $close, $wait] = $this->lockOrdered(['op' => 'subledger', 'user' => $w['u1'], 'key' => $this->key(), 'input' => $this->sendInput($w, '2.00', '2026-09-01')],
             ['op' => 'close_unit', 'user' => $w['u2'], 'period' => '2026-09', 'unit' => $w['c']]);
         $this->assertSame('OK', $post['status']);

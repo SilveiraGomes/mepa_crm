@@ -1,0 +1,255 @@
+{
+  "runner": "scripts/run-p010-finance-f1c.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 11.3,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33004,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\dcb91f53326d\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"dcb91f53326d\",\n  \"pid\": 15608,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"cb26e5a8-bda9-11f1-b4d7-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\dcb91f53326d\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33004",
+      "rc": 0,
+      "seconds": 35.6,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_dcb91f53_pool_01\",\n    \"mepa_wave4_test_dcb91f53_pool_02\",\n    \"mepa_wave3_test_dcb91f53_pool_01\",\n    \"mepa_wave5_test_dcb91f53_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_dcb91f53_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_dcb91f53_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_dcb91f53_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_dcb91f53_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 193,\n      \"tables\": 180\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "finance_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/FinanceE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 37.2,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:36.793, Memory: 32.00 MB\n\nOK (1 test, 51 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_finance",
+      "cmd": "npx.cmd playwright test --config playwright.finance-core.config.ts",
+      "rc": 0,
+      "seconds": 515.2,
+      "stdout_tail": "core.spec.ts:150:1 › B01/B02 bank statement imported as an external fact (7.8s)\n  ok 38 [mobile-390x844] › tests\\e2e\\finance-core.spec.ts:171:1 › B04 bank reconciliation: match the statement line with the opening entry and close the version (11.9s)\n  ok 39 [mobile-390x844] › tests\\e2e\\finance-core.spec.ts:191:1 › G03/G04 budget reviewed and approved by a different person, then actual vs budget (11.3s)\n  ok 40 [mobile-390x844] › tests\\e2e\\finance-core.spec.ts:210:1 › P01 unit month close from the closes screen (8.1s)\n  ok 41 [mobile-390x844] › tests\\e2e\\finance.spec.ts:68:1 › transfer lists: sent, received and in transit with origin, destination, purpose, value, dates and state (8.4s)\n  ok 42 [mobile-390x844] › tests\\e2e\\finance.spec.ts:92:1 › received detail shows origin, destination, purpose, value, dates and reconciles the pairing (12.4s)\n  ok 43 [mobile-390x844] › tests\\e2e\\finance.spec.ts:110:1 › T27 new transfer -> send -> receive on every viewport (mobile included), never touching the result (14.4s)\n  ok 44 [mobile-390x844] › tests\\e2e\\finance.spec.ts:142:1 › fund custody position shows where funds came from and went, apart from the economic result (7.6s)\n\n  44 passed (8.5m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33004",
+      "rc": 0,
+      "seconds": 8.6,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at": "2026-10-01T16:07:16+0100",
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_dcb91f53_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_dcb91f53_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_dcb91f53_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_dcb91f53_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 193,
+      "tables": 180
+    }
+  },
+  "schema_parity": {
+    "p010": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p09": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p08": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p07": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p06": {
+      "rc": 0,
+      "status": "PASS"
+    }
+  },
+  "finance_phpunit": {
+    "foundation_f1a": {
+      "rc": 0,
+      "summary": "OK (26 tests, 663 assertions)",
+      "seconds": 18.8
+    },
+    "transfers_f1b": {
+      "rc": 0,
+      "summary": "OK (21 tests, 1225 assertions)",
+      "seconds": 58.5
+    },
+    "core_f1c": {
+      "rc": 0,
+      "summary": "OK (46 tests, 1477 assertions)",
+      "seconds": 82.8
+    }
+  },
+  "wave2_regressions": {
+    "WaveTwoConcurrencyTest": {
+      "rc": 0,
+      "summary": "OK (4 tests, 59 assertions)"
+    },
+    "WaveTwoPhysicalTest": {
+      "rc": 0,
+      "summary": "OK (12 tests, 232 assertions)"
+    },
+    "WaveTwoIndependentReconciliationTest": {
+      "rc": 0,
+      "summary": "OK (11 tests, 44 assertions)"
+    },
+    "WaveTwoTransferConcurrencyTest": {
+      "rc": 0,
+      "summary": "OK (10 tests, 70 assertions)"
+    },
+    "WaveTwoM1IndependentAuditTest": {
+      "rc": 0,
+      "summary": "OK (10 tests, 110 assertions)"
+    }
+  },
+  "regressions": {
+    "membership": {
+      "rc": 0,
+      "summary": "OK (29 tests, 1427 assertions)"
+    },
+    "people_context": {
+      "rc": 0,
+      "summary": "OK (8 tests, 220 assertions)"
+    },
+    "people_person": {
+      "rc": 0,
+      "summary": "OK (15 tests, 1354 assertions)"
+    },
+    "territorial": {
+      "rc": 0,
+      "summary": "OK (13 tests, 151 assertions)"
+    },
+    "files": {
+      "rc": 0,
+      "summary": "OK (27 tests, 1550 assertions)"
+    },
+    "physical": {
+      "rc": 0,
+      "summary": "OK (21 tests, 875 assertions)"
+    },
+    "academy_remediation": {
+      "rc": 0,
+      "summary": "OK (24 tests, 118 assertions)"
+    },
+    "academy_http": {
+      "rc": 0,
+      "summary": "OK (5 tests, 35 assertions)"
+    }
+  },
+  "validators": {
+    "finance_f1c_contracts": {
+      "rc": 0,
+      "tail": "a840d\",\n    \"e2e\": \"f68540f260f5f509eb661a40cb621fd8695a22e5c875edb58d2d5ef9f02b0c7d\",\n    \"e2eConfig\": \"1d30946ac0750b74d82e8796364cc1043e708bc85770f7b396b2864fc67473cc\",\n    \"worker\": \"476eabf92742e47609d297bd663de06518714267fa3dc3ed87283cb41f70cefe\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "finance_transfer_contracts": {
+      "rc": 0,
+      "tail": "1ffc9c\",\n    \"pages\": \"f9101f88207ad47ca214e559356cd52b37519dca7bd9047ba13819bb2ead2d63\",\n    \"format\": \"9ce3ad7034ddde659eea48fe90ae0aabaaa80c3a2acf5bded4562fdac9177208\",\n    \"worker\": \"7f25cff1c3ecd93fdf92a65b5d51fb757c702ba862bcc741a5345e9652aeb4bd\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "finance_core_contracts": {
+      "rc": 0,
+      "tail": "a0\",\n    \"lines\": \"57ab4796573991015c6b8edacfdf1e81d87badf6d57d7906781e57a903d5f3c9\",\n    \"budgets\": \"07f2ddcb7e31afcb18600bb2f0d6ed2cb3e461dfd040a55702c1105df3cff401\",\n    \"installer\": \"3bd438961730aa6624becc1f4f2bee9bbdecba668780a02e3e5198e462ff6c5b\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "membership_contracts": {
+      "rc": 0,
+      "tail": "5f2a\",\n    \"shell\": \"f55ab199b6ef203ee2fcfccdc0b122d06a34da6855051548cad07e2c55da840d\",\n    \"pages\": \"e6c7e339dadbf486e95e5c1389c908c919a24350fdf17d96978830160970c155\",\n    \"endpoints\": \"2cb8d0870d6c2eff7e4b03564bd96da1c851bd1d8aa5ccaa01246ff7cca742ec\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "files_contracts": {
+      "rc": 0,
+      "tail": "840d\",\n    \"pages\": \"69634a37cfb9c73e5cb4b792ff30a1b0305ab59d5f54d9ce099c5a244a6d2a16\",\n    \"docPages\": \"da5ad1c8d965ae6654f0a4294d418c6314f18d540250473559b8811da56467f5\",\n    \"client\": \"b3b2667c595a29b23bf566ef217966806ceaf6473799a23be437b48022fe2c71\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "physical_contracts": {
+      "rc": 0,
+      "tail": "5f2a\",\n    \"shell\": \"f55ab199b6ef203ee2fcfccdc0b122d06a34da6855051548cad07e2c55da840d\",\n    \"pages\": \"a21e8b0ea1fca7336e2eedd5afa05fff2a42ac93a2cefdd24ecc5f39a746b3af\",\n    \"patrimony\": \"eb76414a7917044f41d65b9a1b532e56462d72c4dc00d546bc7b237afa31b37a\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "territorial_contracts": {
+      "rc": 0,
+      "tail": "a8f045b\",\n    \"rules\": \"bf244e91b4c8282b5c2cf0053fe9c9176671a50b3f21dd996d6f234520063b7e\",\n    \"contracts\": \"42462dd703ca29af84b9511746b423717bf0c71ba4c924dcbbc3c355e142c4db\",\n    \"ui\": \"cf0de4321725895a17d67efba008e10058ed562663a09b9c6e4fed8e6bb282d5\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "http_contracts": {
+      "rc": 0,
+      "tail": "HTTP_CONTRACTS_PASS 828 checks 66 endpoints"
+    },
+    "ui_contracts": {
+      "rc": 0,
+      "tail": "UI_CONTRACTS_PASS 530 checks; 34 screens; 25 actions; 0 contract-gapped actions"
+    },
+    "auth_contracts": {
+      "rc": 0,
+      "tail": "AUTH_CONTRACTS_PASS 20 checks; MEPA_LOCAL_AUTH_V1; refresh NOT_APPLICABLE"
+    },
+    "application_contracts": {
+      "rc": 0,
+      "tail": "{\n  status: 'APPLICATION_CONTRACTS_PASS',\n  checks: 1513,\n  failed: 0,\n  operations: 65,\n  command_operations: 30,\n  read_operations: 35,\n  d09_reviewed_false_positives: 17\n}"
+    },
+    "people_families_contracts": {
+      "rc": 0,
+      "tail": "{\n  \"validator\": \"MEPA_PEOPLE_FAMILIES_IMPLEMENTATION_V1\",\n  \"status\": \"PASS\",\n  \"endpoints\": 33,\n  \"errors\": []\n}"
+    },
+    "wave5_schema_static": {
+      "rc": 0,
+      "tail": "ically parsed, vs. model_catalog.json + wave5_manifest.json (design authority) + wave5_migrations_manifest.json (execution authority)\",\n  \"tables\": 25,\n  \"columns\": 215,\n  \"foreign_keys\": 52,\n  \"checks\": 21,\n  \"unique\": 32,\n  \"public_id\": 8,\n  \"cascade\": 0,\n  \"unexpected_drift\": 0,\n  \"errors\": []\n}"
+    },
+    "database_docs": {
+      "rc": 0,
+      "tail": "{\n  \"tables\": 199,\n  \"columns\": 1753,\n  \"fks\": 440,\n  \"master_relations\": 440,\n  \"local_links\": \"checked\",\n  \"identifier_strategy\": \"ACCEPTED\",\n  \"public_id_entities\": 54,\n  \"errors\": []\n}"
+    }
+  },
+  "web": {
+    "tests": {
+      "rc": 0
+    },
+    "lint": {
+      "rc": 0
+    }
+  },
+  "web_build": {
+    "rc": 0,
+    "pwa": true
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true
+  },
+  "playwright_finance": {
+    "startTime": "2026-10-01T15:38:51.124Z",
+    "duration": 511709.738,
+    "expected": 44,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "log_scan": {
+    "bytes_scanned": 9857819,
+    "leaks": []
+  },
+  "temporary_key_ring_removed": true,
+  "fixture_manifest_removed": true,
+  "tracked_rewrites_restored": true,
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-10-01T16:47:33+0100"
+}

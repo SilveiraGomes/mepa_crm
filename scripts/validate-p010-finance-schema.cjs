@@ -1,4 +1,4 @@
-// P0.10-F1A Finance Core schema parity (ADR 0021 D32/D33 + D-04A). Three models of the 21 F1A tables are compared in
+// P0.10 Finance Core schema parity (ADR 0021 D32/D33 + D-04A). Three models of the 26 Finance tables are compared in
 // BOTH directions (missing AND unexpected): EXPECTED = docs/database/model_catalog.json + the approved deltas of
 // docs/database/physical/p010_finance_delta_manifest.json; STATIC = the CREATE TABLE text of the P0.10 migrations;
 // LIVE = INFORMATION_SCHEMA of an isolated Wave 5 pool. Reported per category: tables, columns (nullability + type),
@@ -27,7 +27,20 @@ function mysqlRows(sql) {
   const args = ['--user=' + (process.env.P010_USER || 'root')]
   if (process.env.P010_PASSWORD) args.push('--password=' + process.env.P010_PASSWORD)
   args.push('--host=' + (parts.host || '127.0.0.1'), '--port=' + (parts.port || 3306), '--database=' + parts.dbname, '--batch', '--skip-column-names', '--execute=' + sql)
-  return execFileSync(mysql, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim().split(/\r?\n/).filter(Boolean).map((line) => line.split('\t'))
+  // F1C-T05: on Windows the client output occasionally arrives with a line break inside a row (a fragment such as
+  // "reconci" with no tab). A read is interpreted only when two consecutive reads of the same (read-only) query are
+  // byte-identical and every row has the same column count (max 5 reads); otherwise the validator fails loudly.
+  let previous = null
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    // Order-insensitive comparison: INFORMATION_SCHEMA rows without ORDER BY may come back in any order.
+    const lines = execFileSync(mysql, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim().split(/\r?\n/).filter(Boolean)
+    const text = [...lines].sort().join('\n')
+    const rows = lines.map((line) => line.split('\t'))
+    if (text === previous && rows.every((row) => row.length === rows[0].length)) return rows
+    if (previous !== null) mysqlRows.retries = (mysqlRows.retries || 0) + 1
+    previous = text
+  }
+  throw new Error('unstable mysql client output after 5 reads: ' + sql.slice(0, 80))
 }
 
 // ---- STATIC: parse the migrations' CREATE TABLE text ------------------------------------------------------------------
@@ -187,7 +200,7 @@ try {
     const absentWanted = [...plan.catalog_tables_not_created_v1, ...manifest.deferred_finance_tables.F1B, ...manifest.deferred_finance_tables.F1C, ...plan.payroll_tables_reserved_f2]
     const presentDeferred = mysqlRows(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${absentWanted.map((t) => `'${t}'`).join(',')})`).map(([t]) => t)
     const rules = mysqlRows(`SELECT CONSTRAINT_NAME,UPDATE_RULE,DELETE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME IN (${list})`).filter(([, u, d]) => u !== 'RESTRICT' || d !== 'RESTRICT').map(([n]) => n)
-    const fkTypes = mysqlRows(`SELECT CONCAT(k.TABLE_NAME,'.',k.COLUMN_NAME),c.COLUMN_TYPE FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE k JOIN INFORMATION_SCHEMA.COLUMNS c ON c.TABLE_SCHEMA=k.TABLE_SCHEMA AND c.TABLE_NAME=k.TABLE_NAME AND c.COLUMN_NAME=k.COLUMN_NAME WHERE k.TABLE_SCHEMA=DATABASE() AND k.TABLE_NAME IN (${list}) AND k.REFERENCED_TABLE_NAME IS NOT NULL`).filter(([, t]) => t !== 'bigint unsigned').map(([c]) => c)
+    const fkTypes = mysqlRows(`SELECT CONCAT(k.TABLE_NAME,'.',k.COLUMN_NAME),c.COLUMN_TYPE FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE k JOIN INFORMATION_SCHEMA.COLUMNS c ON c.TABLE_SCHEMA=k.TABLE_SCHEMA AND c.TABLE_NAME=k.TABLE_NAME AND c.COLUMN_NAME=k.COLUMN_NAME WHERE k.TABLE_SCHEMA=DATABASE() AND k.TABLE_NAME IN (${list}) AND k.REFERENCED_TABLE_NAME IS NOT NULL AND c.COLUMN_TYPE <> 'bigint unsigned'`).map(([c]) => c)
     const floats = mysqlRows(`SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${list}) AND DATA_TYPE IN ('float','double','real')`).map(([c]) => c)
     const liveMoney = mysqlRows(`SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME),COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${list}) AND DATA_TYPE='decimal'`)
     const forbidden = manifest.forbidden_columns.map((v) => v.split('.'))
@@ -219,7 +232,7 @@ try {
     Object.assign(details, {
       database: mysqlRows('SELECT DATABASE()')[0][0], catalog_vs_information_schema: catalogVsLive, live_tables: liveTables.length, deferred_or_payroll_tables_present: presentDeferred,
       non_restrict_fks: rules, non_bigint_fk_columns: fkTypes, float_columns: floats, live_money_columns: liveMoney.length, forbidden_columns_present: forbiddenLive,
-      approved_guard_generated_stored: genOk, controlled_rows: controlled, controlled_rows_expected: counts,
+      approved_guard_generated_stored: genOk, mysql_output_requeries: mysqlRows.retries || 0, controlled_rows: controlled, controlled_rows_expected: counts,
       d04a_vocabulary: { clearing_accounts: vocab, fixed_asset_rubrics: fixedAssetRubrics, transfer_purposes: purposes }, roles_with_finance_permissions: roleGrants,
     })
   }

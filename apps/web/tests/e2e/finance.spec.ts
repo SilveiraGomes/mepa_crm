@@ -8,7 +8,8 @@ import path from 'node:path'
 // visual QA on 4 viewports. Fixture seeded by FinanceE2EFixtureTest through the API: one data set per viewport project.
 const repo = path.resolve(process.cwd(), '../..')
 const fx = JSON.parse(fs.readFileSync(process.env.P010_FIXTURE_PATH ?? path.join(repo, '.tmp/p010-e2e-fixtures.json'), 'utf8'))
-const evidence = path.join(repo, 'docs/reviews/evidence/P0.10-F1B')
+// Evidence directory: F1B by default; the F1C runner re-runs this suite as a regression into its own evidence folder.
+const evidence = process.env.P010_UI_EVIDENCE_DIR ?? path.join(repo, 'docs/reviews/evidence/P0.10-F1B')
 const apiRoot = path.join(repo, 'apps/api')
 const php = process.env.MEPA_PHP_BIN ?? 'C:\\wamp64\\bin\\php\\php8.1.33\\php.exe'
 const support = path.join(apiRoot, 'tests/DatabaseV2/Support/finance_e2e_support.php')
@@ -93,7 +94,8 @@ test('received detail shows origin, destination, purpose, value, dates and recon
   await login(page)
   await page.goto(`/financas/transferencias/${set.received}`)
   await expect(page.getByRole('heading', { level: 1, name: `Transferência ${kz(set.received_amount)}` })).toBeVisible()
-  for (const text of ['Origem', 'Destino', 'Finalidade', 'Data de envio', 'Data de recepção', 'Reconciliação', 'Efeito económico']) await expect(page.getByText(text, { exact: true })).toBeVisible()
+  // Scoped to main: since F1C the side navigation also has a "Reconciliação" link.
+  for (const text of ['Origem', 'Destino', 'Finalidade', 'Data de envio', 'Data de recepção', 'Reconciliação', 'Efeito económico']) await expect(page.locator('main').getByText(text, { exact: true })).toBeVisible()
   await expect(page.getByText(fx.a1.name).first()).toBeVisible()
   await expect(page.getByText('Remessa regular')).toBeVisible()
   await expect(page.getByText('Por reconciliar')).toBeVisible()

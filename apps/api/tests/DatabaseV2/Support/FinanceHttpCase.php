@@ -19,9 +19,23 @@ use Illuminate\Testing\TestResponse;
  */
 abstract class FinanceHttpCase extends TerritorialHttpCase
 {
+    /** F1C: per-process Files key ring (bank account numbers, ADR 0019 D06) in the OS temp directory, removed at exit. */
+    protected static ?string $financeSandbox = null;
+
     protected function setUp(): void
     {
         parent::setUp();
+        if (self::$financeSandbox === null) {
+            self::$financeSandbox = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'mepa-finance-test-' . getmypid() . '-' . bin2hex(random_bytes(4));
+            mkdir(self::$financeSandbox, 0700, true);
+            file_put_contents(self::$financeSandbox . DIRECTORY_SEPARATOR . 'keyring.json', json_encode(['active_version' => 1, 'keys' => ['1' => ['kek' => base64_encode(random_bytes(32))]]], JSON_THROW_ON_ERROR));
+            $dir = self::$financeSandbox;
+            register_shutdown_function(static function () use ($dir): void {
+                @unlink($dir . DIRECTORY_SEPARATOR . 'keyring.json');
+                @rmdir($dir);
+            });
+        }
+        config(['files.keyring_path' => getenv('P010_E2E_KEYRING_PATH') ?: self::$financeSandbox . DIRECTORY_SEPARATOR . 'keyring.json']);
         FilesCatalog::install(DB::connection());
         FinanceCatalog::install(DB::connection());
         (new FinancePeriods(DB::connection()))->ensureYear(2026);
@@ -72,6 +86,17 @@ abstract class FinanceHttpCase extends TerritorialHttpCase
             'currency_id' => (int) DB::table('currencies')->where('code', 'AOA')->value('id'), 'code' => $kind . '-' . Str::random(8), 'name' => ($kind === 'CASH' ? 'Caixa ' : 'Banco ') . Str::random(4),
             'account_kind' => $kind, 'status' => 'OPEN', 'opened_on' => '2026-01-01', 'closed_on' => null, 'created_at' => now('UTC')->format('Y-m-d H:i:s.u'), 'lock_version' => 0]);
         return ['id' => $id, 'public_id' => $public, 'unit' => $unit['id']];
+    }
+
+    /** Existing adult Person with an ACTIVE People context at $unit (Finance never creates a Person). */
+    protected function person(array $unit, ?string $name = null): array
+    {
+        $statusId = (int) DB::table('person_statuses')->where('code', 'ACTIVE')->value('id');
+        $id = $this->row('people', ['full_name' => $name ?? 'Custodiante ' . Str::random(8), 'status_id' => $statusId, 'birth_date' => '1985-03-01', 'birth_precision' => 'EXACT', 'lock_version' => 0]);
+        $at = now('UTC')->subHour()->format('Y-m-d H:i:s.u');
+        DB::table('person_unit_contexts')->insert(['person_id' => $id, 'unit_id' => $unit['id'], 'context_kind' => 'ONBOARDING', 'status' => 'ACTIVE', 'starts_at' => $at, 'ends_at' => null, 'reason' => null,
+            'source_document_id' => null, 'created_at' => $at, 'lock_version' => 0]);
+        return ['id' => $id, 'public_id' => (string) DB::table('people')->where('id', $id)->value('public_id')];
     }
 
     protected function key(): string

@@ -1,0 +1,44 @@
+{
+    "send": {
+        "status": "OK",
+        "result": {
+            "replayed": false
+        },
+        "pid": 35920,
+        "ms": 133
+    },
+    "close": {
+        "status": "OK",
+        "result": {
+            "closed": true
+        },
+        "pid": 30768,
+        "ms": 56
+    },
+    "wait": {
+        "object": "accounting_periods",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    },
+    "close2": {
+        "status": "OK",
+        "result": {
+            "closed": true
+        },
+        "pid": 8928,
+        "ms": 110
+    },
+    "receive": {
+        "status": "PERIOD_CLOSED",
+        "items": [],
+        "pid": 30340,
+        "ms": 70
+    },
+    "wait2": {
+        "object": "accounting_periods",
+        "mode": "S,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

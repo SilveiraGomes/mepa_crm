@@ -43,3 +43,32 @@ describe('Finance error translation', () => {
     expect(toFinanceError(new ApiError(422, 'AMOUNT_SCALE')).message).toContain('2 casas decimais')
   })
 })
+
+describe('Finance Core API paths (P0.10-F1C)', () => {
+  it('uses public ids and explicit transition endpoints only', () => {
+    expect(fin.subledgerStep('receivables', 'R/1', 'settlements')).toBe('finance/receivables/R%2F1/settlements')
+    expect(fin.settlementCancel('S')).toBe('finance/settlements/S/cancel')
+    expect(fin.reconciliationStep('X', 'matches')).toBe('finance/reconciliations/X/matches')
+    expect(fin.budgetStep('B', 'approve')).toBe('finance/budgets/B/approve')
+    expect(fin.periodStep('2026-08', 'national-close')).toBe('finance/periods/2026-08/national-close')
+    const all = [fin.accounts(), fin.account('A'), fin.accountClose('A'), fin.subledgers('payables'), fin.statements(), fin.reconciliations(), fin.budgets(), fin.actualVsBudget('B'), fin.periods()].join('|')
+    expect(all).not.toMatch(/status|_id|delete|patch/i)
+  })
+})
+
+describe('Finance Core error translation (P0.10-F1C)', () => {
+  it('explains accrual, reconciliation, budget and close conflicts without raw codes', () => {
+    for (const code of ['OVER_SETTLEMENT', 'ALREADY_SETTLED', 'MATCH_EXCEEDS_STATEMENT_LINE', 'MATCH_EXCEEDS_LEDGER_LINE', 'SEGREGATION_REQUIRED', 'BUDGET_VERSION_OUTDATED', 'UNITS_NOT_CLOSED', 'ACCOUNT_BALANCE_NOT_ZERO']) {
+      const error = toFinanceError(new ApiError(409, code))
+      expect(error.kind).toBe('conflict')
+      expect(error.message).not.toContain(code)
+    }
+  })
+
+  it('attaches validation messages to the right field', () => {
+    expect(toFinanceError(new ApiError(422, 'PAYABLE_DOCUMENT_REQUIRED')).fields.document).toContain('documento')
+    expect(toFinanceError(new ApiError(422, 'CATEGORY_NOT_RECEIVABLE')).fields.category).toContain('Dízimos')
+    expect(toFinanceError(new ApiError(422, 'STATEMENT_UNBALANCED')).fields.closing_balance).toContain('saldo final')
+    expect(toFinanceError(new ApiError(422, 'REASON_REQUIRED')).fields.reason).toBe('Indique o motivo.')
+  })
+})
