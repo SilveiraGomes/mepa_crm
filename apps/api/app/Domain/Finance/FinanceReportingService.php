@@ -58,8 +58,8 @@ final class FinanceReportingService
             // F-06 (F1D-P01): the permission is decided before the target is resolved, so the answer never depends on
             // whether the unit exists.
             $guard->requires(FinanceCatalog::PERMISSION_REPORT);
-            $forcedConsolidated = str_starts_with($type, 'CONSOLIDATED_');
-            $view = $forcedConsolidated ? 'CONSOLIDATED' : strtoupper((string) ($in['view'] ?? 'OWN'));
+            // F1D-P04: the report type names its view; only the view-neutral reports follow the view parameter.
+            $view = str_starts_with($type, 'CONSOLIDATED_') ? 'CONSOLIDATED' : (str_starts_with($type, 'OWN_') ? 'OWN' : strtoupper((string) ($in['view'] ?? 'OWN')));
             if (!in_array($view, ['OWN', 'CONSOLIDATED'], true)) {
                 throw new FinanceError('INVALID_INPUT', [], ['field' => 'view']);
             }
