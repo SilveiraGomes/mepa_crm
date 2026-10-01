@@ -544,5 +544,24 @@
       "FIN-D10": "no negative CASH/BANK (decided 2026-10-01, ADR 0021)",
       "FIN-D11": "reconciliation of closed periods allowed without touching the ledger (decided 2026-10-01, ADR 0021)"
     }
+  },
+  "f1d_contracts": {
+    "scope": "Finance Core V1 reporting and consolidation; Payroll remains absent.",
+    "tables": { "finance_physical": 26, "finance_approved": 26, "payroll_physical": 0, "payroll_planned": 9, "new_tables": 0 },
+    "views": {
+      "own_economic": "DRE from POSTED INCOME/EXPENSE journal lines on accrual basis",
+      "own_custody": "DOAF from POSTED CASH/BANK lines, with internal received/sent shown explicitly",
+      "consolidated_subtree": "historical perimeter at report end; internal custody movements eliminated, boundary movements retained"
+    },
+    "historical_perimeter": "ReportPerimeterResolver over unit_parent_periods at report_end_date; organizational_units.parent_id is used only to validate current consolidated grant coverage",
+    "snapshot": "one REPEATABLE READ transaction for authorization, historical perimeter and every report query (ADR 0021 C8)",
+    "periods": ["MONTH", "QUARTER", "SEMESTER", "YEAR", "RANGE"],
+    "reports_v1": ["OWN_DRE", "CONSOLIDATED_DRE", "OWN_DOAF", "CONSOLIDATED_DOAF", "REVENUE_SUMMARY", "EXPENSE_SUMMARY", "INTERNAL_FUNDS_RECEIVED", "INTERNAL_FUNDS_SENT", "INTERUNIT_RECONCILIATION", "INTERUNIT_POSITION", "FINANCIAL_ACCOUNT_MOVEMENTS", "CASH_BANK_BALANCES", "BUDGET_VS_ACTUAL", "RECEIVABLES", "PAYABLES", "FINANCE_PERIOD_SUMMARY"],
+    "authority": { "own": "FINANCE_REPORT on unit", "consolidated": "FINANCE_REPORT + FINANCE_CONSOLIDATED_VIEW on root with current subtree coverage", "drill_down": "FINANCE_VIEW on each projected unit", "concealment": "unknown and out-of-scope unit both 404 after permission precheck" },
+    "exports": "CSV uses the exact report read model and filters; audited as finance.export; official header fields are included",
+    "audit": ["finance.report.generated", "finance.dashboard.viewed", "finance.report.drilldown", "finance.export", "finance.contributor_detail_viewed"],
+    "ui": ["Visão Geral", "Contas", "A receber", "A pagar", "Contribuições", "Transferências", "Posição de fundos", "Extractos", "Reconciliação", "Orçamento", "Fechos", "Relatórios"],
+    "tests": "apps/api/tests/DatabaseV2/FinanceReportingF1DTest.php",
+    "validator": "scripts/validate-finance-reporting-contracts.cjs"
   }
 }

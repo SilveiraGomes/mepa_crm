@@ -64,7 +64,8 @@ function checks(f) {
   const shapes = f.catalog.match(/'SETTLEMENT' => \[\[([^\]]*)\], \[([^\]]*)\]/)
   const testNames = new Set([...f.test.matchAll(/public function (test_\w+)\(/g)].map((m) => m[1]))
   const f1c = contract.f1c_contracts || {}
-  const navOrder = ['Contas', 'A receber', 'A pagar', 'Transferências enviadas', 'Extractos bancários', 'Reconciliação', 'Orçamento', 'Fechos', 'Posição de fundos']
+  // F1D keeps the F1C pages but closes the final navigation wording/duplication debt.
+  const navOrder = ['Contas', 'A receber', 'A pagar', 'Transferências', 'Extractos', 'Reconciliação', 'Orçamento', 'Fechos', 'Posição de fundos']
   return {
     H01_explicit_transition_routes_only: F1C_ROUTES.every((r) => routes.includes(r)) && routes.length === F1C_ROUTES.length && !/Route::(patch|put|delete)\(/.test(block)
       && lines.filter((l) => /Route::post/.test(l)).every((l) => /throttle:finance-write/.test(l)),
