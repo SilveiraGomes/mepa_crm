@@ -18,9 +18,16 @@
 .finance-timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
 .finance-timeline__item { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); min-width: 0; overflow-wrap: anywhere; }
 .finance-input-amount { font-variant-numeric: tabular-nums; }
+/* P0.10-F1C: editable line groups (statement lines, budget lines): one column on phones, a row from tablets up. */
+.finance-lines { display: grid; gap: var(--space-3); margin: 0; padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); min-width: 0; }
+.finance-lines > legend { padding: 0 var(--space-1); font-weight: 600; }
+.finance-line { display: grid; gap: var(--space-2); align-items: end; padding-bottom: var(--space-3); border-bottom: 1px solid var(--border-subtle); min-width: 0; }
+.finance-line > .btn { justify-self: start; }
 @media (width >= 48rem) {
   .finance-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .finance-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .finance-line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) auto; border-bottom: 0; padding-bottom: 0; }
+  .finance-line--short { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; }
 }
 @media (width < 30rem) {
   .finance-actions { width: 100%; }

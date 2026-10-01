@@ -62,8 +62,9 @@ final class FinancePeriods
             if ($close !== null && $close->status === FinanceCatalog::UNIT_CLOSED) {
                 throw new FinanceError('PERIOD_ALREADY_CLOSED');
             }
+            // Decision reads after the period lock wait are LOCKING reads (F1B-P01): a competitor's commit is never missed.
             $pending = $this->db->table('journal_entries')->where('period_id', $period->id)->where('unit_id', $unitId)
-                ->whereIn('status', [FinanceCatalog::DRAFT, FinanceCatalog::SUBMITTED])->orderBy('id')->pluck('public_id')->all();
+                ->whereIn('status', [FinanceCatalog::DRAFT, FinanceCatalog::SUBMITTED])->orderBy('id')->sharedLock()->pluck('public_id')->all();
             if ($pending !== []) {
                 throw new FinanceError('PERIOD_HAS_PENDING_ENTRIES', $pending);
             }
@@ -85,8 +86,7 @@ final class FinancePeriods
             throw new FinanceError('REASON_REQUIRED');
         }
         $this->db->transaction(function () use ($actor, $code, $unitId, $reason): void {
-            $this->lockMonth($code);
-            $period = $this->db->table('accounting_periods')->where('code', $code)->first();
+            $period = $this->lockMonth($code);
             $close = $this->db->table('accounting_period_unit_closes')->where('period_id', $period->id)->where('unit_id', $unitId)->lockForUpdate()->first();
             if ($close === null || $close->status !== FinanceCatalog::UNIT_CLOSED) {
                 throw new FinanceError('PERIOD_NOT_CLOSED');
@@ -105,14 +105,14 @@ final class FinancePeriods
     {
         $this->db->transaction(function () use ($actor, $code, $rootUnitId): void {
             $period = $this->lockMonth($code);
-            $pending = $this->db->table('journal_entries')->where('period_id', $period->id)->whereIn('status', [FinanceCatalog::DRAFT, FinanceCatalog::SUBMITTED])->orderBy('id')->pluck('public_id')->all();
+            $pending = $this->db->table('journal_entries')->where('period_id', $period->id)->whereIn('status', [FinanceCatalog::DRAFT, FinanceCatalog::SUBMITTED])->orderBy('id')->sharedLock()->pluck('public_id')->all();
             if ($pending !== []) {
                 throw new FinanceError('PERIOD_HAS_PENDING_ENTRIES', $pending);
             }
             $open = $this->db->table('journal_lines as l')->join('journal_entries as e', 'e.id', '=', 'l.entry_id')->join('organizational_units as u', 'u.id', '=', 'l.unit_id')
                 ->where('e.period_id', $period->id)->where('e.status', FinanceCatalog::POSTED)
                 ->whereNotExists(fn ($q) => $q->from('accounting_period_unit_closes as c')->whereColumn('c.unit_id', 'l.unit_id')->where('c.period_id', $period->id)->where('c.status', FinanceCatalog::UNIT_CLOSED))
-                ->distinct()->orderBy('u.public_id')->pluck('u.public_id')->all();
+                ->distinct()->orderBy('u.public_id')->sharedLock()->pluck('u.public_id')->all();
             if ($open !== []) {
                 throw new FinanceError('UNITS_NOT_CLOSED', $open);
             }

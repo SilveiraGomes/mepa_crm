@@ -27,7 +27,8 @@ use LogicException;
  * Physical backstops (CHECK / UNIQUE / composite FK) are in the P0.10 migrations; there are no triggers (04_database_constraints).
  *
  * Lock order (extends 04_database_constraints): national period FOR SHARE -> unit close FOR SHARE -> header FOR UPDATE ->
- * financial accounts FOR SHARE by id -> idempotency claim. Period closes take the period FOR UPDATE (FinancePeriods).
+ * financial accounts FOR SHARE by id (their OPEN status decided on that locking read) -> idempotency claim. Period closes
+ * take the period FOR UPDATE (FinancePeriods); an account close takes the account FOR UPDATE (FinanceAccountService).
  * Authorization (TerritorialAuthority FINANCE) is the application layer's job (F1B) and must run before these calls.
  */
 final class LedgerPostingService
@@ -64,6 +65,58 @@ final class LedgerPostingService
             throw new FinanceError('ENTRY_KIND_NOT_SUBLEDGER');
         }
         return $this->create($actor, $clientKey, self::OP_SUBLEDGER, $input, true);
+    }
+
+    /**
+     * D11 own-flow correction of a subledger entry (F1C: settlement cancellation, payable/receivable recognition
+     * cancellation): a REVERSAL whose lines are the exact inverse of the POSTED target, dated in an OPEN period of the
+     * same unit, born POSTED inside the subledger's transaction. The generic reverse() keeps refusing these targets
+     * (SUBLEDGER_OWNED); only the kinds in FinanceCatalog::OWN_FLOW_REVERSIBLE_KINDS may be reversed here.
+     */
+    public function postSubledgerReversal(int $actor, string $clientKey, int $targetEntryId, string $reason, string $entryDate): array
+    {
+        if ($this->db->transactionLevel() === 0) {
+            throw new LogicException('SUBLEDGER_TRANSACTION_REQUIRED');
+        }
+        if (trim($reason) === '') {
+            throw new FinanceError('REASON_REQUIRED');
+        }
+        $target = $this->db->table('journal_entries')->where('id', $targetEntryId)->first();
+        if ($target === null || !in_array($target->entry_kind, FinanceCatalog::OWN_FLOW_REVERSIBLE_KINDS, true)) {
+            throw new FinanceError('REVERSAL_TARGET_INVALID');
+        }
+        $hash = $this->hash(self::OP_SUBLEDGER, ['reversal_of' => (string) $target->public_id, 'reason' => $reason, 'date' => $entryDate]);
+        if (($replay = $this->replay($actor, self::OP_SUBLEDGER, $clientKey, $hash)) !== null) {
+            return $replay;
+        }
+        $period = $this->monthFor($entryDate);
+        $this->lockPeriodForUnit((int) $period->id, (int) $target->unit_id);
+        $target = $this->db->table('journal_entries')->where('id', $targetEntryId)->sharedLock()->first();
+        if ($target->status !== FinanceCatalog::POSTED) {
+            throw new FinanceError('ENTRY_NOT_POSTED');
+        }
+        if ($this->db->table('journal_entries')->where('reversal_of_id', $target->id)->sharedLock()->exists()) {
+            throw new FinanceError('ALREADY_REVERSED');
+        }
+        $lines = [];
+        foreach ($this->db->table('journal_lines')->where('entry_id', $target->id)->orderBy('line_number')->get() as $line) {
+            $lines[] = ['ledger_account_id' => (int) $line->ledger_account_id, 'financial_account_id' => $line->financial_account_id === null ? null : (int) $line->financial_account_id,
+                'counterparty_unit_id' => $line->counterparty_unit_id === null ? null : (int) $line->counterparty_unit_id, 'fund_id' => (int) $line->fund_id,
+                'category_id' => $line->category_id === null ? null : (int) $line->category_id, 'debit' => Money::fromDecimal($line->credit), 'credit' => Money::fromDecimal($line->debit),
+                'description' => $line->description];
+        }
+        try {
+            return $this->persist($actor, $clientKey, self::OP_SUBLEDGER, $hash, [
+                'unit_id' => (int) $target->unit_id, 'entry_kind' => FinanceCatalog::REVERSAL, 'entry_date' => $entryDate, 'period' => $period,
+                'currency_id' => (int) $target->currency_id, 'description' => 'Anulação de ' . $target->reference, 'reason' => $reason,
+                'reversal_of_id' => (int) $target->id, 'document_id' => null,
+            ], $lines, true, true);
+        } catch (QueryException $e) {
+            if ((int) ($e->errorInfo[1] ?? 0) === 1062 && str_contains($e->getMessage(), 'uq_journal_entries_reversal_of_id')) {
+                throw new FinanceError('ALREADY_REVERSED');
+            }
+            throw $e;
+        }
     }
 
     /** Replace every line of a DRAFT entry (the only line mutation that exists). */
@@ -217,13 +270,10 @@ final class LedgerPostingService
     }
 
     /** Called with the period (and unit close) already share-locked. */
-    private function persist(int $actor, string $clientKey, string $operation, string $hash, array $header, array $lines, bool $post): array
+    private function persist(int $actor, string $clientKey, string $operation, string $hash, array $header, array $lines, bool $post, bool $ownFlowReversal = false): array
     {
         $accounts = array_values(array_unique(array_filter(array_column($lines, 'financial_account_id'))));
-        sort($accounts);
-        if ($accounts !== []) {
-            $this->db->table('accounts')->whereIn('id', $accounts)->orderBy('id')->sharedLock()->get(['id']);
-        }
+        $this->lockOpenAccounts($accounts);
         $claim = $this->claim($actor, $operation, $clientKey, $hash);
         if ($claim['replay'] !== null) {
             return $claim['replay'];
@@ -239,7 +289,7 @@ final class LedgerPostingService
         ]);
         $this->insertLines($id, $header['unit_id'], $lines);
         if ($post) {
-            $this->assertPostable($id);
+            $this->assertPostable($id, $ownFlowReversal);
         }
         $this->db->table('idempotency_requests')->where('id', $claim['id'])->update(['status' => 'COMPLETED', 'result_public_id' => $publicId]);
         $correlation = FinanceAudit::correlation();
@@ -319,7 +369,7 @@ final class LedgerPostingService
     // ---- validation -------------------------------------------------------------------------------------------------
 
     /** The posting gate. Reads the PERSISTED header and lines (inside the posting transaction) and throws on any breach. */
-    private function assertPostable(int $entryId): void
+    private function assertPostable(int $entryId, bool $ownFlowReversal = false): void
     {
         $entry = $this->db->table('journal_entries as e')->join('currencies as c', 'c.id', '=', 'e.currency_id')->join('accounting_periods as p', 'p.id', '=', 'e.period_id')
             ->join('organizational_units as u', 'u.id', '=', 'e.unit_id')->where('e.id', $entryId)
@@ -451,19 +501,23 @@ final class LedgerPostingService
             throw new FinanceError('ENTRY_TOTAL_NOT_POSITIVE');
         }
         if (in_array($entry->entry_kind, FinanceCatalog::REVERSING_KINDS, true)) {
-            $this->assertReversal($entry, $lines);
+            $this->assertReversal($entry, $lines, $ownFlowReversal);
         } elseif ($entry->reversal_of_id !== null) {
             throw new FinanceError('REVERSAL_TARGET_INVALID');
         }
     }
 
-    private function assertReversal(object $entry, array $lines): void
+    private function assertReversal(object $entry, array $lines, bool $ownFlowReversal = false): void
     {
         $target = $this->db->table('journal_entries')->where('id', $entry->reversal_of_id)->first();
         $expectedKind = ['REVERSAL' => null, 'TRANSFER_REVERSE_SEND' => 'TRANSFER_SEND', 'PAYROLL_REVERSAL' => 'PAYROLL_ACCRUAL'][$entry->entry_kind];
+        // A subledger entry is reversed only by its own flow (D11): the generic path never reaches one; the own-flow
+        // path (postSubledgerReversal) may reverse exactly the kinds in OWN_FLOW_REVERSIBLE_KINDS.
+        $subledgerTarget = $target !== null && in_array($target->entry_kind, FinanceCatalog::SUBLEDGER_KINDS, true);
+        $ownFlowOk = $ownFlowReversal && $target !== null && in_array($target->entry_kind, FinanceCatalog::OWN_FLOW_REVERSIBLE_KINDS, true);
         if ($target === null || $target->status !== FinanceCatalog::POSTED || (int) $target->unit_id !== (int) $entry->unit_id || (int) $target->id === (int) $entry->id
             || ($expectedKind !== null && $target->entry_kind !== $expectedKind)
-            || ($expectedKind === null && ($target->entry_kind === FinanceCatalog::REVERSAL || in_array($target->entry_kind, FinanceCatalog::SUBLEDGER_KINDS, true)))) {
+            || ($expectedKind === null && ($target->entry_kind === FinanceCatalog::REVERSAL || ($subledgerTarget && !$ownFlowOk)))) {
             throw new FinanceError('REVERSAL_TARGET_INVALID');
         }
         if ($entry->entry_kind !== FinanceCatalog::REVERSAL) {
@@ -526,9 +580,24 @@ final class LedgerPostingService
 
     private function lockFinancialAccounts(int $entryId): void
     {
-        $ids = $this->db->table('journal_lines')->where('entry_id', $entryId)->whereNotNull('financial_account_id')->distinct()->orderBy('financial_account_id')->pluck('financial_account_id')->all();
-        if ($ids !== []) {
-            $this->db->table('accounts')->whereIn('id', $ids)->orderBy('id')->sharedLock()->get(['id']);
+        $this->lockOpenAccounts($this->db->table('journal_lines')->where('entry_id', $entryId)->whereNotNull('financial_account_id')->distinct()->pluck('financial_account_id')->all());
+    }
+
+    /**
+     * Financial accounts FOR SHARE by id, and their status decided on that LOCKING read (F1C): an account close takes
+     * the row FOR UPDATE, so a posting that waited for it must see CLOSED, never the OPEN of an older snapshot.
+     */
+    private function lockOpenAccounts(array $ids): void
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        sort($ids);
+        if ($ids === []) {
+            return;
+        }
+        foreach ($this->db->table('accounts')->whereIn('id', $ids)->orderBy('id')->sharedLock()->get(['id', 'status']) as $account) {
+            if ($account->status !== 'OPEN') {
+                throw new FinanceError('FINANCIAL_ACCOUNT_CLOSED');
+            }
         }
     }
 

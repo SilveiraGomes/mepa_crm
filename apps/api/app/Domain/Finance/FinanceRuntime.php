@@ -38,8 +38,25 @@ final class FinanceRuntime
         public FilesConsumers $consumers,
         public array $settings = [],
         private ?Closure $beforeCommit = null,
-        private ?Closure $peopleFactory = null
+        private ?Closure $peopleFactory = null,
+        private ?Closure $keyRingFactory = null
     ) {
+    }
+
+    /**
+     * D06: the bank account number is encrypted with the Files key mechanism (ADR 0019 D06). The ring is read per
+     * operation; unset, unreadable or misplaced => CRYPTO_UNAVAILABLE (fail closed, nothing written).
+     */
+    public function bankKeyRing(): \App\Domain\Files\FilesKeyRing
+    {
+        try {
+            if ($this->keyRingFactory === null) {
+                throw new FilesError(\App\Domain\Files\FilesReason::CRYPTO_UNAVAILABLE, ['reason' => 'keyring_not_configured']);
+            }
+            return ($this->keyRingFactory)();
+        } catch (FilesError) {
+            throw new FinanceError('CRYPTO_UNAVAILABLE');
+        }
     }
 
     private ?\App\Domain\People\PeopleRuntime $people = null;

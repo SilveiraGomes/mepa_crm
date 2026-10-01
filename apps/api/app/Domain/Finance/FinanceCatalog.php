@@ -288,7 +288,38 @@ final class FinanceCatalog
     public const BUDGET_STATUSES = ['DRAFT', 'SUBMITTED', 'REVIEWED', 'APPROVED', 'SUPERSEDED', 'CLOSED', 'CANCELLED'];
     public const SUBLEDGER_STATUSES = ['PENDING', 'RECOGNIZED', 'SETTLED', 'CANCELLED'];
     public const SETTLEMENT_DIRECTIONS = ['RECEIPT', 'PAYMENT'];
+    public const SETTLEMENT_STATUSES = ['POSTED', 'CANCELLED'];
     public const ACCOUNT_KINDS = ['CASH', 'BANK'];
+
+    // ---- F1C: accrual subledgers, financial accounts, bank reconciliation, budget, closes --------------------------------
+    public const PERMISSION_REVERSE = 'FINANCE_REVERSE';
+    public const PERMISSION_ACCOUNT_MANAGE = 'FINANCE_ACCOUNT_MANAGE';
+    public const PERMISSION_BUDGET_MANAGE = 'FINANCE_BUDGET_MANAGE';
+    public const PERMISSION_BUDGET_APPROVE = 'FINANCE_BUDGET_APPROVE';
+    public const PERMISSION_PERIOD_CLOSE = 'FINANCE_PERIOD_CLOSE';
+    public const PERMISSION_PERIOD_REOPEN = 'FINANCE_PERIOD_REOPEN';
+    /** D11: subledger entries that only their own F1C flow may reverse (settlement / recognition cancellation). */
+    public const OWN_FLOW_REVERSIBLE_KINDS = ['SETTLEMENT', 'PAYABLE_RECOGNITION', 'RECEIVABLE_RECOGNITION'];
+    /** Revenue natures a receivable may recognise (D01.2 accrual). */
+    public const RECEIVABLE_NATURES = ['OPERATING_REVENUE', 'NON_OPERATING_INCOME'];
+    /**
+     * D01.2: tithes, offerings and donations are recognised WHEN RECEIVED (no enforceable right exists before), and an
+     * in-kind gift has its own valuation flow (D04): none of them is ever a receivable.
+     */
+    public const NON_RECEIVABLE_CATEGORIES = ['REV_TITHES', 'REV_SELECTIVE_TITHES', 'REV_OFFERINGS', 'REV_RAISED_OFFERINGS', 'REV_SPECIAL_OFFERINGS', 'REV_DONATIONS', 'REV_IN_KIND'];
+    /** Natures a payable may recognise: expenses and investments (capitalised ones debit FIXED_ASSETS, D-04A.12). */
+    public const PAYABLE_NATURES = ['COST_OF_SALES', 'ADMINISTRATIVE_EXPENSE', 'FINANCIAL_EXPENSE', 'PERSONNEL_EXPENSE', 'MATERIALS_EXPENSE', 'INVESTMENT', 'NON_OPERATING_EXPENSE'];
+    /** D14: a payable always carries its supporting document (catalog document_id NOT NULL), one of these types. */
+    public const PAYABLE_DOCUMENT_TYPES = ['INVOICE', 'EXPENSE_VOUCHER', 'RECEIPT'];
+    /** D13: budgetable natures (revenue, expenses, investments, non-operating); never transfers or balance sheet. */
+    public const BUDGET_NATURES = ['OPERATING_REVENUE', 'COST_OF_SALES', 'ADMINISTRATIVE_EXPENSE', 'FINANCIAL_EXPENSE', 'PERSONNEL_EXPENSE', 'MATERIALS_EXPENSE', 'INVESTMENT', 'NON_OPERATING_INCOME', 'NON_OPERATING_EXPENSE'];
+    /** Revenue-side natures (actual = credits - debits); every other budgetable nature is cost-side (debits - credits). */
+    public const REVENUE_NATURES = ['OPERATING_REVENUE', 'NON_OPERATING_INCOME'];
+    public const RECONCILIATION_STATUSES = ['OPEN', 'CLOSED'];
+    /** Derived (never stored) correspondence state of a statement line or of a ledger bank line. */
+    public const MATCH_STATES = ['UNMATCHED', 'PARTIALLY_MATCHED', 'MATCHED'];
+    /** The national root of D12/D17: the only unit whose FINANCE_PERIOD_CLOSE grant may close a month nationally. */
+    public const NATIONAL_ROOT_TYPE = 'GENERAL_DIRECTION';
 
     /** @return list<string> rows inserted by this call */
     public static function install(Connection $db): array

@@ -7,6 +7,7 @@ namespace App\Http\Finance;
 use App\Domain\Files\FilesAuthority;
 use App\Domain\Files\FilesCatalog;
 use App\Domain\Files\FilesConsumers;
+use App\Domain\Files\FilesKeyRing;
 use App\Domain\Finance\FinanceAuthority;
 use App\Domain\Finance\FinanceCatalog;
 use App\Domain\Finance\FinanceRuntime;
@@ -41,7 +42,8 @@ final class FinanceServiceFactory
             new FilesConsumers($db),
             (array) config('finance', []),
             $beforeCommit instanceof Closure ? $beforeCommit : null,
-            static fn (): PeopleRuntime => $people->runtime()
+            static fn (): PeopleRuntime => $people->runtime(),
+            static fn (): FilesKeyRing => FilesKeyRing::fromFile(is_string(config('files.keyring_path')) ? config('files.keyring_path') : null, [public_path(), base_path(), dirname(base_path(), 2)])
         );
     }
 

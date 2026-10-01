@@ -170,8 +170,10 @@ class Handler extends ExceptionHandler
             [$status, $code, $message] = match (true) {
                 $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
                 $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
-                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_LIMIT', 'AMOUNT_NOT_POSITIVE', 'ENTRY_DATE_IN_FUTURE', 'ENTRY_DATE_INVALID', 'REASON_REQUIRED', 'INTERNAL_COUNTERPARTY', 'VALUATION_DOCUMENT_REQUIRED'], true) => [422, $e->reason, 'The request data is invalid.'],
+                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_LIMIT', 'AMOUNT_NOT_POSITIVE', 'ENTRY_DATE_IN_FUTURE', 'ENTRY_DATE_INVALID', 'REASON_REQUIRED', 'INTERNAL_COUNTERPARTY', 'VALUATION_DOCUMENT_REQUIRED',
+                    'CATEGORY_NOT_RECEIVABLE', 'PAYABLE_DOCUMENT_REQUIRED', 'STATEMENT_DOCUMENT_REQUIRED', 'STATEMENT_UNBALANCED'], true) => [422, $e->reason, 'The request data is invalid.'],
                 $e->reason === 'CONFIG_MISSING' => [503, 'FINANCE_NOT_CONFIGURED', 'The Finance configuration is not available.'],
+                $e->reason === 'CRYPTO_UNAVAILABLE' => [503, 'FINANCE_CRYPTO_UNAVAILABLE', 'The protected Finance data cannot be processed now; nothing was changed.'],
                 $e->reason === 'BUSY' => [503, 'FINANCE_BUSY', 'The operation could not be completed now; nothing was changed.'],
                 in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
                 default => [409, $e->reason, 'The request conflicts with the current resource state.'],

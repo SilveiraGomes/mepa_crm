@@ -54,7 +54,14 @@ final class FinanceQueryService
                 ->map(fn ($c) => ['code' => (string) $c->code, 'label' => (string) $c->name, 'regular' => in_array($c->code, FinanceCatalog::REGULAR_TRANSFER_PURPOSES, true)])->all();
             $categories = $this->rt->db->table('financial_categories')->whereIn('economic_nature', FinanceCatalog::CONTRIBUTION_NATURES)->where('status', 'ACTIVE')->orderBy('id')->get(['code', 'name'])
                 ->map(fn ($c) => ['code' => (string) $c->code, 'label' => (string) $c->name])->all();
+            // F1C catalogs for the accrual, budget and close forms (codes and labels only).
+            $rubrics = fn (array $natures, array $except = []) => $this->rt->db->table('financial_categories as c')->join('chart_of_accounts as a', 'a.id', '=', 'c.ledger_account_id')
+                ->whereIn('c.economic_nature', $natures)->whereNotIn('c.code', $except)->where('c.status', 'ACTIVE')->orderBy('c.id')->get(['c.code', 'c.name', 'c.economic_nature', 'a.system_role'])
+                ->map(fn ($c) => ['code' => (string) $c->code, 'label' => (string) $c->name, 'nature' => (string) $c->economic_nature, 'capitalized' => $c->system_role === 'FIXED_ASSETS'])->all();
             return ['permissions' => $permissions, 'units' => $units, 'accounts' => $accounts, 'purposes' => $purposes, 'contribution_categories' => $categories,
+                'receivable_categories' => $rubrics(FinanceCatalog::RECEIVABLE_NATURES, FinanceCatalog::NON_RECEIVABLE_CATEGORIES), 'payable_categories' => $rubrics(FinanceCatalog::PAYABLE_NATURES),
+                'budget_categories' => $rubrics(FinanceCatalog::BUDGET_NATURES),
+                'years' => $this->rt->db->table('accounting_periods')->where('period_kind', FinanceCatalog::PERIOD_YEAR)->orderBy('code')->pluck('code')->map(fn ($c) => (string) $c)->all(),
                 'currency' => FinanceCatalog::CURRENCY, 'today' => $this->rt->today()];
         });
     }
