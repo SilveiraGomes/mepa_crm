@@ -11,8 +11,8 @@ use App\Domain\Finance\FinanceError;
  *
  * `payroll.production_enabled` is a server configuration flag (never a column, never a permission), FALSE by default.
  * While false, configuration (employments, compensation, rules, readiness) works normally and APPROVE / POST / PAY of a
- * payroll run are refused with PAYROLL_PRODUCTION_DISABLED (fail-closed). F2A has no run operation at all; F2B calls
- * assertEnabled() before approve / post / pay.
+ * payroll run are refused with PAYROLL_PRODUCTION_DISABLED (fail-closed). Creating and calculating a run stay available
+ * (validation of the configuration); F2B calls assertEnabled() before approve / post / pay / reverse.
  */
 final class PayrollProduction
 {
@@ -42,7 +42,7 @@ final class PayrollProduction
     {
         $enabled = $this->enabled();
         return ['enabled' => $enabled, 'status' => $enabled ? 'ENABLED' : 'DISABLED', 'code' => $enabled ? null : 'PAYROLL_PRODUCTION_DISABLED',
-            // F2A: the run pipeline (calculate / approve / post / pay) is not implemented; nothing can be operated.
-            'operations' => ['calculate' => false, 'approve' => false, 'post' => false, 'pay' => false], 'engine' => 'F2A_FOUNDATION'];
+            // F2B: the engine is complete; only the ledger-relevant transitions depend on the production flag.
+            'operations' => ['calculate' => true, 'approve' => $enabled, 'post' => $enabled, 'pay' => $enabled, 'reverse' => $enabled], 'engine' => 'F2B_ENGINE'];
     }
 }

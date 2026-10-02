@@ -81,6 +81,11 @@ final class PayrollInputHash
         $resolver = new PayrollRuleResolver($db);
         $rules = [];
         foreach ($lines->filter(fn ($l) => in_array($l->calculation_method, PayrollCatalog::RULE_METHODS, true))->unique('component_id')->sortBy('component') as $l) {
+            if ($lock) {
+                // F2B (C5): rule approval / retirement takes the component row FOR UPDATE; a locked payload read holds it
+                // FOR SHARE so the applicable rule set cannot change under a calculation or an approval.
+                $db->table('compensation_component_types')->where('id', (int) $l->component_id)->sharedLock()->first(['id']);
+            }
             $rule = $resolver->forPeriod((int) $l->component_id, $from, $to, $lock);
             unset($rule['id'], $rule['status']);
             $rules[] = $rule;

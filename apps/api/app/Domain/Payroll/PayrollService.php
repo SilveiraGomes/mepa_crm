@@ -20,8 +20,17 @@ use DateTimeImmutable;
  */
 abstract class PayrollService
 {
-    public function __construct(protected FinanceRuntime $rt)
+    /** $finance: the FINANCE-domain authority of the operations that also need FINANCE_* permissions (F2B post / pay). */
+    public function __construct(protected FinanceRuntime $rt, protected ?PayrollFinanceGate $finance = null)
     {
+    }
+
+    protected function financeGate(): PayrollFinanceGate
+    {
+        if ($this->finance === null) {
+            throw new FinanceError('CONFIG_MISSING', [], ['reason' => 'finance_authority_not_wired']);
+        }
+        return $this->finance;
     }
 
     /** At least one of $permissions held somewhere, else NOT_AUTHORIZED (403). */
