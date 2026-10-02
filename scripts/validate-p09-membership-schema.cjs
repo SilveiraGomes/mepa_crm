@@ -35,8 +35,20 @@ function mysqlRows(sql) {
   const args = ['--user=' + (process.env.P09_USER || 'root')]
   if (process.env.P09_PASSWORD) args.push('--password=' + process.env.P09_PASSWORD)
   args.push('--host=' + (parts.host || '127.0.0.1'), '--port=' + (parts.port || 3306), '--database=' + parts.dbname, '--batch', '--skip-column-names', '--execute=' + sql)
-  const raw = execFileSync(mysql, args, { encoding: 'utf8' })
-  return raw.trim().split(/\r?\n/).filter(Boolean).map((line) => line.split('\t'))
+  // F2A-I01 (port of F1C-T05): on Windows the client output occasionally arrives truncated or with a line break inside a
+  // row (observed: an INFORMATION_SCHEMA.STATISTICS read returning 0 rows). A read is interpreted only when two consecutive
+  // reads of the same (read-only) query are identical (order-insensitive) and every row has the same column count (max 5
+  // reads); otherwise the validator fails loudly. Never an unbounded retry.
+  let previous = null
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    const lines = execFileSync(mysql, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim().split(/\r?\n/).filter(Boolean)
+    const text = [...lines].sort().join('\n')
+    const rows = lines.map((line) => line.split('\t'))
+    if (text === previous && rows.every((row) => row.length === rows[0].length)) return rows
+    if (previous !== null) mysqlRows.retries = (mysqlRows.retries || 0) + 1
+    previous = text
+  }
+  throw new Error('unstable mysql client output after 5 reads: ' + sql.slice(0, 80))
 }
 
 const baseType = (type) => type.replace(/\s+CHARACTER SET.*$/i, '').trim().toLowerCase()
@@ -123,6 +135,7 @@ try {
     counter: counter.length ? { last_value: Number(counter[0][0]), max_issued_sequence: Number(counter[0][1]), consistent: counterOk } : null,
     memberships_with_more_than_one_open_period: duplicateOpen,
     manifest_schema_changes: manifest.schema_changes,
+    stable_read_retries: mysqlRows.retries || 0,
   }
 } catch (error) {
   status = 'FAIL'
