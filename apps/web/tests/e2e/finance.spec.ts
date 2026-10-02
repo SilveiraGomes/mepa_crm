@@ -72,7 +72,7 @@ test('transfer lists: sent, received and in transit with origin, destination, pu
   const collapsed = await menu.isVisible()
   if (collapsed) await menu.click()
   const nav = page.getByRole('navigation', { name: 'Finanças' })
-  for (const label of ['Transferências enviadas', 'Transferências recebidas', 'Em trânsito', 'Posição de fundos', 'Nova transferência']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible()
+  for (const label of ['Transferências', 'Posição de fundos']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible()
   if (collapsed) await menu.click()
   await page.goto('/financas/transferencias')
   await expect(page.getByRole('heading', { level: 1, name: 'Transferências enviadas' })).toBeVisible()

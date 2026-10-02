@@ -1,0 +1,40 @@
+﻿Campo;Valor
+institution;MEPA
+report_type;CONSOLIDATED_DRE
+report_name;"DRE consolidada"
+view;CONSOLIDATED
+unit.public_id;01M3WZ36E7BXHC4KJR3VJ4XG93
+unit.name;"Município F1D E2E"
+period.kind;MONTH
+period.label;2026-08
+period.from;2026-08-01
+period.to;2026-08-31
+generated_at;"2026-10-02 00:11:36.421519Z"
+perimeter_units;6
+source;POSTED_JOURNAL_LINES
+snapshot;REPEATABLE_READ
+parameters_hash;a5397f955e1a8d7b02baeb6d9f9a90969a217da9ee674c467a4c496611f4782e
+dre.basis;ACCRUAL_POSTED_LEDGER
+dre.revenue;138000.00
+dre.expenses;35000.00
+dre.economic_result;103000.00
+dre.investments_consumed;0.00
+dre.investments_capitalized;0.00
+dre.investment_returns;0.00
+dre.revenue_lines.0.category.code;REV_TITHES
+dre.revenue_lines.0.category.label;Dízimos
+dre.revenue_lines.0.category.nature;OPERATING_REVENUE
+dre.revenue_lines.0.amount;138000.00
+dre.expense_lines.0.category.code;ADM_ELECTRICITY
+dre.expense_lines.0.category.label;"Energia Eléctrica"
+dre.expense_lines.0.category.nature;ADMINISTRATIVE_EXPENSE
+dre.expense_lines.0.amount;20000.00
+dre.expense_lines.1.category.code;ADM_INTERNET
+dre.expense_lines.1.category.label;Internet
+dre.expense_lines.1.category.nature;ADMINISTRATIVE_EXPENSE
+dre.expense_lines.1.amount;5000.00
+dre.expense_lines.2.category.code;ADM_TAXI
+dre.expense_lines.2.category.label;Táxi/Mototáxi
+dre.expense_lines.2.category.nature;ADMINISTRATIVE_EXPENSE
+dre.expense_lines.2.amount;10000.00
+dre.internal_transfer_effect;0.00

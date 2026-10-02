@@ -1,0 +1,168 @@
+{
+    "own": {
+        "a1": {
+            "dre": [
+                "100000.00",
+                "20000.00",
+                "80000.00"
+            ],
+            "doaf": [
+                "0.00",
+                "100000.00",
+                "0.00",
+                "15000.00",
+                "60000.00",
+                "25000.00"
+            ],
+            "payables": "5000.00"
+        },
+        "a": {
+            "dre": [
+                "0.00",
+                "10000.00",
+                "-10000.00"
+            ],
+            "doaf": [
+                "0.00",
+                "0.00",
+                "60000.00",
+                "10000.00",
+                "40000.00",
+                "10000.00"
+            ],
+            "payables": "0.00"
+        },
+        "m": {
+            "dre": [
+                "30000.00",
+                "5000.00",
+                "25000.00"
+            ],
+            "doaf": [
+                "0.00",
+                "30000.00",
+                "40000.00",
+                "0.00",
+                "0.00",
+                "70000.00"
+            ],
+            "payables": "5000.00"
+        }
+    },
+    "consolidated_dre": {
+        "basis": "ACCRUAL_POSTED_LEDGER",
+        "revenue": "130000.00",
+        "expenses": "35000.00",
+        "economic_result": "95000.00",
+        "investments_consumed": "0.00",
+        "investments_capitalized": "0.00",
+        "investment_returns": "0.00",
+        "revenue_lines": [
+            {
+                "category": {
+                    "code": "REV_TITHES",
+                    "label": "Dízimos",
+                    "nature": "OPERATING_REVENUE"
+                },
+                "amount": "130000.00"
+            }
+        ],
+        "expense_lines": [
+            {
+                "category": {
+                    "code": "ADM_ELECTRICITY",
+                    "label": "Energia Eléctrica",
+                    "nature": "ADMINISTRATIVE_EXPENSE"
+                },
+                "amount": "20000.00"
+            },
+            {
+                "category": {
+                    "code": "ADM_INTERNET",
+                    "label": "Internet",
+                    "nature": "ADMINISTRATIVE_EXPENSE"
+                },
+                "amount": "5000.00"
+            },
+            {
+                "category": {
+                    "code": "ADM_TAXI",
+                    "label": "Táxi\/Mototáxi",
+                    "nature": "ADMINISTRATIVE_EXPENSE"
+                },
+                "amount": "10000.00"
+            }
+        ],
+        "internal_transfer_effect": "0.00"
+    },
+    "consolidated_doaf": {
+        "basis": "FUND_CUSTODY_POSTED_LEDGER",
+        "opening_balance": "0.00",
+        "external_funds_received": "130000.00",
+        "internal_funds_received": "0.00",
+        "external_applications": "25000.00",
+        "internal_funds_sent": "0.00",
+        "funds_in_transit_under_custody": "0.00",
+        "treasury_closing": "105000.00",
+        "closing_balance": "105000.00",
+        "total_origins": "130000.00",
+        "total_applications": "130000.00",
+        "balanced": true,
+        "identity": "opening + external received + internal received - external applications - internal sent = closing custody",
+        "internal_transfers_eliminated": true,
+        "memo_internal_transfers": [
+            {
+                "transfer": "01M3WXSANHRX999284HR8BQZVA",
+                "origin": {
+                    "public_id": "01M3WXS8MN3YD1DXVSHB80915Z",
+                    "name": "Centro A QpQ7"
+                },
+                "destination": {
+                    "public_id": "01M3WXS8MBR9630VQG0Q9Q6780",
+                    "name": "Município OvTC"
+                },
+                "amount": "40000.00",
+                "purpose": {
+                    "code": "TRF_SUPPORT",
+                    "label": "Apoio"
+                },
+                "status": "RECEIVED",
+                "sent_at": "2026-08-08 11:00:00.000000",
+                "received_at": "2026-08-08 11:00:00.000000",
+                "perimeter_class": "INTERNAL_TO_PERIMETER"
+            },
+            {
+                "transfer": "01M3WXSA451V7WRM47YD230QPV",
+                "origin": {
+                    "public_id": "01M3WXS8NBHPR8ZW6E83KQJ1WW",
+                    "name": "Congregação A1 XqWp"
+                },
+                "destination": {
+                    "public_id": "01M3WXS8MN3YD1DXVSHB80915Z",
+                    "name": "Centro A QpQ7"
+                },
+                "amount": "60000.00",
+                "purpose": {
+                    "code": "TRF_SUPPORT",
+                    "label": "Apoio"
+                },
+                "status": "RECEIVED",
+                "sent_at": "2026-08-05 11:00:00.000000",
+                "received_at": "2026-08-05 11:00:00.000000",
+                "perimeter_class": "INTERNAL_TO_PERIMETER"
+            }
+        ]
+    },
+    "budget": {
+        "year": "2026",
+        "basis": "CURRENT_APPROVED_BUDGET_AND_POSTED_LEDGER",
+        "approved_budget": "115000.00",
+        "actual": "120000.00",
+        "variance": "5000.00",
+        "variance_percent": "4.35%",
+        "totals": {
+            "approved": "115000.00",
+            "actual": "120000.00"
+        }
+    }
+}

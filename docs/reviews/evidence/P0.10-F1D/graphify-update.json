@@ -1,0 +1,36 @@
+{
+  "nodes_before": 9611,
+  "edges_before": 19326,
+  "nodes": 9611,
+  "edges": 19327,
+  "dangling": 0,
+  "self_loops_before": 0,
+  "self_loops": 0,
+  "unexpected_self_loops": 0,
+  "files_checked": 13,
+  "files": [
+    "apps/api/app/Domain/Finance/FinanceReportingService.php",
+    "apps/api/tests/DatabaseV2/FinanceE2EFixtureTest.php",
+    "apps/api/tests/DatabaseV2/FinanceReportingEvidenceTest.php",
+    "apps/api/tests/DatabaseV2/Support/finance_e2e_support.php",
+    "apps/web/playwright.finance-reporting.config.ts",
+    "apps/web/src/pages/FinanceReportingPages.tsx",
+    "apps/web/src/types/finance.ts",
+    "apps/web/tests/e2e/finance-core.spec.ts",
+    "apps/web/tests/e2e/finance-reporting.spec.ts",
+    "apps/web/tests/e2e/finance.spec.ts",
+    "scripts/p010-f1d-report-worker.php",
+    "scripts/run-p010-finance-f1d.py",
+    "scripts/validate-finance-reporting-contracts.cjs"
+  ],
+  "missing": [],
+  "anchors_linked": [
+    "FinanceReportingEvidenceTest",
+    "FinanceReportingPages.tsx",
+    "FinanceReportingService",
+    "FinanceReportsPage()",
+    "p010-f1d-report-worker.php"
+  ],
+  "shrink_guard": "PASS (force=False)",
+  "method": "scoped AST re-extraction of the files changed since 1041348 + grounded inline document nodes"
+}

@@ -9,7 +9,7 @@ import path from 'node:path'
 // month close. Fixture seeded through the API by FinanceE2EFixtureTest (one data set per viewport project).
 const repo = path.resolve(process.cwd(), '../..')
 const fx = JSON.parse(fs.readFileSync(process.env.P010_FIXTURE_PATH ?? path.join(repo, '.tmp/p010-e2e-fixtures.json'), 'utf8'))
-const evidence = path.join(repo, 'docs/reviews/evidence/P0.10-F1C')
+const evidence = process.env.P010_F1C_EVIDENCE_DIR ?? path.join(repo, 'docs/reviews/evidence/P0.10-F1C')
 const apiRoot = path.join(repo, 'apps/api')
 const php = process.env.MEPA_PHP_BIN ?? 'C:\\wamp64\\bin\\php\\php8.1.33\\php.exe'
 const support = path.join(apiRoot, 'tests/DatabaseV2/Support/finance_e2e_support.php')
@@ -77,7 +77,7 @@ test('U01/U02 accounts: navigation, derived balance, open a BANK account with a 
   const collapsed = await menu.isVisible()
   if (collapsed) await menu.click()
   const nav = page.getByRole('navigation', { name: 'Finanças' })
-  for (const label of ['Contas', 'A receber', 'A pagar', 'Transferências enviadas', 'Extractos bancários', 'Reconciliação', 'Orçamento', 'Fechos', 'Posição de fundos']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible()
+  for (const label of ['Contas', 'A receber', 'A pagar', 'Transferências', 'Extractos', 'Reconciliação', 'Orçamento', 'Fechos', 'Posição de fundos']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible()
   if (collapsed) await menu.click()
   await expect(page.getByRole('heading', { level: 1, name: 'Contas financeiras' })).toBeVisible()
   await expect(page.getByRole('link', { name: set.bank_name })).toBeVisible()

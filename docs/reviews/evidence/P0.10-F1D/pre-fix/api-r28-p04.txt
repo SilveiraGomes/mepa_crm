@@ -1,0 +1,24 @@
+F                                                                   1 / 1 (100%)
+
+Time: 00:12.372, Memory: 32.00 MB
+
+There was 1 failure:
+
+1) Tests\DatabaseV2\FinanceReportingEvidenceTest::test_r28_own_and_consolidated_views_are_explicit_and_switchable
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+ Array &0 (
+-    0 => 'OWN'
+-    1 => 1
+-    2 => '0.00'
++    0 => 'CONSOLIDATED'
++    1 => 6
++    2 => '100.00'
+ )
+
+C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingEvidenceTest.php:383
+
+FAILURES!
+Tests: 1, Assertions: 16, Failures: 1.

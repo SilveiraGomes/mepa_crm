@@ -86,5 +86,12 @@ if ($command === 'account') {
         'number_in_clear' => $details !== null && str_contains((string) $details->account_number_ciphertext, (string) ($argv[3] ?? "\0"))]) . "\n");
     exit(0);
 }
-fwrite(STDERR, "usage: finance_e2e_support.php reset <user id>... | transfer <public_id> | subledger <receivables|payables> <public_id> | budget <public_id> | reconciliation <public_id> | account <public_id> <number>\n");
+// P0.10-F1D-E1 evidence probe: audit rows of one action for one user (count + the newest metadata).
+if ($command === 'audit') {
+    $q = DB::table('audit_logs')->where('action', (string) ($argv[3] ?? ''))->where('actor_id', (int) ($argv[2] ?? 0));
+    $last = (clone $q)->orderByDesc('id')->value('after_metadata');
+    fwrite(STDOUT, json_encode(['count' => $q->count(), 'last' => $last === null ? null : json_decode((string) $last, true)]) . "\n");
+    exit(0);
+}
+fwrite(STDERR, "usage: finance_e2e_support.php reset <user id>... | audit <user id> <action> | transfer <public_id> | subledger <receivables|payables> <public_id> | budget <public_id> | reconciliation <public_id> | account <public_id> <number>\n");
 exit(2);

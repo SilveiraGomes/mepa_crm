@@ -1,0 +1,25 @@
+{
+    "post": {
+        "status": "OK",
+        "result": {
+            "public_id": "01M3WY9J0RMZP9DAEMQP1XF5H0",
+            "replayed": false
+        },
+        "pid": 2852,
+        "ms": 164
+    },
+    "close": {
+        "status": "UNITS_NOT_CLOSED",
+        "items": [
+            "01M3WY9GXBRH5AMH3P7KFJJH6T"
+        ],
+        "pid": 25552,
+        "ms": 77
+    },
+    "wait": {
+        "object": "accounting_periods",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

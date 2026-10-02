@@ -59,6 +59,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
                 'invoice' => $this->document($w['a1'], 'INVOICE')['public_id'], 'statement_document' => $this->document($w['a1'], 'BANK_STATEMENT')['public_id'],
                 'receivable_amount' => (300 + $n) . '.00', 'payable_amount' => (1500 + $n) . '.00', 'new_bank_code' => 'UI-BK-' . $n, 'month' => sprintf('2026-%02d', 2 + $n)];
         }
+        $f1d = $this->reportingWorld();
         $login = 'finance.e2e.' . bin2hex(random_bytes(6));
         $password = bin2hex(random_bytes(32));
         DB::table('users')->where('id', $actor['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
@@ -69,6 +70,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
             'm' => ['public_id' => $w['m']['public_id'], 'name' => 'Município E2E'],
             'sets' => $sets,
             'f1c' => $f1c,
+            'f1d' => $f1d,
         ];
         $dir = dirname(__DIR__, 4) . '/.tmp';
         if (!is_dir($dir)) {
@@ -77,5 +79,72 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
         file_put_contents($dir . '/p010-e2e-fixtures.json', json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n");
         $this->assertFileExists($dir . '/p010-e2e-fixtures.json');
         $this->assertLedgerInvariants();
+    }
+
+    /**
+     * P0.10-F1D-E1: a second, independent world (historical parentage in unit_parent_periods) with the accounting cross-check
+     * data set of August 2026 plus April / July revenue and an in-transit transfer, seeded through the API. Two browser
+     * readers: one with FINANCE_CONSOLIDATED_VIEW and one own-only. Hand-computed figures (spec): own A1 Aug revenue 100000,
+     * Q3 102000, H1 1000, year 103000; consolidated M Aug revenue 138000, expenses 35000, result 103000, external in 138000,
+     * external out 25000, transit 7000, closing 116000, payables 10000; own M Aug revenue 30000, internal received 40000.
+     */
+    private function reportingWorld(): array
+    {
+        $v = $this->world();
+        $names = ['m' => 'Município F1D E2E', 'a' => 'Centro A F1D E2E', 'b' => 'Centro B F1D E2E', 'a1' => 'Congregação A1 F1D E2E', 'a2' => 'Congregação A2 F1D E2E', 'b1' => 'Congregação B1 F1D E2E'];
+        foreach ($names as $key => $name) {
+            DB::table('organizational_units')->where('id', $v[$key]['id'])->update(['name' => $name]);
+        }
+        foreach (['r' => 'g', 'p' => 'r', 'm' => 'p', 'a' => 'm', 'b' => 'm', 'a1' => 'a', 'a2' => 'a', 'b1' => 'b'] as $child => $parent) {
+            DB::table('unit_parent_periods')->insert(['unit_id' => $v[$child]['id'], 'parent_unit_id' => $v[$parent]['id'], 'status' => 'ACTIVE', 'starts_at' => '2025-01-01 00:00:00.000000', 'ends_at' => null,
+                'reason' => 'F1D-E1 E2E fixture', 'source_document_id' => null, 'created_at' => '2025-01-01 00:00:00.000000', 'lock_version' => 0]);
+        }
+        $op = $this->treasurer($v['m'], ['DOCUMENTS_VIEW', 'PEOPLE_VIEW'], true);
+        $payable = function (array $unit, string $amount, string $category, string $on) use ($op): string {
+            return $this->fpost($op, 'finance/payables', ['unit' => $unit['public_id'], 'party' => ['kind' => 'EXTERNAL', 'name' => 'Fornecedor E2E'], 'category' => $category, 'amount' => $amount,
+                'due_on' => '2026-12-31', 'recognized_on' => $on, 'document' => $this->document($unit, 'INVOICE')['public_id']], $this->key())->assertCreated()->json('data.public_id');
+        };
+        $settle = fn (string $payableId, array $account, string $amount, string $on) => $this->fpost($op, 'finance/payables/' . $payableId . '/settlements', ['account' => $account['public_id'], 'amount' => $amount, 'settled_on' => $on], $this->key())->assertCreated();
+        $move = function (array $fromAccount, array $destination, ?array $toAccount, string $amount, string $on) use ($op): string {
+            $t = $this->requestTransfer($op, $fromAccount, $destination, $amount, 'TRF_REMITTANCE');
+            $this->sendTransfer($op, $t['public_id'], $on);
+            if ($toAccount !== null) {
+                $this->receiveTransfer($op, $t['public_id'], $toAccount, $on);
+            }
+            return $t['public_id'];
+        };
+        $this->contribute($op, $v['cash_a1'], '1000.00', '2026-04-10');
+        $this->contribute($op, $v['cash_a1'], '2000.00', '2026-07-15');
+        $this->contribute($op, $v['cash_a1'], '100000.00', '2026-08-02');
+        $settle($payable($v['a1'], '20000.00', 'ADM_ELECTRICITY', '2026-08-03'), $v['cash_a1'], '15000.00', '2026-08-04');
+        $move($v['cash_a1'], $v['a'], $v['cash_a'], '60000.00', '2026-08-05');
+        $settle($payable($v['a'], '10000.00', 'ADM_TAXI', '2026-08-06'), $v['cash_a'], '10000.00', '2026-08-07');
+        $move($v['cash_a'], $v['m'], $v['cash_m'], '40000.00', '2026-08-08');
+        $this->contribute($op, $v['cash_m'], '30000.00', '2026-08-09');
+        $payable($v['m'], '5000.00', 'ADM_INTERNET', '2026-08-10');
+        $this->contribute($op, $v['cash_a2'], '8000.00', '2026-08-11');
+        $transit = $move($v['cash_a2'], $v['a'], null, '7000.00', '2026-08-12');
+        $gift = $this->fpost($op, 'finance/contributions', ['kind' => 'IN_KIND', 'identification' => 'ANONYMOUS', 'unit' => $v['a1']['public_id'], 'category' => 'REV_IN_KIND', 'description' => 'Cadeiras doadas'], $this->key())
+            ->assertCreated()->json('data.public_id');
+        $submitter = $this->staff(['FINANCE_VIEW', 'FINANCE_BUDGET_MANAGE'], $v['a1']['id'], false);
+        $approver = $this->staff(['FINANCE_VIEW', 'FINANCE_BUDGET_APPROVE'], $v['a']['id'], true);
+        $budget = $this->fpost($submitter, 'finance/budgets', ['unit' => $v['a1']['public_id'], 'year' => '2026', 'lines' => [['category' => 'REV_TITHES', 'requested_amount' => '90000.00'], ['category' => 'ADM_ELECTRICITY', 'requested_amount' => '25000.00']]], $this->key())
+            ->assertCreated()->json('data.public_id');
+        $this->fpost($submitter, 'finance/budgets/' . $budget . '/submit')->assertOk();
+        $this->fpost($approver, 'finance/budgets/' . $budget . '/review')->assertOk();
+        $this->fpost($approver, 'finance/budgets/' . $budget . '/approve')->assertOk();
+        $readers = [];
+        foreach (['cons' => ['FINANCE_CONSOLIDATED_VIEW'], 'own' => []] as $key => $extra) {
+            $reader = $this->staff(array_merge(['FINANCE_VIEW', 'FINANCE_REPORT', 'DOCUMENTS_VIEW', 'PEOPLE_VIEW'], $extra), $v['m']['id'], true);
+            $login = 'finance.f1d.' . $key . '.' . bin2hex(random_bytes(5));
+            $password = bin2hex(random_bytes(32));
+            DB::table('users')->where('id', $reader['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
+            $readers[$key] = ['login' => $login, 'password' => $password, 'user_id' => $reader['user']];
+        }
+        $units = [];
+        foreach ($names as $key => $name) {
+            $units[$key] = ['public_id' => $v[$key]['public_id'], 'name' => $name];
+        }
+        return ['readers' => $readers, 'units' => $units, 'gift' => $gift, 'transit' => $transit, 'budget' => $budget];
     }
 }

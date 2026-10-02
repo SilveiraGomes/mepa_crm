@@ -1,0 +1,23 @@
+{
+    "receive": {
+        "status": "OK",
+        "result": {
+            "replayed": false,
+            "posted_on": "2026-10-02"
+        },
+        "pid": 8188,
+        "ms": 164
+    },
+    "reverse": {
+        "status": "ALREADY_RECEIVED",
+        "items": [],
+        "pid": 18428,
+        "ms": 80
+    },
+    "wait": {
+        "object": "internal_transfers",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}
