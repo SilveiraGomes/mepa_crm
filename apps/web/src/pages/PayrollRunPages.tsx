@@ -70,7 +70,7 @@ export function PayrollRunsPage() {
     </div>
     {result.loading && <LoadingState />}{result.error && <ErrorState error={result.error} retry={result.reload} />}
     {result.data && (result.data.data.length === 0 ? <EmptyState title="Sem folhas salariais" message="Ainda não existe nenhuma folha para os filtros escolhidos." /> : <>
-      <section className="card"><DataTable rows={result.data.data} rowKey={(r) => r.public_id} columns={[
+      <section className="card payroll-table"><DataTable rows={result.data.data} rowKey={(r) => r.public_id} columns={[
         { key: 'period', label: 'Mês de serviço', render: (r) => <Link to={`/rh/folhas/${r.public_id}`}>{r.period}</Link> },
         { key: 'unit', label: 'Unidade', render: (r) => r.unit.name },
         { key: 'kind', label: 'Tipo', render: (r) => `${r.run_kind === 'REGULAR' ? 'Regular' : r.run_kind} n.º ${r.sequence}` },
@@ -181,7 +181,7 @@ export function PayrollRunDetailPage() {
       <div><dt>Retenções e encargos</dt><dd>{r.finance.statutory_liabilities === 'OPEN_UNTIL_LIABILITY_PAYMENT' ? 'A entregar (INSS / IRT / encargos): liquidação própria, não pela folha' : '—'}</dd></div>
     </dl><p className="muted">O Finance recebe só o lançamento agregado por rubrica e conta; nunca o detalhe por trabalhador.</p>
       <div className="row"><button className="btn btn--secondary" type="button" onClick={() => void exportCsv()} disabled={exporting}>{exporting ? 'A exportar…' : 'Exportar resumo (CSV)'}</button></div></section>
-    <section className="card stack" data-testid="run-breakdown"><h2>Detalhe por trabalhador</h2>
+    <section className="card stack payroll-table" data-testid="run-breakdown"><h2>Detalhe por trabalhador</h2>
       {!r.employee_detail_visible ? <p className="muted">Reservado: só a permissão HR_COMPENSATION_VIEW vê valores individuais.</p>
         : breakdown === null ? <><p className="muted">Cada consulta do detalhe individual fica registada na auditoria.</p><div className="row"><button className="btn btn--secondary" type="button" onClick={() => void loadBreakdown()}>Mostrar detalhe por trabalhador</button></div>
           {breakdownError && <ErrorState error={breakdownError} retry={() => void loadBreakdown()} />}</>

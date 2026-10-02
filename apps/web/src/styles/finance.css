@@ -49,7 +49,9 @@
 
 /* P0.10-F2B Folhas Salariais: action row wraps; the input hash never overflows; one block per employee. */
 code.hash { overflow-wrap: anywhere; word-break: break-all; font-size: 0.85em; }
-.payroll-employee + .payroll-employee { border-top: 1px solid var(--border-subtle, #d8dde3); padding-top: var(--space-3); }
+.payroll-employee + .payroll-employee { border-top: 1px solid var(--border-subtle); padding-top: var(--space-3); }
+/* A grid item defaults to min-width:auto and would grow to the table's min-content: the table scrolls in its own wrap. */
+.payroll-table { min-width: 0; }
 @media (width < 30rem) {
   .page-header__actions .payroll-actions { width: 100%; }
   .page-header__actions .payroll-actions > .btn { flex: 1 1 100%; justify-content: center; }
