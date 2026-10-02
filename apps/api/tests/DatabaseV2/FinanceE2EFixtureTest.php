@@ -62,6 +62,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
         }
         $f1d = $this->reportingWorld();
         $f2a = $this->payrollWorld();
+        $f2b = $this->payrollRunWorld();
         $login = 'finance.e2e.' . bin2hex(random_bytes(6));
         $password = bin2hex(random_bytes(32));
         DB::table('users')->where('id', $actor['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
@@ -74,6 +75,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
             'f1c' => $f1c,
             'f1d' => $f1d,
             'f2a' => $f2a,
+            'f2b' => $f2b,
         ];
         $dir = dirname(__DIR__, 4) . '/.tmp';
         if (!is_dir($dir)) {
@@ -213,5 +215,51 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
         }
         return ['readers' => $readers, 'units' => $units, 'ana' => ['employment' => $anaJob, 'name' => 'Ana Funcionária F2A'], 'bruno' => ['employment' => $brunoJob, 'old' => $brunoOld, 'name' => 'Bruno Motorista F2A'],
             'projects' => $projects];
+    }
+
+    /**
+     * P0.10-F2B browser world: unit "Congregação A1 F2B E2E" with two employments (synthetic salaries) under the synthetic
+     * rule SINTETICO_E2E_INSS (F2A world), a funded cash account, and per viewport project: one CALCULATED run (approve /
+     * post / pay journey) and one free month (create + calculate journey). Three separate people operate: calculator
+     * (HR_COMPENSATION_VIEW), approver (no salary view) and poster (PAYROLL_POST + FINANCE_POST). Test data only.
+     */
+    private function payrollRunWorld(): array
+    {
+        $v = $this->world();
+        $names = ['m' => 'Município F2B E2E', 'a' => 'Centro A F2B E2E', 'a1' => 'Congregação A1 F2B E2E'];
+        foreach ($names as $key => $name) {
+            DB::table('organizational_units')->where('id', $v[$key]['id'])->update(['name' => $name]);
+        }
+        $calc = $this->staff(['HR_EMPLOYMENT_VIEW', 'HR_EMPLOYMENT_MANAGE', 'HR_COMPENSATION_VIEW', 'HR_COMPENSATION_MANAGE', 'PAYROLL_MANAGE', 'PEOPLE_VIEW', 'DOCUMENTS_VIEW'], $v['m']['id'], true);
+        $approver = $this->staff(['PAYROLL_APPROVE', 'HR_EMPLOYMENT_VIEW'], $v['m']['id'], true);
+        $poster = $this->staff(['PAYROLL_POST', 'FINANCE_POST', 'FINANCE_VIEW'], $v['m']['id'], true);
+        $people = [];
+        foreach ([['Carla Contabilista F2B', 'Contabilista', '120000.00'], ['Daniel Técnico F2B', 'Técnico de manutenção', '95000.00']] as [$name, $job, $salary]) {
+            $person = $this->person($v['a1'], $name);
+            $employment = $this->fpost($calc, 'hr/employments', ['person' => $person['public_id'], 'unit' => $v['a1']['public_id'], 'relationship_kind' => 'EMPLOYEE', 'job_title' => $job, 'starts_on' => '2026-01-01'])
+                ->assertCreated()->json('data.public_id');
+            foreach ([['BASE_SALARY', $salary], ['INSS_EMPLOYEE', null]] as [$component, $amount]) {
+                $this->fpost($calc, 'hr/employments/' . $employment . '/compensation', ['component' => $component, 'amount' => $amount, 'starts_on' => '2026-01-01', 'reason' => 'Configuração E2E F2B'])->assertCreated();
+            }
+            $people[] = ['employment' => $employment, 'name' => $name];
+        }
+        $this->contribute($this->treasurer($v['a1']), $v['cash_a1'], '1000000.00', '2026-01-15');
+        $projects = [];
+        foreach (self::PROJECTS as $index => $project) {
+            $month = sprintf('2026-%02d', 4 + $index);
+            $run = $this->fpost($calc, 'hr/payroll/runs', ['unit' => $v['a1']['public_id'], 'period' => $month], $this->key())->assertCreated()->json('data.public_id');
+            $this->fpost($calc, 'hr/payroll/runs/' . $run . '/calculate')->assertOk();
+            $projects[$project] = ['run' => $run, 'month' => $month, 'new_month' => sprintf('2026-%02d', [1, 2, 3, 8][$index])];
+        }
+        $readers = [];
+        foreach (['calc' => $calc, 'approver' => $approver, 'poster' => $poster] as $key => $reader) {
+            $login = 'payroll.f2b.' . $key . '.' . bin2hex(random_bytes(5));
+            $password = bin2hex(random_bytes(32));
+            DB::table('users')->where('id', $reader['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
+            $readers[$key] = ['login' => $login, 'password' => $password, 'user_id' => $reader['user']];
+        }
+        // Expected figures computed by hand (synthetic): 120000.00 + 95000.00 gross; INSS 1% = 1200.00 + 950.00.
+        return ['readers' => $readers, 'unit' => ['public_id' => $v['a1']['public_id'], 'name' => $names['a1']], 'account' => $v['cash_a1']['public_id'], 'people' => $people, 'projects' => $projects,
+            'totals' => ['gross' => '215000.00', 'deductions' => '2150.00', 'employer_charges' => '0.00', 'net' => '212850.00', 'headcount' => 2]];
     }
 }

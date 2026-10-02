@@ -383,9 +383,15 @@ final class PayrollFoundationF2ATest extends PayrollHttpCase
         $this->assertTrue((new PayrollProduction(['production_enabled' => true]))->enabled(), 'the gate is a real switch, not a constant');
         $w = $this->world();
         $status = $this->hget($this->hr($w['a']), 'payroll/status')->assertOk()->json('data.production');
-        $this->assertSame([false, 'DISABLED', 'PAYROLL_PRODUCTION_DISABLED', ['calculate' => false, 'approve' => false, 'post' => false, 'pay' => false]], [$status['enabled'], $status['status'], $status['code'], $status['operations']]);
-        $runRoutes = array_filter(array_map(fn ($r) => $r->uri(), Route::getRoutes()->getRoutes()), fn ($uri) => str_starts_with($uri, 'api/v1/hr') && preg_match('#payroll-runs|/runs?\b|/calculate|/post$|/pay$|/paid$#', $uri));
-        $this->assertSame([], array_values($runRoutes), 'F2A exposes no run / calculate / approve / post / pay route');
+        // Phase-aware (P0.10-F2B added the run pipeline): with production disabled every ledger-relevant transition stays
+        // refused; only the validation of the configuration (calculate) is available.
+        $this->assertSame([false, 'DISABLED', 'PAYROLL_PRODUCTION_DISABLED'], [$status['enabled'], $status['status'], $status['code']]);
+        $this->assertSame(['approve' => false, 'post' => false, 'pay' => false], array_intersect_key($status['operations'], ['approve' => 1, 'post' => 1, 'pay' => 1]));
+        $runRoutes = array_filter(Route::getRoutes()->getRoutes(), fn ($r) => str_starts_with($r->uri(), 'api/v1/hr') && preg_match('#/runs?\b|/calculate|/approve$|/post$|/pay$#', $r->uri()));
+        $this->assertSame([], array_values(array_filter($runRoutes, fn ($r) => array_intersect($r->methods(), ['PATCH', 'PUT', 'DELETE']) !== [])), 'no generic status write / delete route for runs');
+        if ($runRoutes === []) {
+            $this->assertSame('F2A_FOUNDATION', $status['engine'], 'F2A exposes no run / calculate / approve / post / pay route');
+        }
     }
 
     public function test_h20_readiness_separates_configuration_from_production(): void

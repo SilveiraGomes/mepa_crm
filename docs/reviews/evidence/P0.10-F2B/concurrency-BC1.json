@@ -1,0 +1,22 @@
+{
+    "first": {
+        "status": "OK",
+        "result": {
+            "replayed": false
+        },
+        "pid": 26992,
+        "ms": 131
+    },
+    "second": {
+        "status": "MATCH_EXCEEDS_STATEMENT_LINE",
+        "items": [],
+        "pid": 40908,
+        "ms": 76
+    },
+    "wait": {
+        "object": "bank_statement_lines",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

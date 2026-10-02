@@ -56,7 +56,10 @@ function checks(f) {
     P2A12_salary_privacy_and_audit: (f.query.match(/hr\.compensation_viewed/g) || []).length >= 3 && /MONEY_KEYS/.test(f.audit) && !/employment_compensations|compensation/.test(f.people),
     P2A13_permission_before_target: before(methodBody(f.employment, 'create'), 'requires(PayrollCatalog::HR_EMPLOYMENT_MANAGE)', 'unitByPublicId') && before(methodBody(f.query, 'compensation'), 'requiresAny', 'employmentByPublicId')
       && /PUBLIC_ID_PATTERN/.test(f.base) && /api\/v1\/hr/.test(f.handler) && /TerritorialAuthority\(\$db, \$users, \$grants, PayrollCatalog::DATA_TYPE\)/.test(f.factory),
-    P2A14_no_run_operation_in_f2a: hrRoutes.length === 17 && hrRoutes.every((r) => !/run|calculate|\/post$|\/pay$/.test(r)) && /disabled title="Disponível na fase F2B"/.test(f.pages) && !/payroll-runs/.test(f.pages),
+    // Phase-aware (P0.10-F2B): the F2A HrController keeps its 17 routes and no run operation; the run pipeline is the
+    // separate F2B PayrollRunController + PayrollRunPages (or, before F2B, the disabled F2B placeholders).
+    P2A14_no_run_operation_in_f2a: hrRoutes.length === 17 && hrRoutes.every((r) => !/run|calculate|\/post$|\/pay$/.test(r)) && !/payroll-runs/.test(f.pages)
+      && (/disabled title="Disponível na fase F2B"/.test(f.pages) || (fs.existsSync(path.join(root, 'apps/api/app/Http/Controllers/Api/V1/Payroll/PayrollRunController.php')) && fs.existsSync(path.join(root, 'apps/web/src/pages/PayrollRunPages.tsx')))),
     P2A15_input_hash_and_rounding_contract: /ksort\(\$value, SORT_STRING\)/.test(f.hash) && /float_in_payroll_input/.test(f.hash) && /HALF_UP/.test(f.catalog) && /bcadd|bcsub/.test(methodBody(f.money, 'roundHalfUp'))
       && contract.input_hash.covers.length >= 10 && contract.rounding.mode === 'HALF_UP',
     P2A16_tests_and_ui: ['test_h01_', 'test_h02_', 'test_h03_', 'test_h04_', 'test_h05_', 'test_h06_h07_', 'test_h08_', 'test_h09_h10_', 'test_h11_', 'test_h12_', 'test_h13_', 'test_h14_', 'test_h15_', 'test_h16_', 'test_h17_', 'test_h18_',

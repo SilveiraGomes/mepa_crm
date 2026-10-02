@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "mode": "INFORMATION_SCHEMA_VS_MODEL_CATALOG_AND_CONTROLLED_DATA",
+  "schema_changes": 0,
+  "details": {
+    "database": "mepa_wave5_test_2836952b_pool_01",
+    "comparison": "BIDIRECTIONAL",
+    "compared_tables": 7,
+    "compared_columns": 66,
+    "compared_indexes": 37,
+    "compared_foreign_keys": 15,
+    "missing_or_mismatched": [],
+    "unexpected": [],
+    "files_check_constraints": [
+      "ck_files_status"
+    ],
+    "controlled_rows": [
+      "document_type:APPOINTMENT",
+      "document_type:CONSENT",
+      "document_type:CONTRACT",
+      "document_type:CORRESPONDENCE",
+      "document_type:MINUTES",
+      "document_type:OTHER",
+      "document_type:PROPERTY_TITLE",
+      "document_type:RESOLUTION",
+      "permission:DOCUMENTS_MANAGE",
+      "permission:DOCUMENTS_VERSION_MANAGE",
+      "permission:DOCUMENTS_VIEW",
+      "permission:FILES_CONFIDENTIAL_ACCESS",
+      "permission:FILES_DOWNLOAD",
+      "permission:FILES_HIGHLY_SENSITIVE_ACCESS",
+      "permission:FILES_MANAGE",
+      "permission:FILES_UPLOAD",
+      "permission:FILES_VIEW"
+    ],
+    "controlled_rows_expected": 17,
+    "manifest_schema_changes": []
+  }
+}

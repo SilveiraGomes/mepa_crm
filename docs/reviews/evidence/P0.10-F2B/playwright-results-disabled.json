@@ -1,0 +1,3473 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.payroll-f2b.config.ts",
+      "--grep-invert",
+      "@enabled"
+    ],
+    "configFile": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\playwright.payroll-f2b.config.ts",
+    "rootDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-1440x900",
+        "name": "desktop-1440x900",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "laptop-1366x768",
+        "name": "laptop-1366x768",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tablet-768x1024",
+        "name": "tablet-768x1024",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-390x844",
+        "name": "mobile-390x844",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\wamp64\\www\\mepa-crm\\docs\\reviews\\evidence\\P0.10-F2B\\playwright-results-disabled.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "finance-core.spec.ts",
+      "file": "finance-core.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "U01/U02 accounts: navigation, derived balance, open a BANK account with a masked number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 28655,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:39:44.105Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-d524c6c6a4c584282b1c",
+          "file": "finance-core.spec.ts",
+          "line": 71,
+          "column": 1
+        },
+        {
+          "title": "A01/A02/A03 receivable recognised without cash, then partly settled",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15210,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:40:13.184Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-bb25057d65d91e637bba",
+          "file": "finance-core.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "A05/A06 payable: capitalised acquisition recognised with its invoice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15120,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:40:28.445Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-fd77ad4c3491653a2bec",
+          "file": "finance-core.spec.ts",
+          "line": 132,
+          "column": 1
+        },
+        {
+          "title": "B01/B02 bank statement imported as an external fact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14685,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:40:43.623Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-85b275d416a3c9024ec0",
+          "file": "finance-core.spec.ts",
+          "line": 150,
+          "column": 1
+        },
+        {
+          "title": "B04 bank reconciliation: match the statement line with the opening entry and close the version",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17596,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:40:58.347Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-2fcdd2c3ecc75c2f190f",
+          "file": "finance-core.spec.ts",
+          "line": 171,
+          "column": 1
+        },
+        {
+          "title": "G03/G04 budget reviewed and approved by a different person, then actual vs budget",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17876,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:41:15.981Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-dc7268627456961e7f46",
+          "file": "finance-core.spec.ts",
+          "line": 191,
+          "column": 1
+        },
+        {
+          "title": "P01 unit month close from the closes screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13129,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:41:33.898Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-837fee3930be629799af",
+          "file": "finance-core.spec.ts",
+          "line": 210,
+          "column": 1
+        },
+        {
+          "title": "U01/U02 accounts: navigation, derived balance, open a BANK account with a masked number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24121,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:46:33.291Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-6a558b9180a1d23da72c",
+          "file": "finance-core.spec.ts",
+          "line": 71,
+          "column": 1
+        },
+        {
+          "title": "A01/A02/A03 receivable recognised without cash, then partly settled",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13146,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:46:57.887Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-54b66d905ae16de59982",
+          "file": "finance-core.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "A05/A06 payable: capitalised acquisition recognised with its invoice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10780,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:47:11.063Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-27de3178a72aaef5839a",
+          "file": "finance-core.spec.ts",
+          "line": 132,
+          "column": 1
+        },
+        {
+          "title": "B01/B02 bank statement imported as an external fact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10744,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:47:21.874Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-dc8ca30d179629a6fd82",
+          "file": "finance-core.spec.ts",
+          "line": 150,
+          "column": 1
+        },
+        {
+          "title": "B04 bank reconciliation: match the statement line with the opening entry and close the version",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17371,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:47:32.654Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-077d7dc172a7623837aa",
+          "file": "finance-core.spec.ts",
+          "line": 171,
+          "column": 1
+        },
+        {
+          "title": "G03/G04 budget reviewed and approved by a different person, then actual vs budget",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18527,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:47:50.057Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-dddb1d3b519abd5e18ff",
+          "file": "finance-core.spec.ts",
+          "line": 191,
+          "column": 1
+        },
+        {
+          "title": "P01 unit month close from the closes screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12346,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:48:08.632Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-b4a143070890b9871d2f",
+          "file": "finance-core.spec.ts",
+          "line": 210,
+          "column": 1
+        },
+        {
+          "title": "U01/U02 accounts: navigation, derived balance, open a BANK account with a masked number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24871,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:53:23.060Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-206f9aa68a326e7fc1be",
+          "file": "finance-core.spec.ts",
+          "line": 71,
+          "column": 1
+        },
+        {
+          "title": "A01/A02/A03 receivable recognised without cash, then partly settled",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11881,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:53:48.410Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-4dc85faa8c68980417af",
+          "file": "finance-core.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "A05/A06 payable: capitalised acquisition recognised with its invoice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10772,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:54:00.321Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-627905feedd53fb18a5f",
+          "file": "finance-core.spec.ts",
+          "line": 132,
+          "column": 1
+        },
+        {
+          "title": "B01/B02 bank statement imported as an external fact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10244,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:54:11.121Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-4be03d3055bc6e08ff43",
+          "file": "finance-core.spec.ts",
+          "line": 150,
+          "column": 1
+        },
+        {
+          "title": "B04 bank reconciliation: match the statement line with the opening entry and close the version",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14263,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:54:21.393Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-a5dfa83d8469bd4f0740",
+          "file": "finance-core.spec.ts",
+          "line": 171,
+          "column": 1
+        },
+        {
+          "title": "G03/G04 budget reviewed and approved by a different person, then actual vs budget",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16219,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:54:35.696Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-063a0b74cead3b328f2d",
+          "file": "finance-core.spec.ts",
+          "line": 191,
+          "column": 1
+        },
+        {
+          "title": "P01 unit month close from the closes screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10728,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:54:51.947Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-27bb4b11c13debc5cfa2",
+          "file": "finance-core.spec.ts",
+          "line": 210,
+          "column": 1
+        },
+        {
+          "title": "U01/U02 accounts: navigation, derived balance, open a BANK account with a masked number",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23498,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:59:48.470Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-a01d4a19db3919113801",
+          "file": "finance-core.spec.ts",
+          "line": 71,
+          "column": 1
+        },
+        {
+          "title": "A01/A02/A03 receivable recognised without cash, then partly settled",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13356,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:00:12.471Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-b4f419db52567a92f0b7",
+          "file": "finance-core.spec.ts",
+          "line": 106,
+          "column": 1
+        },
+        {
+          "title": "A05/A06 payable: capitalised acquisition recognised with its invoice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10174,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:00:25.855Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-f8a3a4375b93817afadc",
+          "file": "finance-core.spec.ts",
+          "line": 132,
+          "column": 1
+        },
+        {
+          "title": "B01/B02 bank statement imported as an external fact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9655,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:00:36.061Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-8db9704331d8f74dde9c",
+          "file": "finance-core.spec.ts",
+          "line": 150,
+          "column": 1
+        },
+        {
+          "title": "B04 bank reconciliation: match the statement line with the opening entry and close the version",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12038,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:00:45.745Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-c8d92a96fefb4d2fd3bc",
+          "file": "finance-core.spec.ts",
+          "line": 171,
+          "column": 1
+        },
+        {
+          "title": "G03/G04 budget reviewed and approved by a different person, then actual vs budget",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13102,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:00:57.811Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-25dd323e291fcdb3d232",
+          "file": "finance-core.spec.ts",
+          "line": 191,
+          "column": 1
+        },
+        {
+          "title": "P01 unit month close from the closes screen",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10471,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:01:10.941Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1e4ebdce8635f39720f2-d153c14621d5902d02f8",
+          "file": "finance-core.spec.ts",
+          "line": 210,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "finance-reporting.spec.ts",
+      "file": "finance-reporting.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "R28/R35 dashboard: consolidated and own views are explicit, KPIs equal the API and the hand-computed figures",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19993,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:41:47.186Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-44a7c4146981cdea16d9",
+          "file": "finance-reporting.spec.ts",
+          "line": 187,
+          "column": 1
+        },
+        {
+          "title": "R09-R11/R30/R36 DRE and DOAF, own and consolidated: UI = API = CSV export, audited",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22948,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:42:07.237Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-7467a62b95b14d3b7506",
+          "file": "finance-reporting.spec.ts",
+          "line": 213,
+          "column": 1
+        },
+        {
+          "title": "R06/R07/R14/R15/R17/R20 control reports render their rows and totals",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30783,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:42:30.232Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-84528044104dd09c84c5",
+          "file": "finance-reporting.spec.ts",
+          "line": 248,
+          "column": 1
+        },
+        {
+          "title": "R21-R24 month / quarter / semester / year over a data set spanning months",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17720,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:43:01.057Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-78377e05f668751b635c",
+          "file": "finance-reporting.spec.ts",
+          "line": 286,
+          "column": 1
+        },
+        {
+          "title": "R31 contributions: external origins only; in kind without approved valuation has no monetary impact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17578,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:43:18.831Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-ca0036715f17b439b4c9",
+          "file": "finance-reporting.spec.ts",
+          "line": 299,
+          "column": 1
+        },
+        {
+          "title": "R26 a reader without FINANCE_CONSOLIDATED_VIEW never sees or uses the consolidated view",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14693,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:43:36.446Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-4a6effcfe699f74b187e",
+          "file": "finance-reporting.spec.ts",
+          "line": 316,
+          "column": 1
+        },
+        {
+          "title": "R28/R35 dashboard: consolidated and own views are explicit, KPIs equal the API and the hand-computed figures",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15418,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:48:21.157Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-ecc9ade746087fcee682",
+          "file": "finance-reporting.spec.ts",
+          "line": 187,
+          "column": 1
+        },
+        {
+          "title": "R09-R11/R30/R36 DRE and DOAF, own and consolidated: UI = API = CSV export, audited",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 20382,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:48:36.617Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-089adebb6ea111db2915",
+          "file": "finance-reporting.spec.ts",
+          "line": 213,
+          "column": 1
+        },
+        {
+          "title": "R06/R07/R14/R15/R17/R20 control reports render their rows and totals",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24651,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:48:57.031Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-7c979900d6a418ee9958",
+          "file": "finance-reporting.spec.ts",
+          "line": 248,
+          "column": 1
+        },
+        {
+          "title": "R21-R24 month / quarter / semester / year over a data set spanning months",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12858,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:49:21.724Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-e7559f8929f33146f2c8",
+          "file": "finance-reporting.spec.ts",
+          "line": 286,
+          "column": 1
+        },
+        {
+          "title": "R31 contributions: external origins only; in kind without approved valuation has no monetary impact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17197,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:49:34.619Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-1ea08175af41fc680565",
+          "file": "finance-reporting.spec.ts",
+          "line": 299,
+          "column": 1
+        },
+        {
+          "title": "R26 a reader without FINANCE_CONSOLIDATED_VIEW never sees or uses the consolidated view",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15582,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:49:51.845Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-677d625eb5e855154b06",
+          "file": "finance-reporting.spec.ts",
+          "line": 316,
+          "column": 1
+        },
+        {
+          "title": "R28/R35 dashboard: consolidated and own views are explicit, KPIs equal the API and the hand-computed figures",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14886,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:55:02.797Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-fb66e022e71861ea85d2",
+          "file": "finance-reporting.spec.ts",
+          "line": 187,
+          "column": 1
+        },
+        {
+          "title": "R09-R11/R30/R36 DRE and DOAF, own and consolidated: UI = API = CSV export, audited",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 20569,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:55:17.712Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-a1cfcce696e23c4761cc",
+          "file": "finance-reporting.spec.ts",
+          "line": 213,
+          "column": 1
+        },
+        {
+          "title": "R06/R07/R14/R15/R17/R20 control reports render their rows and totals",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24671,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:55:38.311Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-f0248cffab56c1e97edc",
+          "file": "finance-reporting.spec.ts",
+          "line": 248,
+          "column": 1
+        },
+        {
+          "title": "R21-R24 month / quarter / semester / year over a data set spanning months",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13169,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:56:03.018Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-8ac21773cbf0f22a94d6",
+          "file": "finance-reporting.spec.ts",
+          "line": 286,
+          "column": 1
+        },
+        {
+          "title": "R31 contributions: external origins only; in kind without approved valuation has no monetary impact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19252,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:56:16.234Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-39426cef72566cccb97a",
+          "file": "finance-reporting.spec.ts",
+          "line": 299,
+          "column": 1
+        },
+        {
+          "title": "R26 a reader without FINANCE_CONSOLIDATED_VIEW never sees or uses the consolidated view",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15026,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:56:35.515Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-bcf4e1d0440ea7467291",
+          "file": "finance-reporting.spec.ts",
+          "line": 316,
+          "column": 1
+        },
+        {
+          "title": "R28/R35 dashboard: consolidated and own views are explicit, KPIs equal the API and the hand-computed figures",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13440,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:01:21.535Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-b1f3a4d92927c5c9f822",
+          "file": "finance-reporting.spec.ts",
+          "line": 187,
+          "column": 1
+        },
+        {
+          "title": "R09-R11/R30/R36 DRE and DOAF, own and consolidated: UI = API = CSV export, audited",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18002,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:01:35.003Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-feabe6bd511a4f48aeab",
+          "file": "finance-reporting.spec.ts",
+          "line": 213,
+          "column": 1
+        },
+        {
+          "title": "R06/R07/R14/R15/R17/R20 control reports render their rows and totals",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23054,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:01:53.031Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-521f849755dce16d2de2",
+          "file": "finance-reporting.spec.ts",
+          "line": 248,
+          "column": 1
+        },
+        {
+          "title": "R21-R24 month / quarter / semester / year over a data set spanning months",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12433,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:02:16.128Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-087a08ba0870e9b293a6",
+          "file": "finance-reporting.spec.ts",
+          "line": 286,
+          "column": 1
+        },
+        {
+          "title": "R31 contributions: external origins only; in kind without approved valuation has no monetary impact",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 21607,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:02:28.602Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-76436aeca79fbaf662b6",
+          "file": "finance-reporting.spec.ts",
+          "line": 299,
+          "column": 1
+        },
+        {
+          "title": "R26 a reader without FINANCE_CONSOLIDATED_VIEW never sees or uses the consolidated view",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13200,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:02:50.240Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e1c0ce45280ffaee596d-fb59841295e71da59f94",
+          "file": "finance-reporting.spec.ts",
+          "line": 316,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "finance.spec.ts",
+      "file": "finance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "transfer lists: sent, received and in transit with origin, destination, purpose, value, dates and state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10812,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:43:51.229Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-5a87d8b3f874d083741a",
+          "file": "finance.spec.ts",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "received detail shows origin, destination, purpose, value, dates and reconciles the pairing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11552,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:44:02.074Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-f8a31bc06383615a5110",
+          "file": "finance.spec.ts",
+          "line": 92,
+          "column": 1
+        },
+        {
+          "title": "T27 new transfer -> send -> receive on every viewport (mobile included), never touching the result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13422,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:44:13.660Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-05cd9f53e52e52abf69b",
+          "file": "finance.spec.ts",
+          "line": 110,
+          "column": 1
+        },
+        {
+          "title": "fund custody position shows where funds came from and went, apart from the economic result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9466,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:44:27.118Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-607f425418ac96f354aa",
+          "file": "finance.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "transfer lists: sent, received and in transit with origin, destination, purpose, value, dates and state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12311,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:50:07.531Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-e1fd9b4e5c1937a3fe99",
+          "file": "finance.spec.ts",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "received detail shows origin, destination, purpose, value, dates and reconciles the pairing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13638,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:50:19.877Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-7bf17f1fe608d62d5f33",
+          "file": "finance.spec.ts",
+          "line": 92,
+          "column": 1
+        },
+        {
+          "title": "T27 new transfer -> send -> receive on every viewport (mobile included), never touching the result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17787,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:50:33.554Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-8736ae0a1c3237370917",
+          "file": "finance.spec.ts",
+          "line": 110,
+          "column": 1
+        },
+        {
+          "title": "fund custody position shows where funds came from and went, apart from the economic result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9876,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:50:51.376Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-48fb4cbf2df0200cf8ba",
+          "file": "finance.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "transfer lists: sent, received and in transit with origin, destination, purpose, value, dates and state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10131,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:56:50.645Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-bcceb90f1e3718be8e9a",
+          "file": "finance.spec.ts",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "received detail shows origin, destination, purpose, value, dates and reconciles the pairing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14074,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:57:00.812Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-d7afbdb6ef6a5e73ff87",
+          "file": "finance.spec.ts",
+          "line": 92,
+          "column": 1
+        },
+        {
+          "title": "T27 new transfer -> send -> receive on every viewport (mobile included), never touching the result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14506,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:57:14.928Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-f865c5a6182089bcca87",
+          "file": "finance.spec.ts",
+          "line": 110,
+          "column": 1
+        },
+        {
+          "title": "fund custody position shows where funds came from and went, apart from the economic result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9819,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:57:29.469Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-d5536f8f0a05c9e5af9d",
+          "file": "finance.spec.ts",
+          "line": 142,
+          "column": 1
+        },
+        {
+          "title": "transfer lists: sent, received and in transit with origin, destination, purpose, value, dates and state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10780,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:03:03.541Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-a072a067b671eefba68f",
+          "file": "finance.spec.ts",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "received detail shows origin, destination, purpose, value, dates and reconciles the pairing",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13932,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:03:14.349Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-92abbd0cb17a397996cd",
+          "file": "finance.spec.ts",
+          "line": 92,
+          "column": 1
+        },
+        {
+          "title": "T27 new transfer -> send -> receive on every viewport (mobile included), never touching the result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13458,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:03:28.320Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-58ec15629584973a92a6",
+          "file": "finance.spec.ts",
+          "line": 110,
+          "column": 1
+        },
+        {
+          "title": "fund custody position shows where funds came from and went, apart from the economic result",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9435,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:03:41.809Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1d1b0b311adfe43979fc-fc583814fad49588c8c3",
+          "file": "finance.spec.ts",
+          "line": 142,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "payroll-f2a.spec.ts",
+      "file": "payroll-f2a.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 26292,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:44:36.700Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-d4038aaabaee4f8a5051",
+          "file": "payroll-f2a.spec.ts",
+          "line": 97,
+          "column": 1
+        },
+        {
+          "title": "F2A components, rules (pending configuration, provenance) and readiness (configuration vs production)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 21447,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:45:03.022Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-457dfce402e61ddefa85",
+          "file": "payroll-f2a.spec.ts",
+          "line": 134,
+          "column": 1
+        },
+        {
+          "title": "F2A a reader without HR_COMPENSATION_VIEW never sees a salary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14716,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:45:24.501Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-2c73fe32b420d9d7a715",
+          "file": "payroll-f2a.spec.ts",
+          "line": 169,
+          "column": 1
+        },
+        {
+          "title": "F2A the compensation change works on every viewport (new line; the old one is closed, not edited)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12115,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:45:39.246Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-e96b56d110918f11ffee",
+          "file": "payroll-f2a.spec.ts",
+          "line": 183,
+          "column": 1
+        },
+        {
+          "title": "F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 34573,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:51:01.353Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-d64153ba644d79a99b4b",
+          "file": "payroll-f2a.spec.ts",
+          "line": 97,
+          "column": 1
+        },
+        {
+          "title": "F2A components, rules (pending configuration, provenance) and readiness (configuration vs production)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 25944,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:51:35.968Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-2764af263f40c754cb05",
+          "file": "payroll-f2a.spec.ts",
+          "line": 134,
+          "column": 1
+        },
+        {
+          "title": "F2A a reader without HR_COMPENSATION_VIEW never sees a salary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17342,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:52:01.951Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-626a1771d05d6fee4c7f",
+          "file": "payroll-f2a.spec.ts",
+          "line": 169,
+          "column": 1
+        },
+        {
+          "title": "F2A the compensation change works on every viewport (new line; the old one is closed, not edited)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16014,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:52:19.344Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-bf050f3fb1c5b21fe5e7",
+          "file": "payroll-f2a.spec.ts",
+          "line": 183,
+          "column": 1
+        },
+        {
+          "title": "F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 34849,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:57:39.399Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-eebf8b967642b492affc",
+          "file": "payroll-f2a.spec.ts",
+          "line": 97,
+          "column": 1
+        },
+        {
+          "title": "F2A components, rules (pending configuration, provenance) and readiness (configuration vs production)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22587,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:58:14.279Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-26028932d55e8904ff9d",
+          "file": "payroll-f2a.spec.ts",
+          "line": 134,
+          "column": 1
+        },
+        {
+          "title": "F2A a reader without HR_COMPENSATION_VIEW never sees a salary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15032,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:58:36.898Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-faae3b127438a737b0b3",
+          "file": "payroll-f2a.spec.ts",
+          "line": 169,
+          "column": 1
+        },
+        {
+          "title": "F2A the compensation change works on every viewport (new line; the old one is closed, not edited)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14213,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:58:51.966Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-df51e08cdff4579584c6",
+          "file": "payroll-f2a.spec.ts",
+          "line": 183,
+          "column": 1
+        },
+        {
+          "title": "F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 26178,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:03:51.355Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-3331451f4ceb3b564497",
+          "file": "payroll-f2a.spec.ts",
+          "line": 97,
+          "column": 1
+        },
+        {
+          "title": "F2A components, rules (pending configuration, provenance) and readiness (configuration vs production)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 26221,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:04:17.588Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-587c391fc6a4ae59c34a",
+          "file": "payroll-f2a.spec.ts",
+          "line": 134,
+          "column": 1
+        },
+        {
+          "title": "F2A a reader without HR_COMPENSATION_VIEW never sees a salary",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17141,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:04:43.845Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-604cc528a04ec842f480",
+          "file": "payroll-f2a.spec.ts",
+          "line": 169,
+          "column": 1
+        },
+        {
+          "title": "F2A the compensation change works on every viewport (new line; the old one is closed, not edited)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11990,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:05:01.036Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "82f49ed1e0cdaab84ac4-f2ad2de1bc9b272a24a0",
+          "file": "payroll-f2a.spec.ts",
+          "line": 183,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "payroll-f2b.spec.ts",
+      "file": "payroll-f2b.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "@disabled F2B run list, calculated detail and the audited per-person breakdown (calculator)",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18066,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:45:51.461Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-b3456ddae0b377c2515e",
+          "file": "payroll-f2b.spec.ts",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B new run and calculation while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10558,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:46:09.559Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-c5a457c44267be2b923f",
+          "file": "payroll-f2b.spec.ts",
+          "line": 137,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9985,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:46:20.146Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-064057d2a45b6f66010a",
+          "file": "payroll-f2b.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B run list, calculated detail and the audited per-person breakdown (calculator)",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18080,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:52:35.503Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-4331e328ace0b6a9a1c8",
+          "file": "payroll-f2b.spec.ts",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B new run and calculation while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12635,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:52:53.617Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-6fbf30660b40d4ed1563",
+          "file": "payroll-f2b.spec.ts",
+          "line": 137,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13693,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:53:06.288Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-0f9c6c7b408307d1db86",
+          "file": "payroll-f2b.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B run list, calculated detail and the audited per-person breakdown (calculator)",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15581,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:59:06.299Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-d7086696fee3fa120c36",
+          "file": "payroll-f2b.spec.ts",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B new run and calculation while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11153,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:59:21.910Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-a77467435e8b0bdec8f5",
+          "file": "payroll-f2b.spec.ts",
+          "line": 137,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12329,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T15:59:33.092Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-52c18fc41231522fba57",
+          "file": "payroll-f2b.spec.ts",
+          "line": 159,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B run list, calculated detail and the audited per-person breakdown (calculator)",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12878,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:05:13.153Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-98f0a1b55bfb75462ce6",
+          "file": "payroll-f2b.spec.ts",
+          "line": 109,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B new run and calculation while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12292,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:05:26.060Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-303db5a370b3c2482ecf",
+          "file": "payroll-f2b.spec.ts",
+          "line": 137,
+          "column": 1
+        },
+        {
+          "title": "@disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled",
+          "ok": true,
+          "tags": [
+            "disabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11361,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:05:38.376Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-7f52602c82bd4f9228c5",
+          "file": "payroll-f2b.spec.ts",
+          "line": 159,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-02T15:39:41.496Z",
+    "duration": 1569415.8939999999,
+    "expected": 96,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

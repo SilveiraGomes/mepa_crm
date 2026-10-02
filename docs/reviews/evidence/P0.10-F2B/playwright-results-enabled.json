@@ -1,0 +1,297 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "playwright.payroll-f2b.config.ts",
+      "--grep",
+      "@enabled"
+    ],
+    "configFile": "C:\\wamp64\\www\\mepa-crm\\apps\\web\\playwright.payroll-f2b.config.ts",
+    "rootDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-1440x900",
+        "name": "desktop-1440x900",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "laptop-1366x768",
+        "name": "laptop-1366x768",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tablet-768x1024",
+        "name": "tablet-768x1024",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      },
+      {
+        "outputDir": "C:/wamp64/www/mepa-crm/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-390x844",
+        "name": "mobile-390x844",
+        "testDir": "C:/wamp64/www/mepa-crm/apps/web/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "payroll-f2b.spec.ts",
+          "payroll-f2a.spec.ts",
+          "finance-reporting.spec.ts",
+          "finance-core.spec.ts",
+          "finance.spec.ts"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\wamp64\\www\\mepa-crm\\docs\\reviews\\evidence\\P0.10-F2B\\playwright-results-enabled.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "payroll-f2b.spec.ts",
+      "file": "payroll-f2b.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "@enabled F2B approve (approver) -> post -> pay (poster); actions always match the status",
+          "ok": true,
+          "tags": [
+            "enabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-1440x900",
+              "projectName": "desktop-1440x900",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 31747,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:05:56.501Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-c28137ec81c1fac3ae1b",
+          "file": "payroll-f2b.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "@enabled F2B approve (approver) -> post -> pay (poster); actions always match the status",
+          "ok": true,
+          "tags": [
+            "enabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "laptop-1366x768",
+              "projectName": "laptop-1366x768",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30546,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:06:34.459Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-f03a4562e47f512b910a",
+          "file": "payroll-f2b.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "@enabled F2B approve (approver) -> post -> pay (poster); actions always match the status",
+          "ok": true,
+          "tags": [
+            "enabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tablet-768x1024",
+              "projectName": "tablet-768x1024",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30548,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:07:10.578Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-ccdeb129e5806d4bbfa1",
+          "file": "payroll-f2b.spec.ts",
+          "line": 173,
+          "column": 1
+        },
+        {
+          "title": "@enabled F2B approve (approver) -> post -> pay (poster); actions always match the status",
+          "ok": true,
+          "tags": [
+            "enabled"
+          ],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-390x844",
+              "projectName": "mobile-390x844",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30170,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T16:07:46.832Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "911834e138c72e0430d3-7a44c1ca14bb2c19fd31",
+          "file": "payroll-f2b.spec.ts",
+          "line": 173,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-02T16:05:54.879Z",
+    "duration": 146438.503,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

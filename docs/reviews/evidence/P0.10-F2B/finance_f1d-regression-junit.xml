@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\DatabaseV2\FinanceReportingF1DTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingF1DTest.php" tests="4" assertions="40" errors="0" warnings="0" failures="0" skipped="0" time="17.412087">
+    <testcase name="test_r01_r05_r21_r24_own_dre_uses_only_posted_accrual_economic_lines" class="Tests\DatabaseV2\FinanceReportingF1DTest" classname="Tests.DatabaseV2.FinanceReportingF1DTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingF1DTest.php" line="13" assertions="12" time="13.905734"/>
+    <testcase name="test_r06_r15_consolidated_dre_and_doaf_eliminate_the_1000_600_400_chain" class="Tests\DatabaseV2\FinanceReportingF1DTest" classname="Tests.DatabaseV2.FinanceReportingF1DTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingF1DTest.php" line="31" assertions="17" time="1.589061"/>
+    <testcase name="test_r25_historical_perimeter_is_resolved_at_report_end_not_from_current_parent" class="Tests\DatabaseV2\FinanceReportingF1DTest" classname="Tests.DatabaseV2.FinanceReportingF1DTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingF1DTest.php" line="54" assertions="6" time="0.907328"/>
+    <testcase name="test_r26_r27_consolidated_permission_and_scope_are_concealed" class="Tests\DatabaseV2\FinanceReportingF1DTest" classname="Tests.DatabaseV2.FinanceReportingF1DTest" file="C:\wamp64\www\mepa-crm\apps\api\tests\DatabaseV2\FinanceReportingF1DTest.php" line="69" assertions="5" time="1.009964"/>
+  </testsuite>
+</testsuites>

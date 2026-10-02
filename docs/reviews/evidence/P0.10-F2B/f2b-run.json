@@ -1,0 +1,118 @@
+{
+  "runner": "scripts/run-p010-payroll-f2b.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 12.0,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33056,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\1fa50272cde0\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"1fa50272cde0\",\n  \"pid\": 37324,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"302c6889-be77-11f1-a075-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\1fa50272cde0\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33056",
+      "rc": 0,
+      "seconds": 63.0,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_1fa50272_pool_01\",\n    \"mepa_wave4_test_1fa50272_pool_02\",\n    \"mepa_wave3_test_1fa50272_pool_01\",\n    \"mepa_wave5_test_1fa50272_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_1fa50272_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_1fa50272_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_1fa50272_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_1fa50272_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 203,\n      \"tables\": 189\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "finance_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/FinanceE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 21.8,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:21.545, Memory: 36.00 MB\n\nOK (1 test, 110 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_production_disabled",
+      "cmd": "node C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js test --config playwright.payroll-f2b.config.ts --grep-invert @enabled",
+      "rc": 0,
+      "seconds": 1571.2,
+      "stdout_tail": "from the economic result (9.4s)\n  ok 90 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:97:1 › F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads) (26.2s)\n  ok 91 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:134:1 › F2A components, rules (pending configuration, provenance) and readiness (configuration vs production) (26.2s)\n  ok 92 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:169:1 › F2A a reader without HR_COMPENSATION_VIEW never sees a salary (17.1s)\n  ok 93 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:183:1 › F2A the compensation change works on every viewport (new line; the old one is closed, not edited) (12.0s)\n  ok 94 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:109:1 › @disabled F2B run list, calculated detail and the audited per-person breakdown (calculator) (12.9s)\n  ok 95 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:137:1 › @disabled F2B new run and calculation while production is disabled (12.3s)\n  ok 96 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:159:1 › @disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled (11.4s)\n\n  96 passed (26.2m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_production_enabled_test_process_only",
+      "cmd": "node C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js test --config playwright.payroll-f2b.config.ts --grep @enabled",
+      "rc": 0,
+      "seconds": 148.1,
+      "stdout_tail": "\nRunning 4 tests using 1 worker\n\n  ok 1 [desktop-1440x900] › tests\\e2e\\payroll-f2b.spec.ts:173:1 › @enabled F2B approve (approver) -> post -> pay (poster); actions always match the status (31.7s)\n  ok 2 [laptop-1366x768] › tests\\e2e\\payroll-f2b.spec.ts:173:1 › @enabled F2B approve (approver) -> post -> pay (poster); actions always match the status (30.5s)\n  ok 3 [tablet-768x1024] › tests\\e2e\\payroll-f2b.spec.ts:173:1 › @enabled F2B approve (approver) -> post -> pay (poster); actions always match the status (30.5s)\n  ok 4 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:173:1 › @enabled F2B approve (approver) -> post -> pay (poster); actions always match the status (30.2s)\n\n  4 passed (2.4m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33056",
+      "rc": 0,
+      "seconds": 9.6,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at": "2026-10-02T16:37:32+0100",
+  "head": "a33c07762a527b0ab1c782f5b8fec87f9c399aff",
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_1fa50272_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_1fa50272_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_1fa50272_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_1fa50272_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 203,
+      "tables": 189
+    }
+  },
+  "web_build": {
+    "rc": 0,
+    "pwa": true
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true,
+    "api_enabled": true
+  },
+  "playwright_disabled": {
+    "startTime": "2026-10-02T15:39:41.496Z",
+    "duration": 1569415.8939999999,
+    "expected": 96,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "playwright_enabled": {
+    "startTime": "2026-10-02T16:05:54.879Z",
+    "duration": 146438.503,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "servers_stopped": true,
+  "production_default_after_campaign": "false",
+  "log_scan": {
+    "bytes_scanned": 1695886,
+    "leaks": []
+  },
+  "evidence_scan": {
+    "leaks": []
+  },
+  "playwright_output_removed": true,
+  "temporary_key_ring_removed": true,
+  "fixture_manifest_removed": true,
+  "tracked_rewrites_restored": true,
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-10-02T17:08:32+0100"
+}

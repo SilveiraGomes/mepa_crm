@@ -97,7 +97,8 @@ async function navLinks(page: Page): Promise<string[]> {
 test('F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads)', async ({ page }, info) => {
   await login(page, 'hr', '/rh/funcionarios')
   await expect(page.getByRole('heading', { level: 1, name: 'Funcionários' })).toBeVisible()
-  expect(await navLinks(page)).toEqual(['Funcionários', 'Vínculos', 'Remuneração', 'Componentes', 'Regras', 'Prontidão da Folha'])
+  // P0.10-F2B added Folhas Salariais (the HR reader holds PAYROLL_MANAGE).
+  expect(await navLinks(page)).toEqual(['Funcionários', 'Vínculos', 'Remuneração', 'Componentes', 'Regras', 'Prontidão da Folha', 'Folhas Salariais'])
   await expect(page.locator('main tbody tr').filter({ hasText: f2a.ana.name })).toContainText('Secretária administrativa')
   await layout(page, info, 'employee-list')
 
@@ -155,7 +156,9 @@ test('F2A components, rules (pending configuration, provenance) and readiness (c
   await expect(page.getByTestId('configuration-readiness')).toContainText('PRONTA')
   await expect(page.getByTestId('configuration-readiness')).not.toContainText('NÃO PRONTA')
   await expect(page.getByTestId('production-status')).toContainText('DESACTIVADA')
-  for (const action of ['Processar', 'Aprovar', 'Contabilizar', 'Pagar']) await expect(page.getByRole('button', { name: `${action} (F2B)` })).toBeDisabled()
+  // P0.10-F2B: the run actions live in Folhas Salariais (server-gated per run); readiness only links there.
+  for (const action of ['Processar', 'Aprovar', 'Contabilizar', 'Pagar']) await expect(page.getByRole('button', { name: new RegExp(action) })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Ver folhas salariais' })).toBeVisible()
   await layout(page, info, 'readiness')
   await page.locator('#ready-unit').selectOption({ label: f2a.units.m.name })
   await expect(page.getByTestId('configuration-readiness')).toContainText('NÃO PRONTA')

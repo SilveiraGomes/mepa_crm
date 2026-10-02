@@ -23,6 +23,11 @@ abstract class PayrollHttpCase extends FinanceHttpCase
     {
         parent::setUp();
         PayrollCatalog::install(DB::connection());
+        // Test-pool reset only (the class shares one truncated pool): F2B run lines reference rules, so the synthetic
+        // runs of earlier tests go first. Product code never deletes a run, a line or a posting.
+        DB::table('payroll_postings')->delete();
+        DB::table('payroll_run_lines')->delete();
+        DB::table('payroll_runs')->delete();
         DB::table('payroll_rule_brackets')->delete();
         DB::table('payroll_rule_base_components')->delete();
         DB::table('payroll_rules')->delete();
