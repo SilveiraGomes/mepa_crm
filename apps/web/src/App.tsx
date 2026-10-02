@@ -19,6 +19,7 @@ const membershipPages = () => import('./pages/MembershipPages')
 const financePages = () => import('./pages/FinancePages')
 const financeCorePages = () => import('./pages/FinanceCorePages')
 const financeReportingPages = () => import('./pages/FinanceReportingPages')
+const hrPages = () => import('./pages/HrPages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -110,6 +111,16 @@ const FinanceDashboardPage = named(financeReportingPages, 'FinanceDashboardPage'
 const FinanceReportsPage = named(financeReportingPages, 'FinanceReportsPage')
 const FinanceContributionsPage = named(financeReportingPages, 'ContributionsPage')
 const FinanceContributionDetailPage = named(financeReportingPages, 'ContributionDetailPage')
+const HrEmployeesPage = named(hrPages, 'HrEmployeesPage')
+const HrEmploymentDetailPage = named(hrPages, 'HrEmploymentDetailPage')
+const HrEmploymentsPage = named(hrPages, 'HrEmploymentsPage')
+const HrEmploymentCreatePage = named(hrPages, 'HrEmploymentCreatePage')
+const HrCompensationPage = named(hrPages, 'HrCompensationPage')
+const HrComponentsPage = named(hrPages, 'HrComponentsPage')
+const HrRulesPage = named(hrPages, 'HrRulesPage')
+const HrRuleCreatePage = named(hrPages, 'HrRuleCreatePage')
+const HrRuleDetailPage = named(hrPages, 'HrRuleDetailPage')
+const HrReadinessPage = named(hrPages, 'HrReadinessPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -146,6 +157,16 @@ function App() {
       <Route path="/documentos" element={<DocumentsListPage />} />
       <Route path="/documentos/novo" element={<DocumentCreatePage />} />
       <Route path="/documentos/:id" element={<DocumentDetailPage />} />
+      <Route path="/rh/funcionarios" element={<HrEmployeesPage />} />
+      <Route path="/rh/funcionarios/:id" element={<HrEmploymentDetailPage />} />
+      <Route path="/rh/vinculos" element={<HrEmploymentsPage />} />
+      <Route path="/rh/vinculos/novo" element={<HrEmploymentCreatePage />} />
+      <Route path="/rh/remuneracao" element={<HrCompensationPage />} />
+      <Route path="/rh/componentes" element={<HrComponentsPage />} />
+      <Route path="/rh/regras" element={<HrRulesPage />} />
+      <Route path="/rh/regras/nova" element={<HrRuleCreatePage />} />
+      <Route path="/rh/regras/:code/:version" element={<HrRuleDetailPage />} />
+      <Route path="/rh/prontidao" element={<HrReadinessPage />} />
       <Route path="/financas" element={<FinanceDashboardPage />} />
       <Route path="/financas/relatorios" element={<FinanceReportsPage />} />
       <Route path="/financas/contribuicoes" element={<FinanceContributionsPage />} />

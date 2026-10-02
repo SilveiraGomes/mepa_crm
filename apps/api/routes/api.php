@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Academy\AttendanceController;
+use App\Http\Controllers\Api\V1\Payroll\HrController;
 use App\Http\Controllers\Api\V1\Academy\AssessmentController;
 use App\Http\Controllers\Api\V1\Academy\AttemptController;
 use App\Http\Controllers\Api\V1\Academy\CertificateController;
@@ -211,6 +212,28 @@ Route::prefix('v1')->group(function (): void {
         Route::get('reports', [FinanceReportingController::class, 'index']);
         Route::get('reports/{report}', [FinanceReportingController::class, 'show']);
         Route::get('reports/{report}/export', [FinanceReportingController::class, 'export'])->middleware('throttle:finance');
+    });
+
+    // P0.10-F2A RH / payroll foundation (ADR 0021 D23-D28 + D-04A.15). Public ids only; permission before target (F-06).
+    // No route calculates, approves, posts or pays a payroll run in F2A (the run pipeline is F2B).
+    Route::prefix('hr')->middleware(['api.auth', 'throttle:finance'])->group(function (): void {
+        Route::get('context', [HrController::class, 'context']);
+        Route::get('payroll/status', [HrController::class, 'status']);
+        Route::get('payroll/readiness', [HrController::class, 'readiness']);
+        Route::get('employments', [HrController::class, 'employments']);
+        Route::post('employments', [HrController::class, 'storeEmployment'])->middleware('throttle:finance-write');
+        Route::get('employments/{employment}', [HrController::class, 'employment']);
+        Route::post('employments/{employment}/end', [HrController::class, 'endEmployment'])->middleware('throttle:finance-write');
+        Route::get('employments/{employment}/compensation', [HrController::class, 'compensation']);
+        Route::post('employments/{employment}/compensation', [HrController::class, 'changeCompensation'])->middleware('throttle:finance-write');
+        Route::post('employments/{employment}/compensation/stop', [HrController::class, 'stopCompensation'])->middleware('throttle:finance-write');
+        Route::get('compensations', [HrController::class, 'compensationOverview']);
+        Route::get('components', [HrController::class, 'components']);
+        Route::get('payroll-rules', [HrController::class, 'rules']);
+        Route::post('payroll-rules', [HrController::class, 'draftRule'])->middleware('throttle:finance-write');
+        Route::get('payroll-rules/{code}/{version}', [HrController::class, 'rule']);
+        Route::post('payroll-rules/{code}/{version}/approve', [HrController::class, 'approveRule'])->middleware('throttle:finance-write');
+        Route::post('payroll-rules/{code}/{version}/retire', [HrController::class, 'retireRule'])->middleware('throttle:finance-write');
     });
 
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {

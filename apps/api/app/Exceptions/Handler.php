@@ -196,6 +196,46 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
         });
 
+        // P0.10-F2A RH / payroll (ADR-0021 D20, D28 + D-04A.15). Same F-06 policy as Finance: unknown, malformed and
+        // out-of-scope employments, units, people, rules and documents (and compensation without HR_COMPENSATION_VIEW)
+        // are one byte-identical 404; permission (403) is decided before any target. PAYROLL_RULE_MISSING is 422 (never
+        // computed as zero); PAYROLL_PRODUCTION_DISABLED is 409 (fail-closed gate).
+        $this->renderable(function (FinanceError $e, Request $request) {
+            if (!$request->is('api/v1/hr', 'api/v1/hr/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('hr_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match (true) {
+                $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_REQUIRED', 'AMOUNT_NOT_ALLOWED', 'RATE_INVALID', 'REASON_REQUIRED', 'CURRENCY_NOT_SUPPORTED', 'OUTSIDE_EMPLOYMENT',
+                    'CONTRACT_DOCUMENT_TYPE', 'RULE_DOCUMENT_REQUIRED', 'RULE_DOCUMENT_TYPE', 'COMPONENT_NOT_RULE_BASED', 'PAYROLL_RULE_MISSING', 'PAYROLL_RULE_INVALID'], true) => [422, $e->reason, 'The request data is invalid.'],
+                $e->reason === 'CONFIG_MISSING' => [503, 'HR_NOT_CONFIGURED', 'The HR configuration is not available.'],
+                $e->reason === 'BUSY' => [503, 'HR_BUSY', 'The operation could not be completed now; nothing was changed.'],
+                in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
+                default => [409, $e->reason, 'The request conflicts with the current resource state.'],
+            };
+            Log::notice('hr_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            if (in_array($e->reason, ['PAYROLL_RULE_MISSING', 'PAYROLL_RULE_AMBIGUOUS', 'RULE_OVERLAP'], true)) {
+                $body['details'] = ['items' => $e->items];
+            }
+            return response()->json(['error' => $body], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/hr', 'api/v1/hr/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
         // P0.9 Membership (ADR-0020 D10). F-06: unknown, malformed and out-of-scope memberships, transfers, candidacies,
         // milestones, legacy identifiers and source documents share one byte-identical response.
         $this->renderable(function (MembershipError $e, Request $request) {
