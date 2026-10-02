@@ -1,0 +1,24 @@
+{
+    "post": {
+        "status": "OK",
+        "result": {
+            "id": 72,
+            "public_id": "01M3XZK22CQ9TPS7C83EGWCH6B",
+            "replayed": false
+        },
+        "pid": 38968,
+        "ms": 162
+    },
+    "close": {
+        "status": "OK",
+        "result": null,
+        "pid": 32020,
+        "ms": 100
+    },
+    "observed_lock_wait": {
+        "object": "accounting_periods",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

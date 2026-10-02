@@ -38,7 +38,10 @@ function methodBody(text, name) {
 
 function checks(f) {
   const contract = JSON.parse(f.contracts)
-  const block = f.routes.slice(f.routes.indexOf("Route::prefix('finance')"), f.routes.indexOf("Route::prefix('physical')"))
+  // The Finance route group ends at the next prefix group (P0.10-F2A added the 'hr' group right after it).
+  const financeStart = f.routes.indexOf("Route::prefix('finance')")
+  const nextGroup = ["Route::prefix('hr')", "Route::prefix('physical')"].map((g) => f.routes.indexOf(g, financeStart)).filter((i) => i > financeStart)
+  const block = f.routes.slice(financeStart, Math.min(...nextGroup))
   // F1B routes are the transfer / custody / contribution endpoints (F1C adds its own, validated by the F1C validator).
   const routes = [...block.matchAll(/Route::(get|post|patch|put|delete)\('([^']+)'/g)].map(([, m, u]) => `${m.toUpperCase()} ${u}`).filter((r) => /^(GET|POST|PATCH|PUT|DELETE) (context|units|transfers|contributions)/.test(r))
   const requests = fs.readdirSync(requestsDir).map((file) => fs.readFileSync(path.join(requestsDir, file), 'utf8'))

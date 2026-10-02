@@ -1,0 +1,315 @@
+{
+  "phase": "P0.10-F2A",
+  "status": "PASS",
+  "checks": {
+    "P2A01_35_tables": true,
+    "P2A02_money_decimal_no_float": true,
+    "P2A03_person_root_no_copy": true,
+    "P2A04_no_appointment_link": true,
+    "P2A05_owner_unit_and_context": true,
+    "P2A06_append_only_compensation": true,
+    "P2A07_no_seeded_rates": true,
+    "P2A08_rule_document_and_segregation": true,
+    "P2A09_fail_closed_resolver": true,
+    "P2A10_production_gate_default_off": true,
+    "P2A11_readiness_separates": true,
+    "P2A12_salary_privacy_and_audit": true,
+    "P2A13_permission_before_target": true,
+    "P2A14_no_run_operation_in_f2a": true,
+    "P2A15_input_hash_and_rounding_contract": true,
+    "P2A16_tests_and_ui": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "detector": "phpunit --filter test_h01_|test_h02_|test_h03_|test_h06_h07_|test_h22_|test_h11_|test_h14_|test_h13_|test_h16_|test_h17_|test_h18_|test_h19_|test_h23_|test_h20_",
+      "exit_code": 0,
+      "summary": "OK (14 tests, 590 assertions)",
+      "seconds": 34.9
+    },
+    {
+      "id": "M1",
+      "description": "employee duplicated as a parallel Person",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/EmploymentService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h01_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "seconds": 16.4
+    },
+    {
+      "id": "M2",
+      "description": "person_employment treated as the MEPA employment",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/EmploymentService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h02_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "seconds": 18
+    },
+    {
+      "id": "M3",
+      "description": "ecclesiastical appointment treated as the employment (job title taken from the post)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/EmploymentService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h03_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "seconds": 37.8
+    },
+    {
+      "id": "M4",
+      "description": "salary history overwritten (closed line takes the new amount)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/CompensationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h06_h07_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 17.9
+    },
+    {
+      "id": "M5",
+      "description": "overlapping / retroactive compensation accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/CompensationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h06_h07_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 8, Failures: 1.",
+      "seconds": 19.3
+    },
+    {
+      "id": "M6",
+      "description": "FLOAT money",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollMoney.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h22_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 14, Failures: 1.",
+      "seconds": 17.7
+    },
+    {
+      "id": "M7",
+      "description": "legal percentage hardcoded in the catalog",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h11_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 48, Failures: 1.",
+      "seconds": 17.4
+    },
+    {
+      "id": "M8",
+      "description": "missing rule treated as zero",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollRuleResolver.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h14_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 18.5
+    },
+    {
+      "id": "M9",
+      "description": "unapproved (DRAFT) rule used",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollRuleResolver.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h13_",
+      "exit_code": 2,
+      "summary": "Tests: 1, Assertions: 6, Errors: 1.",
+      "seconds": 18.5
+    },
+    {
+      "id": "M10",
+      "description": "salary exposed through the generic People API",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/People/PersonRecords.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h16_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 20, Failures: 1.",
+      "seconds": 23.8
+    },
+    {
+      "id": "M11",
+      "description": "salary read without audit",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollQueryService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h16_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 8, Failures: 1.",
+      "seconds": 20.6
+    },
+    {
+      "id": "M12",
+      "description": "wrong HR scope exposed (employment detail without unit coverage)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollQueryService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h17_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "seconds": 19.7
+    },
+    {
+      "id": "M13",
+      "description": "internal primary key accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h18_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 21
+    },
+    {
+      "id": "M14",
+      "description": "payroll production enabled by default",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/config/payroll.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h19_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "seconds": 65.6
+    },
+    {
+      "id": "M15",
+      "description": "supporting document bypass (approver Files authority neither checked nor rechecked at commit)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollRuleService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h23_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "seconds": 41.2
+    },
+    {
+      "id": "M16",
+      "description": "readiness ignores a missing rule",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Payroll/PayrollReadinessService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_h14_|test_h20_",
+      "exit_code": 1,
+      "summary": "Tests: 2, Assertions: 13, Failures: 2.",
+      "seconds": 26.1
+    }
+  ],
+  "probes_detected": 16,
+  "probes_run": 16,
+  "source_hashes_before": {
+    "employment": "f035b18821b5b3da657273afd918ff3d36e97de072259402be57aaee951223d2",
+    "compensation": "ee958c1c9fb18ddeaaa21786af6e03d8a68da11eb087c4d7ba8ca1fe8184774a",
+    "rules": "81aff5d90b505ed8be588db05c9e9a97bfd4f22b1beff82fb1a0c64425045a26",
+    "resolver": "4ae2821da5cd861f0859db079154f82bce74465622a792edc27b2be1e7bb4279",
+    "readiness": "b57babadee19075cca9aa1f9eac99989444ff9809514149a1bab86425c27072f",
+    "query": "6a933fa6053b5e42cf28f747257c44719f4e51f0c9f85556aa22b6867ed9f9c7",
+    "money": "3fd9831ee9c840890ecb6bde9dc11266422770529c7c58bb5be8a38f03bfaa07",
+    "catalog": "3f847a170fa562fc00a60380816dec6a0dd0a699d365381ba952d462329ac911",
+    "base": "c92656789560b9951d748ee0384e46949a736e5be1368fb774459009e8008a0e",
+    "hash": "615e91642e57449df8eb09afc8aed582ac9574c2beaf45d700ce958a77274584",
+    "production": "64a368a2e35623a8e0a91610bd9edc0b4827addf48959c6fee4aaed085d5a5a6",
+    "audit": "050c46a7640969b12f36fce3e14ba69b6af685fa5193e0422d93d1ac886c25d4",
+    "config": "326a52b773298462d608b2f6b25a7312e471421d0635dee7786f08e8b9c55278",
+    "people": "5a464d5dca3129947d5f86038d55ec9f9522d15f318eb2cbd83f1ac50f193637",
+    "routes": "ba9f1241334d50813aa121d696167b9fc1b5ae79c3e373b5c44424e3589c039f",
+    "handler": "03ce3e564c1e7d5a520a19c88543a9e92de078ca2d2f395d679d76dd740d8f86",
+    "factory": "d28657e32ef2e81b9c8a014a5b177fc00643f376fe10c3041ff0d886e6369282",
+    "controller": "253d2906e855f4437d947cbd242149abcb5ae0a4f51be5a0f4648c56c75017a2",
+    "pages": "04a3bd08c9ac8314ff39c912d3e81e6c763a22471521286d0df2ee92ccdd4162",
+    "shell": "7830fdbb8b14f743a2b21fb26f0c28bb70b11c7e03b5ee3702c46b2c01bdb0af",
+    "test": "fccff0d76e99da79304b4e7012c72658c9db4757017390c1e31b54699f4de1f7",
+    "worker": "66a56a3c4fff7c9586a93a0df244af0afe3dab438b304e0334b199c167c7f4fb",
+    "manifest": "9a1c0ada1e823276692901ae98f187374fcd2140ba42f8903fc37750016c6806",
+    "contracts": "3a87a8e56ecc8e630aa375fb1ac2f6b52dfdbbc4d6bc452f797e9da012e36a86",
+    "e2e": "db0ae5610ce9e1bacdf9a2a0f74bc8c195c1456056f9bfd10a87eb1499ccdce9"
+  },
+  "source_hashes_after": {
+    "employment": "f035b18821b5b3da657273afd918ff3d36e97de072259402be57aaee951223d2",
+    "compensation": "ee958c1c9fb18ddeaaa21786af6e03d8a68da11eb087c4d7ba8ca1fe8184774a",
+    "rules": "81aff5d90b505ed8be588db05c9e9a97bfd4f22b1beff82fb1a0c64425045a26",
+    "resolver": "4ae2821da5cd861f0859db079154f82bce74465622a792edc27b2be1e7bb4279",
+    "readiness": "b57babadee19075cca9aa1f9eac99989444ff9809514149a1bab86425c27072f",
+    "query": "6a933fa6053b5e42cf28f747257c44719f4e51f0c9f85556aa22b6867ed9f9c7",
+    "money": "3fd9831ee9c840890ecb6bde9dc11266422770529c7c58bb5be8a38f03bfaa07",
+    "catalog": "3f847a170fa562fc00a60380816dec6a0dd0a699d365381ba952d462329ac911",
+    "base": "c92656789560b9951d748ee0384e46949a736e5be1368fb774459009e8008a0e",
+    "hash": "615e91642e57449df8eb09afc8aed582ac9574c2beaf45d700ce958a77274584",
+    "production": "64a368a2e35623a8e0a91610bd9edc0b4827addf48959c6fee4aaed085d5a5a6",
+    "audit": "050c46a7640969b12f36fce3e14ba69b6af685fa5193e0422d93d1ac886c25d4",
+    "config": "326a52b773298462d608b2f6b25a7312e471421d0635dee7786f08e8b9c55278",
+    "people": "5a464d5dca3129947d5f86038d55ec9f9522d15f318eb2cbd83f1ac50f193637",
+    "routes": "ba9f1241334d50813aa121d696167b9fc1b5ae79c3e373b5c44424e3589c039f",
+    "handler": "03ce3e564c1e7d5a520a19c88543a9e92de078ca2d2f395d679d76dd740d8f86",
+    "factory": "d28657e32ef2e81b9c8a014a5b177fc00643f376fe10c3041ff0d886e6369282",
+    "controller": "253d2906e855f4437d947cbd242149abcb5ae0a4f51be5a0f4648c56c75017a2",
+    "pages": "04a3bd08c9ac8314ff39c912d3e81e6c763a22471521286d0df2ee92ccdd4162",
+    "shell": "7830fdbb8b14f743a2b21fb26f0c28bb70b11c7e03b5ee3702c46b2c01bdb0af",
+    "test": "fccff0d76e99da79304b4e7012c72658c9db4757017390c1e31b54699f4de1f7",
+    "worker": "66a56a3c4fff7c9586a93a0df244af0afe3dab438b304e0334b199c167c7f4fb",
+    "manifest": "9a1c0ada1e823276692901ae98f187374fcd2140ba42f8903fc37750016c6806",
+    "contracts": "3a87a8e56ecc8e630aa375fb1ac2f6b52dfdbbc4d6bc452f797e9da012e36a86",
+    "e2e": "db0ae5610ce9e1bacdf9a2a0f74bc8c195c1456056f9bfd10a87eb1499ccdce9"
+  },
+  "source_restored_byte_for_byte": true
+}

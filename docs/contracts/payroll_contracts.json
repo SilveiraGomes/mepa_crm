@@ -1,0 +1,89 @@
+{
+  "phase": "P0.10-F2A",
+  "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
+  "addendum": "D-04A.14 / D-04A.15",
+  "schema": {
+    "finance_tables": 26,
+    "payroll_tables": 9,
+    "p010_tables": 35,
+    "payroll": [
+      { "table": "employments", "phase": "F2A", "public_id": true, "owner": "employing_unit_id (organizational_units)", "purpose": "MEPA employment = Person + employing unit" },
+      { "table": "compensation_component_types", "phase": "F2A", "public_id": false, "owner": "national catalog", "purpose": "13 generic components (no value)" },
+      { "table": "employment_compensations", "phase": "F2A", "public_id": false, "owner": "employment (employing unit)", "purpose": "append-only effective-dated compensation history" },
+      { "table": "payroll_rules", "phase": "F2A", "public_id": false, "owner": "national (Direcção Geral)", "purpose": "versioned statutory rules; (code, version)" },
+      { "table": "payroll_rule_base_components", "phase": "F2A", "public_id": false, "owner": "rule", "purpose": "base of incidence of a rule version" },
+      { "table": "payroll_rule_brackets", "phase": "F2A", "public_id": false, "owner": "rule", "purpose": "progressive brackets of a BRACKET rule" },
+      { "table": "payroll_runs", "phase": "F2B", "public_id": true, "owner": "employing_unit_id", "purpose": "run per unit x service month (structure only in F2A)" },
+      { "table": "payroll_run_lines", "phase": "F2B", "public_id": false, "owner": "run", "purpose": "per employment x component lines (structure only in F2A)" },
+      { "table": "payroll_postings", "phase": "F2B", "public_id": false, "owner": "run", "purpose": "idempotent ACCRUAL / PAYMENT / REVERSAL postings (structure only in F2A)" }
+    ]
+  },
+  "permissions": {
+    "data_type": "HR",
+    "codes": {
+      "HR_EMPLOYMENT_VIEW": "CONFIDENTIAL", "HR_EMPLOYMENT_MANAGE": "CONFIDENTIAL", "HR_COMPENSATION_VIEW": "HIGHLY_SENSITIVE", "HR_COMPENSATION_MANAGE": "HIGHLY_SENSITIVE",
+      "PAYROLL_MANAGE": "HIGHLY_SENSITIVE", "PAYROLL_APPROVE": "HIGHLY_SENSITIVE", "PAYROLL_POST": "HIGHLY_SENSITIVE", "PAYROLL_RULES_MANAGE": "HIGHLY_SENSITIVE", "PAYROLL_RULES_APPROVE": "HIGHLY_SENSITIVE"
+    },
+    "roles_installed": 0,
+    "authority": "TerritorialAuthority(data_type HR) through the Finance runtime; permission before target (F-06); rules at national level (GENERAL_DIRECTION root)"
+  },
+  "components": {
+    "BASE_SALARY": ["EARNING", "FIXED_AMOUNT", "PER_SALARY", null],
+    "THIRTEENTH_SALARY": ["EARNING", "RATE_RULE", "PER_THIRTEENTH", null],
+    "HOLIDAY_SUBSIDY": ["EARNING", "RATE_RULE", "PER_HOLIDAY_SUBSIDY", null],
+    "TRANSPORT_MEAL_ALLOWANCE": ["EARNING", "FIXED_AMOUNT", "PER_TRANSPORT_MEAL", null],
+    "SOCIAL_ASSISTANCE": ["EARNING", "FIXED_AMOUNT", "PER_SOCIAL_ASSISTANCE", null],
+    "HEALTH_PLAN": ["EARNING", "FIXED_AMOUNT", "PER_HEALTH_PLAN", null],
+    "OTHER_EARNING": ["EARNING", "MANUAL", "PER_OTHER", null],
+    "RETIREMENT_PENSION": ["EARNING", "FIXED_AMOUNT", "PER_SOCIAL_ASSISTANCE", null],
+    "THIRD_AGE_BENEFIT": ["EARNING", "FIXED_AMOUNT", "PER_SOCIAL_ASSISTANCE", null],
+    "INSS_EMPLOYEE": ["EMPLOYEE_DEDUCTION", "RATE_RULE", null, "PAYROLL_WITHHOLDINGS"],
+    "INCOME_TAX_WITHHOLDING": ["EMPLOYEE_DEDUCTION", "BRACKET_RULE", null, "PAYROLL_WITHHOLDINGS"],
+    "OTHER_DEDUCTION": ["EMPLOYEE_DEDUCTION", "MANUAL", null, "PAYROLL_WITHHOLDINGS"],
+    "INSS_EMPLOYER": ["EMPLOYER_CHARGE", "RATE_RULE", "PER_INSS", "PAYROLL_EMPLOYER_CHARGES"]
+  },
+  "seeded_values": { "payroll_rules": 0, "payroll_rule_brackets": 0, "payroll_rule_base_components": 0, "rates": 0, "amounts": 0, "minimum_wage": 0 },
+  "employment": {
+    "identity": "Person (people) by public_id, visible through PeopleAuthority; no personal attribute copied; person_employment never read or written",
+    "not": ["person_employment", "employment_types", "ministerial_assignments", "organizational_posts", "department_posts", "memberships"],
+    "statuses": ["ACTIVE", "ENDED"], "relationship_kinds": ["EMPLOYEE", "BENEFICIARY"],
+    "operations": ["create", "end"], "generic_status_patch": false, "hard_delete": false,
+    "unit_change": "end + new employment (history preserved)", "people_context": "EMPLOYMENT opened on create, closed on end",
+    "physical_guard": "uq_employments_person_id_unit_open (person, unit, open_guard)"
+  },
+  "compensation": {
+    "storage": "DECIMAL(19,4)", "business_scale": 2, "currency": "AOA", "float": false,
+    "history": "append-only: change = close the current line the day before + open a new one under the employment lock; retroactive / overlapping changes refused",
+    "rule_based_components": "no amount on the line (applicability only); value only from an APPROVED rule",
+    "physical_guards": ["uq_employment_compensations_open", "uq_employment_compensations_start", "ck_employment_compensations_amount", "ck_employment_compensations_dates"]
+  },
+  "rules": {
+    "statuses": ["DRAFT", "APPROVED", "RETIRED"], "methods": { "RATE_RULE": "FLAT_RATE", "BRACKET_RULE": "BRACKET" },
+    "identity": "(code, version)", "approval": "PAYROLL_RULES_APPROVE at national level, approver != drafter, PAYROLL_RULE_SOURCE document with Files authority of the approver",
+    "overlap": "no two APPROVED versions of a component intersect (component row lock)",
+    "resolution": { "missing": "PAYROLL_RULE_MISSING (422)", "ambiguous": "PAYROLL_RULE_AMBIGUOUS", "incomplete": "PAYROLL_RULE_INVALID", "source_not_active": "PAYROLL_RULE_DOCUMENT_MISSING", "zero_fallback": false }
+  },
+  "readiness": {
+    "configuration_codes": ["NO_ACTIVE_EMPLOYMENT", "MISSING_COMPENSATION", "INVALID_EFFECTIVITY", "MISSING_RULE", "AMBIGUOUS_RULE", "INVALID_RULE", "MISSING_DOCUMENT"],
+    "production_codes": ["PRODUCTION_DISABLED"], "computed_on": "server"
+  },
+  "production_gate": { "flag": "payroll.production_enabled", "default": false, "refuses_when_off": ["approve", "post", "pay"], "error": "PAYROLL_PRODUCTION_DISABLED", "f2a_run_routes": 0 },
+  "input_hash": {
+    "algorithm": "SHA-256", "version": "P010-PAYROLL-INPUT-V1",
+    "canonicalization": "JSON, object keys sorted (byte order) recursively, lists pre-sorted, strings/ints/bools/null only (float refused), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES",
+    "covers": ["employments", "employment unit / type / dates / status", "compensations (salary base, components, subsidies, deductions, benefits)", "compensation vigência", "applicable rule versions",
+      "rule rate / base components", "rule brackets", "period", "run_kind", "sequence", "rounding configuration"]
+  },
+  "rounding": { "mode": "HALF_UP", "scale": 2, "unit": "COMPONENT_LINE", "away_from_zero": true, "arithmetic": "bcmath decimal strings" },
+  "privacy": {
+    "salary_routes": ["GET hr/employments/{employment}/compensation", "GET hr/employments/{employment} (compensation block)", "GET hr/compensations"],
+    "permission": "HR_COMPENSATION_VIEW on the employing unit", "audit": "hr.compensation_viewed on every salary read; no monetary value in audit metadata",
+    "never_in": ["People API", "Membership API", "Departments", "Finance API"]
+  },
+  "api": {
+    "prefix": "/api/v1/hr",
+    "routes": ["GET context", "GET payroll/status", "GET payroll/readiness", "GET employments", "POST employments", "GET employments/{employment}", "POST employments/{employment}/end",
+      "GET employments/{employment}/compensation", "POST employments/{employment}/compensation", "POST employments/{employment}/compensation/stop", "GET compensations", "GET components",
+      "GET payroll-rules", "POST payroll-rules", "GET payroll-rules/{code}/{version}", "POST payroll-rules/{code}/{version}/approve", "POST payroll-rules/{code}/{version}/retire"]
+  }
+}

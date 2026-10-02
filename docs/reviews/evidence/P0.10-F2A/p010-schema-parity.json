@@ -1,0 +1,152 @@
+{
+  "status": "PASS",
+  "mode": "CATALOG_VS_MIGRATIONS_VS_INFORMATION_SCHEMA",
+  "details": {
+    "comparison": "BIDIRECTIONAL",
+    "planned_table_count": 35,
+    "phased_table_count": 35,
+    "materialized_tables": 35,
+    "finance_tables": 26,
+    "payroll_tables": 9,
+    "payroll_tables_pending": [],
+    "catalog_vs_migrations": {
+      "columns": {
+        "expected": 402,
+        "actual": 402,
+        "missing": [],
+        "unexpected": []
+      },
+      "indexes": {
+        "expected": 194,
+        "actual": 194,
+        "missing": [],
+        "unexpected": []
+      },
+      "fks": {
+        "expected": 132,
+        "actual": 132,
+        "missing": [],
+        "unexpected": []
+      },
+      "checks": {
+        "expected": 121,
+        "actual": 121,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    "approved_deltas": {
+      "columns": 28,
+      "column_changes": [
+        "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
+      ],
+      "index_deltas": 22,
+      "index_removals": [
+        "journal_entries:ix_journal_entries_reversal_of_id:reversal_of_id"
+      ],
+      "fk_deltas": 14,
+      "fk_deferred": [
+        "receivables:obligation_id->obligations.id"
+      ]
+    },
+    "money_columns": 22,
+    "generated_columns_static": {
+      "budgets.approved_guard": "IF(`status` = 'APPROVED', 1, NULL)",
+      "employments.open_guard": "IF(`status` = 'ACTIVE', 1, NULL)",
+      "employment_compensations.open_guard": "IF(`ends_on` IS NULL, 1, NULL)",
+      "payroll_runs.regular_guard": "IF(`run_kind` = 'REGULAR' AND `status` <> 'CANCELLED', 1, NULL)"
+    },
+    "generated_declared": true,
+    "database": "mepa_wave5_test_a671f022_pool_01",
+    "catalog_vs_information_schema": {
+      "columns": {
+        "expected": 402,
+        "actual": 402,
+        "missing": [],
+        "unexpected": []
+      },
+      "indexes": {
+        "expected": 194,
+        "actual": 194,
+        "missing": [],
+        "unexpected": []
+      },
+      "fks": {
+        "expected": 132,
+        "actual": 132,
+        "missing": [],
+        "unexpected": []
+      },
+      "checks": {
+        "expected": 121,
+        "actual": 121,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    "live_tables": 35,
+    "deferred_or_payroll_tables_present": [],
+    "non_restrict_fks": [],
+    "non_bigint_fk_columns": [],
+    "float_columns": [],
+    "live_money_columns": 27,
+    "live_rate_columns": [
+      "payroll_rule_brackets.rate",
+      "payroll_rules.rate",
+      "payroll_run_lines.rate"
+    ],
+    "forbidden_columns_present": [],
+    "generated_guards_stored": true,
+    "generated_guards_live": [
+      "budgets.approved_guard",
+      "employment_compensations.open_guard",
+      "employments.open_guard",
+      "payroll_runs.regular_guard"
+    ],
+    "mysql_output_requeries": 0,
+    "controlled_rows": {
+      "currencies": 1,
+      "funds": 1,
+      "chart_of_accounts": 18,
+      "financial_categories": 82,
+      "permissions": 16,
+      "legal_document_types": 10,
+      "workflows": 2,
+      "hr_permissions": 9,
+      "compensation_component_types": 13,
+      "payroll_rules": 0,
+      "payroll_rule_brackets": 0
+    },
+    "controlled_rows_expected": {
+      "currencies": 1,
+      "funds": 1,
+      "chart_of_accounts": 18,
+      "financial_categories": 82,
+      "permissions": 16,
+      "legal_document_types": 10,
+      "workflows": 2,
+      "hr_permissions": 9,
+      "compensation_component_types": 13,
+      "payroll_rules": 0,
+      "payroll_rule_brackets": 0
+    },
+    "d04a_vocabulary": {
+      "clearing_accounts": {
+        "FIXED_ASSETS": "ASSET",
+        "INTERUNIT_CLEARING_IN": "INTERUNIT_CONTROL",
+        "INTERUNIT_CLEARING_OUT": "INTERUNIT_CONTROL"
+      },
+      "fixed_asset_rubrics": 7,
+      "transfer_purposes": [
+        "TRF_BUDGET_QUOTA",
+        "TRF_OTHER",
+        "TRF_PROJECT",
+        "TRF_REMITTANCE",
+        "TRF_SPECIAL_CONTRIBUTION",
+        "TRF_SUPPORT"
+      ]
+    },
+    "roles_with_finance_or_hr_permissions": 0,
+    "errors": []
+  }
+}

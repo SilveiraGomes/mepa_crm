@@ -46,15 +46,22 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         foreach (self::P010_TABLES as $table) {
             $this->assertTrue($this->db()->getSchemaBuilder()->hasTable($table), $table);
         }
-        // F1C materialised the last four Finance tables (26/26); the tables not created in V1 and Payroll stay absent.
-        foreach (['obligation_rules', 'obligations', 'contribution_allocations', ...$manifest['plan']['payroll_tables_reserved_f2']] as $absent) {
+        // F1C materialised the last four Finance tables (26/26); the tables not created in V1 stay absent. Payroll tables exist
+        // only once a later phase materialized them (P0.10-F2A: 9/9, 35/35); every reserved Payroll table not yet materialized
+        // is absent.
+        $payrollMaterialized = $manifest['materialized_tables_f2a'] ?? [];
+        foreach (['obligation_rules', 'obligations', 'contribution_allocations', ...array_diff($manifest['plan']['payroll_tables_reserved_f2'], $payrollMaterialized)] as $absent) {
             $this->assertFalse($this->db()->getSchemaBuilder()->hasTable($absent), $absent . ' must not exist');
         }
+        foreach ($payrollMaterialized as $present) {
+            $this->assertTrue($this->db()->getSchemaBuilder()->hasTable($present), $present . ' materialized by a later phase');
+        }
+        $this->assertSame([], array_values(array_diff($payrollMaterialized, $manifest['plan']['payroll_tables_reserved_f2'])), 'no Payroll table outside the 35-table plan');
         $this->assertSame(35, $manifest['planned_table_count']);
         $this->assertSame(35, 28 - count($manifest['plan']['catalog_tables_not_created_v1']) + count($manifest['plan']['new_finance_tables']) + count($manifest['plan']['payroll_tables_reserved_f2']));
         $this->assertSame(35, count(self::P010_TABLES) + count($manifest['deferred_finance_tables']['F1B']) + count($manifest['deferred_finance_tables']['F1C']) + count($manifest['plan']['payroll_tables_reserved_f2']));
         $ran = $this->db()->table('migrations')->where('migration', 'like', '2026_09_30_1000%_p010_%')->orderBy('migration')->pluck('migration')->all();
-        $this->assertSame(array_map(fn ($f) => substr($f, 0, -4), $manifest['migrations']), $ran);
+        $this->assertSame(array_map(fn ($f) => substr($f, 0, -4), array_values(array_filter($manifest['migrations'], fn ($m) => str_starts_with($m, '2026_09_30_1000')))), $ran);
 
         // Preconditions are explicit and change nothing.
         $migration = require self::$root . '/apps/api/database/migrations/2026_09_30_100012_p010_create_financial_documents.php';
@@ -86,7 +93,8 @@ final class FinanceCoreFoundationTest extends PooledWaveFiveCase
         $this->assertSame($counts['permissions'], $this->db()->table('permissions')->where('data_type', 'FINANCE')->whereColumn('action', 'code')->where('maximum_classification', 'CONFIDENTIAL')->count());
         $this->assertSame($counts['legal_document_types'], $this->db()->table('legal_document_types')->whereIn('code', array_keys(FinanceCatalog::DOCUMENT_TYPES))->count());
         $this->assertSame($counts['workflows'], $this->db()->table('workflows')->whereIn('code', array_keys(FinanceCatalog::WORKFLOWS))->where('version', 1)->where('status', 'ACTIVE')->count());
-        $this->assertSame(array_sum($counts), FinanceCatalog::controlledRowCount());
+        // Only the Finance controlled rows belong to FinanceCatalog (the HR / Payroll counts belong to PayrollCatalog, F2A).
+        $this->assertSame(array_sum(array_intersect_key($counts, array_flip(['currencies', 'funds', 'chart_of_accounts', 'financial_categories', 'permissions', 'legal_document_types', 'workflows']))), FinanceCatalog::controlledRowCount());
         $this->assertSame(0, $this->db()->table('role_permissions as rp')->join('permissions as p', 'p.id', '=', 'rp.permission_id')->where('p.data_type', 'FINANCE')->count(), 'no role granted');
         // Nothing statutory is seeded: no account, no rule, no rate; periods only through ensureYear (idempotent).
         $this->assertSame([], (new FinancePeriods($this->db()))->ensureYear(2026));

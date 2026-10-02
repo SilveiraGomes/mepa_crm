@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\DatabaseV2;
 
+use App\Domain\Payroll\PayrollCatalog;
 use Illuminate\Hashing\BcryptHasher;
 use Illuminate\Support\Facades\DB;
 use Tests\DatabaseV2\Support\FinanceHttpCase;
@@ -60,6 +61,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
                 'receivable_amount' => (300 + $n) . '.00', 'payable_amount' => (1500 + $n) . '.00', 'new_bank_code' => 'UI-BK-' . $n, 'month' => sprintf('2026-%02d', 2 + $n)];
         }
         $f1d = $this->reportingWorld();
+        $f2a = $this->payrollWorld();
         $login = 'finance.e2e.' . bin2hex(random_bytes(6));
         $password = bin2hex(random_bytes(32));
         DB::table('users')->where('id', $actor['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
@@ -71,6 +73,7 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
             'sets' => $sets,
             'f1c' => $f1c,
             'f1d' => $f1d,
+            'f2a' => $f2a,
         ];
         $dir = dirname(__DIR__, 4) . '/.tmp';
         if (!is_dir($dir)) {
@@ -146,5 +149,69 @@ final class FinanceE2EFixtureTest extends FinanceHttpCase
             $units[$key] = ['public_id' => $v[$key]['public_id'], 'name' => $name];
         }
         return ['readers' => $readers, 'units' => $units, 'gift' => $gift, 'transit' => $transit, 'budget' => $budget];
+    }
+
+    /**
+     * P0.10-F2A: a third independent world for RH / Folha Salarial, seeded through the HR API. The statutory rule here is
+     * SYNTHETIC test data (code SINTETICO_E2E_*, created by this fixture through the API; never by an installer and never an
+     * official value). Readers: "hr" (employment + compensation, no rule approval) and "viewer" (HR_EMPLOYMENT_VIEW only:
+     * must never see a salary). One employee per viewport project for the mobile action journey.
+     */
+    private function payrollWorld(): array
+    {
+        PayrollCatalog::install(DB::connection());
+        $v = $this->world();
+        $names = ['m' => 'Município F2A E2E', 'a' => 'Centro A F2A E2E', 'a1' => 'Congregação A1 F2A E2E'];
+        foreach ($names as $key => $name) {
+            DB::table('organizational_units')->where('id', $v[$key]['id'])->update(['name' => $name]);
+        }
+        $hrPermissions = ['HR_EMPLOYMENT_VIEW', 'HR_EMPLOYMENT_MANAGE', 'HR_COMPENSATION_VIEW', 'HR_COMPENSATION_MANAGE', 'PAYROLL_MANAGE', 'PEOPLE_VIEW', 'DOCUMENTS_VIEW'];
+        $hr = $this->staff($hrPermissions, $v['m']['id'], true);
+        $viewer = $this->staff(['HR_EMPLOYMENT_VIEW', 'PEOPLE_VIEW'], $v['m']['id'], true);
+        $manager = $this->staff(['PAYROLL_RULES_MANAGE', 'DOCUMENTS_VIEW'], $v['g']['id'], true);
+        $approver = $this->staff(['PAYROLL_RULES_APPROVE', 'DOCUMENTS_VIEW'], $v['g']['id'], true);
+        $employ = fn (array $person, array $unit, string $on, string $job) => $this->fpost($hr, 'hr/employments', ['person' => $person['public_id'], 'unit' => $unit['public_id'], 'relationship_kind' => 'EMPLOYEE',
+            'job_title' => $job, 'starts_on' => $on])->assertCreated()->json('data.public_id');
+        $pay = fn (string $employment, string $component, ?string $amount, string $on) => $this->fpost($hr, 'hr/employments/' . $employment . '/compensation',
+            ['component' => $component, 'amount' => $amount, 'starts_on' => $on, 'reason' => 'Configuração E2E'])->assertCreated();
+        $ana = $this->person($v['a1'], 'Ana Funcionária F2A');
+        $bruno = $this->person($v['a1'], 'Bruno Motorista F2A');
+        DB::table('person_unit_contexts')->insert(['person_id' => $bruno['id'], 'unit_id' => $v['a']['id'], 'context_kind' => 'ONBOARDING', 'status' => 'ACTIVE', 'starts_at' => now('UTC')->subDays(400)->format('Y-m-d H:i:s.u'),
+            'created_at' => now('UTC')->format('Y-m-d H:i:s.u'), 'lock_version' => 0]);
+        $anaJob = $employ($ana, $v['a1'], '2026-01-01', 'Secretária administrativa');
+        $pay($anaJob, 'BASE_SALARY', '150000.00', '2026-01-01');
+        $pay($anaJob, 'BASE_SALARY', '165000.00', '2026-07-01');
+        $pay($anaJob, 'TRANSPORT_MEAL_ALLOWANCE', '10000.00', '2026-01-01');
+        $pay($anaJob, 'INSS_EMPLOYEE', null, '2026-01-01');
+        $brunoOld = $employ($bruno, $v['a'], '2025-02-01', 'Motorista');
+        $pay($brunoOld, 'BASE_SALARY', '80000.00', '2025-02-01');
+        $this->fpost($hr, 'hr/employments/' . $brunoOld . '/end', ['ends_on' => '2025-12-31', 'end_reason' => 'Transferência para a Congregação A1'])->assertOk();
+        $brunoJob = $employ($bruno, $v['a1'], '2026-01-01', 'Motorista');
+        $pay($brunoJob, 'BASE_SALARY', '90000.00', '2026-01-01');
+        $projects = [];
+        foreach (self::PROJECTS as $index => $project) {
+            $p = $this->person($v['a1'], 'Funcionário E2E ' . strtoupper(substr($project, 0, 3)) . ($index + 1));
+            $job = $employ($p, $v['a1'], '2026-03-01', 'Auxiliar');
+            $pay($job, 'BASE_SALARY', (70000 + $index) . '.00', '2026-03-01');
+            $projects[$project] = ['employment' => $job, 'name' => 'Funcionário E2E ' . strtoupper(substr($project, 0, 3)) . ($index + 1), 'allowance' => (5000 + $index) . '.00'];
+        }
+        $rule = $this->fpost($manager, 'hr/payroll-rules', ['code' => 'SINTETICO_E2E_INSS', 'component' => 'INSS_EMPLOYEE', 'method' => 'FLAT_RATE', 'rate' => '0.010000', 'starts_on' => '2026-01-01',
+            'base_components' => ['BASE_SALARY'], 'source_document' => $this->document($v['g'], 'PAYROLL_RULE_SOURCE')['public_id']])->assertCreated()->json('data');
+        $this->fpost($approver, 'hr/payroll-rules/SINTETICO_E2E_INSS/' . $rule['version'] . '/approve')->assertOk();
+        $this->fpost($manager, 'hr/payroll-rules', ['code' => 'SINTETICO_E2E_IRT', 'component' => 'INCOME_TAX_WITHHOLDING', 'method' => 'BRACKET', 'rate' => null, 'starts_on' => '2027-01-01',
+            'base_components' => ['BASE_SALARY'], 'brackets' => [['lower_bound' => '0.00', 'upper_bound' => null, 'rate' => '0.000000']]])->assertCreated();
+        $readers = [];
+        foreach (['hr' => $hr, 'viewer' => $viewer] as $key => $reader) {
+            $login = 'payroll.f2a.' . $key . '.' . bin2hex(random_bytes(5));
+            $password = bin2hex(random_bytes(32));
+            DB::table('users')->where('id', $reader['user'])->update(['login' => $login, 'password_hash' => (new BcryptHasher(['rounds' => 4]))->make($password), 'status' => 'SYNTHETIC_READY', 'mfa_required' => 0]);
+            $readers[$key] = ['login' => $login, 'password' => $password, 'user_id' => $reader['user']];
+        }
+        $units = [];
+        foreach ($names as $key => $name) {
+            $units[$key] = ['public_id' => $v[$key]['public_id'], 'name' => $name];
+        }
+        return ['readers' => $readers, 'units' => $units, 'ana' => ['employment' => $anaJob, 'name' => 'Ana Funcionária F2A'], 'bruno' => ['employment' => $brunoJob, 'old' => $brunoOld, 'name' => 'Bruno Motorista F2A'],
+            'projects' => $projects];
     }
 }

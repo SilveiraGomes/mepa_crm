@@ -1,0 +1,20 @@
+{
+    "close": {
+        "status": "OK",
+        "result": null,
+        "pid": 30932,
+        "ms": 155
+    },
+    "post": {
+        "status": "PERIOD_CLOSED",
+        "items": [],
+        "pid": 10828,
+        "ms": 97
+    },
+    "observed_lock_wait": {
+        "object": "accounting_periods",
+        "mode": "S,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}
