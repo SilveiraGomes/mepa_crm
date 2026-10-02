@@ -1,4 +1,5 @@
-// P0.10 Finance Core schema parity (ADR 0021 D32/D33 + D-04A). Three models of the 26 Finance tables are compared in
+// P0.10 Finance + Payroll schema parity (ADR 0021 D32/D33 + D-04A; F2A materializes the 9 Payroll tables: 26 + 9 = 35).
+// Three models of the 35 P0.10 tables are compared in
 // BOTH directions (missing AND unexpected): EXPECTED = docs/database/model_catalog.json + the approved deltas of
 // docs/database/physical/p010_finance_delta_manifest.json; STATIC = the CREATE TABLE text of the P0.10 migrations;
 // LIVE = INFORMATION_SCHEMA of an isolated Wave 5 pool. Reported per category: tables, columns (nullability + type),
@@ -79,7 +80,8 @@ let details = {}
 try {
   const catalog = JSON.parse(fs.readFileSync(path.join(root, 'docs/database/model_catalog.json'), 'utf8'))
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'docs/database/physical/p010_finance_delta_manifest.json'), 'utf8'))
-  const tables = manifest.materialized_tables_f1a
+  const tables = [...manifest.materialized_tables_f1a, ...(manifest.materialized_tables_f2a || [])]
+  const payrollPending = manifest.plan.payroll_tables_reserved_f2.filter((t) => !tables.includes(t))
   const catalogTables = Object.fromEntries(catalog.tables.map((t) => [t.name, t]))
   const errors = []
 
@@ -134,7 +136,7 @@ try {
       // An ALTER migration (F1B-D1) contributes the CHECK names it adds in up(); anything else must be the installer.
       const up = text.split('public function down')[0]
       const alters = [...up.matchAll(/ALTER TABLE `(\w+)`([\s\S]*?)\nSQL/g)]
-      if (alters.length === 0 && !/FinanceCatalog::install/.test(text)) errors.push(`migration ${file}: no CREATE/ALTER TABLE and not the installer`)
+      if (alters.length === 0 && !/(FinanceCatalog|PayrollCatalog)::install/.test(text)) errors.push(`migration ${file}: no CREATE/ALTER TABLE and not an installer`)
       if (alters.length > 0 && (!/P010_PRECONDITION_FAILED/.test(text) || !/P010_ROLLBACK_REFUSED/.test(text) || /CASCADE|FLOAT|DOUBLE|ADD COLUMN|DROP COLUMN|CREATE TABLE/i.test(text))) errors.push(`migration ${file}: ALTER must be CHECK-only with explicit precondition and safe rollback`)
       for (const [, table, body] of alters) for (const [, name] of body.matchAll(/ADD CONSTRAINT `(\w+)` CHECK/g)) stat.checks.add(`${table}:${name}`)
       continue
@@ -164,17 +166,18 @@ try {
   // Plan and forbidden structure (static).
   const plan = manifest.plan
   const planned = 28 - plan.catalog_tables_not_created_v1.length + plan.new_finance_tables.length + plan.payroll_tables_reserved_f2.length
-  const phased = tables.length + manifest.deferred_finance_tables.F1B.length + manifest.deferred_finance_tables.F1C.length + plan.payroll_tables_reserved_f2.length
+  const phased = tables.length + manifest.deferred_finance_tables.F1B.length + manifest.deferred_finance_tables.F1C.length + payrollPending.length
   if (planned !== 35 || phased !== 35 || manifest.planned_table_count !== 35) errors.push(`35-table plan broken: planned=${planned} phased=${phased}`)
   const forbiddenStatic = manifest.forbidden_columns.filter((fc) => { const [t, c] = fc.split('.'); return [...stat.columns].some((v) => v.startsWith(`${t}:${c}:`)) })
   if (forbiddenStatic.length) errors.push(`forbidden columns in migrations: ${forbiddenStatic}`)
-  const money = [...stat.columns].filter((v) => /:(amount|debit|credit|requested_amount|approved_amount|valuation_amount)$/.test(v.split(':').slice(0, 2).join(':')))
+  const money = [...stat.columns].filter((v) => /:(amount|debit|credit|requested_amount|approved_amount|valuation_amount|base_amount|gross_amount|deductions_amount|employer_charges_amount|net_amount|lower_bound|upper_bound|fixed_amount|excess_over)$/.test(v.split(':').slice(0, 2).join(':')))
   if (money.some((v) => !v.endsWith(':decimal(19,4)'))) errors.push('money column not DECIMAL(19,4)')
   const generatedOk = JSON.stringify(Object.keys(stat.generated)) === JSON.stringify(Object.keys(manifest.generated_columns))
 
   details = {
     comparison: 'BIDIRECTIONAL',
-    planned_table_count: planned, phased_table_count: phased, f1a_tables: tables.length,
+    planned_table_count: planned, phased_table_count: phased, materialized_tables: tables.length, finance_tables: manifest.materialized_tables_f1a.length,
+    payroll_tables: (manifest.materialized_tables_f2a || []).length, payroll_tables_pending: payrollPending,
     catalog_vs_migrations: catalogVsMigrations,
     approved_deltas: { columns: manifest.column_deltas.length, column_changes: manifest.column_changes, index_deltas: manifest.index_deltas.length, index_removals: manifest.index_removals, fk_deltas: manifest.fk_deltas.length, fk_deferred: manifest.fk_deferred },
     money_columns: money.length, generated_columns_static: stat.generated, generated_declared: generatedOk,
@@ -197,7 +200,7 @@ try {
     for (const [t, n] of mysqlRows(`SELECT TABLE_NAME,CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${list}) AND CONSTRAINT_TYPE='CHECK'`)) live.checks.add(`${t}:${n}`)
     const catalogVsLive = compare('catalog+deltas<->information_schema', expected, live)
     const liveTables = mysqlRows(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${list})`).map(([t]) => t)
-    const absentWanted = [...plan.catalog_tables_not_created_v1, ...manifest.deferred_finance_tables.F1B, ...manifest.deferred_finance_tables.F1C, ...plan.payroll_tables_reserved_f2]
+    const absentWanted = [...plan.catalog_tables_not_created_v1, ...manifest.deferred_finance_tables.F1B, ...manifest.deferred_finance_tables.F1C, ...payrollPending, '__none__']
     const presentDeferred = mysqlRows(`SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${absentWanted.map((t) => `'${t}'`).join(',')})`).map(([t]) => t)
     const rules = mysqlRows(`SELECT CONSTRAINT_NAME,UPDATE_RULE,DELETE_RULE FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME IN (${list})`).filter(([, u, d]) => u !== 'RESTRICT' || d !== 'RESTRICT').map(([n]) => n)
     const fkTypes = mysqlRows(`SELECT CONCAT(k.TABLE_NAME,'.',k.COLUMN_NAME),c.COLUMN_TYPE FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE k JOIN INFORMATION_SCHEMA.COLUMNS c ON c.TABLE_SCHEMA=k.TABLE_SCHEMA AND c.TABLE_NAME=k.TABLE_NAME AND c.COLUMN_NAME=k.COLUMN_NAME WHERE k.TABLE_SCHEMA=DATABASE() AND k.TABLE_NAME IN (${list}) AND k.REFERENCED_TABLE_NAME IS NOT NULL AND c.COLUMN_TYPE <> 'bigint unsigned'`).map(([c]) => c)
@@ -205,8 +208,10 @@ try {
     const liveMoney = mysqlRows(`SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME),COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (${list}) AND DATA_TYPE='decimal'`)
     const forbidden = manifest.forbidden_columns.map((v) => v.split('.'))
     const forbiddenLive = mysqlRows(`SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND (${forbidden.map(([t, c]) => `(TABLE_NAME='${t}' AND COLUMN_NAME='${c}')`).join(' OR ')})`).map(([c]) => c)
-    const gen = mysqlRows("SELECT GENERATION_EXPRESSION,EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='budgets' AND COLUMN_NAME='approved_guard'")
-    const genOk = gen.length === 1 && gen[0][1].includes('STORED GENERATED') && gen[0][0].replace(/\\+'/g, "'") === manifest.generated_columns['budgets.approved_guard']
+    // Every generated guard (budgets.approved_guard + the F2A open/regular guards) is STORED GENERATED with the declared expression.
+    const genRows = Object.fromEntries(mysqlRows("SELECT CONCAT(TABLE_NAME,'.',COLUMN_NAME),EXTRA,GENERATION_EXPRESSION FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND GENERATION_EXPRESSION IS NOT NULL AND GENERATION_EXPRESSION <> ''").map(([k, e, g]) => [k, { extra: e, expr: g }]))
+    const normExpr = (v) => v.replace(/\\+'/g, "'").replace(/_utf8mb4|_ascii/g, '').replace(/[`\s()]/g, '').toLowerCase()
+    const genOk = Object.entries(manifest.generated_columns).every(([k, expr]) => genRows[k] && genRows[k].extra.includes('STORED GENERATED') && normExpr(genRows[k].expr) === normExpr(expr))
     const counts = manifest.controlled_data_counts
     const controlled = Object.fromEntries(mysqlRows(
       "SELECT 'currencies',COUNT(*) FROM currencies WHERE code='AOA' AND minor_units=2"
@@ -216,24 +221,32 @@ try {
       + " UNION ALL SELECT 'permissions',COUNT(*) FROM permissions WHERE data_type='FINANCE' AND action=code AND maximum_classification='CONFIDENTIAL'"
       + " UNION ALL SELECT 'legal_document_types',COUNT(*) FROM legal_document_types WHERE code IN ('RECEIPT','INVOICE','BANK_PROOF','EXPENSE_VOUCHER','TRANSFER_PROOF','BANK_STATEMENT','VALUATION_REPORT','PAYSLIP','PAYROLL_SHEET','PAYROLL_RULE_SOURCE')"
       + " UNION ALL SELECT 'workflows',COUNT(*) FROM workflows WHERE code IN ('FINANCE_INTERNAL_TRANSFER','FINANCE_PAYABLE') AND version=1 AND status='ACTIVE'"
+      // F2A (D25, D31, D-04A.15): the 9 HR permissions, the 13 generic components, and NO statutory rule / bracket seeded.
+      + " UNION ALL SELECT 'hr_permissions',COUNT(*) FROM permissions WHERE data_type='HR' AND action=code AND maximum_classification IN ('CONFIDENTIAL','HIGHLY_SENSITIVE')"
+      + " UNION ALL SELECT 'compensation_component_types',COUNT(*) FROM compensation_component_types"
+      + " UNION ALL SELECT 'payroll_rules',COUNT(*) FROM payroll_rules"
+      + " UNION ALL SELECT 'payroll_rule_brackets',COUNT(*) FROM payroll_rule_brackets"
     ).map(([k, v]) => [k, Number(v)]))
     const vocab = Object.fromEntries(mysqlRows("SELECT system_role,account_kind FROM chart_of_accounts WHERE system_role IN ('INTERUNIT_CLEARING_OUT','INTERUNIT_CLEARING_IN','FIXED_ASSETS')"))
     const fixedAssetRubrics = Number(mysqlRows("SELECT COUNT(*) FROM financial_categories c JOIN chart_of_accounts a ON a.id=c.ledger_account_id WHERE c.code LIKE 'INV\\_AST\\_%' AND a.system_role='FIXED_ASSETS' AND c.economic_nature='INVESTMENT'")[0][0])
     const purposes = mysqlRows("SELECT c.code FROM financial_categories c JOIN chart_of_accounts a ON a.id=c.ledger_account_id WHERE c.economic_nature='INTERNAL_TRANSFER' AND a.account_kind='INTERUNIT_CONTROL' ORDER BY c.code").map(([c]) => c)
-    const roleGrants = Number(mysqlRows("SELECT COUNT(*) FROM role_permissions rp JOIN permissions p ON p.id=rp.permission_id WHERE p.data_type='FINANCE'")[0][0])
+    const roleGrants = Number(mysqlRows("SELECT COUNT(*) FROM role_permissions rp JOIN permissions p ON p.id=rp.permission_id WHERE p.data_type IN ('FINANCE','HR')")[0][0])
     const controlledOk = Object.entries(counts).every(([k, v]) => controlled[k] === v)
     const vocabOk = vocab.INTERUNIT_CLEARING_OUT === 'INTERUNIT_CONTROL' && vocab.INTERUNIT_CLEARING_IN === 'INTERUNIT_CONTROL' && vocab.FIXED_ASSETS === 'ASSET' && fixedAssetRubrics === 7
       && JSON.stringify(purposes) === JSON.stringify(['TRF_BUDGET_QUOTA', 'TRF_OTHER', 'TRF_PROJECT', 'TRF_REMITTANCE', 'TRF_SPECIAL_CONTRIBUTION', 'TRF_SUPPORT'])
     if (liveTables.length !== tables.length) errors.push('live table set differs')
     if (presentDeferred.length) errors.push(`deferred/payroll tables present: ${presentDeferred}`)
-    if (rules.length || fkTypes.length || floats.length || forbiddenLive.length || !genOk || liveMoney.some(([, t]) => t !== 'decimal(19,4)')) errors.push('live structural rule broken')
+    // Money = DECIMAL(19,4); payroll rates (ADR 0021 D25 `rate DECIMAL(9,6)`) are fractions, never money.
+    const liveRates = liveMoney.filter(([c]) => /\.rate$/.test(c))
+    if (rules.length || fkTypes.length || floats.length || forbiddenLive.length || !genOk || liveMoney.some(([c, t]) => !/\.rate$/.test(c) && t !== 'decimal(19,4)')
+      || liveRates.some(([, t]) => t !== 'decimal(9,6)')) errors.push('live structural rule broken')
     if (!controlledOk || !vocabOk) errors.push('controlled finance data / D-04A vocabulary mismatch')
-    if (!schemaOnly && roleGrants !== 0) errors.push('roles carry FINANCE permissions')
+    if (!schemaOnly && roleGrants !== 0) errors.push('roles carry FINANCE / HR permissions')
     Object.assign(details, {
       database: mysqlRows('SELECT DATABASE()')[0][0], catalog_vs_information_schema: catalogVsLive, live_tables: liveTables.length, deferred_or_payroll_tables_present: presentDeferred,
-      non_restrict_fks: rules, non_bigint_fk_columns: fkTypes, float_columns: floats, live_money_columns: liveMoney.length, forbidden_columns_present: forbiddenLive,
-      approved_guard_generated_stored: genOk, mysql_output_requeries: mysqlRows.retries || 0, controlled_rows: controlled, controlled_rows_expected: counts,
-      d04a_vocabulary: { clearing_accounts: vocab, fixed_asset_rubrics: fixedAssetRubrics, transfer_purposes: purposes }, roles_with_finance_permissions: roleGrants,
+      non_restrict_fks: rules, non_bigint_fk_columns: fkTypes, float_columns: floats, live_money_columns: liveMoney.length - liveRates.length, live_rate_columns: liveRates.map(([c]) => c), forbidden_columns_present: forbiddenLive,
+      generated_guards_stored: genOk, generated_guards_live: Object.keys(genRows).filter((k) => manifest.generated_columns[k]), mysql_output_requeries: mysqlRows.retries || 0, controlled_rows: controlled, controlled_rows_expected: counts,
+      d04a_vocabulary: { clearing_accounts: vocab, fixed_asset_rubrics: fixedAssetRubrics, transfer_purposes: purposes }, roles_with_finance_or_hr_permissions: roleGrants,
     })
   }
   details.errors = errors

@@ -4587,6 +4587,304 @@ Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem publ
 - FK `record_id` → `import_records.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
 
 
+## employments
+
+Vínculo laboral MEPA (Pessoa + unidade empregadora); não é cargo eclesiástico nem situação profissional da Pessoa.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Confidencial.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; `public_id CHAR(26) CHARACTER SET ascii COLLATE ascii_bin`, NOT NULL, UNIQUE, imutavel, aplicacao; Vínculo laboral referido na API de RH e em recibos.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| public_id | CHAR(26) CHARACTER SET ascii COLLATE ascii_bin | nao | nenhum; gerado na aplicacao | nao | — | uq_employments_public_id | — | ULID publico imutavel; gerado na aplicacao, nunca reutilizado; Vínculo laboral referido na API de RH e em recibos | 01ARZ3NDEKTSV4RRFFQ69G5FAV | Confidencial |
+| person_id | BIGINT UNSIGNED | não | nenhum | não | people.id | — | — | Pessoa empregada (identidade global; nunca duplicada) |  | Confidencial |
+| employing_unit_id | BIGINT UNSIGNED | não | nenhum | não | organizational_units.id | — | ix_employments_employing_unit_id_status | Unidade que emprega, paga e responde |  | Confidencial |
+| relationship_kind | VARCHAR(64) | não | nenhum | não | — | — | — | EMPLOYEE ou BENEFICIARY | EMPLOYEE | Confidencial |
+| job_title | VARCHAR(160) | sim | NULL | não | — | — | — | Função laboral (texto); não é cargo eclesiástico | Secretária administrativa | Confidencial |
+| starts_on | DATE | não | nenhum | não | — | — | — | Início do vínculo | 2026-01-01 | Confidencial |
+| ends_on | DATE | sim | NULL | não | — | — | — | Fim do vínculo | 2026-12-31 | Confidencial |
+| status | VARCHAR(64) | não | nenhum | não | — | — | ix_employments_employing_unit_id_status | ACTIVE ou ENDED | ACTIVE | Confidencial |
+| end_reason | TEXT | sim | NULL | não | — | — | — | Motivo da cessação | Fim de contrato | Confidencial |
+| contract_document_id | BIGINT UNSIGNED | sim | NULL | não | legal_documents.id | — | ix_employments_contract_document_id | Contrato de trabalho (documento Files) |  | Confidencial |
+| created_by | BIGINT UNSIGNED | não | nenhum | não | users.id | — | ix_employments_created_by | created by |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| ended_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_employments_ended_by | ended by |  | Confidencial |
+| ended_at | DATETIME(6) | sim | NULL | não | — | — | — | ended at | 2026-12-31 10:00:00.000000 | Confidencial |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `person_id` → `people.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `employing_unit_id` → `organizational_units.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `contract_document_id` → `legal_documents.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `created_by` → `users.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `ended_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- Guarda física (delta P0.10-F2A): `open_guard` STORED GENERATED `IF(`status` = 'ACTIVE', 1, NULL)` + UNIQUE `uq_employments_person_id_unit_open` (person_id, employing_unit_id, open_guard).
+- CHECK `ck_employments_relationship_kind`.
+- CHECK `ck_employments_status`.
+- CHECK `ck_employments_dates`.
+- CHECK `ck_employments_ended`.
+
+## compensation_component_types
+
+Catálogo de componentes remuneratórios (natureza, método, rubrica e passivo); sem valores nem taxas.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Interno.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Catálogo de componentes remuneratórios (natureza, método, rubrica e passivo); sem valores nem taxas; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| code | VARCHAR(64) | não | nenhum | não | — | uq_compensation_component_types_code | — | Código estável do componente | BASE_SALARY | Interno |
+| name | VARCHAR(160) | não | nenhum | não | — | — | — | Nome institucional | Salário base | Interno |
+| nature | VARCHAR(64) | não | nenhum | não | — | — | — | EARNING, EMPLOYEE_DEDUCTION ou EMPLOYER_CHARGE | EARNING | Interno |
+| calculation_method | VARCHAR(64) | não | nenhum | não | — | — | — | FIXED_AMOUNT, RATE_RULE, BRACKET_RULE ou MANUAL | FIXED_AMOUNT | Interno |
+| expense_category_id | BIGINT UNSIGNED | sim | NULL | não | financial_categories.id | — | ix_compensation_component_types_expense_category_id | Rubrica PER_* (ganhos e encargos) |  | Interno |
+| liability_role | VARCHAR(64) | sim | NULL | não | — | — | — | PAYROLL_WITHHOLDINGS ou PAYROLL_EMPLOYER_CHARGES | PAYROLL_WITHHOLDINGS | Interno |
+| is_active | TINYINT UNSIGNED | não | 1 | não | — | — | — | Disponível para novas configurações | 1 | Interno |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `expense_category_id` → `financial_categories.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- CHECK `ck_compensation_component_types_nature`.
+- CHECK `ck_compensation_component_types_calculation_method`.
+- CHECK `ck_compensation_component_types_liability_role`.
+- CHECK `ck_compensation_component_types_posting`.
+- CHECK `ck_compensation_component_types_is_active`.
+
+## employment_compensations
+
+Histórico salarial append-only: componente por vínculo com vigência; alterar = fechar a vigente e abrir nova.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Altamente sensível.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Histórico salarial append-only: componente por vínculo com vigência; alterar = fechar a vigente e abrir nova; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| employment_id | BIGINT UNSIGNED | não | nenhum | não | employments.id | uq_employment_compensations_start | — | employment id |  | Altamente sensível |
+| component_type_id | BIGINT UNSIGNED | não | nenhum | não | compensation_component_types.id | uq_employment_compensations_start | ix_employment_compensations_component_type_id | component type id |  | Altamente sensível |
+| amount | DECIMAL(19,4) | sim | NULL | não | — | — | — | Montante (FIXED_AMOUNT/MANUAL); NULL = aplicável por regra | 150000.0000 | Altamente sensível |
+| starts_on | DATE | não | nenhum | não | — | uq_employment_compensations_start | — | Início de vigência | 2026-01-01 | Altamente sensível |
+| ends_on | DATE | sim | NULL | não | — | — | — | Fim de vigência | 2026-06-30 | Altamente sensível |
+| reason | TEXT | não | nenhum | não | — | — | — | Motivo da configuração | Revisão salarial | Altamente sensível |
+| source_document_id | BIGINT UNSIGNED | sim | NULL | não | legal_documents.id | — | ix_employment_compensations_source_document_id | source document id |  | Altamente sensível |
+| created_by | BIGINT UNSIGNED | não | nenhum | não | users.id | — | ix_employment_compensations_created_by | created by |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| closed_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_employment_compensations_closed_by | closed by |  | Confidencial |
+| closed_at | DATETIME(6) | sim | NULL | não | — | — | — | closed at | 2026-06-30 10:00:00.000000 | Confidencial |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `employment_id` → `employments.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `component_type_id` → `compensation_component_types.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `source_document_id` → `legal_documents.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `created_by` → `users.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `closed_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- Guarda física (delta P0.10-F2A): `open_guard` STORED GENERATED `IF(`ends_on` IS NULL, 1, NULL)` + UNIQUE `uq_employment_compensations_open` (employment_id, component_type_id, open_guard).
+- CHECK `ck_employment_compensations_dates`.
+- CHECK `ck_employment_compensations_amount`.
+- CHECK `ck_employment_compensations_closed`.
+
+## payroll_rules
+
+Regras estatutárias versionadas (INSS, IRT, 13.º, férias, pensões…); nenhuma taxa é semeada; APPROVED exige fonte normativa.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Confidencial.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Regras estatutárias versionadas (INSS, IRT, 13.º, férias, pensões…); nenhuma taxa é semeada; APPROVED exige fonte normativa; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| code | VARCHAR(64) | não | nenhum | não | — | uq_payroll_rules_code_version | — | Código da regra (estável entre versões) | INSS_EMPLOYEE_RATE | Confidencial |
+| version | INT UNSIGNED | não | nenhum | não | — | uq_payroll_rules_code_version | — | Versão da regra | 1 | Confidencial |
+| component_type_id | BIGINT UNSIGNED | não | nenhum | não | compensation_component_types.id | — | ix_payroll_rules_component_type_id_status | Componente calculado pela regra |  | Confidencial |
+| method | VARCHAR(64) | não | nenhum | não | — | — | — | FLAT_RATE ou BRACKET | FLAT_RATE | Confidencial |
+| rate | DECIMAL(9,6) | sim | NULL | não | — | — | — | Taxa (fracção) para FLAT_RATE; carregada da fonte oficial | 0.030000 | Confidencial |
+| starts_on | DATE | não | nenhum | não | — | — | — | Início de vigência | 2026-01-01 | Confidencial |
+| ends_on | DATE | sim | NULL | não | — | — | — | Fim de vigência | 2026-12-31 | Confidencial |
+| status | VARCHAR(64) | não | nenhum | não | — | — | ix_payroll_rules_component_type_id_status | DRAFT, APPROVED ou RETIRED | DRAFT | Confidencial |
+| source_document_id | BIGINT UNSIGNED | sim | NULL | não | legal_documents.id | — | ix_payroll_rules_source_document_id | Fonte normativa PAYROLL_RULE_SOURCE |  | Confidencial |
+| created_by | BIGINT UNSIGNED | não | nenhum | não | users.id | — | ix_payroll_rules_created_by | created by |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| approved_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_rules_approved_by | approved by |  | Confidencial |
+| approved_at | DATETIME(6) | sim | NULL | não | — | — | — | approved at | 2026-10-02 10:00:00.000000 | Confidencial |
+| retired_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_rules_retired_by | retired by |  | Confidencial |
+| retired_at | DATETIME(6) | sim | NULL | não | — | — | — | retired at | 2026-10-02 10:00:00.000000 | Confidencial |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `component_type_id` → `compensation_component_types.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `source_document_id` → `legal_documents.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `created_by` → `users.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `approved_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `retired_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- CHECK `ck_payroll_rules_method`.
+- CHECK `ck_payroll_rules_status`.
+- CHECK `ck_payroll_rules_version`.
+- CHECK `ck_payroll_rules_dates`.
+- CHECK `ck_payroll_rules_rate`.
+- CHECK `ck_payroll_rules_method_rate`.
+- CHECK `ck_payroll_rules_approved`.
+- CHECK `ck_payroll_rules_segregation`.
+- CHECK `ck_payroll_rules_retired`.
+
+## payroll_rule_base_components
+
+Componentes que formam a base de incidência de uma versão de regra.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Confidencial.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Componentes que formam a base de incidência de uma versão de regra; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| rule_id | BIGINT UNSIGNED | não | nenhum | não | payroll_rules.id | uq_payroll_rule_base_components_rule_component | — | rule id |  | Confidencial |
+| component_type_id | BIGINT UNSIGNED | não | nenhum | não | compensation_component_types.id | uq_payroll_rule_base_components_rule_component | ix_payroll_rule_base_components_component_type_id | component type id |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+
+- FK `rule_id` → `payroll_rules.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `component_type_id` → `compensation_component_types.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+
+## payroll_rule_brackets
+
+Escalões de uma regra progressiva (BRACKET), sem lacunas nem sobreposição; valores só da fonte oficial.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Confidencial.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Escalões de uma regra progressiva (BRACKET), sem lacunas nem sobreposição; valores só da fonte oficial; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| rule_id | BIGINT UNSIGNED | não | nenhum | não | payroll_rules.id | uq_payroll_rule_brackets_rule_id_lower_bound | — | rule id |  | Confidencial |
+| lower_bound | DECIMAL(19,4) | não | nenhum | não | — | uq_payroll_rule_brackets_rule_id_lower_bound | — | Limite inferior (inclusivo) | 0.0000 | Confidencial |
+| upper_bound | DECIMAL(19,4) | sim | NULL | não | — | — | — | Limite superior (exclusivo); NULL = sem limite | 100000.0000 | Confidencial |
+| rate | DECIMAL(9,6) | não | nenhum | não | — | — | — | Taxa marginal (fracção) | 0.100000 | Confidencial |
+| fixed_amount | DECIMAL(19,4) | não | 0 | não | — | — | — | Parcela fixa do escalão | 0.0000 | Confidencial |
+| excess_over | DECIMAL(19,4) | não | 0 | não | — | — | — | Valor sobre o qual incide a taxa marginal | 0.0000 | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+
+- FK `rule_id` → `payroll_rules.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- CHECK `ck_payroll_rule_brackets_bounds`.
+- CHECK `ck_payroll_rule_brackets_rate`.
+- CHECK `ck_payroll_rule_brackets_amounts`.
+
+## payroll_runs
+
+Processamento salarial por unidade empregadora e mês de serviço (F2B); totais agregados e input_hash.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Altamente sensível.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; `public_id CHAR(26) CHARACTER SET ascii COLLATE ascii_bin`, NOT NULL, UNIQUE, imutavel, aplicacao; Folha salarial referida na API de RH e no posting agregado.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| public_id | CHAR(26) CHARACTER SET ascii COLLATE ascii_bin | nao | nenhum; gerado na aplicacao | nao | — | uq_payroll_runs_public_id | — | ULID publico imutavel; gerado na aplicacao, nunca reutilizado; Folha salarial referida na API de RH e no posting agregado | 01ARZ3NDEKTSV4RRFFQ69G5FAV | Altamente sensível |
+| employing_unit_id | BIGINT UNSIGNED | não | nenhum | não | organizational_units.id | uq_payroll_runs_unit_period_kind_sequence | — | employing unit id |  | Altamente sensível |
+| period_id | BIGINT UNSIGNED | não | nenhum | não | accounting_periods.id | uq_payroll_runs_unit_period_kind_sequence | ix_payroll_runs_period_id | Mês de serviço |  | Altamente sensível |
+| run_kind | VARCHAR(64) | não | nenhum | não | — | uq_payroll_runs_unit_period_kind_sequence | — | REGULAR, HOLIDAY_SUBSIDY, THIRTEENTH ou ADJUSTMENT | REGULAR | Altamente sensível |
+| sequence | INT UNSIGNED | não | nenhum | não | — | uq_payroll_runs_unit_period_kind_sequence | — | Sequência do run no mês | 1 | Altamente sensível |
+| status | VARCHAR(64) | não | nenhum | não | — | — | — | DRAFT, CALCULATED, APPROVED, POSTED, PAID, CANCELLED ou REVERSED | DRAFT | Altamente sensível |
+| input_hash | BINARY(32) | sim | NULL | não | — | — | — | SHA-256 canónico dos inputs (D-04A.14) | 0x9f… | Altamente sensível |
+| gross_amount | DECIMAL(19,4) | não | 0 | não | — | — | — | Total bruto | 150000.0000 | Altamente sensível |
+| deductions_amount | DECIMAL(19,4) | não | 0 | não | — | — | — | Total de deduções ao empregado | 10000.0000 | Altamente sensível |
+| employer_charges_amount | DECIMAL(19,4) | não | 0 | não | — | — | — | Total de encargos da entidade | 12000.0000 | Altamente sensível |
+| net_amount | DECIMAL(19,4) | não | 0 | não | — | — | — | Líquido = bruto − deduções | 140000.0000 | Altamente sensível |
+| headcount | INT UNSIGNED | não | 0 | não | — | — | — | Número de vínculos processados | 3 | Altamente sensível |
+| created_by | BIGINT UNSIGNED | não | nenhum | não | users.id | — | ix_payroll_runs_created_by | created by |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| calculated_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_calculated_by | calculated by |  | Confidencial |
+| calculated_at | DATETIME(6) | sim | NULL | não | — | — | — | calculated at | 2026-10-02 10:00:00.000000 | Confidencial |
+| approved_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_approved_by | approved by |  | Confidencial |
+| approved_at | DATETIME(6) | sim | NULL | não | — | — | — | approved at | 2026-10-02 10:00:00.000000 | Confidencial |
+| posted_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_posted_by | posted by |  | Confidencial |
+| posted_at | DATETIME(6) | sim | NULL | não | — | — | — | posted at | 2026-10-02 10:00:00.000000 | Confidencial |
+| paid_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_paid_by | paid by |  | Confidencial |
+| paid_at | DATETIME(6) | sim | NULL | não | — | — | — | paid at | 2026-10-02 10:00:00.000000 | Confidencial |
+| cancelled_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_cancelled_by | cancelled by |  | Confidencial |
+| cancelled_at | DATETIME(6) | sim | NULL | não | — | — | — | cancelled at | 2026-10-02 10:00:00.000000 | Confidencial |
+| cancel_reason | TEXT | sim | NULL | não | — | — | — | cancel reason | Run substituído | Confidencial |
+| reversed_by | BIGINT UNSIGNED | sim | NULL | não | users.id | — | ix_payroll_runs_reversed_by | reversed by |  | Confidencial |
+| reversed_at | DATETIME(6) | sim | NULL | não | — | — | — | reversed at | 2026-10-02 10:00:00.000000 | Confidencial |
+| reversal_reason | TEXT | sim | NULL | não | — | — | — | reversal reason | Erro de cálculo | Confidencial |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `employing_unit_id` → `organizational_units.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `period_id` → `accounting_periods.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `created_by` → `users.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `calculated_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `approved_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `posted_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `paid_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `cancelled_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `reversed_by` → `users.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- Guarda física (delta P0.10-F2A): `regular_guard` STORED GENERATED `IF(`run_kind` = 'REGULAR' AND `status` <> 'CANCELLED', 1, NULL)` + UNIQUE `uq_payroll_runs_unit_period_regular` (employing_unit_id, period_id, regular_guard).
+- CHECK `ck_payroll_runs_run_kind`.
+- CHECK `ck_payroll_runs_status`.
+- CHECK `ck_payroll_runs_sequence`.
+- CHECK `ck_payroll_runs_amounts`.
+- CHECK `ck_payroll_runs_calculated`.
+- CHECK `ck_payroll_runs_approved`.
+- CHECK `ck_payroll_runs_segregation`.
+- CHECK `ck_payroll_runs_posted`.
+- CHECK `ck_payroll_runs_paid`.
+- CHECK `ck_payroll_runs_cancelled`.
+- CHECK `ck_payroll_runs_reversed`.
+
+## payroll_run_lines
+
+Linhas por vínculo e componente de um run (F2B); imutáveis a partir de APPROVED.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Altamente sensível.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Linhas por vínculo e componente de um run (F2B); imutáveis a partir de APPROVED; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| run_id | BIGINT UNSIGNED | não | nenhum | não | payroll_runs.id | uq_payroll_run_lines_run_employment_component | — | run id |  | Altamente sensível |
+| employment_id | BIGINT UNSIGNED | não | nenhum | não | employments.id | uq_payroll_run_lines_run_employment_component | ix_payroll_run_lines_employment_id | employment id |  | Altamente sensível |
+| component_type_id | BIGINT UNSIGNED | não | nenhum | não | compensation_component_types.id | uq_payroll_run_lines_run_employment_component | ix_payroll_run_lines_component_type_id | component type id |  | Altamente sensível |
+| base_amount | DECIMAL(19,4) | sim | NULL | não | — | — | — | Base de incidência | 150000.0000 | Altamente sensível |
+| rate | DECIMAL(9,6) | sim | NULL | não | — | — | — | Taxa aplicada | 0.030000 | Altamente sensível |
+| amount | DECIMAL(19,4) | não | nenhum | não | — | — | — | Montante da linha (arredondado half-up por componente) | 4500.0000 | Altamente sensível |
+| source | VARCHAR(64) | não | nenhum | não | — | — | — | FIXED, RULE ou MANUAL | FIXED | Altamente sensível |
+| rule_id | BIGINT UNSIGNED | sim | NULL | não | payroll_rules.id | — | ix_payroll_run_lines_rule_id | rule id |  | Altamente sensível |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+
+- FK `run_id` → `payroll_runs.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `employment_id` → `employments.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `component_type_id` → `compensation_component_types.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `rule_id` → `payroll_rules.id`: 0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- CHECK `ck_payroll_run_lines_source`.
+- CHECK `ck_payroll_run_lines_rule`.
+- CHECK `ck_payroll_run_lines_amount`.
+
+## payroll_postings
+
+Idempotência do posting do payroll no Finance (ACCRUAL, PAYMENT, REVERSAL); espelho de transfer_postings.
+
+Domínio: RH / Payroll. Owner lógico: RH da unidade empregadora; regras estatutárias a nível nacional. Retenção: R-FINANCEIRO. Volume esperado: Até 10 mil vínculos; 1 milhão de linhas salariais. Sensibilidade base: Confidencial.
+
+Identificadores (D-01): PK interna `id BIGINT UNSIGNED AUTO_INCREMENT`; sem public_id: Registo interno: Idempotência do posting do payroll no Finance (ACCRUAL, PAYMENT, REVERSAL); espelho de transfer_postings; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.
+
+| Coluna | Tipo / tamanho | NULL | Default | PK | FK | UNIQUE | Índice | Descrição | Exemplo | Sensibilidade |
+|---|---|---|---|---|---|---|---|---|---|---|
+| id | BIGINT UNSIGNED | não | AUTO_INCREMENT | sim | — | — | PRIMARY | Chave interna imutável | 123 | Interno |
+| run_id | BIGINT UNSIGNED | não | nenhum | não | payroll_runs.id | uq_payroll_postings_run_id_stage | — | run id |  | Confidencial |
+| stage | VARCHAR(64) | não | nenhum | não | — | uq_payroll_postings_run_id_stage | — | ACCRUAL, PAYMENT ou REVERSAL | ACCRUAL | Confidencial |
+| entry_id | BIGINT UNSIGNED | não | nenhum | não | journal_entries.id | uq_payroll_postings_entry_id | — | entry id |  | Confidencial |
+| created_at | DATETIME(6) | não | nenhum; relógio UTC do serviço | não | — | — | — | Data de registo, distinta da data histórica | 2026-10-02 10:00:00.000000 | Interno |
+| lock_version | INT UNSIGNED | não | 0 | não | — | — | — | Controlo optimista de edição; não permite editar fechos | 0 | Interno |
+
+- FK `run_id` → `payroll_runs.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- FK `entry_id` → `journal_entries.id`: 1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado); ON DELETE RESTRICT; ON UPDATE RESTRICT. Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo.
+- CHECK `ck_payroll_postings_stage`.
+
 ## P0.2-F: candidatos fisicos e configuracao
 
 As tres regras de credential_types foram acrescentadas ao modelo logico; exemplos nao sao seeds nem validades aprovadas. Um tipo nao e activado ate completar a politica D-05. O candidato generated general_center_key e unit_type_code esta separado em model_catalog.physical_candidates e detalhado em 04_database_constraints.md; nao foi promovido a FK/coluna do ERD logico antes da qualificacao D-08/D-11. Nenhum schema de negocio foi alterado.

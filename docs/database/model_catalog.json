@@ -32824,6 +32824,2080 @@
         "immutable": true,
         "decision": "D-01 RESOLVED; ADR 0009 Accepted"
       }
+    },
+    {
+      "name": "employments",
+      "purpose": "Vínculo laboral MEPA (Pessoa + unidade empregadora); não é cargo eclesiástico nem situação profissional da Pessoa",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Confidencial",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "public_id",
+          "type": "CHAR(26) CHARACTER SET ascii COLLATE ascii_bin",
+          "nullable": false,
+          "default": "nenhum; gerado na aplicacao",
+          "pk": false,
+          "fk": null,
+          "description": "ULID publico imutavel; gerado na aplicacao, nunca reutilizado; Vínculo laboral referido na API de RH e em recibos",
+          "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_employments_public_id"
+          ],
+          "index": [],
+          "immutable": true,
+          "generated_by": "APPLICATION_SHARED_ULID_GENERATOR",
+          "never_reuse": true
+        },
+        {
+          "name": "person_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "people",
+          "description": "Pessoa empregada (identidade global; nunca duplicada)",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [],
+          "target": "people.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "employing_unit_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "organizational_units",
+          "description": "Unidade que emprega, paga e responde",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employments_employing_unit_id_status"
+          ],
+          "target": "organizational_units.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "relationship_kind",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "EMPLOYEE ou BENEFICIARY",
+          "example": "EMPLOYEE",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "job_title",
+          "type": "VARCHAR(160)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Função laboral (texto); não é cargo eclesiástico",
+          "example": "Secretária administrativa",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "starts_on",
+          "type": "DATE",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Início do vínculo",
+          "example": "2026-01-01",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "ends_on",
+          "type": "DATE",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Fim do vínculo",
+          "example": "2026-12-31",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "ACTIVE ou ENDED",
+          "example": "ACTIVE",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employments_employing_unit_id_status"
+          ]
+        },
+        {
+          "name": "end_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Motivo da cessação",
+          "example": "Fim de contrato",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "contract_document_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "legal_documents",
+          "description": "Contrato de trabalho (documento Files)",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employments_contract_document_id"
+          ],
+          "target": "legal_documents.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "users",
+          "description": "created by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employments_created_by"
+          ],
+          "target": "users.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "ended_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "ended by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employments_ended_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "ended_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "ended at",
+          "example": "2026-12-31 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "public_id"
+        ]
+      ],
+      "indexes": [
+        [
+          "employing_unit_id",
+          "status"
+        ],
+        [
+          "contract_document_id"
+        ],
+        [
+          "created_by"
+        ],
+        [
+          "ended_by"
+        ]
+      ],
+      "temporal": true,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": true,
+        "public_id_reason": "Vínculo laboral referido na API de RH e em recibos",
+        "public_id_type": "CHAR(26) CHARACTER SET ascii COLLATE ascii_bin",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "compensation_component_types",
+      "purpose": "Catálogo de componentes remuneratórios (natureza, método, rubrica e passivo); sem valores nem taxas",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Interno",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Código estável do componente",
+          "example": "BASE_SALARY",
+          "sensitivity": "Interno",
+          "unique": [
+            "uq_compensation_component_types_code"
+          ],
+          "index": []
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(160)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Nome institucional",
+          "example": "Salário base",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "nature",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "EARNING, EMPLOYEE_DEDUCTION ou EMPLOYER_CHARGE",
+          "example": "EARNING",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "calculation_method",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "FIXED_AMOUNT, RATE_RULE, BRACKET_RULE ou MANUAL",
+          "example": "FIXED_AMOUNT",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "expense_category_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "financial_categories",
+          "description": "Rubrica PER_* (ganhos e encargos)",
+          "example": "",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": [
+            "ix_compensation_component_types_expense_category_id"
+          ],
+          "target": "financial_categories.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "liability_role",
+          "type": "VARCHAR(64)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "PAYROLL_WITHHOLDINGS ou PAYROLL_EMPLOYER_CHARGES",
+          "example": "PAYROLL_WITHHOLDINGS",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "is_active",
+          "type": "TINYINT UNSIGNED",
+          "nullable": false,
+          "default": "1",
+          "pk": false,
+          "fk": null,
+          "description": "Disponível para novas configurações",
+          "example": "1",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "code"
+        ]
+      ],
+      "indexes": [
+        [
+          "expense_category_id"
+        ]
+      ],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Catálogo de componentes remuneratórios (natureza, método, rubrica e passivo); sem valores nem taxas; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "employment_compensations",
+      "purpose": "Histórico salarial append-only: componente por vínculo com vigência; alterar = fechar a vigente e abrir nova",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Altamente sensível",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "employment_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "employments",
+          "description": "employment id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_employment_compensations_start"
+          ],
+          "index": [],
+          "target": "employments.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "component_type_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "compensation_component_types",
+          "description": "component type id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_employment_compensations_start"
+          ],
+          "index": [
+            "ix_employment_compensations_component_type_id"
+          ],
+          "target": "compensation_component_types.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Montante (FIXED_AMOUNT/MANUAL); NULL = aplicável por regra",
+          "example": "150000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "starts_on",
+          "type": "DATE",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Início de vigência",
+          "example": "2026-01-01",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_employment_compensations_start"
+          ],
+          "index": []
+        },
+        {
+          "name": "ends_on",
+          "type": "DATE",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Fim de vigência",
+          "example": "2026-06-30",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "reason",
+          "type": "TEXT",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Motivo da configuração",
+          "example": "Revisão salarial",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "source_document_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "legal_documents",
+          "description": "source document id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": [
+            "ix_employment_compensations_source_document_id"
+          ],
+          "target": "legal_documents.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "users",
+          "description": "created by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employment_compensations_created_by"
+          ],
+          "target": "users.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "closed_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "closed by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_employment_compensations_closed_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "closed_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "closed at",
+          "example": "2026-06-30 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "employment_id",
+          "component_type_id",
+          "starts_on"
+        ]
+      ],
+      "indexes": [
+        [
+          "component_type_id"
+        ],
+        [
+          "source_document_id"
+        ],
+        [
+          "created_by"
+        ],
+        [
+          "closed_by"
+        ]
+      ],
+      "temporal": true,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Histórico salarial append-only: componente por vínculo com vigência; alterar = fechar a vigente e abrir nova; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_rules",
+      "purpose": "Regras estatutárias versionadas (INSS, IRT, 13.º, férias, pensões…); nenhuma taxa é semeada; APPROVED exige fonte normativa",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Confidencial",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "code",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Código da regra (estável entre versões)",
+          "example": "INSS_EMPLOYEE_RATE",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rules_code_version"
+          ],
+          "index": []
+        },
+        {
+          "name": "version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Versão da regra",
+          "example": "1",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rules_code_version"
+          ],
+          "index": []
+        },
+        {
+          "name": "component_type_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "compensation_component_types",
+          "description": "Componente calculado pela regra",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_component_type_id_status"
+          ],
+          "target": "compensation_component_types.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "FLAT_RATE ou BRACKET",
+          "example": "FLAT_RATE",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rate",
+          "type": "DECIMAL(9,6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Taxa (fracção) para FLAT_RATE; carregada da fonte oficial",
+          "example": "0.030000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "starts_on",
+          "type": "DATE",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Início de vigência",
+          "example": "2026-01-01",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "ends_on",
+          "type": "DATE",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Fim de vigência",
+          "example": "2026-12-31",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "DRAFT, APPROVED ou RETIRED",
+          "example": "DRAFT",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_component_type_id_status"
+          ]
+        },
+        {
+          "name": "source_document_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "legal_documents",
+          "description": "Fonte normativa PAYROLL_RULE_SOURCE",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_source_document_id"
+          ],
+          "target": "legal_documents.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "users",
+          "description": "created by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_created_by"
+          ],
+          "target": "users.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "approved_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "approved by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_approved_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "approved_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "approved at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "retired_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "retired by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_rules_retired_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "retired_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "retired at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "code",
+          "version"
+        ]
+      ],
+      "indexes": [
+        [
+          "component_type_id",
+          "status"
+        ],
+        [
+          "source_document_id"
+        ],
+        [
+          "created_by"
+        ],
+        [
+          "approved_by"
+        ],
+        [
+          "retired_by"
+        ]
+      ],
+      "temporal": true,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Regras estatutárias versionadas (INSS, IRT, 13.º, férias, pensões…); nenhuma taxa é semeada; APPROVED exige fonte normativa; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_rule_base_components",
+      "purpose": "Componentes que formam a base de incidência de uma versão de regra",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Confidencial",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rule_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "payroll_rules",
+          "description": "rule id",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rule_base_components_rule_component"
+          ],
+          "index": [],
+          "target": "payroll_rules.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "component_type_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "compensation_component_types",
+          "description": "component type id",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rule_base_components_rule_component"
+          ],
+          "index": [
+            "ix_payroll_rule_base_components_component_type_id"
+          ],
+          "target": "compensation_component_types.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "rule_id",
+          "component_type_id"
+        ]
+      ],
+      "indexes": [
+        [
+          "component_type_id"
+        ]
+      ],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Componentes que formam a base de incidência de uma versão de regra; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_rule_brackets",
+      "purpose": "Escalões de uma regra progressiva (BRACKET), sem lacunas nem sobreposição; valores só da fonte oficial",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Confidencial",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rule_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "payroll_rules",
+          "description": "rule id",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rule_brackets_rule_id_lower_bound"
+          ],
+          "index": [],
+          "target": "payroll_rules.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "lower_bound",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Limite inferior (inclusivo)",
+          "example": "0.0000",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_rule_brackets_rule_id_lower_bound"
+          ],
+          "index": []
+        },
+        {
+          "name": "upper_bound",
+          "type": "DECIMAL(19,4)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Limite superior (exclusivo); NULL = sem limite",
+          "example": "100000.0000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rate",
+          "type": "DECIMAL(9,6)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Taxa marginal (fracção)",
+          "example": "0.100000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "fixed_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Parcela fixa do escalão",
+          "example": "0.0000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "excess_over",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Valor sobre o qual incide a taxa marginal",
+          "example": "0.0000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "rule_id",
+          "lower_bound"
+        ]
+      ],
+      "indexes": [],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Escalões de uma regra progressiva (BRACKET), sem lacunas nem sobreposição; valores só da fonte oficial; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_runs",
+      "purpose": "Processamento salarial por unidade empregadora e mês de serviço (F2B); totais agregados e input_hash",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Altamente sensível",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "public_id",
+          "type": "CHAR(26) CHARACTER SET ascii COLLATE ascii_bin",
+          "nullable": false,
+          "default": "nenhum; gerado na aplicacao",
+          "pk": false,
+          "fk": null,
+          "description": "ULID publico imutavel; gerado na aplicacao, nunca reutilizado; Folha salarial referida na API de RH e no posting agregado",
+          "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_runs_public_id"
+          ],
+          "index": [],
+          "immutable": true,
+          "generated_by": "APPLICATION_SHARED_ULID_GENERATOR",
+          "never_reuse": true
+        },
+        {
+          "name": "employing_unit_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "organizational_units",
+          "description": "employing unit id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_runs_unit_period_kind_sequence"
+          ],
+          "index": [],
+          "target": "organizational_units.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "period_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "accounting_periods",
+          "description": "Mês de serviço",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_runs_unit_period_kind_sequence"
+          ],
+          "index": [
+            "ix_payroll_runs_period_id"
+          ],
+          "target": "accounting_periods.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "run_kind",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "REGULAR, HOLIDAY_SUBSIDY, THIRTEENTH ou ADJUSTMENT",
+          "example": "REGULAR",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_runs_unit_period_kind_sequence"
+          ],
+          "index": []
+        },
+        {
+          "name": "sequence",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Sequência do run no mês",
+          "example": "1",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_runs_unit_period_kind_sequence"
+          ],
+          "index": []
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "DRAFT, CALCULATED, APPROVED, POSTED, PAID, CANCELLED ou REVERSED",
+          "example": "DRAFT",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "input_hash",
+          "type": "BINARY(32)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "SHA-256 canónico dos inputs (D-04A.14)",
+          "example": "0x9f…",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "gross_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Total bruto",
+          "example": "150000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "deductions_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Total de deduções ao empregado",
+          "example": "10000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "employer_charges_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Total de encargos da entidade",
+          "example": "12000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "net_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Líquido = bruto − deduções",
+          "example": "140000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "headcount",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "fk": null,
+          "description": "Número de vínculos processados",
+          "example": "3",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "created_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "users",
+          "description": "created by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_created_by"
+          ],
+          "target": "users.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "calculated_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "calculated by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_calculated_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "calculated_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "calculated at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "approved_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "approved by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_approved_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "approved_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "approved at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "posted_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "posted by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_posted_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "posted_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "posted at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "paid_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "paid by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_paid_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "paid_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "paid at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "cancelled_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "cancelled by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_cancelled_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "cancelled_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "cancelled at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "cancel_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "cancel reason",
+          "example": "Run substituído",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "reversed_by",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "users",
+          "description": "reversed by",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": [
+            "ix_payroll_runs_reversed_by"
+          ],
+          "target": "users.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "reversed_at",
+          "type": "DATETIME(6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "reversed at",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "reversal_reason",
+          "type": "TEXT",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "reversal reason",
+          "example": "Erro de cálculo",
+          "sensitivity": "Confidencial",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "employing_unit_id",
+          "period_id",
+          "run_kind",
+          "sequence"
+        ],
+        [
+          "public_id"
+        ]
+      ],
+      "indexes": [
+        [
+          "period_id"
+        ],
+        [
+          "created_by"
+        ],
+        [
+          "calculated_by"
+        ],
+        [
+          "approved_by"
+        ],
+        [
+          "posted_by"
+        ],
+        [
+          "paid_by"
+        ],
+        [
+          "cancelled_by"
+        ],
+        [
+          "reversed_by"
+        ]
+      ],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": true,
+        "public_id_reason": "Folha salarial referida na API de RH e no posting agregado",
+        "public_id_type": "CHAR(26) CHARACTER SET ascii COLLATE ascii_bin",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_run_lines",
+      "purpose": "Linhas por vínculo e componente de um run (F2B); imutáveis a partir de APPROVED",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Altamente sensível",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "run_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "payroll_runs",
+          "description": "run id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_run_lines_run_employment_component"
+          ],
+          "index": [],
+          "target": "payroll_runs.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "employment_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "employments",
+          "description": "employment id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_run_lines_run_employment_component"
+          ],
+          "index": [
+            "ix_payroll_run_lines_employment_id"
+          ],
+          "target": "employments.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "component_type_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "compensation_component_types",
+          "description": "component type id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [
+            "uq_payroll_run_lines_run_employment_component"
+          ],
+          "index": [
+            "ix_payroll_run_lines_component_type_id"
+          ],
+          "target": "compensation_component_types.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "base_amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Base de incidência",
+          "example": "150000.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rate",
+          "type": "DECIMAL(9,6)",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": null,
+          "description": "Taxa aplicada",
+          "example": "0.030000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "amount",
+          "type": "DECIMAL(19,4)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "Montante da linha (arredondado half-up por componente)",
+          "example": "4500.0000",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "source",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "FIXED, RULE ou MANUAL",
+          "example": "FIXED",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "rule_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": true,
+          "default": "NULL",
+          "pk": false,
+          "fk": "payroll_rules",
+          "description": "rule id",
+          "example": "",
+          "sensitivity": "Altamente sensível",
+          "unique": [],
+          "index": [
+            "ix_payroll_run_lines_rule_id"
+          ],
+          "target": "payroll_rules.id",
+          "cardinality": "0..1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "run_id",
+          "employment_id",
+          "component_type_id"
+        ]
+      ],
+      "indexes": [
+        [
+          "employment_id"
+        ],
+        [
+          "component_type_id"
+        ],
+        [
+          "rule_id"
+        ]
+      ],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Linhas por vínculo e componente de um run (F2B); imutáveis a partir de APPROVED; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
+    },
+    {
+      "name": "payroll_postings",
+      "purpose": "Idempotência do posting do payroll no Finance (ACCRUAL, PAYMENT, REVERSAL); espelho de transfer_postings",
+      "domain": "RH / Payroll",
+      "owner": "RH da unidade empregadora; regras estatutárias a nível nacional",
+      "retention": "R-FINANCEIRO",
+      "volume": "Até 10 mil vínculos; 1 milhão de linhas salariais",
+      "sensitivity": "Confidencial",
+      "columns": [
+        {
+          "name": "id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "AUTO_INCREMENT",
+          "pk": true,
+          "description": "Chave interna imutável",
+          "example": "123",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "run_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "payroll_runs",
+          "description": "run id",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_postings_run_id_stage"
+          ],
+          "index": [],
+          "target": "payroll_runs.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "stage",
+          "type": "VARCHAR(64)",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": null,
+          "description": "ACCRUAL, PAYMENT ou REVERSAL",
+          "example": "ACCRUAL",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_postings_run_id_stage"
+          ],
+          "index": []
+        },
+        {
+          "name": "entry_id",
+          "type": "BIGINT UNSIGNED",
+          "nullable": false,
+          "default": "nenhum",
+          "pk": false,
+          "fk": "journal_entries",
+          "description": "entry id",
+          "example": "",
+          "sensitivity": "Confidencial",
+          "unique": [
+            "uq_payroll_postings_entry_id"
+          ],
+          "index": [],
+          "target": "journal_entries.id",
+          "cardinality": "1 alvo por linha; 0..N linhas por alvo (salvo UNIQUE declarado)",
+          "on_delete": "RESTRICT",
+          "on_update": "RESTRICT",
+          "fk_reason": "Preservar a identidade e o histórico; PK não muda. Arquivo lógico não elimina o alvo."
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME(6)",
+          "nullable": false,
+          "default": "nenhum; relógio UTC do serviço",
+          "pk": false,
+          "description": "Data de registo, distinta da data histórica",
+          "example": "2026-10-02 10:00:00.000000",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        },
+        {
+          "name": "lock_version",
+          "type": "INT UNSIGNED",
+          "nullable": false,
+          "default": "0",
+          "pk": false,
+          "description": "Controlo optimista de edição; não permite editar fechos",
+          "example": "0",
+          "sensitivity": "Interno",
+          "unique": [],
+          "index": []
+        }
+      ],
+      "unique": [
+        [
+          "run_id",
+          "stage"
+        ],
+        [
+          "entry_id"
+        ]
+      ],
+      "indexes": [],
+      "temporal": false,
+      "identifiers": {
+        "internal_pk": "id",
+        "internal_pk_type": "BIGINT UNSIGNED AUTO_INCREMENT",
+        "public_id_required": false,
+        "public_id_reason": "Registo interno: Idempotência do posting do payroll no Finance (ACCRUAL, PAYMENT, REVERSAL); espelho de transfer_postings; consultado pelo recurso pai/servico, sem identidade externa autonoma planeada.",
+        "immutable": true,
+        "decision": "D-01 RESOLVED; ADR 0009 Accepted"
+      }
     }
   ],
   "physical_candidates": {

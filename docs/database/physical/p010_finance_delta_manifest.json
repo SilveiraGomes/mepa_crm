@@ -1,5 +1,5 @@
 {
-  "phase": "P0.10-F1A+F1B+F1C",
+  "phase": "P0.10-F1A+F1B+F1C+F2A",
   "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
   "addendum": "D-04A",
   "migrations": [
@@ -30,7 +30,17 @@
     "2026_09_30_100025_p010_create_bank_statements.php",
     "2026_09_30_100026_p010_create_bank_statement_lines.php",
     "2026_09_30_100027_p010_create_reconciliations.php",
-    "2026_09_30_100028_p010_create_reconciliation_matches.php"
+    "2026_09_30_100028_p010_create_reconciliation_matches.php",
+    "2026_10_02_200001_p010_create_employments.php",
+    "2026_10_02_200002_p010_create_compensation_component_types.php",
+    "2026_10_02_200003_p010_create_employment_compensations.php",
+    "2026_10_02_200004_p010_create_payroll_rules.php",
+    "2026_10_02_200005_p010_create_payroll_rule_base_components.php",
+    "2026_10_02_200006_p010_create_payroll_rule_brackets.php",
+    "2026_10_02_200007_p010_create_payroll_runs.php",
+    "2026_10_02_200008_p010_create_payroll_run_lines.php",
+    "2026_10_02_200009_p010_create_payroll_postings.php",
+    "2026_10_02_200010_p010_install_payroll_catalog.php"
   ],
   "planned_table_count": 35,
   "plan": {
@@ -145,7 +155,10 @@
     "contributions:valued_by:YES:bigint unsigned",
     "contributions:valuation_approved_by:YES:bigint unsigned",
     "contributions:valuation_document_id:YES:bigint unsigned",
-    "reconciliations:counted_balance:YES:decimal(19,4)"
+    "reconciliations:counted_balance:YES:decimal(19,4)",
+    "employments:open_guard:YES:tinyint unsigned",
+    "employment_compensations:open_guard:YES:tinyint unsigned",
+    "payroll_runs:regular_guard:YES:tinyint unsigned"
   ],
   "column_changes": [
     "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
@@ -169,7 +182,10 @@
     "budgets:ix_budgets_reviewed_by:reviewed_by",
     "contributions:ix_contributions_valued_by:valued_by",
     "contributions:ix_contributions_valuation_approved_by:valuation_approved_by",
-    "contributions:ix_contributions_valuation_document_id:valuation_document_id"
+    "contributions:ix_contributions_valuation_document_id:valuation_document_id",
+    "employments:uq_employments_person_id_unit_open:person_id,employing_unit_id,open_guard",
+    "employment_compensations:uq_employment_compensations_open:employment_id,component_type_id,open_guard",
+    "payroll_runs:uq_payroll_runs_unit_period_regular:employing_unit_id,period_id,regular_guard"
   ],
   "index_removals": [
     "journal_entries:ix_journal_entries_reversal_of_id:reversal_of_id"
@@ -194,7 +210,10 @@
     "receivables:obligation_id->obligations.id"
   ],
   "generated_columns": {
-    "budgets.approved_guard": "if((`status` = _utf8mb4'APPROVED'),1,NULL)"
+    "budgets.approved_guard": "if((`status` = _utf8mb4'APPROVED'),1,NULL)",
+    "employments.open_guard": "IF(`status` = 'ACTIVE', 1, NULL)",
+    "employment_compensations.open_guard": "IF(`ends_on` IS NULL, 1, NULL)",
+    "payroll_runs.regular_guard": "IF(`run_kind` = 'REGULAR' AND `status` <> 'CANCELLED', 1, NULL)"
   },
   "checks": {
     "currencies": [
@@ -326,6 +345,62 @@
     ],
     "reconciliation_matches": [
       "ck_reconciliation_matches_amount"
+    ],
+    "employments": [
+      "ck_employments_relationship_kind",
+      "ck_employments_status",
+      "ck_employments_dates",
+      "ck_employments_ended"
+    ],
+    "compensation_component_types": [
+      "ck_compensation_component_types_nature",
+      "ck_compensation_component_types_calculation_method",
+      "ck_compensation_component_types_liability_role",
+      "ck_compensation_component_types_posting",
+      "ck_compensation_component_types_is_active"
+    ],
+    "employment_compensations": [
+      "ck_employment_compensations_dates",
+      "ck_employment_compensations_amount",
+      "ck_employment_compensations_closed"
+    ],
+    "payroll_rules": [
+      "ck_payroll_rules_method",
+      "ck_payroll_rules_status",
+      "ck_payroll_rules_version",
+      "ck_payroll_rules_dates",
+      "ck_payroll_rules_rate",
+      "ck_payroll_rules_method_rate",
+      "ck_payroll_rules_approved",
+      "ck_payroll_rules_segregation",
+      "ck_payroll_rules_retired"
+    ],
+    "payroll_rule_base_components": [],
+    "payroll_rule_brackets": [
+      "ck_payroll_rule_brackets_bounds",
+      "ck_payroll_rule_brackets_rate",
+      "ck_payroll_rule_brackets_amounts"
+    ],
+    "payroll_runs": [
+      "ck_payroll_runs_run_kind",
+      "ck_payroll_runs_status",
+      "ck_payroll_runs_sequence",
+      "ck_payroll_runs_amounts",
+      "ck_payroll_runs_calculated",
+      "ck_payroll_runs_approved",
+      "ck_payroll_runs_segregation",
+      "ck_payroll_runs_posted",
+      "ck_payroll_runs_paid",
+      "ck_payroll_runs_cancelled",
+      "ck_payroll_runs_reversed"
+    ],
+    "payroll_run_lines": [
+      "ck_payroll_run_lines_source",
+      "ck_payroll_run_lines_rule",
+      "ck_payroll_run_lines_amount"
+    ],
+    "payroll_postings": [
+      "ck_payroll_postings_stage"
     ]
   },
   "money_columns_decimal_19_4": true,
@@ -344,7 +419,17 @@
     "bank_statement_lines.journal_entry_id",
     "bank_statement_lines.journal_line_id",
     "reconciliations.department_id",
-    "bank_statements.unit_id"
+    "bank_statements.unit_id",
+    "employments.full_name",
+    "employments.sex_id",
+    "employments.birth_date",
+    "employments.phone",
+    "employments.department_id",
+    "employments.ministerial_assignment_id",
+    "employments.organizational_post_id",
+    "employments.person_employment_id",
+    "employment_compensations.currency_code",
+    "payroll_runs.department_id"
   ],
   "controlled_data_counts": {
     "currencies": 1,
@@ -353,6 +438,21 @@
     "financial_categories": 82,
     "permissions": 16,
     "legal_document_types": 10,
-    "workflows": 2
-  }
+    "workflows": 2,
+    "hr_permissions": 9,
+    "compensation_component_types": 13,
+    "payroll_rules": 0,
+    "payroll_rule_brackets": 0
+  },
+  "materialized_tables_f2a": [
+    "employments",
+    "compensation_component_types",
+    "employment_compensations",
+    "payroll_rules",
+    "payroll_rule_base_components",
+    "payroll_rule_brackets",
+    "payroll_runs",
+    "payroll_run_lines",
+    "payroll_postings"
+  ]
 }
