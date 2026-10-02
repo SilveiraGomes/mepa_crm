@@ -25,8 +25,8 @@ use Illuminate\Http\Request;
 
 /**
  * P0.10-F2A RH / payroll foundation API (ADR 0021 D23-D28 + D-04A.14/15). Employment, compensation, components, statutory
- * rules, readiness and the production status. There is deliberately NO route to calculate, approve, post or pay a payroll
- * run in F2A. Responses never carry internal ids (FinanceOutput::assertSafe) and are never cached.
+ * rules, readiness and the production status. The payroll run pipeline (F2B) lives in PayrollRunController.
+ * Responses never carry internal ids (FinanceOutput::assertSafe) and are never cached.
  */
 final class HrController extends Controller
 {

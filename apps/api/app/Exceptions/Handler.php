@@ -199,7 +199,8 @@ class Handler extends ExceptionHandler
         // P0.10-F2A RH / payroll (ADR-0021 D20, D28 + D-04A.15). Same F-06 policy as Finance: unknown, malformed and
         // out-of-scope employments, units, people, rules and documents (and compensation without HR_COMPENSATION_VIEW)
         // are one byte-identical 404; permission (403) is decided before any target. PAYROLL_RULE_MISSING is 422 (never
-        // computed as zero); PAYROLL_PRODUCTION_DISABLED is 409 (fail-closed gate).
+        // computed as zero); PAYROLL_PRODUCTION_DISABLED is 409 (fail-closed gate). F2B: PAYROLL_INPUT_STALE,
+        // PAYROLL_SEGREGATION_REQUIRED, PERIOD_CLOSED, INSUFFICIENT_FUNDS and run state conflicts are 409.
         $this->renderable(function (FinanceError $e, Request $request) {
             if (!$request->is('api/v1/hr', 'api/v1/hr/*')) {
                 return null;
@@ -212,7 +213,10 @@ class Handler extends ExceptionHandler
                 $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
                 $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
                 in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_REQUIRED', 'AMOUNT_NOT_ALLOWED', 'RATE_INVALID', 'REASON_REQUIRED', 'CURRENCY_NOT_SUPPORTED', 'OUTSIDE_EMPLOYMENT',
-                    'CONTRACT_DOCUMENT_TYPE', 'RULE_DOCUMENT_REQUIRED', 'RULE_DOCUMENT_TYPE', 'COMPONENT_NOT_RULE_BASED', 'PAYROLL_RULE_MISSING', 'PAYROLL_RULE_INVALID'], true) => [422, $e->reason, 'The request data is invalid.'],
+                    'CONTRACT_DOCUMENT_TYPE', 'RULE_DOCUMENT_REQUIRED', 'RULE_DOCUMENT_TYPE', 'COMPONENT_NOT_RULE_BASED', 'PAYROLL_RULE_MISSING', 'PAYROLL_RULE_INVALID',
+                    // F2B calculation (fail closed: never zero, never a fallback, never a silent proration)
+                    'PAYROLL_RULE_AMBIGUOUS', 'PAYROLL_RULE_DOCUMENT_MISSING', 'PAYROLL_PRORATION_POLICY_MISSING', 'PAYROLL_CONFIGURATION_NOT_READY', 'PAYROLL_NET_NEGATIVE',
+                    'PAYROLL_RUN_KIND_POLICY_MISSING', 'PAYROLL_POPULATION_CONFLICT', 'PERIOD_NOT_FOUND', 'ENTRY_DATE_IN_FUTURE'], true) => [422, $e->reason, 'The request data is invalid.'],
                 $e->reason === 'CONFIG_MISSING' => [503, 'HR_NOT_CONFIGURED', 'The HR configuration is not available.'],
                 $e->reason === 'BUSY' => [503, 'HR_BUSY', 'The operation could not be completed now; nothing was changed.'],
                 in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
@@ -223,7 +227,7 @@ class Handler extends ExceptionHandler
             if ($status === 422 && isset($e->context['field'])) {
                 $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
             }
-            if (in_array($e->reason, ['PAYROLL_RULE_MISSING', 'PAYROLL_RULE_AMBIGUOUS', 'RULE_OVERLAP'], true)) {
+            if (in_array($e->reason, ['PAYROLL_RULE_MISSING', 'PAYROLL_RULE_AMBIGUOUS', 'RULE_OVERLAP', 'PAYROLL_PRORATION_POLICY_MISSING', 'PAYROLL_CONFIGURATION_NOT_READY', 'PAYROLL_RUN_EXISTS', 'PAYROLL_RUN_KIND_POLICY_MISSING'], true)) {
                 $body['details'] = ['items' => $e->items];
             }
             return response()->json(['error' => $body], $status);

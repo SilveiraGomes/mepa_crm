@@ -46,3 +46,11 @@
   .page-header__actions .finance-actions > .btn { flex: 1 1 100%; justify-content: center; }
   .finance-tabs > .btn { flex: 1 1 calc(50% - var(--space-2)); justify-content: center; }
 }
+
+/* P0.10-F2B Folhas Salariais: action row wraps; the input hash never overflows; one block per employee. */
+code.hash { overflow-wrap: anywhere; word-break: break-all; font-size: 0.85em; }
+.payroll-employee + .payroll-employee { border-top: 1px solid var(--border-subtle, #d8dde3); padding-top: var(--space-3); }
+@media (width < 30rem) {
+  .page-header__actions .payroll-actions { width: 100%; }
+  .page-header__actions .payroll-actions > .btn { flex: 1 1 100%; justify-content: center; }
+}

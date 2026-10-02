@@ -2,7 +2,7 @@
 export interface HrRef { public_id: string; name: string }
 export interface HrUnit extends HrRef { type: string; permissions: string[] }
 export interface HrComponent { code: string; label: string; nature: 'EARNING' | 'EMPLOYEE_DEDUCTION' | 'EMPLOYER_CHARGE'; calculation_method: 'FIXED_AMOUNT' | 'RATE_RULE' | 'BRACKET_RULE' | 'MANUAL'; rule_based: boolean; rubric: string | null; liability_role: string | null; active: boolean }
-export interface HrProduction { enabled: boolean; status: 'ENABLED' | 'DISABLED'; code: string | null; operations: Record<'calculate' | 'approve' | 'post' | 'pay', boolean>; engine: string }
+export interface HrProduction { enabled: boolean; status: 'ENABLED' | 'DISABLED'; code: string | null; operations: Record<'calculate' | 'approve' | 'post' | 'pay', boolean> & { reverse?: boolean }; engine: string }
 export interface HrContext { permissions: string[]; units: HrUnit[]; components: HrComponent[]; production: HrProduction; relationship_kinds: string[] }
 export interface EmploymentSummary { public_id: string; person: HrRef; unit: HrRef; relationship_kind: string; job_title: string | null; starts_on: string; ends_on: string | null; status: 'ACTIVE' | 'ENDED' }
 export interface CompensationLine { component: { code: string; label: string; nature: string; calculation_method: string }; amount: string | null; currency: 'AOA'; rule_based: boolean; starts_on: string; ends_on: string | null; reason: string; source_document: { public_id: string } | null; effective: boolean; closed: boolean; recorded_at: string }
@@ -15,3 +15,24 @@ export interface PayrollRuleDetail extends PayrollRuleSummary { base_components:
 export interface PayrollRules { data: PayrollRuleSummary[]; coverage_today: { date: string; components: { component: string; label: string; status: string; rule: { code: string; version: number } | null }[] } }
 export interface ReadinessIssue { code: string; employment?: string; component?: string; reason?: string }
 export interface PayrollReadiness { unit: HrRef; period: { code: string; from: string; to: string }; configuration: { status: 'READY' | 'NOT_READY'; issues: ReadinessIssue[]; employments: number; rules: { component: string; rule: { code: string; version: number } }[] }; production: HrProduction & { issues: { code: string }[] }; input_hash_preview: { algorithm: string; version: string; run_kind: string; sequence: number; value: string } | null }
+
+// P0.10-F2B payroll runs (ADR 0021 D26-D29). Totals are server figures (decimal strings); the per-person breakdown is a
+// separate, audited read that only HR_COMPENSATION_VIEW receives.
+export type PayrollRunStatus = 'DRAFT' | 'CALCULATED' | 'APPROVED' | 'POSTED' | 'PAID' | 'CANCELLED' | 'REVERSED'
+export interface PayrollTotals { gross: string; deductions: string; employer_charges: string; net: string }
+export interface PayrollRunSummary { public_id: string; unit: HrRef; period: string; run_kind: string; sequence: number; status: PayrollRunStatus; currency: 'AOA'; headcount: number; totals: PayrollTotals; lock_version: number }
+export interface PayrollPostingRef { entry: string; entry_kind: string; entry_date: string; accounting_period: string; status: string }
+export interface PayrollRunDetail extends PayrollRunSummary {
+  input: { hash: string | null; algorithm: string; version: string; status: 'NOT_CALCULATED' | 'CURRENT' | 'STALE' | 'FROZEN' | 'CANCELLED' }
+  provenance: { created_by: string | null; created_at: string; calculated_by: string | null; calculated_at: string | null; approved_by: string | null; approved_at: string | null; posted_by: string | null; posted_at: string | null;
+    paid_by: string | null; paid_at: string | null; cancelled_at: string | null; cancel_reason: string | null; reversed_at: string | null; reversal_reason: string | null; calculated_by_me: boolean }
+  finance: { accrual: PayrollPostingRef | null; payment: PayrollPostingRef | null; reversal: PayrollPostingRef | null; posting_state: 'NOT_POSTED' | 'POSTED' | 'REVERSED'; payment_state: 'NOT_APPLICABLE' | 'NET_PAYABLE_OPEN' | 'PAID'; statutory_liabilities: string }
+  production: HrProduction
+  actions: Record<'calculate' | 'cancel' | 'approve' | 'post' | 'pay' | 'reverse', boolean>
+  blocked: Partial<Record<'approve' | 'post' | 'pay', string>>
+  employee_detail_visible: boolean
+}
+export interface PayrollRunLine { component: { code: string; label: string; nature: string }; source: 'FIXED' | 'RULE' | 'MANUAL'; base_amount: string | null; rate: string | null; amount: string; rule: { code: string; version: number } | null }
+export interface PayrollRunEmployee extends PayrollTotals { employment: string; person: HrRef; job_title: string | null; lines: PayrollRunLine[] }
+export interface PayrollRunEmployees { run: string; status: PayrollRunStatus; currency: 'AOA'; employees: PayrollRunEmployee[] }
+export interface PayrollRunReport { run: string; unit: HrRef; period: string; run_kind: string; sequence: number; status: PayrollRunStatus; currency: 'AOA'; headcount: number; totals: PayrollTotals; components: { component: string; label: string; nature: string; amount: string }[] }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Academy\AttendanceController;
 use App\Http\Controllers\Api\V1\Payroll\HrController;
+use App\Http\Controllers\Api\V1\Payroll\PayrollRunController;
 use App\Http\Controllers\Api\V1\Academy\AssessmentController;
 use App\Http\Controllers\Api\V1\Academy\AttemptController;
 use App\Http\Controllers\Api\V1\Academy\CertificateController;
@@ -234,6 +235,19 @@ Route::prefix('v1')->group(function (): void {
         Route::get('payroll-rules/{code}/{version}', [HrController::class, 'rule']);
         Route::post('payroll-rules/{code}/{version}/approve', [HrController::class, 'approveRule'])->middleware('throttle:finance-write');
         Route::post('payroll-rules/{code}/{version}/retire', [HrController::class, 'retireRule'])->middleware('throttle:finance-write');
+        // P0.10-F2B payroll runs: one route per explicit transition (no generic status write, no delete).
+        Route::get('payroll/runs', [PayrollRunController::class, 'index']);
+        Route::post('payroll/runs', [PayrollRunController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('payroll/runs/{run}', [PayrollRunController::class, 'show']);
+        Route::get('payroll/runs/{run}/employees', [PayrollRunController::class, 'employees']);
+        Route::get('payroll/runs/{run}/summary', [PayrollRunController::class, 'summary']);
+        Route::get('payroll/runs/{run}/summary.csv', [PayrollRunController::class, 'summaryCsv']);
+        Route::post('payroll/runs/{run}/calculate', [PayrollRunController::class, 'calculate'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/approve', [PayrollRunController::class, 'approve'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/post', [PayrollRunController::class, 'post'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/pay', [PayrollRunController::class, 'pay'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/reverse', [PayrollRunController::class, 'reverse'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/cancel', [PayrollRunController::class, 'cancel'])->middleware('throttle:finance-write');
     });
 
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {

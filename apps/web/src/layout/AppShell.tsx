@@ -15,11 +15,12 @@ const physicalLinks = [['/locais', 'Locais', ['PHYSICAL_LOCATION_VIEW']], ['/imo
 
 const membershipLinks = [['/membros', 'Membros', ['MEMBERSHIP_VIEW']], ['/membros/admissoes', 'Admissões', ['MEMBERSHIP_ADMISSION_MANAGE', 'MEMBERSHIP_APPROVE']], ['/membros/transferencias', 'Transferências', ['MEMBERSHIP_VIEW', 'MEMBERSHIP_TRANSFER']]] as const
 
-// P0.10-F2A RH / Folha Salarial: shown only for the HR permissions the server reports. No processing, approval, posting
-// or payment entry exists before F2B.
+// P0.10-F2A/F2B RH / Folha Salarial: shown only for the HR permissions the server reports. Folhas Salariais (F2B) offers only
+// the run actions the server reports as available (status x permission x scope x production gate).
 const hrLinks = [['/rh/funcionarios', 'Funcionários', ['HR_EMPLOYMENT_VIEW']], ['/rh/vinculos', 'Vínculos', ['HR_EMPLOYMENT_VIEW']], ['/rh/remuneracao', 'Remuneração', ['HR_COMPENSATION_VIEW']],
   ['/rh/componentes', 'Componentes', ['HR_EMPLOYMENT_VIEW', 'HR_COMPENSATION_VIEW', 'PAYROLL_MANAGE', 'PAYROLL_RULES_MANAGE', 'PAYROLL_RULES_APPROVE']],
-  ['/rh/regras', 'Regras', ['PAYROLL_RULES_MANAGE', 'PAYROLL_RULES_APPROVE', 'PAYROLL_MANAGE', 'HR_COMPENSATION_VIEW']], ['/rh/prontidao', 'Prontidão da Folha', ['PAYROLL_MANAGE', 'HR_COMPENSATION_VIEW']]] as const
+  ['/rh/regras', 'Regras', ['PAYROLL_RULES_MANAGE', 'PAYROLL_RULES_APPROVE', 'PAYROLL_MANAGE', 'HR_COMPENSATION_VIEW']], ['/rh/prontidao', 'Prontidão da Folha', ['PAYROLL_MANAGE', 'HR_COMPENSATION_VIEW']],
+  ['/rh/folhas', 'Folhas Salariais', ['PAYROLL_MANAGE', 'PAYROLL_APPROVE', 'PAYROLL_POST', 'HR_COMPENSATION_VIEW']]] as const
 const financeLinks = [['/financas', 'Visão Geral', ['FINANCE_REPORT']], ['/financas/contas', 'Contas', ['FINANCE_VIEW']], ['/financas/a-receber', 'A receber', ['FINANCE_VIEW']], ['/financas/a-pagar', 'A pagar', ['FINANCE_VIEW']], ['/financas/contribuicoes', 'Contribuições', ['FINANCE_VIEW']], ['/financas/transferencias', 'Transferências', ['FINANCE_VIEW']], ['/financas/posicao', 'Posição de fundos', ['FINANCE_VIEW']], ['/financas/extractos', 'Extractos', ['FINANCE_VIEW']], ['/financas/reconciliacao', 'Reconciliação', ['FINANCE_VIEW']], ['/financas/orcamento', 'Orçamento', ['FINANCE_VIEW', 'FINANCE_BUDGET_MANAGE', 'FINANCE_BUDGET_APPROVE']], ['/financas/fechos', 'Fechos', ['FINANCE_VIEW', 'FINANCE_PERIOD_CLOSE', 'FINANCE_PERIOD_REOPEN']], ['/financas/relatorios', 'Relatórios', ['FINANCE_REPORT']]] as const
 
 const filesLinks = [['/documentos', 'Documentos', ['DOCUMENTS_VIEW']], ['/ficheiros', 'Ficheiros', ['FILES_VIEW']], ['/ficheiros/carregar', 'Carregar ficheiro', ['FILES_UPLOAD']]] as const

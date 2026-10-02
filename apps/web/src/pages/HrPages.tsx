@@ -14,7 +14,7 @@ import type { CompensationLine, CompensationOverview, EmploymentDetail, Employme
 
 // P0.10-F2A RH / Folha Salarial (ADR 0021 D23-D28 + D-04A.15). Every value shown comes from the HR API, which projects
 // salaries only to HR_COMPENSATION_VIEW (and audits every such read). Processing, approval, posting and payment of a
-// payroll do not exist before F2B: their buttons are disabled and labelled as such.
+// payroll live in Folhas Salariais (PayrollRunPages, F2B), gated by the server per run.
 
 const STATUS: Record<string, string> = { ACTIVE: 'Activo', ENDED: 'Encerrado', DRAFT: 'Rascunho', APPROVED: 'Aprovada', RETIRED: 'Retirada' }
 const KIND: Record<string, string> = { EMPLOYEE: 'Funcionário', BENEFICIARY: 'Beneficiário (reforma / pensão / terceira idade)' }
@@ -320,7 +320,7 @@ export function HrReadinessPage() {
       <section className="card stack"><h2>Motivos da configuração</h2>{r.configuration.issues.length === 0 ? <p>Sem pendências de configuração para {r.period.code}.</p> : <ul className="stack">{r.configuration.issues.map((i, n) => <li key={n}><strong>{label(ISSUE, i.code)}</strong>{i.component ? ` · ${i.component}` : ''}{i.employment ? <> · <Link to={`/rh/funcionarios/${i.employment}`}>vínculo</Link></> : ''}</li>)}</ul>}
         {r.configuration.rules.length > 0 && <p className="muted">Regras aplicáveis: {r.configuration.rules.map((x) => `${x.component} → ${x.rule.code} v${x.rule.version}`).join('; ')}</p>}
         {r.input_hash_preview && <p className="muted">Hash canónico dos inputs ({r.input_hash_preview.algorithm}): <code className="hash">{r.input_hash_preview.value.slice(0, 16)}…</code></p>}</section>
-      <section className="card stack"><h2>Produção salarial</h2>{r.production.issues.map((i) => <p key={i.code}><strong>{label(ISSUE, i.code)}</strong>. A configuração pode estar pronta; processar, aprovar, contabilizar e pagar continuam bloqueados.</p>)}
-        <div className="row payroll-actions">{['Processar', 'Aprovar', 'Contabilizar', 'Pagar'].map((a) => <button key={a} className="btn btn--secondary" type="button" disabled title="Disponível na fase F2B">{a} (F2B)</button>)}</div></section>
+      <section className="card stack"><h2>Produção salarial</h2>{r.production.issues.map((i) => <p key={i.code}><strong>{label(ISSUE, i.code)}</strong>. A configuração pode estar pronta; calcular é possível, mas aprovar, contabilizar e pagar continuam bloqueados.</p>)}
+        <div className="row payroll-actions"><Link className="btn btn--secondary" to="/rh/folhas">Ver folhas salariais</Link></div></section>
     </>}</>
 }

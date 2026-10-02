@@ -20,6 +20,7 @@ const financePages = () => import('./pages/FinancePages')
 const financeCorePages = () => import('./pages/FinanceCorePages')
 const financeReportingPages = () => import('./pages/FinanceReportingPages')
 const hrPages = () => import('./pages/HrPages')
+const payrollRunPages = () => import('./pages/PayrollRunPages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -121,6 +122,9 @@ const HrRulesPage = named(hrPages, 'HrRulesPage')
 const HrRuleCreatePage = named(hrPages, 'HrRuleCreatePage')
 const HrRuleDetailPage = named(hrPages, 'HrRuleDetailPage')
 const HrReadinessPage = named(hrPages, 'HrReadinessPage')
+const PayrollRunsPage = named(payrollRunPages, 'PayrollRunsPage')
+const PayrollRunCreatePage = named(payrollRunPages, 'PayrollRunCreatePage')
+const PayrollRunDetailPage = named(payrollRunPages, 'PayrollRunDetailPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -167,6 +171,9 @@ function App() {
       <Route path="/rh/regras/nova" element={<HrRuleCreatePage />} />
       <Route path="/rh/regras/:code/:version" element={<HrRuleDetailPage />} />
       <Route path="/rh/prontidao" element={<HrReadinessPage />} />
+      <Route path="/rh/folhas" element={<PayrollRunsPage />} />
+      <Route path="/rh/folhas/nova" element={<PayrollRunCreatePage />} />
+      <Route path="/rh/folhas/:id" element={<PayrollRunDetailPage />} />
       <Route path="/financas" element={<FinanceDashboardPage />} />
       <Route path="/financas/relatorios" element={<FinanceReportsPage />} />
       <Route path="/financas/contribuicoes" element={<FinanceContributionsPage />} />
