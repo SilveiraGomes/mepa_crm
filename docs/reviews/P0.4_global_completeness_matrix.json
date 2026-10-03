@@ -1,491 +1,186 @@
 {
-  "phase": "P0.4",
+  "phase": "P0.10-M",
   "title": "MEPA CRM global completeness matrix",
-  "audited_head": "714a2e7e347c5a5d67598383e163b0863944149d",
-  "baseline_working_tree": "CLEAN",
-  "academy_reaudit": false,
+  "integration_head": "1bc63f3b7a72a8f631b43ab8974544816784ef65",
+  "audit_source_head": "333e6f83cda249ddca510620cc0f0c633645454d",
+  "updated_at": "2026-10-03",
   "level_scale": {
-    "L0": "planeado",
-    "L1": "schema",
-    "L2": "application",
-    "L3": "API",
-    "L4": "UI parcial",
-    "L5": "CRUD funcional",
-    "L6": "segurança/testes/auditados",
-    "L7": "vertical completo"
+    "L0": "planned only",
+    "L1": "physical schema/foundation",
+    "L2": "application/domain layer",
+    "L3": "HTTP API",
+    "L4": "partial UI",
+    "L5": "functional CRUD/workflow",
+    "L6": "security, audit and executable evidence",
+    "L7": "independently approved complete vertical in its declared scope"
+  },
+  "distribution": {
+    "L7": 9,
+    "L6": 0,
+    "L5": 0,
+    "L4": 2,
+    "L3": 0,
+    "L2": 4,
+    "L1": 5,
+    "L0": 1
+  },
+  "current_checkpoint": {
+    "code": "P0.10",
+    "status": "COMPLETE",
+    "level": "L7",
+    "product_blockers": 0,
+    "evidence_blockers": 0
+  },
+  "next_vertical": {
+    "code": "P0.11",
+    "name": "DEPARTAMENTOS + NOMEAÇÕES / APPOINTMENTS",
+    "implemented_by_this_update": false
   },
   "rows": [
     {
       "domain": "People / Families",
-      "resource": "People, contacts, addresses, households and relationships",
-      "DB": "PHYSICAL — Wave 1 tables and constraints",
-      "application": "ABSENT as a general People lifecycle; Academy only resolves existing People",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "SCHEMA-READY; no People backend policy surface",
-      "audit": "audit_logs exists, but no People writers to prove coverage",
-      "reports": "PLANNED only",
-      "tests": "PHYSICAL schema tests only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — schema foundation only",
-      "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Complete People/Family application, API, UI, lifecycle, scoped authorization and audit."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-02, D-06 and D-10 remain open for legacy, retention and unknown historical dates."}
-      ]
+      "scope": "Complete bounded vertical",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.5_R2_context_authority_independent_reaudit.md"
     },
     {
       "domain": "Membership",
-      "resource": "Membership, member number, periods and transfers",
-      "DB": "PHYSICAL — Wave 2",
-      "application": "PARTIAL — MemberNumberGenerator and TransferService",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "PARTIAL lifecycle services; no usable operator CRUD",
-      "permissions": "PARTIAL in transactional services; no HTTP scope contract",
-      "audit": "PARTIAL service evidence; no end-to-end membership audit surface",
-      "reports": "ABSENT",
-      "tests": "PRESENT — physical, concurrency, transfer and reconciliation suites",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — no usable API/UI vertical",
-      "level": "L2",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Approval workflow, scoped API/UI, credential handoff, reporting and E2E are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-02/D-03 member-number legacy and long-horizon policy remain open."}
-      ]
+      "scope": "Membership, member number, periods and transfers",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.9_R2_membership_final_reaudit.md"
     },
     {
       "domain": "Territorial Structure",
-      "resource": "Recursive organizational tree and parent periods",
-      "DB": "PHYSICAL — Wave 1; parent rules and temporal structure present",
-      "application": "ABSENT — deferred territorial services tracked for P0.4.1",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "SCHEMA-READY through scopes; no territorial writer/read policy",
-      "audit": "SCHEMA-READY; no vertical operations",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL/invariant tests only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — application lifecycle and D-12 activation are missing",
-      "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Atomic create/activate/reparent/close services, API, UI, scope-safe reads and E2E are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-12 official territorial catalog, codes and active roots remains blocked."}
-      ]
+      "scope": "Recursive organizational tree and parent periods",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.6_final_attestation.md"
     },
     {
       "domain": "Physical Locations / Temples / Properties",
-      "resource": "Locations, properties and temporal unit-location links",
-      "DB": "PARTIAL PHYSICAL — locations, properties and unit_location_links exist; broader facilities/property-document model remains planned",
-      "application": "ABSENT as a vertical; Academy consumes a bounded location resolver",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "ABSENT at vertical level",
-      "audit": "SCHEMA-READY only",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL schema coverage only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — incomplete shared property/location vertical",
+      "scope": "Complete bounded physical-location vertical",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.7_R_physical_locations_independent_audit.md"
+    },
+    {
+      "domain": "Documents / Files",
+      "scope": "Shared protected files and document lifecycle",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.8_R_documents_files_independent_audit.md"
+    },
+    {
+      "domain": "Academy",
+      "scope": "Complete bounded Academy vertical",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.3.5_A4_R4_final_reproducibility_attestation.md"
+    },
+    {
+      "domain": "Finance",
+      "scope": "Ledger, transfers, accruals, reconciliation, budgets, closing and reporting",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.10_FINAL_INDEPENDENT_AUDIT.md"
+    },
+    {
+      "domain": "HR / Compensation",
+      "scope": "P0.10 employment, compensation and statutory-rule foundation only",
+      "level": "L7",
+      "status": "COMPLETE_IN_P010_SCOPE",
+      "evidence": "docs/reviews/P0.10_FINAL_INDEPENDENT_AUDIT.md",
+      "global_hr_complete": false
+    },
+    {
+      "domain": "Payroll",
+      "scope": "Calculation, approval, Finance POST/PAY, reporting, privacy and production gate",
+      "level": "L7",
+      "status": "COMPLETE",
+      "evidence": "docs/reviews/P0.10_FINAL_INDEPENDENT_AUDIT.md",
+      "production_enabled_by_default": false,
+      "seeded_legal_rates": 0
+    },
+    {
+      "domain": "HR — global scope",
+      "scope": "Broader recruitment, attendance, leave, performance and other HR requirements",
       "level": "L1",
-      "V1_required": true,
+      "status": "INCOMPLETE",
       "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Complete temple/property/facility lifecycle, documents, scoped API/UI, reports and tests."}
+        "Global HR requirements outside P0.10 remain unimplemented."
       ]
     },
     {
       "domain": "Departments / Appointments",
-      "resource": "Department definitions, instances, posts, appointments and memberships",
-      "DB": "PHYSICAL — Wave 2",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "SCHEMA-READY; no application enforcement surface",
-      "audit": "SCHEMA-READY; no writers",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL and invariant tests only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — schema only and D-07 remains open",
+      "scope": "Department definitions, instances, posts, appointments and history",
       "level": "L1",
-      "V1_required": true,
+      "status": "NEXT_VERTICAL",
       "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Appointment lifecycle, Person reuse, scope, API/UI, reporting and E2E are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-07 catalogs, capacity, incompatibilities and progression remain open."}
+        "Application/API/UI/security/evidence closure is P0.11."
       ]
     },
     {
       "domain": "Governance",
-      "resource": "Governance bodies, memberships, sessions and resolutions",
-      "DB": "PHYSICAL — Wave 3",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "ABSENT at vertical level",
-      "audit": "audit_logs available; no governance operations",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL schema coverage only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — schema only",
+      "scope": "Governance bodies, memberships, sessions and resolutions",
       "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Body composition, session/resolution lifecycle, event linkage, authorization, API/UI and evidence are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P2", "item": "ADR-0007 remains Proposed rather than Accepted."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
       "domain": "Events / Credentials",
-      "resource": "Events, invitations, credentials, check-in and attendance",
-      "DB": "PHYSICAL — Wave 3",
-      "application": "PARTIAL — invitation, credential, access and check-in services",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "PARTIAL service lifecycle; no operator CRUD",
-      "permissions": "PARTIAL in services",
-      "audit": "PRESENT in service/test design for critical paths",
-      "reports": "SCHEMA support through event_counts; no report layer",
-      "tests": "PRESENT — domain and check-in concurrency",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — application is not exposed as a complete vertical",
+      "scope": "Events, invitations, credentials, check-in and attendance",
       "level": "L2",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Event CRUD, HTTP contracts, UI, reports, exports and browser E2E are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-05 credential validity, eligibility, QR and template policy remains open."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
       "domain": "Evangelism",
-      "resource": "Campaigns, contacts, follow-ups, decisions and integration",
-      "DB": "PHYSICAL — Wave 4",
-      "application": "PRESENT — EvangelismService lifecycle",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "APPLICATION lifecycle only",
-      "permissions": "PRESENT in application services with scope/temporal checks",
-      "audit": "PRESENT in tested service paths",
-      "reports": "ABSENT",
-      "tests": "PRESENT — domain, temporal and commit-boundary suites",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — API/UI/report/E2E layers are missing",
+      "scope": "Campaigns, contacts, follow-ups, decisions and integration",
       "level": "L2",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "API, UI, usable CRUD, reports/export and E2E are absent."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
       "domain": "Discipleship",
-      "resource": "Tracks, enrollments, steps and progress",
-      "DB": "PHYSICAL — Wave 4",
-      "application": "PRESENT/PARTIAL — lifecycle operations and DiscipleshipEnrollmentScope",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "APPLICATION lifecycle only",
-      "permissions": "PRESENT in tested scope resolver",
-      "audit": "PRESENT as provenance source for owning unit",
-      "reports": "ABSENT",
-      "tests": "PRESENT — scope, temporal and progress-boundary suites",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — API/UI/report/E2E layers are missing",
+      "scope": "Tracks, enrolments, steps and progress",
       "level": "L2",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "API, UI, reports/export and E2E are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P2", "item": "D-11 final state catalog/context constraints remain open."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
       "domain": "Children / Adolescents",
-      "resource": "Child profiles, guardians, consent, custody and safe check-in",
-      "DB": "PHYSICAL — Wave 4",
-      "application": "PRESENT — ChildrenService and ChildParticipationSafetyGate",
-      "API": "ABSENT outside Academy's reuse of the safety gate",
-      "UI": "ABSENT",
-      "CRUD": "APPLICATION lifecycle only",
-      "permissions": "PRESENT in service layer",
-      "audit": "PRESENT including denied check-in evidence",
-      "reports": "ABSENT",
-      "tests": "PRESENT — safety, concurrency, authorization and temporal suites",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — dedicated protected API/UI and E2E are missing",
+      "scope": "Safeguarding, guardian, consent, custody and safe check-in services",
       "level": "L2",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Dedicated API/UI, operator lifecycle, privacy-safe reports and E2E are absent."}
-      ]
-    },
-    {
-      "domain": "Academy",
-      "resource": "Complete Academy vertical",
-      "DB": "COMPLETE — Wave 5",
-      "application": "COMPLETE",
-      "API": "COMPLETE — 66 endpoints attested",
-      "UI": "COMPLETE — 34 screens attested",
-      "CRUD": "COMPLETE within approved bounded contracts",
-      "permissions": "COMPLETE — permission + institutional scope + assignment/override",
-      "audit": "COMPLETE",
-      "reports": "COMPLETE within approved Academy scope",
-      "tests": "COMPLETE — application, HTTP, security, accessibility and validators",
-      "E2E": "COMPLETE — 19 Playwright scenarios at four viewports",
-      "production_readiness": "YES within the approved Academy vertical; global deployment qualification remains a system dependency",
-      "level": "L7",
-      "V1_required": true,
-      "gaps": []
-    },
-    {
-      "domain": "Finance",
-      "resource": "Ledger, revenue, expense, cash, bank, accounts, documents, budgets, approvals, reconciliation and periods",
-      "DB": "PLANNED/CATALOGUED only — no Finance migrations in the physical manifests",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "PLANNED only; segregation of duties not implemented",
-      "audit": "PLANNED only",
-      "reports": "PLANNED only",
-      "tests": "TEST PLAN only; no executable Finance product suite",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — planned only",
-      "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Entire mandatory Finance vertical remains to be physically implemented and closed through L7."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-04 accounting regime, chart/funds, interunit policy, FX/in-kind and final categories remain blocked."}
-      ]
-    },
-    {
-      "domain": "Finance",
-      "resource": "OWN RESULT by organizational unit and period",
-      "DB": "PLANNED in ledger model; not physical",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "NOT APPLICABLE as an independent CRUD; requires reproducible report/query lifecycle",
-      "permissions": "PLANNED only",
-      "audit": "PLANNED only",
-      "reports": "ABSENT",
-      "tests": "DESIGN examples only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — no executable result",
-      "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "No executable own-unit economic/financial result across the seven required levels."}
-      ]
-    },
-    {
-      "domain": "Finance",
-      "resource": "CONSOLIDATED SUBTREE RESULT",
-      "DB": "PLANNED in recursive organizational/ledger design; not physical",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "NOT APPLICABLE as an independent CRUD; requires close/version/report lifecycle",
-      "permissions": "PLANNED only",
-      "audit": "PLANNED only",
-      "reports": "ABSENT",
-      "tests": "Synthetic invariant plan only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — no executable consolidation",
-      "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "No executable subtree consolidation, closing/versioning, report or export."}
-      ]
-    },
-    {
-      "domain": "Finance",
-      "resource": "Internal transfer posting and consolidation elimination",
-      "DB": "DESIGNED — internal_transfers and transfer_postings catalogued; not physical",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "PLANNED segregation and approvals only",
-      "audit": "PLANNED only",
-      "reports": "ELIMINATION RULE documented, not executable",
-      "tests": "Test plan exists; no executable product test",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — rule is documented but not implemented or tested",
-      "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "SEND/RECEIVE/reversal and matched interunit elimination are not implemented; consolidation would be unsafe."}
-      ]
-    },
-    {
-      "domain": "HR",
-      "resource": "Worker, employment link, role/function and history",
-      "DB": "PARTIAL PHYSICAL — person_employment plus ministerial/functional assignment history; no internal employee aggregate",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "ABSENT at HR vertical level",
-      "audit": "SCHEMA-READY only",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL schema coverage only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — partial schema only",
-      "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Internal worker/vínculo model, HR lifecycle, scoped API/UI, reports and audit are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "Attendance/leave scope and HR ownership require approval."}
-      ]
-    },
-    {
-      "domain": "HR",
-      "resource": "FIN-PAYROLL-01 payroll and Finance integration",
-      "DB": "ABSENT",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "ABSENT",
-      "audit": "ABSENT",
-      "reports": "ABSENT",
-      "tests": "ABSENT",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — absent and mandatory for V1",
-      "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Payroll periods, salary history, allowances, 13th salary, leave subsidy, INSS/charges, pensions and ledger posting are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "Finance/HR/Direcções must approve FIN-PAYROLL-01 scope and accounting treatment."}
-      ]
-    },
-    {
-      "domain": "Documents / Files",
-      "resource": "Files, person/legal documents and versions",
-      "DB": "PHYSICAL — Wave 1; department owner FK materialized in Wave 2",
-      "application": "PARTIAL Academy-bound read/provenance services only",
-      "API": "PARTIAL Academy-bound eligible-file projections only",
-      "UI": "PARTIAL Academy pickers only",
-      "CRUD": "ABSENT as a shared document vertical",
-      "permissions": "PROVEN for Academy targets only",
-      "audit": "PROVEN for Academy use only",
-      "reports": "ABSENT",
-      "tests": "PRESENT for schema and Academy-bound access",
-      "E2E": "Academy-bound only",
-      "production_readiness": "NO as a shared vertical — Academy use is bounded and complete",
-      "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Shared upload/version/classification/retention lifecycle, API/UI, malware/type/size controls and reports are absent."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P1", "item": "D-06 retention, legal hold, purge, backup and key custody remains open."}
-      ]
+      "status": "INCOMPLETE_AS_DEDICATED_VERTICAL"
     },
     {
       "domain": "Notifications",
-      "resource": "Templates, audiences, campaigns and messages",
-      "DB": "PHYSICAL — Wave 3 communication tables",
-      "application": "ABSENT",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "ABSENT",
-      "audit": "SCHEMA-READY only",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL schema coverage only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — no delivery engine or operational evidence",
+      "scope": "Templates, audiences, campaigns and delivery",
       "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Event/outbox delivery engine, channels, retries, consent, API/UI, observability and E2E are absent."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
-      "domain": "Dashboards / Reports",
-      "resource": "Global BI, snapshots, drill-down, official reports and exports",
-      "DB": "PLANNED — statistical catalog exists in canonical model; no global physical reporting vertical",
-      "application": "ABSENT outside Academy-specific queries",
-      "API": "ABSENT outside Academy",
-      "UI": "Academy dashboard only; no global dashboard",
-      "CRUD": "NOT APPLICABLE to every support table; report close/version lifecycle is absent",
-      "permissions": "PLANNED role/scope filtering only",
-      "audit": "ABSENT for report generation/closure/export",
-      "reports": "ABSENT as a global capability",
-      "tests": "ABSENT for global BI",
-      "E2E": "ABSENT for global BI",
-      "production_readiness": "NO — global capability is planned only",
+      "domain": "Dashboards / Reports — global",
+      "scope": "Cross-domain BI, snapshots, official reports and exports",
       "level": "L0",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Global indicators, subtree drill-down, immutable snapshots, official closure, PDF/Excel/CSV and scoped E2E are absent."}
-      ]
+      "status": "INCOMPLETE",
+      "note": "Finance and Academy reporting are complete only inside their bounded scopes."
     },
     {
       "domain": "Administration / Configuration",
-      "resource": "Reference catalogs, workflows and system administration",
-      "DB": "PARTIAL PHYSICAL — catalogs and generic workflows exist across Waves 1–3",
-      "application": "ABSENT as an administration vertical",
-      "API": "ABSENT",
-      "UI": "ABSENT",
-      "CRUD": "ABSENT",
-      "permissions": "RBAC schema exists; no administration policies/API",
-      "audit": "audit_logs exists; no admin operation coverage",
-      "reports": "ABSENT",
-      "tests": "PHYSICAL schema coverage only",
-      "E2E": "ABSENT",
-      "production_readiness": "NO — no controlled administration surface",
+      "scope": "Reference catalogues, workflows and system administration",
       "level": "L1",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Controlled configuration lifecycle, approvals, admin API/UI, audit and E2E are absent."}
-      ]
+      "status": "INCOMPLETE"
     },
     {
-      "domain": "Auth / RBAC / Audit",
-      "resource": "Local authentication, sessions, grants, scopes and audit",
-      "DB": "PHYSICAL — Wave 2 auth/RBAC and Wave 3 audit_logs",
-      "application": "PARTIAL — ADR-0016 AuthSessionService plus domain-specific enforcement",
-      "API": "PRESENT — login, logout and me; no RBAC administration API",
-      "UI": "PARTIAL — login/session experience only",
-      "CRUD": "PARTIAL — session lifecycle; no users/roles/permissions/scopes administration",
-      "permissions": "PROVEN for Academy and selected Wave 3/4 services; not global",
-      "audit": "PARTIAL — infrastructure and domain writers exist; no global coverage proof",
-      "reports": "ABSENT",
-      "tests": "PRESENT for ADR-0016/Academy and selected services",
-      "E2E": "PRESENT for Auth + Academy only",
-      "production_readiness": "NO system-wide — bounded implementation lacks MFA and global administration/audit closure",
+      "domain": "Auth / RBAC / Audit — global",
+      "scope": "Authentication, grants, scopes, audit and global administration",
       "level": "L4",
-      "V1_required": true,
-      "gaps": [
-        {"category": "PRODUCT GAP", "priority": "P0", "item": "MFA-required accounts fail closed but no approved MFA flow exists for production critical profiles."},
-        {"category": "PRODUCT GAP", "priority": "P1", "item": "Global user/grant administration, joint role+scope evaluation across all future APIs and complete audit coverage remain absent."}
-      ]
+      "status": "INCOMPLETE_GLOBALLY"
     },
     {
-      "domain": "PWA / Production Infrastructure",
-      "resource": "React PWA, deployment, operations, backup and recovery",
-      "DB": "NOT APPLICABLE",
-      "application": "PWA shell and Academy client PRESENT; production operations ABSENT",
-      "API": "Health endpoint PRESENT; production operational surface not established",
-      "UI": "PARTIAL — Academy/Auth only",
-      "CRUD": "NOT APPLICABLE; offline mutation/synchronization is not implemented",
-      "permissions": "Critical API calls are NetworkOnly; global production hardening incomplete",
-      "audit": "No production operational audit/observability evidence",
-      "reports": "No production monitoring/SLO reports",
-      "tests": "Academy production build/PWA/accessibility tests present",
-      "E2E": "Academy/Auth only",
-      "production_readiness": "NO — production infrastructure gate is open",
+      "domain": "PWA / Production Infrastructure — global",
+      "scope": "Multi-vertical PWA, deployment, operations, backup and recovery",
       "level": "L4",
-      "V1_required": true,
-      "gaps": [
-        {"category": "INFRA GAP", "priority": "P0", "item": "No approved production deployment, hosting qualification, CI/CD, TLS/secrets runbook, monitoring, media backup or restored-backup evidence."},
-        {"category": "INSTITUTIONAL DECISION", "priority": "P0", "item": "D-08 provider/engine/grants/cron/quota/restore qualification remains blocked."},
-        {"category": "FUTURE", "priority": "P2", "item": "Selective offline write queue/conflict resolution and VPS-scale Redis/workers/object storage remain future."}
-      ]
+      "status": "INCOMPLETE_GLOBALLY"
     }
   ]
 }
