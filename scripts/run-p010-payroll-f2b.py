@@ -82,10 +82,16 @@ def phpunit(name, test, env, timeout=3600):
 
 
 def kill(proc):
+    try:
+        proc.terminate()
+        proc.wait(timeout=30)
+        return
+    except Exception:
+        pass
     if os.name == "nt":
         subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], capture_output=True)
     else:
-        proc.terminate()
+        proc.kill()
     try:
         proc.wait(timeout=30)
     except Exception:
@@ -194,7 +200,17 @@ def main():
         secrets = [manifest["password"], manifest["f1d"]["readers"]["cons"]["password"], manifest["f1d"]["readers"]["own"]["password"],
                    manifest["f2a"]["readers"]["hr"]["password"], manifest["f2a"]["readers"]["viewer"]["password"]] + [r["password"] for r in manifest["f2b"]["readers"].values()]
 
-        build = run([NPM, "run", "build"], WEB, {**os.environ, "VITE_API_URL": "http://127.0.0.1:18080/api/v1"}, timeout=900, log="web-build.log")
+        build_tmp = REPO / ".tmp"
+        build_tmp.mkdir(exist_ok=True)
+        build_env = {
+            **os.environ,
+            "VITE_API_URL": "http://127.0.0.1:18080/api/v1",
+            # Keep PWA tooling inside the writable audit workspace without moving
+            # the Files key ring out of the system temp directory.
+            "TEMP": str(build_tmp),
+            "TMP": str(build_tmp),
+        }
+        build = run([NPM, "run", "build"], WEB, build_env, timeout=900, log="web-build.log")
         report["web_build"] = {"rc": build["rc"], "pwa": (WEB / "dist" / "sw.js").exists()}
         if build["rc"] != 0:
             raise RuntimeError("build failed")
@@ -219,6 +235,8 @@ def main():
         report["steps"].append({"step": "playwright_production_disabled", **playwright})
         path1 = EVIDENCE / "playwright-results-disabled.json"
         report["playwright_disabled"] = json.loads(path1.read_text(encoding="utf-8")).get("stats", {}) if path1.exists() else {"error": "no results", "rc": playwright["rc"]}
+        if playwright["rc"] != 0:
+            raise RuntimeError("playwright production-disabled phase failed")
 
         if not args.grep or "F2B" in args.grep or "@enabled" in args.grep:
             kill(servers.pop("api"))
@@ -229,6 +247,8 @@ def main():
             report["steps"].append({"step": "playwright_production_enabled_test_process_only", **playwright})
             path2 = EVIDENCE / "playwright-results-enabled.json"
             report["playwright_enabled"] = json.loads(path2.read_text(encoding="utf-8")).get("stats", {}) if path2.exists() else {"error": "no results", "rc": playwright["rc"]}
+            if playwright["rc"] != 0:
+                raise RuntimeError("playwright production-enabled phase failed")
     finally:
         for proc in servers.values():
             kill(proc)
