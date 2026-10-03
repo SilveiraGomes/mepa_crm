@@ -1,0 +1,32 @@
+{
+    "C3a_N2": {
+        "OK": 1,
+        "TRANSFER_IN_PROGRESS": 1
+    },
+    "C3a_N5": {
+        "OK": 1,
+        "TRANSFER_IN_PROGRESS": 4
+    },
+    "C3b": {
+        "statuses": [
+            "OK",
+            "OK"
+        ],
+        "new_periods": 1
+    },
+    "C3c_1": {
+        "complete": "OK",
+        "cancel": "TRANSITION_NOT_ALLOWED",
+        "final": "COMPLETED"
+    },
+    "C3c_2": {
+        "complete": "OK",
+        "cancel": "TRANSITION_NOT_ALLOWED",
+        "final": "COMPLETED"
+    },
+    "C3c_3": {
+        "complete": "TRANSITION_NOT_ALLOWED",
+        "cancel": "OK",
+        "final": "CANCELLED"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "post": [
+        "ALREADY_POSTED",
+        "OK"
+    ],
+    "idempotent": [
+        {
+            "status": "OK",
+            "result": {
+                "id": 70,
+                "public_id": "01M3T4QC06HTVQPVD91EXMXH6D",
+                "replayed": false
+            },
+            "pid": 36556,
+            "ms": 436
+        },
+        {
+            "status": "OK",
+            "result": {
+                "id": 0,
+                "public_id": "01M3T4QC06HTVQPVD91EXMXH6D",
+                "replayed": true
+            },
+            "pid": 27124,
+            "ms": 796
+        }
+    ]
+}

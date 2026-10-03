@@ -1,0 +1,23 @@
+{
+    "first": {
+        "status": "OK",
+        "result": {
+            "public_id": "01M3Y0GYG6ZJJVA6J98RBVJK08",
+            "replayed": false
+        },
+        "pid": 7584,
+        "ms": 351
+    },
+    "second": {
+        "status": "INSUFFICIENT_FUNDS",
+        "items": [],
+        "pid": 11380,
+        "ms": 203
+    },
+    "wait": {
+        "object": "accounts",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

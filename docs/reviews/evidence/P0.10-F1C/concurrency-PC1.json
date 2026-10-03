@@ -1,0 +1,71 @@
+{
+    "posting_first": {
+        "post": {
+            "status": "OK",
+            "result": {
+                "public_id": "01M3W08RX5KTQS9AZXDHVR405N",
+                "replayed": false
+            },
+            "pid": 35880,
+            "ms": 186
+        },
+        "close": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 23188,
+            "ms": 99
+        },
+        "wait": {
+            "object": "accounting_periods",
+            "mode": "X,REC_NOT_GAP",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    },
+    "close_first_settlement": {
+        "close": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 5088,
+            "ms": 129
+        },
+        "settle": {
+            "status": "PERIOD_CLOSED",
+            "items": [],
+            "pid": 840,
+            "ms": 70
+        },
+        "wait": {
+            "object": "accounting_periods",
+            "mode": "S,REC_NOT_GAP",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    },
+    "close_first_recognition": {
+        "close": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 26072,
+            "ms": 144
+        },
+        "recognize": {
+            "status": "PERIOD_CLOSED",
+            "items": [],
+            "pid": 23172,
+            "ms": 70
+        },
+        "wait": {
+            "object": "accounting_periods",
+            "mode": "S,REC_NOT_GAP",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    }
+}

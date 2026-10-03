@@ -1,0 +1,26 @@
+{
+    "first": {
+        "status": "OK",
+        "result": {
+            "replayed": false,
+            "mismatches": []
+        },
+        "pid": 32600,
+        "ms": 114
+    },
+    "second": {
+        "status": "OK",
+        "result": {
+            "replayed": true,
+            "mismatches": []
+        },
+        "pid": 34616,
+        "ms": 81
+    },
+    "wait": {
+        "object": "internal_transfers",
+        "mode": "X,REC_NOT_GAP",
+        "state": "LOCK WAIT",
+        "blocked_by_first": true
+    }
+}

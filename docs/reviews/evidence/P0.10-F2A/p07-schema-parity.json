@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "mode": "INFORMATION_SCHEMA_VS_MODEL_CATALOG_AND_CONTROLLED_DATA",
+  "schema_changes": 1,
+  "details": {
+    "database": "mepa_wave5_test_a671f022_pool_01",
+    "comparison": "BIDIRECTIONAL",
+    "compared_tables": 6,
+    "compared_columns": 57,
+    "compared_indexes": 27,
+    "compared_foreign_keys": 11,
+    "missing_or_mismatched": [],
+    "unexpected": [],
+    "forbidden_columns_present": [],
+    "temples_check_constraints": [],
+    "controlled_rows": [
+      "occupation:BORROWED",
+      "occupation:CEDED",
+      "occupation:OTHER",
+      "occupation:OWNED",
+      "occupation:RENTED",
+      "occupation:TEMPORARY",
+      "permission:PHYSICAL_LOCATION_MANAGE",
+      "permission:PHYSICAL_LOCATION_PUBLISH",
+      "permission:PHYSICAL_LOCATION_VIEW",
+      "permission:PROPERTY_MANAGE",
+      "permission:PROPERTY_VIEW",
+      "permission:TEMPLE_MANAGE",
+      "permission:TEMPLE_VIEW",
+      "permission:UNIT_LOCATION_LINK_MANAGE"
+    ],
+    "controlled_rows_expected": 14,
+    "manifest_schema_changes": [
+      "CREATE TABLE temples (model_catalog design, no extra column or CHECK)"
+    ]
+  }
+}

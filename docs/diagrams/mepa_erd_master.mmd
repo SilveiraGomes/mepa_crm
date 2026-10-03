@@ -1166,6 +1166,69 @@ erDiagram
     physical_locations ||--o{ asset_custody_periods : "location_id"
     people |o--o{ asset_custody_periods : "custodian_person_id"
     legal_documents |o--o{ asset_custody_periods : "source_document_id"
+    employments {
+        bigint id PK
+        char public_id UK
+        bigint person_id FK
+        bigint employing_unit_id FK
+        bigint contract_document_id FK
+        bigint created_by FK
+        bigint ended_by FK
+    }
+    compensation_component_types {
+        bigint id PK
+        bigint expense_category_id FK
+    }
+    employment_compensations {
+        bigint id PK
+        bigint employment_id FK
+        bigint component_type_id FK
+        bigint source_document_id FK
+        bigint created_by FK
+        bigint closed_by FK
+    }
+    payroll_rules {
+        bigint id PK
+        bigint component_type_id FK
+        bigint source_document_id FK
+        bigint created_by FK
+        bigint approved_by FK
+        bigint retired_by FK
+    }
+    payroll_rule_base_components {
+        bigint id PK
+        bigint rule_id FK
+        bigint component_type_id FK
+    }
+    payroll_rule_brackets {
+        bigint id PK
+        bigint rule_id FK
+    }
+    payroll_runs {
+        bigint id PK
+        char public_id UK
+        bigint employing_unit_id FK
+        bigint period_id FK
+        bigint created_by FK
+        bigint calculated_by FK
+        bigint approved_by FK
+        bigint posted_by FK
+        bigint paid_by FK
+        bigint cancelled_by FK
+        bigint reversed_by FK
+    }
+    payroll_run_lines {
+        bigint id PK
+        bigint run_id FK
+        bigint employment_id FK
+        bigint component_type_id FK
+        bigint rule_id FK
+    }
+    payroll_postings {
+        bigint id PK
+        bigint run_id FK
+        bigint entry_id FK
+    }
     people ||--o| memberships : "person_id"
     membership_statuses ||--o{ memberships : "status_id"
     users |o--o{ memberships : "approved_by"
@@ -1532,3 +1595,37 @@ erDiagram
     users |o--o{ import_issues : "resolved_by"
     people ||--o{ import_identity_maps : "person_id"
     import_records ||--o{ import_identity_maps : "record_id"
+    people ||--o{ employments : "person_id"
+    organizational_units ||--o{ employments : "employing_unit_id"
+    legal_documents |o--o{ employments : "contract_document_id"
+    users ||--o{ employments : "created_by"
+    users |o--o{ employments : "ended_by"
+    financial_categories |o--o{ compensation_component_types : "expense_category_id"
+    employments ||--o{ employment_compensations : "employment_id"
+    compensation_component_types ||--o{ employment_compensations : "component_type_id"
+    legal_documents |o--o{ employment_compensations : "source_document_id"
+    users ||--o{ employment_compensations : "created_by"
+    users |o--o{ employment_compensations : "closed_by"
+    compensation_component_types ||--o{ payroll_rules : "component_type_id"
+    legal_documents |o--o{ payroll_rules : "source_document_id"
+    users ||--o{ payroll_rules : "created_by"
+    users |o--o{ payroll_rules : "approved_by"
+    users |o--o{ payroll_rules : "retired_by"
+    payroll_rules ||--o{ payroll_rule_base_components : "rule_id"
+    compensation_component_types ||--o{ payroll_rule_base_components : "component_type_id"
+    payroll_rules ||--o{ payroll_rule_brackets : "rule_id"
+    organizational_units ||--o{ payroll_runs : "employing_unit_id"
+    accounting_periods ||--o{ payroll_runs : "period_id"
+    users ||--o{ payroll_runs : "created_by"
+    users |o--o{ payroll_runs : "calculated_by"
+    users |o--o{ payroll_runs : "approved_by"
+    users |o--o{ payroll_runs : "posted_by"
+    users |o--o{ payroll_runs : "paid_by"
+    users |o--o{ payroll_runs : "cancelled_by"
+    users |o--o{ payroll_runs : "reversed_by"
+    payroll_runs ||--o{ payroll_run_lines : "run_id"
+    employments ||--o{ payroll_run_lines : "employment_id"
+    compensation_component_types ||--o{ payroll_run_lines : "component_type_id"
+    payroll_rules |o--o{ payroll_run_lines : "rule_id"
+    payroll_runs ||--o{ payroll_postings : "run_id"
+    journal_entries ||--o{ payroll_postings : "entry_id"

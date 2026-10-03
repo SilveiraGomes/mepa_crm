@@ -1,0 +1,60 @@
+{
+  "runner": "scripts/run-p09-parity-stability.py",
+  "head": "1d05453552139e1c1e07a4a3a06630fdb97b7797",
+  "started_at": "2026-10-02T12:49:53+0100",
+  "p09_runs": [
+    {
+      "run": 1,
+      "rc": 0,
+      "status": "PASS",
+      "compared_columns": 99,
+      "compared_indexes": 55,
+      "compared_foreign_keys": 23,
+      "mismatches": 0,
+      "stable_read_retries": 0
+    },
+    {
+      "run": 2,
+      "rc": 0,
+      "status": "PASS",
+      "compared_columns": 99,
+      "compared_indexes": 55,
+      "compared_foreign_keys": 23,
+      "mismatches": 0,
+      "stable_read_retries": 1
+    },
+    {
+      "run": 3,
+      "rc": 0,
+      "status": "PASS",
+      "compared_columns": 99,
+      "compared_indexes": 55,
+      "compared_foreign_keys": 23,
+      "mismatches": 0,
+      "stable_read_retries": 0
+    }
+  ],
+  "infrastructure_start": "STARTED_VERIFIED",
+  "instance": {
+    "port": 33080,
+    "session": "13490ea740b8"
+  },
+  "pools_migrated": true,
+  "p09_stable": true,
+  "p010_parity": {
+    "rc": 0,
+    "status": "PASS"
+  },
+  "smoke": {
+    "f1d": {
+      "rc": 0,
+      "summary": "OK (4 tests, 40 assertions)"
+    },
+    "f2a": {
+      "rc": 0,
+      "summary": "OK (29 tests, 821 assertions)"
+    }
+  },
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-10-02T12:52:29+0100"
+}

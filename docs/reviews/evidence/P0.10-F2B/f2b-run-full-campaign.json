@@ -1,0 +1,289 @@
+{
+  "runner": "scripts/run-p010-payroll-f2b.py",
+  "steps": [
+    {
+      "step": "mysql_instance.init-start",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py init-start --port auto",
+      "rc": 0,
+      "seconds": 16.7,
+      "stdout_tail": "{\n  \"status\": \"STARTED_VERIFIED\",\n  \"port\": 33055,\n  \"datadir\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\2836952b5bab\\\\\\\\data\\\\\\\\\",\n  \"session_id\": \"2836952b5bab\",\n  \"pid\": 32836,\n  \"version\": \"8.4.7\",\n  \"version_comment\": \"MySQL Community Server - GPL\",\n  \"server_uuid\": \"f3da465a-be6b-11f1-a013-842afd0b4147\",\n  \"pid_file\": \"C:\\\\\\\\Users\\\\\\\\silve\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\mepa-test-mysql\\\\\\\\2836952b5bab\\\\\\\\data\\\\\\\\mysqld.pid\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "pool.create-and-migrate",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/pool.py create-and-migrate --port 33055",
+      "rc": 0,
+      "seconds": 70.0,
+      "stdout_tail": "{\n  \"created\": [\n    \"mepa_wave4_test_2836952b_pool_01\",\n    \"mepa_wave4_test_2836952b_pool_02\",\n    \"mepa_wave3_test_2836952b_pool_01\",\n    \"mepa_wave5_test_2836952b_pool_01\"\n  ],\n  \"migrated\": {\n    \"mepa_wave4_test_2836952b_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave4_test_2836952b_pool_02\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 130,\n      \"tables\": 127\n    },\n    \"mepa_wave3_test_2836952b_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 113,\n      \"tables\": 110\n    },\n    \"mepa_wave5_test_2836952b_pool_01\": {\n      \"status\": \"MIGRATED\",\n      \"migrations_ran\": 203,\n      \"tables\": 189\n    }\n  }\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "finance_fixture",
+      "cmd": "C:\\wamp64\\bin\\php\\php8.1.33\\php.exe vendor/phpunit/phpunit/phpunit tests/DatabaseV2/FinanceE2EFixtureTest.php",
+      "rc": 0,
+      "seconds": 38.4,
+      "stdout_tail": "PHPUnit 9.6.36 by Sebastian Bergmann and contributors.\n\n.                                                                   1 / 1 (100%)\n\nTime: 00:37.951, Memory: 36.00 MB\n\nOK (1 test, 110 assertions)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_production_disabled",
+      "cmd": "node C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js test --config playwright.payroll-f2b.config.ts --grep-invert @enabled",
+      "rc": 0,
+      "seconds": 1514.5,
+      "stdout_tail": "rom the economic result (11.9s)\n  ok 90 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:97:1 › F2A employees: list, detail, employment history and compensation (HR reader, audited salary reads) (36.4s)\n  ok 91 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:134:1 › F2A components, rules (pending configuration, provenance) and readiness (configuration vs production) (28.5s)\n  ok 92 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:169:1 › F2A a reader without HR_COMPENSATION_VIEW never sees a salary (17.0s)\n  ok 93 [mobile-390x844] › tests\\e2e\\payroll-f2a.spec.ts:183:1 › F2A the compensation change works on every viewport (new line; the old one is closed, not edited) (14.6s)\n  ok 94 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:109:1 › @disabled F2B run list, calculated detail and the audited per-person breakdown (calculator) (17.5s)\n  ok 95 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:137:1 › @disabled F2B new run and calculation while production is disabled (12.6s)\n  ok 96 [mobile-390x844] › tests\\e2e\\payroll-f2b.spec.ts:159:1 › @disabled F2B an approver without HR_COMPENSATION_VIEW sees totals only and no approval while production is disabled (14.3s)\n\n  96 passed (25.2m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "playwright_production_enabled_test_process_only",
+      "cmd": "node C:\\wamp64\\www\\mepa-crm\\apps\\web\\node_modules\\@playwright\\test\\cli.js test --config playwright.payroll-f2b.config.ts --grep @enabled",
+      "rc": 1,
+      "seconds": 130.0,
+      "stdout_tail": "attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────\n    test-results\\payroll-f2b--enabled-F2B-a-b8664-ons-always-match-the-status-laptop-1366x768\\test-failed-1.png\n    ────────────────────────────────────────────────────────────────────────────────────────────────\n\n    Error Context: test-results\\payroll-f2b--enabled-F2B-a-b8664-ons-always-match-the-status-laptop-1366x768\\error-context.md\n\n    Error Context: test-results\\payroll-f2b--enabled-F2B-a-b8664-ons-always-match-the-status-laptop-1366x768\\error-context.md\n\n    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────\n    test-results\\payroll-f2b--enabled-F2B-a-b8664-ons-always-match-the-status-laptop-1366x768\\trace.zip\n    Usage:\n\n        npx playwright show-trace test-results\\payroll-f2b--enabled-F2B-a-b8664-ons-always-match-the-status-laptop-1366x768\\trace.zip\n\n    ────────────────────────────────────────────────────────────────────────────────────────────────\n\n  1 failed\n    [laptop-1366x768] › tests\\e2e\\payroll-f2b.spec.ts:173:1 › @enabled F2B approve (approver) -> post -> pay (poster); actions always match the status \n  3 passed (2.1m)\n",
+      "stderr_tail": ""
+    },
+    {
+      "step": "mysql_instance.stop",
+      "cmd": "C:\\Users\\silve\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe tools/test-infrastructure/mysql_instance.py stop --port 33055",
+      "rc": 0,
+      "seconds": 7.5,
+      "stdout_tail": "{\n  \"status\": \"STOPPED_VERIFIED\",\n  \"instance_stopped_confirmed\": true,\n  \"attestation_verified\": true,\n  \"ownership_verified\": true,\n  \"graceful_shutdown_sent\": true,\n  \"fallback_kill_used\": false,\n  \"datadir_removed\": true,\n  \"infrastructure_result\": \"PASS\",\n  \"notes\": \"\"\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at": "2026-10-02T15:17:06+0100",
+  "head": "a33c07762a527b0ab1c782f5b8fec87f9c399aff",
+  "infrastructure_start": "STARTED_VERIFIED",
+  "pools": {
+    "mepa_wave4_test_2836952b_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave4_test_2836952b_pool_02": {
+      "status": "MIGRATED",
+      "migrations_ran": 130,
+      "tables": 127
+    },
+    "mepa_wave3_test_2836952b_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 113,
+      "tables": 110
+    },
+    "mepa_wave5_test_2836952b_pool_01": {
+      "status": "MIGRATED",
+      "migrations_ran": 203,
+      "tables": 189
+    }
+  },
+  "schema_parity": {
+    "p010": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p09": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p08": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p07": {
+      "rc": 0,
+      "status": "PASS"
+    },
+    "p06": {
+      "rc": 0,
+      "status": "PASS"
+    }
+  },
+  "p09_stability": {
+    "runs": [
+      {
+        "run": 1,
+        "rc": 0,
+        "status": "PASS",
+        "compared_indexes": 55,
+        "stable_read_retries": 0
+      },
+      {
+        "run": 2,
+        "rc": 0,
+        "status": "PASS",
+        "compared_indexes": 55,
+        "stable_read_retries": 0
+      },
+      {
+        "run": 3,
+        "rc": 0,
+        "status": "PASS",
+        "compared_indexes": 55,
+        "stable_read_retries": 2
+      }
+    ],
+    "stable": true
+  },
+  "f2b_phpunit": {
+    "rc": 0,
+    "summary": "OK (47 tests, 1720 assertions)",
+    "seconds": 184.7
+  },
+  "contract_validators": {
+    "payroll_f2b": {
+      "rc": 0,
+      "status": "PASS",
+      "probes": "20/20",
+      "restored": true,
+      "failures": []
+    },
+    "payroll_f2a": {
+      "rc": 0,
+      "status": "PASS",
+      "probes": "16/16",
+      "restored": true,
+      "failures": []
+    }
+  },
+  "regressions": {
+    "payroll_f2a": {
+      "rc": 0,
+      "summary": "OK (29 tests, 825 assertions)",
+      "seconds": 38.3
+    },
+    "finance_f1a": {
+      "rc": 0,
+      "summary": "OK (26 tests, 664 assertions)",
+      "seconds": 23.3
+    },
+    "finance_f1b": {
+      "rc": 0,
+      "summary": "OK (21 tests, 1225 assertions)",
+      "seconds": 45.8
+    },
+    "finance_f1c": {
+      "rc": 0,
+      "summary": "OK (46 tests, 1477 assertions)",
+      "seconds": 78.4
+    },
+    "finance_f1d": {
+      "rc": 0,
+      "summary": "OK (4 tests, 40 assertions)",
+      "seconds": 17.8
+    },
+    "finance_f1d_evidence": {
+      "rc": 0,
+      "summary": "OK (32 tests, 775 assertions)",
+      "seconds": 116.8
+    },
+    "territorial": {
+      "rc": 0,
+      "summary": "OK (13 tests, 151 assertions)",
+      "seconds": 22.8
+    },
+    "files": {
+      "rc": 0,
+      "summary": "OK (27 tests, 1550 assertions)",
+      "seconds": 40.3
+    },
+    "people_context": {
+      "rc": 0,
+      "summary": "OK (8 tests, 220 assertions)",
+      "seconds": 19.9
+    },
+    "people_person": {
+      "rc": 0,
+      "summary": "OK (15 tests, 1354 assertions)",
+      "seconds": 20.5
+    }
+  },
+  "validators": {
+    "finance_f1d_contracts": {
+      "rc": 0,
+      "tail": "cfaab\",\n    \"worker\": \"eb5fcb547bca6e7ea5117b6ba8ca3c9ce38639a5bad694200ef1743652183073\",\n    \"e2e\": \"7ebb6dfcbbb4361342c11bcb19067e717f2fec37ba438435165b6eff490eaaeb\",\n    \"contracts\": \"c33f262ac2fe4ac32e9e12ab5bea4746f01d813e667e884bb7bb4263a4fa9be3\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "finance_f1c_contracts": {
+      "rc": 0,
+      "tail": "030e6\",\n    \"e2e\": \"d8d0e9503ed726feb39db644b453398dbb7a6478dbbc6f18abfe043fd4dfc959\",\n    \"e2eConfig\": \"1d30946ac0750b74d82e8796364cc1043e708bc85770f7b396b2864fc67473cc\",\n    \"worker\": \"476eabf92742e47609d297bd663de06518714267fa3dc3ed87283cb41f70cefe\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "finance_transfer_contracts": {
+      "rc": 0,
+      "tail": "fa9be3\",\n    \"pages\": \"f9101f88207ad47ca214e559356cd52b37519dca7bd9047ba13819bb2ead2d63\",\n    \"format\": \"9ce3ad7034ddde659eea48fe90ae0aabaaa80c3a2acf5bded4562fdac9177208\",\n    \"worker\": \"7f25cff1c3ecd93fdf92a65b5d51fb757c702ba862bcc741a5345e9652aeb4bd\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "finance_core_contracts": {
+      "rc": 0,
+      "tail": "a0\",\n    \"lines\": \"57ab4796573991015c6b8edacfdf1e81d87badf6d57d7906781e57a903d5f3c9\",\n    \"budgets\": \"07f2ddcb7e31afcb18600bb2f0d6ed2cb3e461dfd040a55702c1105df3cff401\",\n    \"installer\": \"3bd438961730aa6624becc1f4f2bee9bbdecba668780a02e3e5198e462ff6c5b\"\n  },\n  \"source_restored_byte_for_byte\": true\n}"
+    },
+    "http_contracts": {
+      "rc": 0,
+      "tail": "HTTP_CONTRACTS_PASS 828 checks 66 endpoints"
+    },
+    "ui_contracts": {
+      "rc": 0,
+      "tail": "UI_CONTRACTS_PASS 530 checks; 34 screens; 25 actions; 0 contract-gapped actions"
+    },
+    "auth_contracts": {
+      "rc": 0,
+      "tail": "AUTH_CONTRACTS_PASS 20 checks; MEPA_LOCAL_AUTH_V1; refresh NOT_APPLICABLE"
+    },
+    "application_contracts": {
+      "rc": 0,
+      "tail": "{\n  status: 'APPLICATION_CONTRACTS_PASS',\n  checks: 1513,\n  failed: 0,\n  operations: 65,\n  command_operations: 30,\n  read_operations: 35,\n  d09_reviewed_false_positives: 17\n}"
+    },
+    "database_docs": {
+      "rc": 0,
+      "tail": "{\n  \"tables\": 208,\n  \"columns\": 1867,\n  \"fks\": 474,\n  \"master_relations\": 474,\n  \"local_links\": \"checked\",\n  \"identifier_strategy\": \"ACCEPTED\",\n  \"public_id_entities\": 56,\n  \"errors\": []\n}"
+    },
+    "wave5_schema_static": {
+      "rc": 0,
+      "tail": "ically parsed, vs. model_catalog.json + wave5_manifest.json (design authority) + wave5_migrations_manifest.json (execution authority)\",\n  \"tables\": 25,\n  \"columns\": 215,\n  \"foreign_keys\": 52,\n  \"checks\": 21,\n  \"unique\": 32,\n  \"public_id\": 8,\n  \"cascade\": 0,\n  \"unexpected_drift\": 0,\n  \"errors\": []\n}"
+    }
+  },
+  "web": {
+    "tests": {
+      "rc": 0
+    },
+    "lint": {
+      "rc": 0
+    }
+  },
+  "web_build": {
+    "rc": 0,
+    "pwa": true
+  },
+  "servers_ready": {
+    "api": true,
+    "web": true,
+    "api_enabled": true
+  },
+  "playwright_disabled": {
+    "startTime": "2026-10-02T15:09:15.294Z",
+    "duration": 1512459.201,
+    "expected": 96,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "playwright_enabled": {
+    "startTime": "2026-10-02T15:34:31.593Z",
+    "duration": 128334.698,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "servers_stopped": true,
+  "production_default_after_campaign": "false",
+  "log_scan": {
+    "bytes_scanned": 10723666,
+    "leaks": []
+  },
+  "evidence_scan": {
+    "leaks": []
+  },
+  "playwright_output_removed": true,
+  "temporary_key_ring_removed": true,
+  "fixture_manifest_removed": true,
+  "tracked_rewrites_restored": true,
+  "infrastructure_stop": "STOPPED_VERIFIED",
+  "finished_at": "2026-10-02T16:36:48+0100"
+}

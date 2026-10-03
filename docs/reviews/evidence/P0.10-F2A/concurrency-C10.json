@@ -1,0 +1,48 @@
+{
+    "payable": {
+        "first": {
+            "status": "OK",
+            "result": {
+                "public_id": "01M3XZP5AXWE2BYB4ANNH6J91A",
+                "replayed": false
+            },
+            "pid": 22176,
+            "ms": 310
+        },
+        "second": {
+            "status": "OVER_SETTLEMENT",
+            "items": [],
+            "pid": 34260,
+            "ms": 138
+        },
+        "wait": {
+            "object": "payables",
+            "mode": "X,REC_NOT_GAP",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    },
+    "receivable": {
+        "first": {
+            "status": "OK",
+            "result": {
+                "public_id": "01M3XZP7RFQXJ5GEZ177DVTT04",
+                "replayed": false
+            },
+            "pid": 27244,
+            "ms": 295
+        },
+        "second": {
+            "status": "OVER_SETTLEMENT",
+            "items": [],
+            "pid": 11696,
+            "ms": 143
+        },
+        "wait": {
+            "object": "receivables",
+            "mode": "X,REC_NOT_GAP",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    }
+}

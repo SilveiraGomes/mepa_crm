@@ -1,0 +1,34 @@
+{
+    "order1_before": {
+        "revenue": "100.00",
+        "dre_revenue": "100.00",
+        "doaf_external": "100.00",
+        "doaf_closing": "100.00",
+        "drill_closing_sum": "100.00",
+        "drill_a2_result": "0.00"
+    },
+    "after_b": {
+        "revenue": "150.00",
+        "dre_revenue": "150.00",
+        "doaf_external": "150.00",
+        "doaf_closing": "150.00",
+        "drill_closing_sum": "150.00",
+        "drill_a2_result": "50.00"
+    },
+    "order2_uncommitted_invisible": {
+        "revenue": "150.00",
+        "dre_revenue": "150.00",
+        "doaf_external": "150.00",
+        "doaf_closing": "150.00",
+        "drill_closing_sum": "150.00",
+        "drill_a2_result": "50.00"
+    },
+    "order3_after": {
+        "revenue": "175.00",
+        "dre_revenue": "175.00",
+        "doaf_external": "175.00",
+        "doaf_closing": "175.00",
+        "drill_closing_sum": "175.00",
+        "drill_a2_result": "75.00"
+    }
+}

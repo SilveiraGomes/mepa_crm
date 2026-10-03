@@ -1,0 +1,358 @@
+{
+  "status": "PASS",
+  "checks": {
+    "H01_explicit_transition_routes_only": true,
+    "H02_closed_field_lists_no_internal_ids": true,
+    "H03_permission_before_target_f06": true,
+    "H04_scope_before_locks_state_and_period": true,
+    "H05_single_journal_writer": true,
+    "H06_locking_reads_for_decisions": true,
+    "H07_canonical_balance_no_stored_balance": true,
+    "H08_settlement_never_touches_the_result": true,
+    "H09_statement_line_is_not_a_journal_line": true,
+    "H10_budget_segregation_one_approved_revision": true,
+    "H11_national_close_root_only_and_irreversible": true,
+    "H12_concealed_404_and_mapped_codes": true,
+    "H13_contract_maps_existing_tests": true,
+    "H14_ui_sections_money_as_strings_four_viewports": true,
+    "H16_fin_d10_no_overdraft_fin_d11_closed_period_reconciliation": true,
+    "H15_audit_actions": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "detector": "phpunit --filter test_a02|test_a07|test_a08|test_a04|test_a06|test_u02|test_u04|test_b03|test_b05|test_g05|test_g07|test_g08|test_p01|test_p04|test_p05|test_n01|test_n03|test_n05|test_n07|test_a05",
+      "exit_code": 0,
+      "summary": "OK (20 tests, 299 assertions)",
+      "seconds": 32.2
+    },
+    {
+      "id": "M1",
+      "description": "receivable settlement recreates Revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/AccrualService.php",
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_a02",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 11.2
+    },
+    {
+      "id": "M2",
+      "description": "payable settlement recreates Expense",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/AccrualService.php",
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_a07|test_a08",
+      "exit_code": 1,
+      "summary": "Tests: 2, Assertions: 11, Failures: 2.",
+      "seconds": 12.7
+    },
+    {
+      "id": "M3",
+      "description": "over-settlement accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/AccrualService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_a04",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "seconds": 12.4
+    },
+    {
+      "id": "M4",
+      "description": "fixed asset forced to Expense",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/AccrualService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_a06",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "seconds": 11.2
+    },
+    {
+      "id": "M5",
+      "description": "mutable / non-canonical financial balance",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCoreQueryService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_u02",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 7, Failures: 1.",
+      "seconds": 11.2
+    },
+    {
+      "id": "M6",
+      "description": "posting into a closed financial account",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_u04",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 8, Failures: 1.",
+      "seconds": 36.9
+    },
+    {
+      "id": "M7",
+      "description": "bank statement line turned into a journal entry automatically",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BankReconciliationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_b03",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "seconds": 35.8
+    },
+    {
+      "id": "M8",
+      "description": "double bank match (statement value reconciled twice)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BankReconciliationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_b05",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 9, Failures: 1.",
+      "seconds": 16.9
+    },
+    {
+      "id": "M9",
+      "description": "budget submitter can approve",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BudgetService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_g05",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "seconds": 11.1
+    },
+    {
+      "id": "M10",
+      "description": "two approved budget versions (no supersede)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BudgetService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_g07",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 16, Failures: 1.",
+      "seconds": 11.5
+    },
+    {
+      "id": "M11",
+      "description": "approved budget overwritten",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BudgetService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_g07",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "seconds": 12.4
+    },
+    {
+      "id": "M12",
+      "description": "actual read from non-POSTED lines",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCoreQueryService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_g08",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 15, Failures: 1.",
+      "seconds": 12.8
+    },
+    {
+      "id": "M13",
+      "description": "unit period close bypassed by postings",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_p01",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 14.1
+    },
+    {
+      "id": "M14",
+      "description": "reopen by the same closer",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinancePeriods.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_p04",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 13.8
+    },
+    {
+      "id": "M15",
+      "description": "national close reopened (unit reopen after a national close)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinancePeriods.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_p05",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 16, Failures: 1.",
+      "seconds": 12.2
+    },
+    {
+      "id": "M17",
+      "description": "FIN-D10 overdraft check removed (CASH/BANK may go negative)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_n01|test_n03",
+      "exit_code": 1,
+      "summary": "Tests: 2, Assertions: 15, Failures: 2.",
+      "seconds": 14
+    },
+    {
+      "id": "M18",
+      "description": "FIN-D11 closed period blocks reconciliation again",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BankReconciliationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_n05",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "seconds": 12.6
+    },
+    {
+      "id": "M19",
+      "description": "FIN-D11 adjustment back-dated into the closed month",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/BankReconciliationService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_n07",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "seconds": 11.8
+    },
+    {
+      "id": "M16",
+      "description": "numeric source_document id accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Http/Requests/Finance/SubledgerCreateRequest.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_a05",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 7, Failures: 1.",
+      "seconds": 15.3
+    }
+  ],
+  "probes_detected": 19,
+  "probes_run": 19,
+  "source_hashes_before": {
+    "accrual": "71db2a25ce4a19a44d4675e7b13fb949723e0a8a03a2f8ab816a2309e5e01d48",
+    "accounts": "506bafb3a48502e3a1fac1208fbe167452d42fe0d4c3f407dc992a46ad189f8b",
+    "bank": "d575bfe784ba706c9e270ec430a3440b264b401dd2df6a77a01f7361d4558279",
+    "budget": "8ac98618b11b644e9d0dc0eb5ce00fd19b8f9f22ecb8479d6093fc6ecf734d91",
+    "closes": "8c8fe957ef37f384c43a9ba6d9bb4fae598f069a07a24fd9ac2baf78cb5e75fe",
+    "operation": "afc5ed62750e6c63c2d479298fbeeedac376948233dd85b8e1fa1fbda8965e9e",
+    "queries": "745758fa4f4da7138c3cd2de1af9cc368be7cc4902013274aaac241b4090da54",
+    "ledger": "889800dd69b4d4f18c14a9574fd04dd19d5732f340c665f017b469cfd75b4188",
+    "periods": "4e71611e7d25a38027c8c770a80fc3b1fa78d2e7dde059e6d6cb419eb6460f3a",
+    "catalog": "b68c4046e56d01f71b78eec104ceb4cfe50c2645037e06718a8e3a460e882b8d",
+    "runtime": "9146ef19c3c03c6afe5899f47fc042ae8a39cc2302506b5bdb91ac99b7f6c0f3",
+    "ledgerQueries": "e55afcb2145753eafdb55b1f8ee8fa10d61ccfe0fba2552f3cb6db555837b912",
+    "handler": "0d28f52ae643635be26c4da11dc3f08cf6fb5377db29328a96f08ea9385e519b",
+    "routes": "d826607aebe692f632a0e5a392dba239a5ac5e8aff0cff244bbd0fcb066a127a",
+    "output": "12aa6d4847004411e6572f3c55dcefdedd3c4721f2098cb682f0a81c2c2f0f3c",
+    "controller": "cc794fcbaf2746197a8e30474a3ad33ba175efddb19f675a00da3801e1431f04",
+    "subledgerRequest": "b3bcdbc4e367b0051748393d6fdc632978449d077849047a785e28fcb3690259",
+    "baseRequest": "a801ccba110686eeced6dbf3fb73592d7f0399e83f9d5db91fbcaf6a01455464",
+    "test": "2ee1460db01e0e8197cd372ec957aa3e7900890b89806f72869100f041a81274",
+    "contracts": "c33f262ac2fe4ac32e9e12ab5bea4746f01d813e667e884bb7bb4263a4fa9be3",
+    "pages": "32753a7af0c8b9e09fac9000afb99158d164dcf43455fc07d0982533cf467bbd",
+    "shell": "1efe640093739911d4f1a5d59d8b4df226df8ed0ac89cddbc6d41aef1b987256",
+    "e2e": "d8d0e9503ed726feb39db644b453398dbb7a6478dbbc6f18abfe043fd4dfc959",
+    "e2eConfig": "1d30946ac0750b74d82e8796364cc1043e708bc85770f7b396b2864fc67473cc",
+    "worker": "476eabf92742e47609d297bd663de06518714267fa3dc3ed87283cb41f70cefe"
+  },
+  "source_hashes_after": {
+    "accrual": "71db2a25ce4a19a44d4675e7b13fb949723e0a8a03a2f8ab816a2309e5e01d48",
+    "accounts": "506bafb3a48502e3a1fac1208fbe167452d42fe0d4c3f407dc992a46ad189f8b",
+    "bank": "d575bfe784ba706c9e270ec430a3440b264b401dd2df6a77a01f7361d4558279",
+    "budget": "8ac98618b11b644e9d0dc0eb5ce00fd19b8f9f22ecb8479d6093fc6ecf734d91",
+    "closes": "8c8fe957ef37f384c43a9ba6d9bb4fae598f069a07a24fd9ac2baf78cb5e75fe",
+    "operation": "afc5ed62750e6c63c2d479298fbeeedac376948233dd85b8e1fa1fbda8965e9e",
+    "queries": "745758fa4f4da7138c3cd2de1af9cc368be7cc4902013274aaac241b4090da54",
+    "ledger": "889800dd69b4d4f18c14a9574fd04dd19d5732f340c665f017b469cfd75b4188",
+    "periods": "4e71611e7d25a38027c8c770a80fc3b1fa78d2e7dde059e6d6cb419eb6460f3a",
+    "catalog": "b68c4046e56d01f71b78eec104ceb4cfe50c2645037e06718a8e3a460e882b8d",
+    "runtime": "9146ef19c3c03c6afe5899f47fc042ae8a39cc2302506b5bdb91ac99b7f6c0f3",
+    "ledgerQueries": "e55afcb2145753eafdb55b1f8ee8fa10d61ccfe0fba2552f3cb6db555837b912",
+    "handler": "0d28f52ae643635be26c4da11dc3f08cf6fb5377db29328a96f08ea9385e519b",
+    "routes": "d826607aebe692f632a0e5a392dba239a5ac5e8aff0cff244bbd0fcb066a127a",
+    "output": "12aa6d4847004411e6572f3c55dcefdedd3c4721f2098cb682f0a81c2c2f0f3c",
+    "controller": "cc794fcbaf2746197a8e30474a3ad33ba175efddb19f675a00da3801e1431f04",
+    "subledgerRequest": "b3bcdbc4e367b0051748393d6fdc632978449d077849047a785e28fcb3690259",
+    "baseRequest": "a801ccba110686eeced6dbf3fb73592d7f0399e83f9d5db91fbcaf6a01455464",
+    "test": "2ee1460db01e0e8197cd372ec957aa3e7900890b89806f72869100f041a81274",
+    "contracts": "c33f262ac2fe4ac32e9e12ab5bea4746f01d813e667e884bb7bb4263a4fa9be3",
+    "pages": "32753a7af0c8b9e09fac9000afb99158d164dcf43455fc07d0982533cf467bbd",
+    "shell": "1efe640093739911d4f1a5d59d8b4df226df8ed0ac89cddbc6d41aef1b987256",
+    "e2e": "d8d0e9503ed726feb39db644b453398dbb7a6478dbbc6f18abfe043fd4dfc959",
+    "e2eConfig": "1d30946ac0750b74d82e8796364cc1043e708bc85770f7b396b2864fc67473cc",
+    "worker": "476eabf92742e47609d297bd663de06518714267fa3dc3ed87283cb41f70cefe"
+  },
+  "source_restored_byte_for_byte": true
+}

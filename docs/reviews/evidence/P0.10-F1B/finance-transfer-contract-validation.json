@@ -1,0 +1,277 @@
+{
+  "status": "PASS",
+  "checks": {
+    "G01_explicit_stage_routes_only": true,
+    "G02_closed_field_lists_no_internal_ids": true,
+    "G03_permission_before_target_f06": true,
+    "G04_scope_before_locks_and_state": true,
+    "G05_single_journal_writer": true,
+    "G06_interunit_clearing_never_result": true,
+    "G07_receive_amount_is_the_send_amount": true,
+    "G08_locking_reads_for_decisions": true,
+    "G09_bounded_collections_safe_output": true,
+    "G10_concealed_404_single_shape": true,
+    "G11_ui_never_calls_transfers_revenue_no_float": true,
+    "G12_contract_maps_existing_tests": true,
+    "G13_audit_actions": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "detector": "phpunit --filter test_t03|test_t06|test_t12|test_t14|test_t22|test_t25|test_t19|test_t16|test_t28",
+      "exit_code": 0,
+      "summary": "OK (9 tests, 296 assertions)",
+      "seconds": 48
+    },
+    {
+      "id": "M1",
+      "description": "SEND classified as revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t03",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "seconds": 20.5
+    },
+    {
+      "id": "M2",
+      "description": "RECEIVE classified as revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t06",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 10, Failures: 1.",
+      "seconds": 26.7
+    },
+    {
+      "id": "M3",
+      "description": "SEND clearing account classified as EQUITY instead of INTERUNIT_CONTROL",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t03",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "seconds": 30
+    },
+    {
+      "id": "M4",
+      "description": "RECEIVE amount may differ from SEND",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t06",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 45.4
+    },
+    {
+      "id": "M5",
+      "description": "duplicate SEND not prevented",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t12",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 27.1
+    },
+    {
+      "id": "M6",
+      "description": "duplicate RECEIVE not prevented",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t12",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 10, Failures: 1.",
+      "seconds": 22.7
+    },
+    {
+      "id": "M7",
+      "description": "SEND authorized on the wrong side (destination)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t14",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 28
+    },
+    {
+      "id": "M8",
+      "description": "RECEIVE authorized on the wrong side (origin)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t14",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 53, Failures: 1.",
+      "seconds": 28.7
+    },
+    {
+      "id": "M9",
+      "description": "F-06 oracle: out-of-scope distinguishable from nonexistent",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Exceptions/Handler.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t14",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "seconds": 73.3
+    },
+    {
+      "id": "M10",
+      "description": "reconciliation without RECEIVE",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t22",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 4, Failures: 1.",
+      "seconds": 33.3
+    },
+    {
+      "id": "M11",
+      "description": "REVERSE_SEND allowed after RECEIVE",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t25",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 12, Failures: 1.",
+      "seconds": 26.7
+    },
+    {
+      "id": "M12",
+      "description": "a transfer mutates the original external revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/InternalTransferService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t19",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 16, Failures: 1.",
+      "seconds": 31.2
+    },
+    {
+      "id": "M13",
+      "description": "numeric source_document id accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Http/Requests/Finance/TransferCreateRequest.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t16",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 13, Failures: 1.",
+      "seconds": 27.6
+    },
+    {
+      "id": "M14",
+      "description": "unbounded transfer list",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceRuntime.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_t28",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 26, Failures: 1.",
+      "seconds": 28.3
+    }
+  ],
+  "probes_detected": 14,
+  "probes_run": 14,
+  "source_hashes_before": {
+    "transfers": "b0792ec6e07f23cfaa61c3f29089c627839a7ac13ed919ebc5669758eefbc428",
+    "contributions": "b4c0465c6f37db5624425a8565dd71c694b3f58778c9e8e49057f7435806481b",
+    "queries": "ace8763776999669436bc1fa7bcbe9ff7ca4a0f3d6c12d68754517cb59e5fbcb",
+    "runtime": "478c65eae181f638f40819104dedc1b8f5975b5cd54a1c3b47402dc81e20f67a",
+    "authority": "29e7fc8dd930cbd2dc5278af7f8e4bff2a5c17634357def487e236bbb028c1d6",
+    "guard": "eed8b99dbdad13a9d2837f0c9e66dce4b970e5243b202f640b634209e6b590ee",
+    "audit": "b1b1d38df5da9568b97dcea9fe8cb5c541e44cbdaec0a065277a65bade4ef4eb",
+    "catalog": "f9570d1ebc35337310f6a6e07dd4ac691ffdc41cec28aa5fcdb3da0b815d32f5",
+    "ledger": "737a601c560ffbb8201b58f30abebaea66f0fe8ac0c96dcc78b0ff1b83ec1d2c",
+    "handler": "26bdc9fe4cddaf759d34faf615dafde143516e5cbf4aa6f72263fb3bbd025506",
+    "routes": "f80962101628dff86363723170542cb66e021676865e9d210fca3c9b0368f3aa",
+    "output": "12aa6d4847004411e6572f3c55dcefdedd3c4721f2098cb682f0a81c2c2f0f3c",
+    "createRequest": "a1674b1eeccf0ae12978c02fd23cb649ee7287e9905a90a4e7ea2ee6b5802457",
+    "baseRequest": "a801ccba110686eeced6dbf3fb73592d7f0399e83f9d5db91fbcaf6a01455464",
+    "transferController": "17361e821d30ad314f3379ebdf4630fe4755e91ed0a902c9af14728cf56576f7",
+    "controller": "23595f92d912d90467526dd5c222a9736857c38327a6959389a6477922e5841f",
+    "config": "c0ecea8246245ebdb7300b5d61f544c43f6d7e6254e75e200bc27305e0663287",
+    "test": "7d786c8bf6c81f89f24aa3ee2123c44fe5d85093383e4106680e0f749b63358d",
+    "contracts": "77c3e21969547b9efce60130d564ef6dfbfab806960e1ccfd58613d164ff57e2",
+    "pages": "f9101f88207ad47ca214e559356cd52b37519dca7bd9047ba13819bb2ead2d63",
+    "format": "9ce3ad7034ddde659eea48fe90ae0aabaaa80c3a2acf5bded4562fdac9177208",
+    "worker": "7f25cff1c3ecd93fdf92a65b5d51fb757c702ba862bcc741a5345e9652aeb4bd"
+  },
+  "source_hashes_after": {
+    "transfers": "b0792ec6e07f23cfaa61c3f29089c627839a7ac13ed919ebc5669758eefbc428",
+    "contributions": "b4c0465c6f37db5624425a8565dd71c694b3f58778c9e8e49057f7435806481b",
+    "queries": "ace8763776999669436bc1fa7bcbe9ff7ca4a0f3d6c12d68754517cb59e5fbcb",
+    "runtime": "478c65eae181f638f40819104dedc1b8f5975b5cd54a1c3b47402dc81e20f67a",
+    "authority": "29e7fc8dd930cbd2dc5278af7f8e4bff2a5c17634357def487e236bbb028c1d6",
+    "guard": "eed8b99dbdad13a9d2837f0c9e66dce4b970e5243b202f640b634209e6b590ee",
+    "audit": "b1b1d38df5da9568b97dcea9fe8cb5c541e44cbdaec0a065277a65bade4ef4eb",
+    "catalog": "f9570d1ebc35337310f6a6e07dd4ac691ffdc41cec28aa5fcdb3da0b815d32f5",
+    "ledger": "737a601c560ffbb8201b58f30abebaea66f0fe8ac0c96dcc78b0ff1b83ec1d2c",
+    "handler": "26bdc9fe4cddaf759d34faf615dafde143516e5cbf4aa6f72263fb3bbd025506",
+    "routes": "f80962101628dff86363723170542cb66e021676865e9d210fca3c9b0368f3aa",
+    "output": "12aa6d4847004411e6572f3c55dcefdedd3c4721f2098cb682f0a81c2c2f0f3c",
+    "createRequest": "a1674b1eeccf0ae12978c02fd23cb649ee7287e9905a90a4e7ea2ee6b5802457",
+    "baseRequest": "a801ccba110686eeced6dbf3fb73592d7f0399e83f9d5db91fbcaf6a01455464",
+    "transferController": "17361e821d30ad314f3379ebdf4630fe4755e91ed0a902c9af14728cf56576f7",
+    "controller": "23595f92d912d90467526dd5c222a9736857c38327a6959389a6477922e5841f",
+    "config": "c0ecea8246245ebdb7300b5d61f544c43f6d7e6254e75e200bc27305e0663287",
+    "test": "7d786c8bf6c81f89f24aa3ee2123c44fe5d85093383e4106680e0f749b63358d",
+    "contracts": "77c3e21969547b9efce60130d564ef6dfbfab806960e1ccfd58613d164ff57e2",
+    "pages": "f9101f88207ad47ca214e559356cd52b37519dca7bd9047ba13819bb2ead2d63",
+    "format": "9ce3ad7034ddde659eea48fe90ae0aabaaa80c3a2acf5bded4562fdac9177208",
+    "worker": "7f25cff1c3ecd93fdf92a65b5d51fb757c702ba862bcc741a5345e9652aeb4bd"
+  },
+  "source_restored_byte_for_byte": true
+}

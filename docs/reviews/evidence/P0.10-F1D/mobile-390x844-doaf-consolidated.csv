@@ -1,0 +1,66 @@
+﻿Campo;Valor
+institution;MEPA
+report_type;CONSOLIDATED_DOAF
+report_name;"Demonstrativo de Origem e Aplicação de Fundos consolidado"
+view;CONSOLIDATED
+unit.public_id;01M3WZ36E7BXHC4KJR3VJ4XG93
+unit.name;"Município F1D E2E"
+period.kind;MONTH
+period.label;2026-08
+period.from;2026-08-01
+period.to;2026-08-31
+generated_at;"2026-10-02 00:22:37.640584Z"
+perimeter_units;6
+source;POSTED_JOURNAL_LINES
+snapshot;REPEATABLE_READ
+parameters_hash;29cbd7c5a5728ed2b785545b273a12c0d726d512962e53e56d27688207b8d36e
+doaf.basis;FUND_CUSTODY_POSTED_LEDGER
+doaf.opening_balance;3000.00
+doaf.external_funds_received;138000.00
+doaf.internal_funds_received;0.00
+doaf.external_applications;25000.00
+doaf.internal_funds_sent;0.00
+doaf.funds_in_transit_under_custody;7000.00
+doaf.treasury_closing;109000.00
+doaf.closing_balance;116000.00
+doaf.total_origins;141000.00
+doaf.total_applications;141000.00
+doaf.balanced;sim
+doaf.identity;"opening + external received + internal received - external applications - internal sent = closing custody"
+doaf.internal_transfers_eliminated;sim
+doaf.memo_internal_transfers.0.transfer;01M3WZ3839P4YHGRWZ4AKPFB0F
+doaf.memo_internal_transfers.0.origin.public_id;01M3WZ36F5VBMRZXAJ515K4CYD
+doaf.memo_internal_transfers.0.origin.name;"Congregação A2 F1D E2E"
+doaf.memo_internal_transfers.0.destination.public_id;01M3WZ36EEH4VQWP4Q1CABFVV4
+doaf.memo_internal_transfers.0.destination.name;"Centro A F1D E2E"
+doaf.memo_internal_transfers.0.amount;7000.00
+doaf.memo_internal_transfers.0.purpose.code;TRF_REMITTANCE
+doaf.memo_internal_transfers.0.purpose.label;"Remessa regular"
+doaf.memo_internal_transfers.0.status;SENT
+doaf.memo_internal_transfers.0.sent_at;"2026-08-12 11:00:00.000000"
+doaf.memo_internal_transfers.0.received_at;
+doaf.memo_internal_transfers.0.perimeter_class;INTERNAL_TO_PERIMETER
+doaf.memo_internal_transfers.1.transfer;01M3WZ37KFNVP8THQM0Y9WXR2G
+doaf.memo_internal_transfers.1.origin.public_id;01M3WZ36EEH4VQWP4Q1CABFVV4
+doaf.memo_internal_transfers.1.origin.name;"Centro A F1D E2E"
+doaf.memo_internal_transfers.1.destination.public_id;01M3WZ36E7BXHC4KJR3VJ4XG93
+doaf.memo_internal_transfers.1.destination.name;"Município F1D E2E"
+doaf.memo_internal_transfers.1.amount;40000.00
+doaf.memo_internal_transfers.1.purpose.code;TRF_REMITTANCE
+doaf.memo_internal_transfers.1.purpose.label;"Remessa regular"
+doaf.memo_internal_transfers.1.status;RECEIVED
+doaf.memo_internal_transfers.1.sent_at;"2026-08-08 11:00:00.000000"
+doaf.memo_internal_transfers.1.received_at;"2026-08-08 11:00:00.000000"
+doaf.memo_internal_transfers.1.perimeter_class;INTERNAL_TO_PERIMETER
+doaf.memo_internal_transfers.2.transfer;01M3WZ3768XVTWR9F4NSKVXXK2
+doaf.memo_internal_transfers.2.origin.public_id;01M3WZ36EXB1WHCRR91YMG6THR
+doaf.memo_internal_transfers.2.origin.name;"Congregação A1 F1D E2E"
+doaf.memo_internal_transfers.2.destination.public_id;01M3WZ36EEH4VQWP4Q1CABFVV4
+doaf.memo_internal_transfers.2.destination.name;"Centro A F1D E2E"
+doaf.memo_internal_transfers.2.amount;60000.00
+doaf.memo_internal_transfers.2.purpose.code;TRF_REMITTANCE
+doaf.memo_internal_transfers.2.purpose.label;"Remessa regular"
+doaf.memo_internal_transfers.2.status;RECEIVED
+doaf.memo_internal_transfers.2.sent_at;"2026-08-05 11:00:00.000000"
+doaf.memo_internal_transfers.2.received_at;"2026-08-05 11:00:00.000000"
+doaf.memo_internal_transfers.2.perimeter_class;INTERNAL_TO_PERIMETER

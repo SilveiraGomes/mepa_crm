@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Academy\AttendanceController;
+use App\Http\Controllers\Api\V1\Payroll\HrController;
+use App\Http\Controllers\Api\V1\Payroll\PayrollRunController;
 use App\Http\Controllers\Api\V1\Academy\AssessmentController;
 use App\Http\Controllers\Api\V1\Academy\AttemptController;
 use App\Http\Controllers\Api\V1\Academy\CertificateController;
@@ -22,6 +24,11 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\Territorial\TerritorialController;
 use App\Http\Controllers\Api\V1\Files\DocumentController;
 use App\Http\Controllers\Api\V1\Files\FileController;
+use App\Http\Controllers\Api\V1\Finance\ContributionController;
+use App\Http\Controllers\Api\V1\Finance\FinanceController;
+use App\Http\Controllers\Api\V1\Finance\FinanceCoreController;
+use App\Http\Controllers\Api\V1\Finance\FinanceTransferController;
+use App\Http\Controllers\Api\V1\Finance\FinanceReportingController;
 use App\Http\Controllers\Api\V1\Membership\AdmissionController;
 use App\Http\Controllers\Api\V1\Membership\MemberLifecycleController;
 use App\Http\Controllers\Api\V1\Membership\MembershipController;
@@ -136,6 +143,111 @@ Route::prefix('v1')->group(function (): void {
         Route::get('{membership}/milestones', [MembershipRecordController::class, 'milestones']);
         Route::post('{membership}/milestones', [MembershipRecordController::class, 'recordMilestone'])->middleware('throttle:membership-write');
         Route::post('{membership}/milestones/{type}/correct', [MembershipRecordController::class, 'correctMilestone'])->middleware('throttle:membership-write');
+    });
+
+    // P0.10-F1B Finance (ADR 0021 + D-04A): interunit transfers, fund custody, contributions. Targets are public ids;
+    // explicit stage endpoints only (no generic status PATCH); collections paginated (max 100).
+    Route::prefix('finance')->middleware(['api.auth', 'throttle:finance'])->group(function (): void {
+        Route::get('context', [FinanceController::class, 'context']);
+        Route::get('units', [FinanceController::class, 'units']);
+        Route::get('transfers', [FinanceController::class, 'transfers']);
+        Route::post('transfers', [FinanceTransferController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('transfers/{transfer}', [FinanceController::class, 'transfer']);
+        Route::post('transfers/{transfer}/send', [FinanceTransferController::class, 'send'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/receive', [FinanceTransferController::class, 'receive'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/cancel', [FinanceTransferController::class, 'cancel'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/reverse-send', [FinanceTransferController::class, 'reverseSend'])->middleware('throttle:finance-write');
+        Route::post('transfers/{transfer}/reconcile', [FinanceTransferController::class, 'reconcile'])->middleware('throttle:finance-write');
+        Route::get('units/{unit}/custody', [FinanceController::class, 'custody']);
+        Route::get('units/{unit}/subtree-transfers', [FinanceController::class, 'subtree']);
+        Route::get('contributions', [FinanceController::class, 'contributions']);
+        Route::post('contributions', [ContributionController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('contributions/{contribution}', [FinanceController::class, 'contribution']);
+        Route::post('contributions/{contribution}/valuation', [ContributionController::class, 'valuate'])->middleware('throttle:finance-write');
+        Route::post('contributions/{contribution}/approve-valuation', [ContributionController::class, 'approve'])->middleware('throttle:finance-write');
+        // P0.10-F1C Finance Core: financial accounts, accrual subledgers, bank statements / reconciliation, budget, closes.
+        Route::get('accounts', [FinanceCoreController::class, 'accounts']);
+        Route::post('accounts', [FinanceCoreController::class, 'openAccount'])->middleware('throttle:finance-write');
+        Route::get('accounts/{account}', [FinanceCoreController::class, 'account']);
+        Route::get('accounts/{account}/history', [FinanceCoreController::class, 'accountHistory']);
+        Route::post('accounts/{account}/close', [FinanceCoreController::class, 'closeAccount'])->middleware('throttle:finance-write');
+        Route::get('receivables', [FinanceCoreController::class, 'receivables']);
+        Route::post('receivables', [FinanceCoreController::class, 'recognizeReceivable'])->middleware('throttle:finance-write');
+        Route::get('receivables/{receivable}', [FinanceCoreController::class, 'receivable']);
+        Route::post('receivables/{receivable}/settlements', [FinanceCoreController::class, 'settleReceivable'])->middleware('throttle:finance-write');
+        Route::post('receivables/{receivable}/cancel', [FinanceCoreController::class, 'cancelReceivable'])->middleware('throttle:finance-write');
+        Route::get('payables', [FinanceCoreController::class, 'payables']);
+        Route::post('payables', [FinanceCoreController::class, 'recognizePayable'])->middleware('throttle:finance-write');
+        Route::get('payables/{payable}', [FinanceCoreController::class, 'payable']);
+        Route::post('payables/{payable}/settlements', [FinanceCoreController::class, 'settlePayable'])->middleware('throttle:finance-write');
+        Route::post('payables/{payable}/cancel', [FinanceCoreController::class, 'cancelPayable'])->middleware('throttle:finance-write');
+        Route::get('settlements/{settlement}', [FinanceCoreController::class, 'settlement']);
+        Route::post('settlements/{settlement}/cancel', [FinanceCoreController::class, 'cancelSettlement'])->middleware('throttle:finance-write');
+        Route::get('bank-statements', [FinanceCoreController::class, 'statements']);
+        Route::post('bank-statements', [FinanceCoreController::class, 'importStatement'])->middleware('throttle:finance-write');
+        Route::get('bank-statements/{statement}', [FinanceCoreController::class, 'statement']);
+        Route::get('reconciliations', [FinanceCoreController::class, 'reconciliations']);
+        Route::post('reconciliations', [FinanceCoreController::class, 'openReconciliation'])->middleware('throttle:finance-write');
+        Route::get('reconciliations/{reconciliation}', [FinanceCoreController::class, 'reconciliation']);
+        Route::post('reconciliations/{reconciliation}/matches', [FinanceCoreController::class, 'match'])->middleware('throttle:finance-write');
+        Route::post('reconciliations/{reconciliation}/unmatch', [FinanceCoreController::class, 'unmatch'])->middleware('throttle:finance-write');
+        Route::post('reconciliations/{reconciliation}/close', [FinanceCoreController::class, 'closeReconciliation'])->middleware('throttle:finance-write');
+        Route::post('reconciliations/{reconciliation}/adjustments', [FinanceCoreController::class, 'adjustReconciliation'])->middleware('throttle:finance-write');
+        Route::get('budgets', [FinanceCoreController::class, 'budgets']);
+        Route::post('budgets', [FinanceCoreController::class, 'createBudget'])->middleware('throttle:finance-write');
+        Route::get('budgets/{budget}', [FinanceCoreController::class, 'budget']);
+        Route::get('budgets/{budget}/actual-vs-budget', [FinanceCoreController::class, 'actualVsBudget']);
+        Route::post('budgets/{budget}/lines', [FinanceCoreController::class, 'budgetLines'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/submit', [FinanceCoreController::class, 'submitBudget'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/return', [FinanceCoreController::class, 'returnBudget'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/review', [FinanceCoreController::class, 'reviewBudget'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/approve', [FinanceCoreController::class, 'approveBudget'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/cancel', [FinanceCoreController::class, 'cancelBudget'])->middleware('throttle:finance-write');
+        Route::post('budgets/{budget}/revise', [FinanceCoreController::class, 'reviseBudget'])->middleware('throttle:finance-write');
+        Route::get('periods', [FinanceCoreController::class, 'periods']);
+        Route::post('periods/{period}/close', [FinanceCoreController::class, 'closePeriod'])->middleware('throttle:finance-write');
+        Route::post('periods/{period}/reopen', [FinanceCoreController::class, 'reopenPeriod'])->middleware('throttle:finance-write');
+        Route::post('periods/{period}/national-close', [FinanceCoreController::class, 'closePeriodNationally'])->middleware('throttle:finance-write');
+        // P0.10-F1D: bounded, snapshot-consistent reporting. All targets are public ids in the query string.
+        Route::get('dashboard', [FinanceReportingController::class, 'dashboard']);
+        Route::get('reports', [FinanceReportingController::class, 'index']);
+        Route::get('reports/{report}', [FinanceReportingController::class, 'show']);
+        Route::get('reports/{report}/export', [FinanceReportingController::class, 'export'])->middleware('throttle:finance');
+    });
+
+    // P0.10-F2A RH / payroll foundation (ADR 0021 D23-D28 + D-04A.15). Public ids only; permission before target (F-06).
+    // No route calculates, approves, posts or pays a payroll run in F2A (the run pipeline is F2B).
+    Route::prefix('hr')->middleware(['api.auth', 'throttle:finance'])->group(function (): void {
+        Route::get('context', [HrController::class, 'context']);
+        Route::get('payroll/status', [HrController::class, 'status']);
+        Route::get('payroll/readiness', [HrController::class, 'readiness']);
+        Route::get('employments', [HrController::class, 'employments']);
+        Route::post('employments', [HrController::class, 'storeEmployment'])->middleware('throttle:finance-write');
+        Route::get('employments/{employment}', [HrController::class, 'employment']);
+        Route::post('employments/{employment}/end', [HrController::class, 'endEmployment'])->middleware('throttle:finance-write');
+        Route::get('employments/{employment}/compensation', [HrController::class, 'compensation']);
+        Route::post('employments/{employment}/compensation', [HrController::class, 'changeCompensation'])->middleware('throttle:finance-write');
+        Route::post('employments/{employment}/compensation/stop', [HrController::class, 'stopCompensation'])->middleware('throttle:finance-write');
+        Route::get('compensations', [HrController::class, 'compensationOverview']);
+        Route::get('components', [HrController::class, 'components']);
+        Route::get('payroll-rules', [HrController::class, 'rules']);
+        Route::post('payroll-rules', [HrController::class, 'draftRule'])->middleware('throttle:finance-write');
+        Route::get('payroll-rules/{code}/{version}', [HrController::class, 'rule']);
+        Route::post('payroll-rules/{code}/{version}/approve', [HrController::class, 'approveRule'])->middleware('throttle:finance-write');
+        Route::post('payroll-rules/{code}/{version}/retire', [HrController::class, 'retireRule'])->middleware('throttle:finance-write');
+        // P0.10-F2B payroll runs: one route per explicit transition (no generic status write, no delete).
+        Route::get('payroll/runs', [PayrollRunController::class, 'index']);
+        Route::post('payroll/runs', [PayrollRunController::class, 'store'])->middleware('throttle:finance-write');
+        Route::get('payroll/runs/{run}', [PayrollRunController::class, 'show']);
+        Route::get('payroll/runs/{run}/employees', [PayrollRunController::class, 'employees']);
+        Route::get('payroll/runs/{run}/summary', [PayrollRunController::class, 'summary']);
+        Route::get('payroll/runs/{run}/summary.csv', [PayrollRunController::class, 'summaryCsv']);
+        Route::post('payroll/runs/{run}/calculate', [PayrollRunController::class, 'calculate'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/approve', [PayrollRunController::class, 'approve'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/post', [PayrollRunController::class, 'post'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/pay', [PayrollRunController::class, 'pay'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/reverse', [PayrollRunController::class, 'reverse'])->middleware('throttle:finance-write');
+        Route::post('payroll/runs/{run}/cancel', [PayrollRunController::class, 'cancel'])->middleware('throttle:finance-write');
     });
 
     Route::prefix('physical')->middleware(['api.auth', 'throttle:physical'])->group(function (): void {

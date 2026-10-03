@@ -98,6 +98,9 @@ if ($target === 'wave5') {
     // P0.9: ADR-0020 delta (membership_periods open-period guard + controlled Membership catalog and counter).
     $p09Manifest = json_decode(file_get_contents($root . '/docs/database/physical/p09_membership_delta_manifest.json'), true, 512, JSON_THROW_ON_ERROR);
     $ran += count($migrator->run(array_map(fn ($f) => $base . $f, $p09Manifest['migrations'])));
+    // P0.10-F1A: ADR-0021 Finance Core foundation (21 tables + controlled finance catalog; no Payroll).
+    $p010Manifest = json_decode(file_get_contents($root . '/docs/database/physical/p010_finance_delta_manifest.json'), true, 512, JSON_THROW_ON_ERROR);
+    $ran += count($migrator->run(array_map(fn ($f) => $base . $f, $p010Manifest['migrations'])));
     $tables = $db->select('SHOW TABLES');
     echo json_encode(['status' => 'MIGRATED', 'migrations_ran' => $ran, 'tables' => count($tables)], JSON_PRETTY_PRINT), PHP_EOL;
     exit(0);

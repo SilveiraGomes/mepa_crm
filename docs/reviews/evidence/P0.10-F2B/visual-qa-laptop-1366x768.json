@@ -1,0 +1,175 @@
+{
+  "project": "laptop-1366x768",
+  "checks": [
+    {
+      "screen": "run-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-detail-calculated",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-breakdown",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-calculate-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-calculated-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-approver-disabled",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0,
+      "salaryVisible": false
+    },
+    {
+      "screen": "run-approve-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-detail-calculated",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-breakdown",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-calculate-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-calculated-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-approver-disabled",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0,
+      "salaryVisible": false
+    },
+    {
+      "screen": "run-approve-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-approved",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-post-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-posted",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-pay-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "run-paid",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    }
+  ]
+}

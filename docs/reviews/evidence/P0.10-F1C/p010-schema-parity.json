@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "mode": "CATALOG_VS_MIGRATIONS_VS_INFORMATION_SCHEMA",
+  "details": {
+    "comparison": "BIDIRECTIONAL",
+    "planned_table_count": 35,
+    "phased_table_count": 35,
+    "f1a_tables": 26,
+    "catalog_vs_migrations": {
+      "columns": {
+        "expected": 285,
+        "actual": 285,
+        "missing": [],
+        "unexpected": []
+      },
+      "indexes": {
+        "expected": 145,
+        "actual": 145,
+        "missing": [],
+        "unexpected": []
+      },
+      "fks": {
+        "expected": 98,
+        "actual": 98,
+        "missing": [],
+        "unexpected": []
+      },
+      "checks": {
+        "expected": 82,
+        "actual": 82,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    "approved_deltas": {
+      "columns": 25,
+      "column_changes": [
+        "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
+      ],
+      "index_deltas": 19,
+      "index_removals": [
+        "journal_entries:ix_journal_entries_reversal_of_id:reversal_of_id"
+      ],
+      "fk_deltas": 14,
+      "fk_deferred": [
+        "receivables:obligation_id->obligations.id"
+      ]
+    },
+    "money_columns": 11,
+    "generated_columns_static": {
+      "budgets.approved_guard": "IF(`status` = 'APPROVED', 1, NULL)"
+    },
+    "generated_declared": true,
+    "database": "mepa_wave5_test_dcb91f53_pool_01",
+    "catalog_vs_information_schema": {
+      "columns": {
+        "expected": 285,
+        "actual": 285,
+        "missing": [],
+        "unexpected": []
+      },
+      "indexes": {
+        "expected": 145,
+        "actual": 145,
+        "missing": [],
+        "unexpected": []
+      },
+      "fks": {
+        "expected": 98,
+        "actual": 98,
+        "missing": [],
+        "unexpected": []
+      },
+      "checks": {
+        "expected": 82,
+        "actual": 82,
+        "missing": [],
+        "unexpected": []
+      }
+    },
+    "live_tables": 26,
+    "deferred_or_payroll_tables_present": [],
+    "non_restrict_fks": [],
+    "non_bigint_fk_columns": [],
+    "float_columns": [],
+    "live_money_columns": 16,
+    "forbidden_columns_present": [],
+    "approved_guard_generated_stored": true,
+    "mysql_output_requeries": 0,
+    "controlled_rows": {
+      "currencies": 1,
+      "funds": 1,
+      "chart_of_accounts": 18,
+      "financial_categories": 82,
+      "permissions": 16,
+      "legal_document_types": 10,
+      "workflows": 2
+    },
+    "controlled_rows_expected": {
+      "currencies": 1,
+      "funds": 1,
+      "chart_of_accounts": 18,
+      "financial_categories": 82,
+      "permissions": 16,
+      "legal_document_types": 10,
+      "workflows": 2
+    },
+    "d04a_vocabulary": {
+      "clearing_accounts": {
+        "FIXED_ASSETS": "ASSET",
+        "INTERUNIT_CLEARING_IN": "INTERUNIT_CONTROL",
+        "INTERUNIT_CLEARING_OUT": "INTERUNIT_CONTROL"
+      },
+      "fixed_asset_rubrics": 7,
+      "transfer_purposes": [
+        "TRF_BUDGET_QUOTA",
+        "TRF_OTHER",
+        "TRF_PROJECT",
+        "TRF_REMITTANCE",
+        "TRF_SPECIAL_CONTRIBUTION",
+        "TRF_SUPPORT"
+      ]
+    },
+    "roles_with_finance_permissions": 0,
+    "errors": []
+  }
+}

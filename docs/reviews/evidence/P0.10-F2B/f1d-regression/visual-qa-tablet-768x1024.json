@@ -1,0 +1,158 @@
+{
+  "project": "tablet-768x1024",
+  "checks": [
+    {
+      "screen": "dashboard-consolidated",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "dashboard-own",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "dre-own",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "dre-consolidated",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "doaf-own",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "doaf-consolidated",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "internal-funds-received",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "internal-funds-sent",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "interunit-position",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "budget-vs-actual",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "payables-open",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "cash-bank-balances",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "dre-quarter",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "contributions",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "contribution-in-kind",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "own-reader-dashboard",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "own-reader-reports",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenFilters": [],
+      "clippedTotals": [],
+      "unusableTables": 0
+    }
+  ]
+}

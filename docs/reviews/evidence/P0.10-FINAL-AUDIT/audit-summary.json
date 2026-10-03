@@ -1,0 +1,74 @@
+{
+  "audit_date": "2026-10-03",
+  "audit_level": "L7",
+  "branch": "p010-finance-payroll",
+  "baseline_head": "41a0927186976fe487fdf58fd3f5587ca6594986",
+  "merge_base_main": "a3d7c5f3405c5c17ee5783251f1cf32068a7cc13",
+  "verdict": "APPROVED",
+  "schema": {
+    "migrations": 203,
+    "tables": 189,
+    "p010_parity": "PASS",
+    "p09_stability_runs": 3,
+    "p09_indexes_compared": 55,
+    "legacy_parity": ["P0.9", "P0.8", "P0.7", "P0.6"]
+  },
+  "tests": {
+    "finance_f1a": {"tests": 26, "assertions": 664},
+    "finance_f1b": {"tests": 21, "assertions": 1225},
+    "finance_f1c": {"tests": 46, "assertions": 1477},
+    "finance_f1d": {"tests": 4, "assertions": 40},
+    "finance_f1d_evidence": {"tests": 32, "assertions": 775},
+    "payroll_f2a": {"tests": 29, "assertions": 825},
+    "payroll_f2b": {"tests": 47, "assertions": 1720},
+    "territorial": {"tests": 13, "assertions": 151},
+    "files": {"tests": 27, "assertions": 1550},
+    "people_context": {"tests": 8, "assertions": 220},
+    "people_person": {"tests": 15, "assertions": 1354},
+    "http_contracts": 828,
+    "web": 530,
+    "authorization": 20,
+    "application_validation": 1513
+  },
+  "accounting_cross_check": {
+    "gross": "257654.00",
+    "employee_deductions": "13129.68",
+    "employer_charges": "19012.32",
+    "net_pay": "244524.32",
+    "post_debits": "276666.32",
+    "post_credits": "276666.32",
+    "statutory_liability_after_pay": "32142.00",
+    "balanced": true
+  },
+  "mutation_validation": {
+    "payroll_f2b": "20/20 DETECTED",
+    "payroll_f2a": "16/16 DETECTED",
+    "finance": "PASS",
+    "sources_restored_byte_for_byte": true
+  },
+  "e2e": {
+    "build": "PASS",
+    "pwa_service_worker": true,
+    "playwright_production_disabled": "12/12 PASS",
+    "playwright_production_enabled": "4/4 PASS",
+    "servers_stopped": true,
+    "production_default_enabled": false,
+    "secret_leaks": []
+  },
+  "graphify": {
+    "nodes": 10294,
+    "edges": 20906,
+    "duplicate_node_ids": 0,
+    "missing_edge_endpoints": 0,
+    "self_loops": 0,
+    "result": "PASS"
+  },
+  "findings": {
+    "PRODUCT": 0,
+    "EVIDENCE": 0,
+    "TEST_INFRA": {
+      "found": 3,
+      "resolved": 3
+    }
+  }
+}

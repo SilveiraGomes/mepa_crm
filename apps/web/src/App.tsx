@@ -16,6 +16,11 @@ const householdPages = () => import('./pages/HouseholdPages')
 const territorialPages = () => import('./pages/TerritorialPages')
 const physicalPages = () => import('./pages/PhysicalPages')
 const membershipPages = () => import('./pages/MembershipPages')
+const financePages = () => import('./pages/FinancePages')
+const financeCorePages = () => import('./pages/FinanceCorePages')
+const financeReportingPages = () => import('./pages/FinanceReportingPages')
+const hrPages = () => import('./pages/HrPages')
+const payrollRunPages = () => import('./pages/PayrollRunPages')
 const filesPages = () => import('./pages/FilesPages')
 const documentsPages = () => import('./pages/DocumentsPages')
 const patrimonyPages = () => import('./pages/PatrimonyPages')
@@ -79,6 +84,47 @@ const MemberDetailPage = named(membershipPages, 'MemberDetailPage')
 const MemberHistoryPage = named(membershipPages, 'MemberHistoryPage')
 const MemberTransfersPage = named(membershipPages, 'MemberTransfersPage')
 const TransfersPage = named(membershipPages, 'TransfersPage')
+const SentTransfersPage = named(financePages, 'SentTransfersPage')
+const ReceivedTransfersPage = named(financePages, 'ReceivedTransfersPage')
+const InTransitPage = named(financePages, 'InTransitPage')
+const TransferCreatePage = named(financePages, 'TransferCreatePage')
+const TransferDetailPage = named(financePages, 'TransferDetailPage')
+const CustodyPage = named(financePages, 'CustodyPage')
+const FinanceAccountsPage = named(financeCorePages, 'AccountsPage')
+const FinanceAccountOpenPage = named(financeCorePages, 'AccountOpenPage')
+const FinanceAccountDetailPage = named(financeCorePages, 'AccountDetailPage')
+const FinanceReceivablesPage = named(financeCorePages, 'ReceivablesPage')
+const FinanceReceivableCreatePage = named(financeCorePages, 'ReceivableCreatePage')
+const FinanceReceivableDetailPage = named(financeCorePages, 'ReceivableDetailPage')
+const FinancePayablesPage = named(financeCorePages, 'PayablesPage')
+const FinancePayableCreatePage = named(financeCorePages, 'PayableCreatePage')
+const FinancePayableDetailPage = named(financeCorePages, 'PayableDetailPage')
+const FinanceStatementsPage = named(financeCorePages, 'StatementsPage')
+const FinanceStatementCreatePage = named(financeCorePages, 'StatementCreatePage')
+const FinanceStatementDetailPage = named(financeCorePages, 'StatementDetailPage')
+const FinanceReconciliationsPage = named(financeCorePages, 'ReconciliationsPage')
+const FinanceReconciliationDetailPage = named(financeCorePages, 'ReconciliationDetailPage')
+const FinanceBudgetsPage = named(financeCorePages, 'BudgetsPage')
+const FinanceBudgetCreatePage = named(financeCorePages, 'BudgetCreatePage')
+const FinanceBudgetDetailPage = named(financeCorePages, 'BudgetDetailPage')
+const FinancePeriodsPage = named(financeCorePages, 'PeriodsPage')
+const FinanceDashboardPage = named(financeReportingPages, 'FinanceDashboardPage')
+const FinanceReportsPage = named(financeReportingPages, 'FinanceReportsPage')
+const FinanceContributionsPage = named(financeReportingPages, 'ContributionsPage')
+const FinanceContributionDetailPage = named(financeReportingPages, 'ContributionDetailPage')
+const HrEmployeesPage = named(hrPages, 'HrEmployeesPage')
+const HrEmploymentDetailPage = named(hrPages, 'HrEmploymentDetailPage')
+const HrEmploymentsPage = named(hrPages, 'HrEmploymentsPage')
+const HrEmploymentCreatePage = named(hrPages, 'HrEmploymentCreatePage')
+const HrCompensationPage = named(hrPages, 'HrCompensationPage')
+const HrComponentsPage = named(hrPages, 'HrComponentsPage')
+const HrRulesPage = named(hrPages, 'HrRulesPage')
+const HrRuleCreatePage = named(hrPages, 'HrRuleCreatePage')
+const HrRuleDetailPage = named(hrPages, 'HrRuleDetailPage')
+const HrReadinessPage = named(hrPages, 'HrReadinessPage')
+const PayrollRunsPage = named(payrollRunPages, 'PayrollRunsPage')
+const PayrollRunCreatePage = named(payrollRunPages, 'PayrollRunCreatePage')
+const PayrollRunDetailPage = named(payrollRunPages, 'PayrollRunDetailPage')
 const LocationCreatePage = named(physicalPages, 'LocationCreatePage')
 const LocationDetailPage = named(physicalPages, 'LocationDetailPage')
 const LocationEditPage = named(physicalPages, 'LocationEditPage')
@@ -115,6 +161,47 @@ function App() {
       <Route path="/documentos" element={<DocumentsListPage />} />
       <Route path="/documentos/novo" element={<DocumentCreatePage />} />
       <Route path="/documentos/:id" element={<DocumentDetailPage />} />
+      <Route path="/rh/funcionarios" element={<HrEmployeesPage />} />
+      <Route path="/rh/funcionarios/:id" element={<HrEmploymentDetailPage />} />
+      <Route path="/rh/vinculos" element={<HrEmploymentsPage />} />
+      <Route path="/rh/vinculos/novo" element={<HrEmploymentCreatePage />} />
+      <Route path="/rh/remuneracao" element={<HrCompensationPage />} />
+      <Route path="/rh/componentes" element={<HrComponentsPage />} />
+      <Route path="/rh/regras" element={<HrRulesPage />} />
+      <Route path="/rh/regras/nova" element={<HrRuleCreatePage />} />
+      <Route path="/rh/regras/:code/:version" element={<HrRuleDetailPage />} />
+      <Route path="/rh/prontidao" element={<HrReadinessPage />} />
+      <Route path="/rh/folhas" element={<PayrollRunsPage />} />
+      <Route path="/rh/folhas/nova" element={<PayrollRunCreatePage />} />
+      <Route path="/rh/folhas/:id" element={<PayrollRunDetailPage />} />
+      <Route path="/financas" element={<FinanceDashboardPage />} />
+      <Route path="/financas/relatorios" element={<FinanceReportsPage />} />
+      <Route path="/financas/contribuicoes" element={<FinanceContributionsPage />} />
+      <Route path="/financas/contribuicoes/:id" element={<FinanceContributionDetailPage />} />
+      <Route path="/financas/transferencias" element={<SentTransfersPage />} />
+      <Route path="/financas/transferencias/recebidas" element={<ReceivedTransfersPage />} />
+      <Route path="/financas/transferencias/em-transito" element={<InTransitPage />} />
+      <Route path="/financas/transferencias/nova" element={<TransferCreatePage />} />
+      <Route path="/financas/transferencias/:id" element={<TransferDetailPage />} />
+      <Route path="/financas/posicao" element={<CustodyPage />} />
+      <Route path="/financas/contas" element={<FinanceAccountsPage />} />
+      <Route path="/financas/contas/nova" element={<FinanceAccountOpenPage />} />
+      <Route path="/financas/contas/:id" element={<FinanceAccountDetailPage />} />
+      <Route path="/financas/a-receber" element={<FinanceReceivablesPage />} />
+      <Route path="/financas/a-receber/novo" element={<FinanceReceivableCreatePage />} />
+      <Route path="/financas/a-receber/:id" element={<FinanceReceivableDetailPage />} />
+      <Route path="/financas/a-pagar" element={<FinancePayablesPage />} />
+      <Route path="/financas/a-pagar/novo" element={<FinancePayableCreatePage />} />
+      <Route path="/financas/a-pagar/:id" element={<FinancePayableDetailPage />} />
+      <Route path="/financas/extractos" element={<FinanceStatementsPage />} />
+      <Route path="/financas/extractos/novo" element={<FinanceStatementCreatePage />} />
+      <Route path="/financas/extractos/:id" element={<FinanceStatementDetailPage />} />
+      <Route path="/financas/reconciliacao" element={<FinanceReconciliationsPage />} />
+      <Route path="/financas/reconciliacao/:id" element={<FinanceReconciliationDetailPage />} />
+      <Route path="/financas/orcamento" element={<FinanceBudgetsPage />} />
+      <Route path="/financas/orcamento/novo" element={<FinanceBudgetCreatePage />} />
+      <Route path="/financas/orcamento/:id" element={<FinanceBudgetDetailPage />} />
+      <Route path="/financas/fechos" element={<FinancePeriodsPage />} />
       <Route path="/membros" element={<MembersPage />} />
       <Route path="/membros/admissoes" element={<AdmissionsPage />} />
       <Route path="/membros/admissoes/colectiva" element={<CollectiveAdmissionPage />} />

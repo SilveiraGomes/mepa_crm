@@ -1,0 +1,48 @@
+{
+    "newer_first": {
+        "first": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 10272,
+            "ms": 129
+        },
+        "second": {
+            "status": "BUDGET_VERSION_OUTDATED",
+            "items": [],
+            "pid": 37908,
+            "ms": 71
+        },
+        "wait": {
+            "object": "budgets",
+            "mode": "X",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    },
+    "older_first": {
+        "first": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 23396,
+            "ms": 130
+        },
+        "second": {
+            "status": "OK",
+            "result": {
+                "replayed": false
+            },
+            "pid": 20988,
+            "ms": 87
+        },
+        "wait": {
+            "object": "budgets",
+            "mode": "X",
+            "state": "LOCK WAIT",
+            "blocked_by_first": true
+        }
+    }
+}

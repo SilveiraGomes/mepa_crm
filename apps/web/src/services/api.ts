@@ -40,6 +40,8 @@ export interface RequestOptions {
   body?: unknown
   signal?: AbortSignal
   token?: string | null
+  /** Extra request headers (e.g. Idempotency-Key of a Finance write). Never credentials. */
+  headers?: Record<string, string>
 }
 
 export function buildUrl(path: string, query?: Record<string, QueryValue>): string {
@@ -54,6 +56,7 @@ export function buildUrl(path: string, query?: Record<string, QueryValue>): stri
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
+  for (const [name, value] of Object.entries(options.headers ?? {})) if (name.toLowerCase() !== 'authorization') headers[name] = value
   if (options.token) headers.Authorization = `Bearer ${options.token}`
 
   let response: Response

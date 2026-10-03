@@ -1,0 +1,317 @@
+{
+  "phase": "P0.10-F1D",
+  "status": "PASS",
+  "checks": {
+    "F1D01_sixteen_reports": true,
+    "F1D02_historical_perimeter": true,
+    "F1D03_consistent_snapshot_c8": true,
+    "F1D04_posted_ledger_only": true,
+    "F1D05_own_consolidated_permissions": true,
+    "F1D06_dre_doaf_separate": true,
+    "F1D07_internal_transfer_elimination": true,
+    "F1D08_periods": true,
+    "F1D09_bounded_routes_and_public_ids": true,
+    "F1D10_export_same_model_and_audit": true,
+    "F1D11_final_ui_and_contributions": true,
+    "F1D12_acceptance_tests": true,
+    "F1D13_permission_before_target": true,
+    "F1D14_open_items_as_of_end": true,
+    "F1D16_view_named_by_type_and_rendered_bodies": true,
+    "F1D15_evidence_and_c8_worker": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "detector": "phpunit --filter test_r25_|test_r09_|test_r10_|test_r11_|test_r02_|test_r03_|test_r04_|test_r05_|test_r01_|test_r18_|test_r26_|test_r27_|test_r16_|test_r34_c8_|test_r30_|test_r32_|test_r14_|test_r29_",
+      "exit_code": 0,
+      "summary": "OK (18 tests, 427 assertions)",
+      "seconds": 68.5
+    },
+    {
+      "id": "M1",
+      "description": "perimeter resolved from the CURRENT parent_id instead of unit_parent_periods",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/ReportPerimeterResolver.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r25_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 9, Failures: 1.",
+      "seconds": 19.1
+    },
+    {
+      "id": "M2",
+      "description": "internal RECEIVE counted as revenue in the DRE",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r09_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 17, Failures: 1.",
+      "seconds": 18.9
+    },
+    {
+      "id": "M3",
+      "description": "internal SEND counted as expense in the DRE",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r09_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 27, Failures: 1.",
+      "seconds": 40.6
+    },
+    {
+      "id": "M4",
+      "description": "consolidated DRE adds the interunit clearing (internal receipts) to revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r10_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "seconds": 18.7
+    },
+    {
+      "id": "M5",
+      "description": "consolidated DOAF without elimination of internal transfers",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r11_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "seconds": 18
+    },
+    {
+      "id": "M6",
+      "description": "accrual recognitions excluded from the DRE (cash basis)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r02_|test_r03_",
+      "exit_code": 2,
+      "summary": "Tests: 2, Assertions: 12, Errors: 1, Failures: 1.",
+      "seconds": 17.7
+    },
+    {
+      "id": "M7",
+      "description": "settlements added to the DRE (double counting)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r04_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 9, Failures: 1.",
+      "seconds": 17.2
+    },
+    {
+      "id": "M8",
+      "description": "FIXED_ASSETS acquisition treated as expense",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r05_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "seconds": 17.4
+    },
+    {
+      "id": "M9",
+      "description": "POSTED filter removed (DRAFT lines reported)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r01_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "seconds": 16.6
+    },
+    {
+      "id": "M10",
+      "description": "SUPERSEDED budget versions included",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r18_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 14, Failures: 1.",
+      "seconds": 17.4
+    },
+    {
+      "id": "M11",
+      "description": "consolidated subtree coverage guard removed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r26_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "seconds": 18.7
+    },
+    {
+      "id": "M12",
+      "description": "F-06: report permission no longer decided before the target",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r27_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 11, Failures: 1.",
+      "seconds": 17.2
+    },
+    {
+      "id": "M13",
+      "description": "report body kept in a process-wide cache (stale figures after a new posting)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r16_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 25, Failures: 1.",
+      "seconds": 15
+    },
+    {
+      "id": "M14",
+      "description": "report outside the REPEATABLE READ snapshot transaction",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r34_c8_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 15, Failures: 1.",
+      "seconds": 57.3
+    },
+    {
+      "id": "M15",
+      "description": "export alters a value",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Http/Controllers/Api/V1/Finance/FinanceReportingController.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r30_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 18, Failures: 1.",
+      "seconds": 17.5
+    },
+    {
+      "id": "M16",
+      "description": "IN_KIND_ASSETS treated as treasury in the DOAF",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r32_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 26, Failures: 1.",
+      "seconds": 16.4
+    },
+    {
+      "id": "M17",
+      "description": "funds in transit added to revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r14_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 20, Failures: 1.",
+      "seconds": 17.4
+    },
+    {
+      "id": "M18",
+      "description": "payroll field leaks into the Finance dashboard",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_TEST_FAILURE",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceReportingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_r29_",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 16, Failures: 1.",
+      "seconds": 17.7
+    }
+  ],
+  "probes_detected": 18,
+  "probes_run": 18,
+  "source_hashes_before": {
+    "service": "a8c48010bb3bad42bc1414c0dc3379539b345d3b933ce6ab741f20d72b06aafd",
+    "perimeter": "df860e47ee1950bc06a64c3d216f5af25fb06e4e7d59b8ad36b8755626b7f4cc",
+    "runtime": "9146ef19c3c03c6afe5899f47fc042ae8a39cc2302506b5bdb91ac99b7f6c0f3",
+    "routes": "ba9f1241334d50813aa121d696167b9fc1b5ae79c3e373b5c44424e3589c039f",
+    "controller": "636cdfea81eed404572500db0ab0d888869fb5eb8adc29beb415ab2342caff67",
+    "page": "19b9aa76f55a68f63be14f78009a13ec0b7fdef101fb88e650dd36408de72028",
+    "shell": "7830fdbb8b14f743a2b21fb26f0c28bb70b11c7e03b5ee3702c46b2c01bdb0af",
+    "test": "282741bdab433b999647df40e532a8bf7e857fc1dab0d6772416d5c8f71572c3",
+    "evidence": "9a3f418173c626ca100fec030e41fb9ffef09f06f2e72ff3f5f6981ec99cfaab",
+    "worker": "eb5fcb547bca6e7ea5117b6ba8ca3c9ce38639a5bad694200ef1743652183073",
+    "e2e": "7ebb6dfcbbb4361342c11bcb19067e717f2fec37ba438435165b6eff490eaaeb",
+    "contracts": "c33f262ac2fe4ac32e9e12ab5bea4746f01d813e667e884bb7bb4263a4fa9be3"
+  },
+  "source_hashes_after": {
+    "service": "a8c48010bb3bad42bc1414c0dc3379539b345d3b933ce6ab741f20d72b06aafd",
+    "perimeter": "df860e47ee1950bc06a64c3d216f5af25fb06e4e7d59b8ad36b8755626b7f4cc",
+    "runtime": "9146ef19c3c03c6afe5899f47fc042ae8a39cc2302506b5bdb91ac99b7f6c0f3",
+    "routes": "ba9f1241334d50813aa121d696167b9fc1b5ae79c3e373b5c44424e3589c039f",
+    "controller": "636cdfea81eed404572500db0ab0d888869fb5eb8adc29beb415ab2342caff67",
+    "page": "19b9aa76f55a68f63be14f78009a13ec0b7fdef101fb88e650dd36408de72028",
+    "shell": "7830fdbb8b14f743a2b21fb26f0c28bb70b11c7e03b5ee3702c46b2c01bdb0af",
+    "test": "282741bdab433b999647df40e532a8bf7e857fc1dab0d6772416d5c8f71572c3",
+    "evidence": "9a3f418173c626ca100fec030e41fb9ffef09f06f2e72ff3f5f6981ec99cfaab",
+    "worker": "eb5fcb547bca6e7ea5117b6ba8ca3c9ce38639a5bad694200ef1743652183073",
+    "e2e": "7ebb6dfcbbb4361342c11bcb19067e717f2fec37ba438435165b6eff490eaaeb",
+    "contracts": "c33f262ac2fe4ac32e9e12ab5bea4746f01d813e667e884bb7bb4263a4fa9be3"
+  },
+  "source_restored_byte_for_byte": true
+}

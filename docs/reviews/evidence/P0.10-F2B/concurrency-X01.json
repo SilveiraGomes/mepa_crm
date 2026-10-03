@@ -1,0 +1,47 @@
+{
+    "expected": {
+        "e1": {
+            "gross": "170000.50",
+            "deductions": "9500.07",
+            "employer_charges": "12000.04",
+            "net": "160500.43"
+        },
+        "e2": {
+            "gross": "87653.50",
+            "deductions": "3629.61",
+            "employer_charges": "7012.28",
+            "net": "84023.89"
+        },
+        "run": {
+            "gross": "257654.00",
+            "deductions": "13129.68",
+            "employer_charges": "19012.32",
+            "net": "244524.32"
+        },
+        "accrual": {
+            "PER_SALARY": "237654.00",
+            "PER_TRANSPORT_MEAL": "20000.00",
+            "PER_INSS": "19012.32",
+            "PAYROLL_WITHHOLDINGS": "13129.68",
+            "PAYROLL_EMPLOYER_CHARGES": "19012.32",
+            "PAYROLL_NET_PAYABLE": "244524.32",
+            "total": "276666.32"
+        },
+        "payment": "244524.32",
+        "after_payment": {
+            "PAYROLL_NET_PAYABLE": "0.00",
+            "PAYROLL_WITHHOLDINGS": "13129.68",
+            "PAYROLL_EMPLOYER_CHARGES": "19012.32"
+        }
+    },
+    "accrual": {
+        "PER_INSS": "19012.32",
+        "PER_SALARY": "237654.00",
+        "PER_TRANSPORT_MEAL": "20000.00",
+        "PAYROLL_EMPLOYER_CHARGES": "19012.32",
+        "PAYROLL_NET_PAYABLE": "244524.32",
+        "PAYROLL_WITHHOLDINGS": "13129.68"
+    },
+    "balanced": true,
+    "at": "2026-10-02T14:21:10Z"
+}

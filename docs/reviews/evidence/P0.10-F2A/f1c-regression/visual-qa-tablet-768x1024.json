@@ -1,0 +1,101 @@
+{
+  "project": "tablet-768x1024",
+  "checks": [
+    {
+      "screen": "accounts",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "account-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "account-open",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "receivable-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "settle-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "receivable-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "payable-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "statement-new",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "statement-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "reconciliation",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "match-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "reconciliation-closed",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "budget-review-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "budget-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "period-close-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    },
+    {
+      "screen": "periods",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false
+    }
+  ]
+}

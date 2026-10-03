@@ -1,0 +1,101 @@
+{
+  "project": "tablet-768x1024",
+  "checks": [
+    {
+      "screen": "employee-list",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "employee-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "employment-history",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "employments",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "compensation",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "components",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "rules",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "rule-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "readiness",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "viewer-detail",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "compensation-dialog",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    },
+    {
+      "screen": "compensation-after-change",
+      "overflow": false,
+      "clippedButtons": [],
+      "dialogOutside": false,
+      "hiddenControls": [],
+      "unusableTables": 0
+    }
+  ]
+}

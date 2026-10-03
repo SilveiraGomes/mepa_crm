@@ -1,0 +1,58 @@
+/* P0.10-F1B Finanças. Mobile-first; colours only through tokens.css. */
+.finance-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+.finance-tabs a.btn--primary, .finance-tabs a.btn--primary:visited { color: var(--text-on-primary); }
+.finance-filters { display: grid; gap: var(--space-3); align-items: end; }
+.finance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-width: 0; }
+.finance-amount { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.finance-unit { overflow-wrap: anywhere; }
+.finance-badges { display: inline-flex; flex-wrap: wrap; gap: var(--space-1); }
+.finance-summary, .finance-custody { display: grid; gap: var(--space-3); margin: 0; }
+.finance-summary > div, .finance-custody > div { min-width: 0; }
+.finance-summary dd { overflow-wrap: anywhere; margin: 0; }
+.finance-custody > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border-subtle); }
+.finance-custody dd { margin: 0; }
+.finance-reason { overflow-wrap: anywhere; }
+.finance-picked { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.finance-results { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.finance-results > li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); min-width: 0; }
+.finance-timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.finance-timeline__item { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-card); min-width: 0; overflow-wrap: anywhere; }
+.finance-input-amount { font-variant-numeric: tabular-nums; }
+.finance-dashboard-grid { display: grid; gap: var(--space-3); margin-bottom: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+.finance-kpi { display: grid; gap: var(--space-2); min-width: 0; }
+.finance-kpi > span { color: var(--text-muted); }
+.finance-kpi > strong { font-size: clamp(1.1rem, 3vw, 1.5rem); overflow-wrap: anywhere; }
+.finance-official-header { border-top: .25rem solid var(--color-primary); }
+.finance-official-header h2 { margin-block: var(--space-2); }
+.finance-report-filters { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+@media print {
+  .sidenav, .topbar, .finance-filters, .page-header__actions { display: none !important; }
+  .shell__body, .main, .main__inner { display: block; width: 100%; max-width: none; margin: 0; padding: 0; }
+  .card { break-inside: avoid; box-shadow: none; }
+}
+/* P0.10-F1C: editable line groups (statement lines, budget lines): one column on phones, a row from tablets up. */
+.finance-lines { display: grid; gap: var(--space-3); margin: 0; padding: var(--space-3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); min-width: 0; }
+.finance-lines > legend { padding: 0 var(--space-1); font-weight: 600; }
+.finance-line { display: grid; gap: var(--space-2); align-items: end; padding-bottom: var(--space-3); border-bottom: 1px solid var(--border-subtle); min-width: 0; }
+.finance-line > .btn { justify-self: start; }
+@media (width >= 48rem) {
+  .finance-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .finance-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .finance-line { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr) auto; border-bottom: 0; padding-bottom: 0; }
+  .finance-line--short { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; }
+}
+@media (width < 30rem) {
+  .finance-actions { width: 100%; }
+  .page-header__actions .finance-actions > .btn { flex: 1 1 100%; justify-content: center; }
+  .finance-tabs > .btn { flex: 1 1 calc(50% - var(--space-2)); justify-content: center; }
+}
+
+/* P0.10-F2B Folhas Salariais: action row wraps; the input hash never overflows; one block per employee. */
+code.hash { overflow-wrap: anywhere; word-break: break-all; font-size: 0.85em; }
+.payroll-employee + .payroll-employee { border-top: 1px solid var(--border-subtle); padding-top: var(--space-3); }
+/* A grid item defaults to min-width:auto and would grow to the table's min-content: the table scrolls in its own wrap. */
+.payroll-table { min-width: 0; }
+@media (width < 30rem) {
+  .page-header__actions .payroll-actions { width: 100%; }
+  .page-header__actions .payroll-actions > .btn { flex: 1 1 100%; justify-content: center; }
+}

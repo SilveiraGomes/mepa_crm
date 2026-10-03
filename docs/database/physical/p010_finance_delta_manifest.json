@@ -1,0 +1,458 @@
+{
+  "phase": "P0.10-F1A+F1B+F1C+F2A",
+  "adr": "docs/adr/0021-finance-payroll-v1-policy.md",
+  "addendum": "D-04A",
+  "migrations": [
+    "2026_09_30_100001_p010_create_currencies.php",
+    "2026_09_30_100002_p010_create_funds.php",
+    "2026_09_30_100003_p010_create_chart_of_accounts.php",
+    "2026_09_30_100004_p010_create_financial_categories.php",
+    "2026_09_30_100005_p010_create_accounting_periods.php",
+    "2026_09_30_100006_p010_create_accounts.php",
+    "2026_09_30_100007_p010_create_bank_account_details.php",
+    "2026_09_30_100008_p010_create_cash_registers.php",
+    "2026_09_30_100009_p010_create_financial_parties.php",
+    "2026_09_30_100010_p010_create_journal_entries.php",
+    "2026_09_30_100011_p010_create_journal_lines.php",
+    "2026_09_30_100012_p010_create_financial_documents.php",
+    "2026_09_30_100013_p010_create_accounting_period_unit_closes.php",
+    "2026_09_30_100014_p010_create_internal_transfers.php",
+    "2026_09_30_100015_p010_create_transfer_postings.php",
+    "2026_09_30_100016_p010_create_receivables.php",
+    "2026_09_30_100017_p010_create_payables.php",
+    "2026_09_30_100018_p010_create_settlements.php",
+    "2026_09_30_100019_p010_create_settlement_allocations.php",
+    "2026_09_30_100020_p010_create_budgets.php",
+    "2026_09_30_100021_p010_create_budget_lines.php",
+    "2026_09_30_100022_p010_install_finance_catalog.php",
+    "2026_09_30_100023_p010_create_contributions.php",
+    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php",
+    "2026_09_30_100025_p010_create_bank_statements.php",
+    "2026_09_30_100026_p010_create_bank_statement_lines.php",
+    "2026_09_30_100027_p010_create_reconciliations.php",
+    "2026_09_30_100028_p010_create_reconciliation_matches.php",
+    "2026_10_02_200001_p010_create_employments.php",
+    "2026_10_02_200002_p010_create_compensation_component_types.php",
+    "2026_10_02_200003_p010_create_employment_compensations.php",
+    "2026_10_02_200004_p010_create_payroll_rules.php",
+    "2026_10_02_200005_p010_create_payroll_rule_base_components.php",
+    "2026_10_02_200006_p010_create_payroll_rule_brackets.php",
+    "2026_10_02_200007_p010_create_payroll_runs.php",
+    "2026_10_02_200008_p010_create_payroll_run_lines.php",
+    "2026_10_02_200009_p010_create_payroll_postings.php",
+    "2026_10_02_200010_p010_install_payroll_catalog.php"
+  ],
+  "planned_table_count": 35,
+  "plan": {
+    "catalog_wave6_tables": 28,
+    "catalog_tables_not_created_v1": [
+      "obligation_rules",
+      "obligations",
+      "contribution_allocations"
+    ],
+    "new_finance_tables": [
+      "accounting_period_unit_closes"
+    ],
+    "payroll_tables_reserved_f2": [
+      "employments",
+      "compensation_component_types",
+      "employment_compensations",
+      "payroll_rules",
+      "payroll_rule_base_components",
+      "payroll_rule_brackets",
+      "payroll_runs",
+      "payroll_run_lines",
+      "payroll_postings"
+    ]
+  },
+  "materialized_tables_f1a": [
+    "currencies",
+    "funds",
+    "chart_of_accounts",
+    "financial_categories",
+    "accounting_periods",
+    "accounts",
+    "bank_account_details",
+    "cash_registers",
+    "financial_parties",
+    "journal_entries",
+    "journal_lines",
+    "financial_documents",
+    "accounting_period_unit_closes",
+    "internal_transfers",
+    "transfer_postings",
+    "receivables",
+    "payables",
+    "settlements",
+    "settlement_allocations",
+    "budgets",
+    "budget_lines",
+    "contributions",
+    "bank_statements",
+    "bank_statement_lines",
+    "reconciliations",
+    "reconciliation_matches"
+  ],
+  "deferred_finance_tables": {
+    "F1B": [],
+    "F1C": []
+  },
+  "new_tables": {
+    "accounting_period_unit_closes": {
+      "columns": [
+        "id:NO:bigint unsigned",
+        "period_id:NO:bigint unsigned",
+        "unit_id:NO:bigint unsigned",
+        "status:NO:varchar(64)",
+        "closed_at:NO:datetime(6)",
+        "closed_by:NO:bigint unsigned",
+        "reopened_at:YES:datetime(6)",
+        "reopened_by:YES:bigint unsigned",
+        "reason:YES:text",
+        "created_at:NO:datetime(6)",
+        "lock_version:NO:int unsigned"
+      ],
+      "indexes": [
+        "PRIMARY:id",
+        "uq_accounting_period_unit_closes_period_id_unit_id:period_id,unit_id",
+        "ix_accounting_period_unit_closes_unit_id:unit_id",
+        "ix_accounting_period_unit_closes_closed_by:closed_by",
+        "ix_accounting_period_unit_closes_reopened_by:reopened_by"
+      ],
+      "foreign_keys": [
+        "fk_accounting_period_unit_closes_period_id:period_id->accounting_periods(id)",
+        "fk_accounting_period_unit_closes_unit_id:unit_id->organizational_units(id)",
+        "fk_accounting_period_unit_closes_closed_by:closed_by->users(id)",
+        "fk_accounting_period_unit_closes_reopened_by:reopened_by->users(id)"
+      ]
+    }
+  },
+  "schema_changes": [
+    "2026_09_30_100024_p010_alter_internal_transfers_reconciliation.php: ALTER TABLE internal_transfers DROP CHECK `ck_internal_transfers_received`, ADD CONSTRAINT `ck_internal_transfers_received` CHECK ((`status` = 'RECEIVED') = (`received_at` IS NOT NULL) AND (`status` = 'RECEIVED') = (`destination_account_id` IS NOT NULL)), ADD CONSTRAINT `ck_internal_transfers_reconciled` CHECK (`reconciled_at` IS NULL OR (`status` = 'RECEIVED' AND `reconciled_at` >= `received_at`))"
+  ],
+  "column_deltas": [
+    "currencies:minor_units:NO:tinyint unsigned",
+    "chart_of_accounts:system_role:YES:varchar(64)",
+    "financial_categories:economic_nature:YES:varchar(64)",
+    "accounting_periods:code:NO:varchar(64)",
+    "accounting_periods:period_kind:NO:varchar(64)",
+    "accounts:public_id:NO:char(26)",
+    "accounts:opened_on:NO:date",
+    "accounts:closed_on:YES:date",
+    "journal_entries:unit_id:NO:bigint unsigned",
+    "journal_entries:entry_kind:NO:varchar(64)",
+    "journal_entries:reason:YES:text",
+    "journal_entries:submitted_at:YES:datetime(6)",
+    "journal_entries:submitted_by:YES:bigint unsigned",
+    "journal_lines:counterparty_unit_id:YES:bigint unsigned",
+    "internal_transfers:origin_unit_id:NO:bigint unsigned",
+    "internal_transfers:destination_unit_id:NO:bigint unsigned",
+    "internal_transfers:cancel_reason:YES:text",
+    "budgets:submitted_by:YES:bigint unsigned",
+    "budgets:reviewed_by:YES:bigint unsigned",
+    "budgets:approved_guard:YES:tinyint unsigned",
+    "contributions:valuation_status:YES:varchar(64)",
+    "contributions:valued_by:YES:bigint unsigned",
+    "contributions:valuation_approved_by:YES:bigint unsigned",
+    "contributions:valuation_document_id:YES:bigint unsigned",
+    "reconciliations:counted_balance:YES:decimal(19,4)",
+    "employments:open_guard:YES:tinyint unsigned",
+    "employment_compensations:open_guard:YES:tinyint unsigned",
+    "payroll_runs:regular_guard:YES:tinyint unsigned"
+  ],
+  "column_changes": [
+    "internal_transfers:destination_account_id:NO->YES:bigint unsigned"
+  ],
+  "index_deltas": [
+    "chart_of_accounts:uq_chart_of_accounts_system_role:system_role",
+    "accounting_periods:uq_accounting_periods_code:code",
+    "accounts:uq_accounts_public_id:public_id",
+    "accounts:uq_accounts_unit_id_id:unit_id,id",
+    "journal_entries:uq_journal_entries_reversal_of_id:reversal_of_id",
+    "journal_entries:uq_journal_entries_id_unit_id:id,unit_id",
+    "journal_entries:ix_journal_entries_unit_id_period_id_status:unit_id,period_id,status",
+    "journal_entries:ix_journal_entries_submitted_by:submitted_by",
+    "journal_lines:ix_journal_lines_entry_id_unit_id:entry_id,unit_id",
+    "journal_lines:ix_journal_lines_unit_id_financial_account_id:unit_id,financial_account_id",
+    "journal_lines:ix_journal_lines_counterparty_unit_id:counterparty_unit_id",
+    "internal_transfers:ix_internal_transfers_origin_unit_id_origin_account_id:origin_unit_id,origin_account_id",
+    "internal_transfers:ix_internal_transfers_destination_unit_id_account_id:destination_unit_id,destination_account_id",
+    "budgets:uq_budgets_unit_id_period_id_fund_id_approved:unit_id,period_id,fund_id,approved_guard",
+    "budgets:ix_budgets_submitted_by:submitted_by",
+    "budgets:ix_budgets_reviewed_by:reviewed_by",
+    "contributions:ix_contributions_valued_by:valued_by",
+    "contributions:ix_contributions_valuation_approved_by:valuation_approved_by",
+    "contributions:ix_contributions_valuation_document_id:valuation_document_id",
+    "employments:uq_employments_person_id_unit_open:person_id,employing_unit_id,open_guard",
+    "employment_compensations:uq_employment_compensations_open:employment_id,component_type_id,open_guard",
+    "payroll_runs:uq_payroll_runs_unit_period_regular:employing_unit_id,period_id,regular_guard"
+  ],
+  "index_removals": [
+    "journal_entries:ix_journal_entries_reversal_of_id:reversal_of_id"
+  ],
+  "fk_deltas": [
+    "journal_entries:fk_journal_entries_unit_id:unit_id->organizational_units.id",
+    "journal_entries:fk_journal_entries_submitted_by:submitted_by->users.id",
+    "journal_lines:fk_journal_lines_counterparty_unit_id:counterparty_unit_id->organizational_units.id",
+    "journal_lines:fk_journal_lines_entry_unit:entry_id,unit_id->journal_entries.id,unit_id",
+    "journal_lines:fk_journal_lines_unit_financial_account:unit_id,financial_account_id->accounts.unit_id,id",
+    "internal_transfers:fk_internal_transfers_origin_unit_id:origin_unit_id->organizational_units.id",
+    "internal_transfers:fk_internal_transfers_destination_unit_id:destination_unit_id->organizational_units.id",
+    "internal_transfers:fk_internal_transfers_origin_unit_account:origin_unit_id,origin_account_id->accounts.unit_id,id",
+    "internal_transfers:fk_internal_transfers_destination_unit_account:destination_unit_id,destination_account_id->accounts.unit_id,id",
+    "budgets:fk_budgets_submitted_by:submitted_by->users.id",
+    "budgets:fk_budgets_reviewed_by:reviewed_by->users.id",
+    "contributions:fk_contributions_valued_by:valued_by->users.id",
+    "contributions:fk_contributions_valuation_approved_by:valuation_approved_by->users.id",
+    "contributions:fk_contributions_valuation_document_id:valuation_document_id->legal_documents.id"
+  ],
+  "fk_deferred": [
+    "receivables:obligation_id->obligations.id"
+  ],
+  "generated_columns": {
+    "budgets.approved_guard": "if((`status` = _utf8mb4'APPROVED'),1,NULL)",
+    "employments.open_guard": "IF(`status` = 'ACTIVE', 1, NULL)",
+    "employment_compensations.open_guard": "IF(`ends_on` IS NULL, 1, NULL)",
+    "payroll_runs.regular_guard": "IF(`run_kind` = 'REGULAR' AND `status` <> 'CANCELLED', 1, NULL)"
+  },
+  "checks": {
+    "currencies": [
+      "ck_currencies_minor_units"
+    ],
+    "funds": [],
+    "chart_of_accounts": [
+      "ck_chart_of_accounts_account_kind",
+      "ck_chart_of_accounts_normal_side",
+      "ck_chart_of_accounts_kind_side",
+      "ck_chart_of_accounts_postable",
+      "ck_chart_of_accounts_status"
+    ],
+    "financial_categories": [
+      "ck_financial_categories_economic_nature",
+      "ck_financial_categories_postable_nature",
+      "ck_financial_categories_classification_status",
+      "ck_financial_categories_status"
+    ],
+    "accounting_periods": [
+      "ck_accounting_periods_period_kind",
+      "ck_accounting_periods_status",
+      "ck_accounting_periods_range",
+      "ck_accounting_periods_calendar",
+      "ck_accounting_periods_closed"
+    ],
+    "accounts": [
+      "ck_accounts_account_kind",
+      "ck_accounts_status",
+      "ck_accounts_closed",
+      "ck_accounts_dates"
+    ],
+    "bank_account_details": [],
+    "cash_registers": [],
+    "financial_parties": [
+      "ck_financial_parties_party_kind",
+      "ck_financial_parties_xor"
+    ],
+    "journal_entries": [
+      "ck_journal_entries_status",
+      "ck_journal_entries_entry_kind",
+      "ck_journal_entries_posted",
+      "ck_journal_entries_submitted",
+      "ck_journal_entries_reversal",
+      "ck_journal_entries_reason"
+    ],
+    "journal_lines": [
+      "ck_journal_lines_one_side",
+      "ck_journal_lines_scale",
+      "ck_journal_lines_limit",
+      "ck_journal_lines_counterparty"
+    ],
+    "financial_documents": [],
+    "accounting_period_unit_closes": [
+      "ck_accounting_period_unit_closes_status",
+      "ck_accounting_period_unit_closes_reopen_pair",
+      "ck_accounting_period_unit_closes_reopened",
+      "ck_accounting_period_unit_closes_segregation"
+    ],
+    "internal_transfers": [
+      "ck_internal_transfers_units",
+      "ck_internal_transfers_status",
+      "ck_internal_transfers_amount",
+      "ck_internal_transfers_sent",
+      "ck_internal_transfers_received",
+      "ck_internal_transfers_received_after_sent",
+      "ck_internal_transfers_cancelled",
+      "ck_internal_transfers_reconciled"
+    ],
+    "transfer_postings": [
+      "ck_transfer_postings_posting_stage"
+    ],
+    "receivables": [
+      "ck_receivables_amount",
+      "ck_receivables_status",
+      "ck_receivables_recognized",
+      "ck_receivables_obligation_v1"
+    ],
+    "payables": [
+      "ck_payables_amount",
+      "ck_payables_status",
+      "ck_payables_recognized"
+    ],
+    "settlements": [
+      "ck_settlements_amount",
+      "ck_settlements_direction",
+      "ck_settlements_status"
+    ],
+    "settlement_allocations": [
+      "ck_settlement_allocations_xor",
+      "ck_settlement_allocations_amount"
+    ],
+    "budgets": [
+      "ck_budgets_status",
+      "ck_budgets_version",
+      "ck_budgets_approved",
+      "ck_budgets_segregation"
+    ],
+    "budget_lines": [
+      "ck_budget_lines_requested_amount",
+      "ck_budget_lines_approved_amount"
+    ],
+    "contributions": [
+      "ck_contributions_contribution_kind",
+      "ck_contributions_identification_kind",
+      "ck_contributions_identified_party",
+      "ck_contributions_status",
+      "ck_contributions_kind_xor",
+      "ck_contributions_valuation_status",
+      "ck_contributions_valuation",
+      "ck_contributions_amount",
+      "ck_contributions_valuation_amount"
+    ],
+    "bank_statements": [
+      "ck_bank_statements_range",
+      "ck_bank_statements_balances"
+    ],
+    "bank_statement_lines": [
+      "ck_bank_statement_lines_line_number",
+      "ck_bank_statement_lines_amount",
+      "ck_bank_statement_lines_description"
+    ],
+    "reconciliations": [
+      "ck_reconciliations_status",
+      "ck_reconciliations_version",
+      "ck_reconciliations_closed",
+      "ck_reconciliations_source",
+      "ck_reconciliations_counted_balance"
+    ],
+    "reconciliation_matches": [
+      "ck_reconciliation_matches_amount"
+    ],
+    "employments": [
+      "ck_employments_relationship_kind",
+      "ck_employments_status",
+      "ck_employments_dates",
+      "ck_employments_ended"
+    ],
+    "compensation_component_types": [
+      "ck_compensation_component_types_nature",
+      "ck_compensation_component_types_calculation_method",
+      "ck_compensation_component_types_liability_role",
+      "ck_compensation_component_types_posting",
+      "ck_compensation_component_types_is_active"
+    ],
+    "employment_compensations": [
+      "ck_employment_compensations_dates",
+      "ck_employment_compensations_amount",
+      "ck_employment_compensations_closed"
+    ],
+    "payroll_rules": [
+      "ck_payroll_rules_method",
+      "ck_payroll_rules_status",
+      "ck_payroll_rules_version",
+      "ck_payroll_rules_dates",
+      "ck_payroll_rules_rate",
+      "ck_payroll_rules_method_rate",
+      "ck_payroll_rules_approved",
+      "ck_payroll_rules_segregation",
+      "ck_payroll_rules_retired"
+    ],
+    "payroll_rule_base_components": [],
+    "payroll_rule_brackets": [
+      "ck_payroll_rule_brackets_bounds",
+      "ck_payroll_rule_brackets_rate",
+      "ck_payroll_rule_brackets_amounts"
+    ],
+    "payroll_runs": [
+      "ck_payroll_runs_run_kind",
+      "ck_payroll_runs_status",
+      "ck_payroll_runs_sequence",
+      "ck_payroll_runs_amounts",
+      "ck_payroll_runs_calculated",
+      "ck_payroll_runs_approved",
+      "ck_payroll_runs_segregation",
+      "ck_payroll_runs_posted",
+      "ck_payroll_runs_paid",
+      "ck_payroll_runs_cancelled",
+      "ck_payroll_runs_reversed"
+    ],
+    "payroll_run_lines": [
+      "ck_payroll_run_lines_source",
+      "ck_payroll_run_lines_rule",
+      "ck_payroll_run_lines_amount"
+    ],
+    "payroll_postings": [
+      "ck_payroll_postings_stage"
+    ]
+  },
+  "money_columns_decimal_19_4": true,
+  "forbidden_columns": [
+    "contributions.department_id",
+    "internal_transfers.reconciliation_status",
+    "accounts.balance",
+    "accounts.current_balance",
+    "accounts.available_balance",
+    "journal_entries.department_id",
+    "journal_lines.department_id",
+    "accounts.department_id",
+    "budgets.department_id",
+    "internal_transfers.department_id",
+    "journal_entries.total_amount",
+    "bank_statement_lines.journal_entry_id",
+    "bank_statement_lines.journal_line_id",
+    "reconciliations.department_id",
+    "bank_statements.unit_id",
+    "employments.full_name",
+    "employments.sex_id",
+    "employments.birth_date",
+    "employments.phone",
+    "employments.department_id",
+    "employments.ministerial_assignment_id",
+    "employments.organizational_post_id",
+    "employments.person_employment_id",
+    "employment_compensations.currency_code",
+    "payroll_runs.department_id"
+  ],
+  "controlled_data_counts": {
+    "currencies": 1,
+    "funds": 1,
+    "chart_of_accounts": 18,
+    "financial_categories": 82,
+    "permissions": 16,
+    "legal_document_types": 10,
+    "workflows": 2,
+    "hr_permissions": 9,
+    "compensation_component_types": 13,
+    "payroll_rules": 0,
+    "payroll_rule_brackets": 0
+  },
+  "materialized_tables_f2a": [
+    "employments",
+    "compensation_component_types",
+    "employment_compensations",
+    "payroll_rules",
+    "payroll_rule_base_components",
+    "payroll_rule_brackets",
+    "payroll_runs",
+    "payroll_run_lines",
+    "payroll_postings"
+  ]
+}

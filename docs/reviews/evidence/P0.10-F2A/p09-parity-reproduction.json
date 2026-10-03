@@ -1,0 +1,29 @@
+{
+  "finding": "F2A-I01",
+  "classification": "TEST_INFRA",
+  "validator": "scripts/validate-p09-membership-schema.cjs",
+  "campaign_result": "FAIL with compared_indexes=0 (empty INFORMATION_SCHEMA.STATISTICS read)",
+  "reproduction": {
+    "instance": "fresh STARTED_VERIFIED port 33076 session bf4b97968563, pools re-migrated, then STOPPED_VERIFIED (datadir removed)",
+    "runs": [
+      {
+        "status": "PASS",
+        "compared_indexes": 55,
+        "mismatches": 0
+      },
+      {
+        "status": "PASS",
+        "compared_indexes": 55,
+        "mismatches": 0
+      },
+      {
+        "status": "PASS",
+        "compared_indexes": 55,
+        "mismatches": 0
+      }
+    ]
+  },
+  "first_campaign_same_code": "PASS",
+  "cause": "unstable Windows mysql client read (the P0.10 reader has the F1C-T05 double-read guard; the P0.9 reader does not)",
+  "schema_change": false
+}

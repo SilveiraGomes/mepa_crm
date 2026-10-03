@@ -1,0 +1,242 @@
+{
+  "status": "PASS",
+  "checks": {
+    "F01_single_journal_writer": true,
+    "F02_line_delete_only_while_draft": true,
+    "F03_header_updates_are_state_guarded": true,
+    "F04_posting_gate_complete": true,
+    "F05_no_float_money": true,
+    "F06_no_stored_balance": true,
+    "F07_catalog_role_free_nothing_statutory": true,
+    "F08_d04a_vocabulary": true,
+    "F09_national_close_irreversible": true,
+    "F10_contract_maps_existing_tests": true,
+    "F11_manifest_pool_and_plan": true,
+    "F12_worker_isolated": true
+  },
+  "failures": [],
+  "mutation_probes": [
+    {
+      "id": "CONTROL",
+      "status": "PASS",
+      "mode": "NO_MUTATION_EXPECTED_PASS",
+      "tests": {
+        "detector": "phpunit --filter test_j0|test_j1",
+        "exit_code": 0,
+        "summary": "OK (16 tests, 227 assertions)",
+        "seconds": 77.3
+      },
+      "parity": {
+        "detector": "validate-p010-finance-schema --static-only",
+        "exit_code": 0,
+        "summary": ""
+      }
+    },
+    {
+      "id": "M1",
+      "description": "balanced-journal guard removed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j02",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "seconds": 28.9
+    },
+    {
+      "id": "M2",
+      "description": "POSTED lines mutable",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j03",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 1, Failures: 1.",
+      "seconds": 22.9
+    },
+    {
+      "id": "M3",
+      "description": "precision permissive (silent truncation)",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/Money.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j15",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 5, Failures: 1.",
+      "seconds": 26.9
+    },
+    {
+      "id": "M4",
+      "description": "non-AOA currency accepted",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j16",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 3, Failures: 1.",
+      "seconds": 20.4
+    },
+    {
+      "id": "M5",
+      "description": "INTERUNIT_CONTROL installed as revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j10",
+      "exit_code": 2,
+      "summary": "Tests: 1, Assertions: 0, Errors: 1.",
+      "seconds": 50.1
+    },
+    {
+      "id": "M6",
+      "description": "SEND touches revenue",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j10",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 6, Failures: 1.",
+      "seconds": 51.2
+    },
+    {
+      "id": "M7",
+      "description": "RECEIVE touches expense",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j11",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 13, Failures: 1.",
+      "seconds": 28.5
+    },
+    {
+      "id": "M8",
+      "description": "FIXED_ASSETS rubrics always expensed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/FinanceCatalog.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j08|test_j09",
+      "exit_code": 1,
+      "summary": "Tests: 2, Assertions: 12, Failures: 2.",
+      "seconds": 25.4
+    },
+    {
+      "id": "M9",
+      "description": "posting allowed in a closed unit period",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/app/Domain/Finance/LedgerPostingService.php"
+      ],
+      "detected": true,
+      "detector": "phpunit --filter test_j14",
+      "exit_code": 1,
+      "summary": "Tests: 1, Assertions: 2, Failures: 1.",
+      "seconds": 23.2
+    },
+    {
+      "id": "M10",
+      "description": "stored balance column as source of truth",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/database/migrations/2026_09_30_100006_p010_create_accounts.php"
+      ],
+      "detected": true,
+      "detector": "validate-p010-finance-schema --static-only",
+      "exit_code": 1,
+      "summary": "catalog+deltas<->migrations columns mismatch; forbidden columns in migrations: accounts.balance"
+    },
+    {
+      "id": "M11",
+      "description": "owner unit removed from journal_entries",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/database/migrations/2026_09_30_100010_p010_create_journal_entries.php"
+      ],
+      "detected": true,
+      "detector": "validate-p010-finance-schema --static-only",
+      "exit_code": 1,
+      "summary": "catalog+deltas<->migrations columns mismatch; catalog+deltas<->migrations indexes mismatch; catalog+deltas<->migrations fks mismatch"
+    },
+    {
+      "id": "M12",
+      "description": "second APPROVED budget allowed",
+      "status": "PASS",
+      "mode": "ON_DISK_MUTATION_EXPECTED_DETECTION",
+      "files": [
+        "apps/api/database/migrations/2026_09_30_100020_p010_create_budgets.php"
+      ],
+      "detected": true,
+      "detector": "validate-p010-finance-schema --static-only",
+      "exit_code": 1,
+      "summary": "catalog+deltas<->migrations indexes mismatch"
+    }
+  ],
+  "probes_detected": 12,
+  "probes_run": 12,
+  "source_hashes_before": {
+    "catalog": "f9570d1ebc35337310f6a6e07dd4ac691ffdc41cec28aa5fcdb3da0b815d32f5",
+    "ledger": "737a601c560ffbb8201b58f30abebaea66f0fe8ac0c96dcc78b0ff1b83ec1d2c",
+    "periods": "d2ce12338bac10dbf0610cd0e2f983d4fcb65fbd2084b13189dbd6af3e3e7ebc",
+    "queries": "e55afcb2145753eafdb55b1f8ee8fa10d61ccfe0fba2552f3cb6db555837b912",
+    "money": "73cb01731b3f979b9972100326737a9d808f9f53b387b3f1e837fdc0dcb412bd",
+    "audit": "b1b1d38df5da9568b97dcea9fe8cb5c541e44cbdaec0a065277a65bade4ef4eb",
+    "error": "875aa5015597a9bf3c55039f83f2d0dd4c53b1d0e1884527d0d00e95057002fd",
+    "test": "7f52f3d36e2abe28a3c28ed25b28e52cea4eafaa1715e5aa2ccc57f8b24a6481",
+    "worker": "16b5a35c655f52cb04235c18ea26307d8af37778829ec93bbd471664046b73d2",
+    "contracts": "77c3e21969547b9efce60130d564ef6dfbfab806960e1ccfd58613d164ff57e2",
+    "manifest": "03b784ab6710404ccb428a31c0486a252094919adda70c46ddf4484be30e7714",
+    "pool": "4bdb3761ef0af0eb1fee0b0cea473cb9f3ded08f2813431a205c17eacb42c470",
+    "accounts": "7d2d1378f99e2ebbe601faf8ab7d1e9bf64ffcafd5951947d4314cc6951f6eb6",
+    "entries": "040fdb22c20954d766c6a311e5a1762122ff8024180f4d5873c87307f0a619a0",
+    "lines": "57ab4796573991015c6b8edacfdf1e81d87badf6d57d7906781e57a903d5f3c9",
+    "budgets": "07f2ddcb7e31afcb18600bb2f0d6ed2cb3e461dfd040a55702c1105df3cff401",
+    "installer": "3bd438961730aa6624becc1f4f2bee9bbdecba668780a02e3e5198e462ff6c5b"
+  },
+  "source_hashes_after": {
+    "catalog": "f9570d1ebc35337310f6a6e07dd4ac691ffdc41cec28aa5fcdb3da0b815d32f5",
+    "ledger": "737a601c560ffbb8201b58f30abebaea66f0fe8ac0c96dcc78b0ff1b83ec1d2c",
+    "periods": "d2ce12338bac10dbf0610cd0e2f983d4fcb65fbd2084b13189dbd6af3e3e7ebc",
+    "queries": "e55afcb2145753eafdb55b1f8ee8fa10d61ccfe0fba2552f3cb6db555837b912",
+    "money": "73cb01731b3f979b9972100326737a9d808f9f53b387b3f1e837fdc0dcb412bd",
+    "audit": "b1b1d38df5da9568b97dcea9fe8cb5c541e44cbdaec0a065277a65bade4ef4eb",
+    "error": "875aa5015597a9bf3c55039f83f2d0dd4c53b1d0e1884527d0d00e95057002fd",
+    "test": "7f52f3d36e2abe28a3c28ed25b28e52cea4eafaa1715e5aa2ccc57f8b24a6481",
+    "worker": "16b5a35c655f52cb04235c18ea26307d8af37778829ec93bbd471664046b73d2",
+    "contracts": "77c3e21969547b9efce60130d564ef6dfbfab806960e1ccfd58613d164ff57e2",
+    "manifest": "03b784ab6710404ccb428a31c0486a252094919adda70c46ddf4484be30e7714",
+    "pool": "4bdb3761ef0af0eb1fee0b0cea473cb9f3ded08f2813431a205c17eacb42c470",
+    "accounts": "7d2d1378f99e2ebbe601faf8ab7d1e9bf64ffcafd5951947d4314cc6951f6eb6",
+    "entries": "040fdb22c20954d766c6a311e5a1762122ff8024180f4d5873c87307f0a619a0",
+    "lines": "57ab4796573991015c6b8edacfdf1e81d87badf6d57d7906781e57a903d5f3c9",
+    "budgets": "07f2ddcb7e31afcb18600bb2f0d6ed2cb3e461dfd040a55702c1105df3cff401",
+    "installer": "3bd438961730aa6624becc1f4f2bee9bbdecba668780a02e3e5198e462ff6c5b"
+  },
+  "source_restored_byte_for_byte": true
+}

@@ -88,8 +88,9 @@ for(const t of m.tables){
   if(/\bUUID\b/i.test(c.type))errors.push('UUID column type present '+t.name+'.'+c.name);
  }
 }
-if(publicRequired!==54)errors.push('public_id_required=true count drifted from 54: '+publicRequired);
-if(publicNotRequired!==145)errors.push('public_id_required=false count drifted from 145: '+publicNotRequired);
+// P0.10-F2A (ADR 0021 D33): +employments, +payroll_runs (public); +7 internal payroll tables.
+if(publicRequired!==56)errors.push('public_id_required=true count drifted from 56: '+publicRequired);
+if(publicNotRequired!==152)errors.push('public_id_required=false count drifted from 152: '+publicNotRequired);
 
 console.log(JSON.stringify({tables:m.tables.length,columns,fks,master_relations:(erd.match(/ : "/g)||[]).length,local_links:'checked',identifier_strategy:m.identifier_strategy?.status,public_id_entities:publicRequired,errors},null,2));
 if(errors.length)process.exitCode=1;

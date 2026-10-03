@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Domain\Academy\AcademyError;
 use App\Domain\Files\FilesError;
+use App\Domain\Finance\FinanceError;
 use App\Domain\Membership\MembershipError;
 use App\Domain\Membership\MembershipReason;
 use App\Domain\People\PeopleError;
@@ -150,6 +151,90 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (ValidationException $e, Request $request) {
             if (!$request->is('api/v1/files', 'api/v1/files/*', 'api/v1/documents', 'api/v1/documents/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        // P0.10 Finance (ADR-0021 D20). F-06: unknown, malformed and out-of-scope transfers, contributions, units,
+        // accounts and supporting documents are the same byte-identical 404; permission (403) is decided before any
+        // target is resolved. Domain codes are stable and never carry internal ids.
+        $this->renderable(function (FinanceError $e, Request $request) {
+            if (!$request->is('api/v1/finance', 'api/v1/finance/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('finance_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match (true) {
+                $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_LIMIT', 'AMOUNT_NOT_POSITIVE', 'ENTRY_DATE_IN_FUTURE', 'ENTRY_DATE_INVALID', 'REASON_REQUIRED', 'INTERNAL_COUNTERPARTY', 'VALUATION_DOCUMENT_REQUIRED',
+                    'CATEGORY_NOT_RECEIVABLE', 'PAYABLE_DOCUMENT_REQUIRED', 'STATEMENT_DOCUMENT_REQUIRED', 'STATEMENT_UNBALANCED'], true) => [422, $e->reason, 'The request data is invalid.'],
+                $e->reason === 'CONFIG_MISSING' => [503, 'FINANCE_NOT_CONFIGURED', 'The Finance configuration is not available.'],
+                $e->reason === 'CRYPTO_UNAVAILABLE' => [503, 'FINANCE_CRYPTO_UNAVAILABLE', 'The protected Finance data cannot be processed now; nothing was changed.'],
+                $e->reason === 'BUSY' => [503, 'FINANCE_BUSY', 'The operation could not be completed now; nothing was changed.'],
+                in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
+                default => [409, $e->reason, 'The request conflicts with the current resource state.'],
+            };
+            Log::notice('finance_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            if ($e->reason === 'RECONCILIATION_MISMATCH') {
+                $body['details'] = ['mismatches' => $e->items];
+            }
+            return response()->json(['error' => $body], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/finance', 'api/v1/finance/*')) {
+                return null;
+            }
+            return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
+        });
+
+        // P0.10-F2A RH / payroll (ADR-0021 D20, D28 + D-04A.15). Same F-06 policy as Finance: unknown, malformed and
+        // out-of-scope employments, units, people, rules and documents (and compensation without HR_COMPENSATION_VIEW)
+        // are one byte-identical 404; permission (403) is decided before any target. PAYROLL_RULE_MISSING is 422 (never
+        // computed as zero); PAYROLL_PRODUCTION_DISABLED is 409 (fail-closed gate). F2B: PAYROLL_INPUT_STALE,
+        // PAYROLL_SEGREGATION_REQUIRED, PERIOD_CLOSED, INSUFFICIENT_FUNDS and run state conflicts are 409.
+        $this->renderable(function (FinanceError $e, Request $request) {
+            if (!$request->is('api/v1/hr', 'api/v1/hr/*')) {
+                return null;
+            }
+            if (in_array($e->reason, ['TARGET_NOT_FOUND', 'OUT_OF_SCOPE'], true)) {
+                Log::warning('hr_http_concealed', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+                return response()->json(['error' => ['code' => 'RESOURCE_NOT_FOUND', 'message' => 'The requested resource was not found.']], 404);
+            }
+            [$status, $code, $message] = match (true) {
+                $e->reason === 'NOT_AUTHORIZED' => [403, 'FORBIDDEN', 'You are not authorized to perform this operation.'],
+                $e->reason === 'INVALID_INPUT' => [422, 'VALIDATION_ERROR', 'The request data is invalid.'],
+                in_array($e->reason, ['AMOUNT_INVALID', 'AMOUNT_SCALE', 'AMOUNT_REQUIRED', 'AMOUNT_NOT_ALLOWED', 'RATE_INVALID', 'REASON_REQUIRED', 'CURRENCY_NOT_SUPPORTED', 'OUTSIDE_EMPLOYMENT',
+                    'CONTRACT_DOCUMENT_TYPE', 'RULE_DOCUMENT_REQUIRED', 'RULE_DOCUMENT_TYPE', 'COMPONENT_NOT_RULE_BASED', 'PAYROLL_RULE_MISSING', 'PAYROLL_RULE_INVALID',
+                    // F2B calculation (fail closed: never zero, never a fallback, never a silent proration)
+                    'PAYROLL_RULE_AMBIGUOUS', 'PAYROLL_RULE_DOCUMENT_MISSING', 'PAYROLL_PRORATION_POLICY_MISSING', 'PAYROLL_CONFIGURATION_NOT_READY', 'PAYROLL_NET_NEGATIVE',
+                    'PAYROLL_RUN_KIND_POLICY_MISSING', 'PAYROLL_POPULATION_CONFLICT', 'PERIOD_NOT_FOUND', 'ENTRY_DATE_IN_FUTURE'], true) => [422, $e->reason, 'The request data is invalid.'],
+                $e->reason === 'CONFIG_MISSING' => [503, 'HR_NOT_CONFIGURED', 'The HR configuration is not available.'],
+                $e->reason === 'BUSY' => [503, 'HR_BUSY', 'The operation could not be completed now; nothing was changed.'],
+                in_array($e->reason, ['INVARIANT_VIOLATION', 'STORAGE_CONFLICT'], true) => [409, 'CONFLICT', 'The operation could not be completed.'],
+                default => [409, $e->reason, 'The request conflicts with the current resource state.'],
+            };
+            Log::notice('hr_http_domain_error', ['reason' => $e->reason, 'route' => $request->route()?->uri(), 'actor_id' => $request->user()?->getAuthIdentifier()]);
+            $body = ['code' => $code, 'message' => $message];
+            if ($status === 422 && isset($e->context['field'])) {
+                $body['details'] = ['fields' => [(string) $e->context['field'] => ['invalid']]];
+            }
+            if (in_array($e->reason, ['PAYROLL_RULE_MISSING', 'PAYROLL_RULE_AMBIGUOUS', 'RULE_OVERLAP', 'PAYROLL_PRORATION_POLICY_MISSING', 'PAYROLL_CONFIGURATION_NOT_READY', 'PAYROLL_RUN_EXISTS', 'PAYROLL_RUN_KIND_POLICY_MISSING'], true)) {
+                $body['details'] = ['items' => $e->items];
+            }
+            return response()->json(['error' => $body], $status);
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if (!$request->is('api/v1/hr', 'api/v1/hr/*')) {
                 return null;
             }
             return response()->json(['error' => ['code' => 'VALIDATION_ERROR', 'message' => 'The request data is invalid.', 'details' => ['fields' => $e->errors()]]], 422);
